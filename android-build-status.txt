@@ -1,7 +1,7 @@
 status=running
-started=2026-08-19T16:59:49Z
+started=2026-08-19T17:00:17Z
 signing_material=ok
 source_tag=v12.1.24
 source_apk=ok
 status=failed
-finished=2026-08-19T16:59:52Z
+finished=2026-08-19T17:00:19Z
