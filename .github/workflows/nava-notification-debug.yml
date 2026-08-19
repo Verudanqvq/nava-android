@@ -1,0 +1,73 @@
+name: Nava notification diagnostics
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-notification-debug.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install
+        working-directory: notification-backend
+        run: npm install --omit=dev --no-audit --no-fund
+      - name: Capture before state
+        working-directory: notification-backend
+        run: node debug-state.mjs > /tmp/before.json
+      - name: Test engine
+        working-directory: notification-backend
+        run: npm test > /tmp/tests.log 2>&1
+      - name: Run real scanner once
+        working-directory: notification-backend
+        shell: bash
+        run: |
+          set +e
+          npm run scan > /tmp/scan.log 2>&1
+          echo $? > /tmp/scan.rc
+          node retry-push.mjs > /tmp/retry.log 2>&1
+          echo $? > /tmp/retry.rc
+          exit 0
+      - name: Capture after state
+        working-directory: notification-backend
+        run: node debug-state.mjs > /tmp/after.json
+      - name: Persist sanitized diagnostics
+        shell: bash
+        run: |
+          {
+            echo '=== BEFORE ==='
+            cat /tmp/before.json
+            echo
+            echo '=== TESTS ==='
+            cat /tmp/tests.log
+            echo
+            echo '=== SCAN RC ==='
+            cat /tmp/scan.rc
+            echo '=== SCAN LOG ==='
+            tail -n 160 /tmp/scan.log
+            echo
+            echo '=== RETRY RC ==='
+            cat /tmp/retry.rc
+            echo '=== RETRY LOG ==='
+            tail -n 160 /tmp/retry.log
+            echo
+            echo '=== AFTER ==='
+            cat /tmp/after.json
+          } > notification-debug.txt
+          git config user.name 'Nava Notification Debug Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add notification-debug.txt
+          git commit -m 'Record notification diagnostics [skip ci]'
+          git push
