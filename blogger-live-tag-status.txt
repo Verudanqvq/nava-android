@@ -1,0 +1,3 @@
+release=created
+tag=blogger-live-v2
+commit=0c162d370ade2d278c132378c8bd5d150f042eca
