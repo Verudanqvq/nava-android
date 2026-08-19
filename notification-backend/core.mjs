@@ -204,10 +204,30 @@ export function hrefsFromHtml(html, baseUrl) {
   return [...out];
 }
 
-
 export function unseenPostIds(parsed, seenIds) {
   const seen = new Set(Array.isArray(seenIds) ? seenIds : []);
   return (Array.isArray(parsed) ? parsed : [])
     .filter((item) => item?.postId && !seen.has(item.postId))
     .map((item) => item.postId);
+}
+
+export function mergeEntriesByPostId(groups) {
+  const byId = new Map();
+  for (const group of (Array.isArray(groups) ? groups : [])) {
+    for (const entry of (Array.isArray(group) ? group : [])) {
+      const id = postId(entry);
+      if (!id) continue;
+      if (!byId.has(id)) byId.set(id, entry);
+    }
+  }
+  return [...byId.values()];
+}
+
+export function decidePostAction({initialized, postState, releaseCompleted, isRelease, seriesResolved}) {
+  if (!initialized) return "baseline";
+  if (!isRelease) return "ignore";
+  if (releaseCompleted) return "complete";
+  if (postState === "completed" || postState === "baseline" || postState === "ignored") return "complete";
+  if (!seriesResolved) return "retry";
+  return "send";
 }
