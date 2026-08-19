@@ -120,33 +120,65 @@ jobs:
       - name: Align and sign with original Nava certificate
         shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
           set +x
           BUILD_TOOLS="$(cat /tmp/build-tools-path)"
-          "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk
-
           PROP=/tmp/nava-signing/keystore.properties
-          export NAVA_STORE_PASS="$(sed -n 's/^storePassword=//p' "$PROP" | head -1)"
-          export NAVA_KEY_PASS="$(sed -n 's/^keyPassword=//p' "$PROP" | head -1)"
-          KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROP" | head -1)"
-          test -n "$NAVA_STORE_PASS"
-          test -n "$NAVA_KEY_PASS"
-          test -n "$KEY_ALIAS"
 
-          "$BUILD_TOOLS/apksigner" sign \
-            --ks /tmp/nava-signing/signing/nava-release.jks \
-            --ks-key-alias "$KEY_ALIAS" \
-            --ks-pass env:NAVA_STORE_PASS \
-            --key-pass env:NAVA_KEY_PASS \
-            --out /tmp/Nava.apk \
-            /tmp/Nava-aligned.apk
-
-          "$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/apksigner-verify.txt
-          CERT="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' /tmp/apksigner-verify.txt | head -1 | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
-          if [ "$CERT" != "$EXPECTED_CERT_SHA256" ]; then
-            echo "Signing certificate mismatch" >&2
+          if "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk; then
+            printf 'zipalign=ok\n' >> /tmp/nava-android-build-status.txt
+          else
+            printf 'error=zipalign\n' >> /tmp/nava-android-build-status.txt
             exit 1
           fi
+
+          export NAVA_STORE_PASS="$(sed -n 's/^storePassword=//p' "$PROP" | tr -d '\r' | head -1)"
+          export NAVA_KEY_PASS="$(sed -n 's/^keyPassword=//p' "$PROP" | tr -d '\r' | head -1)"
+          KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROP" | tr -d '\r' | head -1)"
+          if [ -z "$NAVA_STORE_PASS" ] || [ -z "$NAVA_KEY_PASS" ] || [ -z "$KEY_ALIAS" ]; then
+            printf 'error=keystore_properties\n' >> /tmp/nava-android-build-status.txt
+            exit 1
+          fi
+          printf 'keystore_properties=ok\n' >> /tmp/nava-android-build-status.txt
+
+          if keytool -list -keystore /tmp/nava-signing/signing/nava-release.jks \
+              -storepass "$NAVA_STORE_PASS" -alias "$KEY_ALIAS" >/dev/null 2>&1; then
+            printf 'keystore_unlock=ok\n' >> /tmp/nava-android-build-status.txt
+          else
+            printf 'error=keystore_unlock\n' >> /tmp/nava-android-build-status.txt
+            exit 1
+          fi
+
+          if "$BUILD_TOOLS/apksigner" sign \
+              --ks /tmp/nava-signing/signing/nava-release.jks \
+              --ks-key-alias "$KEY_ALIAS" \
+              --ks-pass env:NAVA_STORE_PASS \
+              --key-pass env:NAVA_KEY_PASS \
+              --out /tmp/Nava.apk \
+              /tmp/Nava-aligned.apk >/tmp/apksigner-sign.txt 2>&1; then
+            printf 'apksigner_sign=ok\n' >> /tmp/nava-android-build-status.txt
+          else
+            printf 'error=apksigner_sign\n' >> /tmp/nava-android-build-status.txt
+            exit 1
+          fi
+
+          if "$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/apksigner-verify.txt 2>&1; then
+            printf 'apksigner_verify=ok\n' >> /tmp/nava-android-build-status.txt
+          else
+            printf 'error=apksigner_verify\n' >> /tmp/nava-android-build-status.txt
+            exit 1
+          fi
+
+          CERT="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' /tmp/apksigner-verify.txt | head -1 | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
+          if [ -z "$CERT" ]; then
+            printf 'error=cert_parse\n' >> /tmp/nava-android-build-status.txt
+            exit 1
+          fi
+          if [ "$CERT" != "$EXPECTED_CERT_SHA256" ]; then
+            printf 'error=cert_mismatch\ncert_sha256=%s\n' "$CERT" >> /tmp/nava-android-build-status.txt
+            exit 1
+          fi
+
           printf 'signing=ok\ncert_sha256=%s\n' "$CERT" >> /tmp/nava-android-build-status.txt
           sha256sum /tmp/Nava.apk | awk '{print "apk_sha256="$1}' >> /tmp/nava-android-build-status.txt
           unset NAVA_STORE_PASS NAVA_KEY_PASS
