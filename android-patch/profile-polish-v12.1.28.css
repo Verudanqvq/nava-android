@@ -1,0 +1,58 @@
+/* Nava Android v12.1.28 — profile/admin/search/small-screen polish. */
+html.nava-app-v9 .nava-search-user-avatar-v5.is-preset{display:grid!important;place-items:center!important;overflow:hidden!important;color:#fff!important;font-size:18px!important;font-weight:900!important;line-height:1!important}
+html.nava-app-v9 .nava-search-user-avatar-v5.is-preset[data-avatar='dragon']{background:linear-gradient(135deg,#4c1d95,#ec4899)!important}
+html.nava-app-v9 .nava-search-user-avatar-v5.is-preset[data-avatar='moon']{background:linear-gradient(135deg,#0f172a,#6366f1)!important}
+html.nava-app-v9 .nava-search-user-avatar-v5.is-preset[data-avatar='flame']{background:linear-gradient(135deg,#b91c1c,#f59e0b)!important}
+html.nava-app-v9 .nava-search-user-avatar-v5.is-preset[data-avatar='ocean']{background:linear-gradient(135deg,#075985,#22d3ee)!important}
+html.nava-app-v9 .nava-search-user-avatar-v5.is-preset[data-avatar='forest']{background:linear-gradient(135deg,#14532d,#84cc16)!important}
+html.nava-app-v9 .nava-search-user-avatar-v5.is-preset[data-avatar='book']{background:linear-gradient(135deg,#7c2d12,#f97316)!important}
+html.nava-app-v9 .nava-search-user-avatar-v5.is-preset[data-avatar='star']{background:linear-gradient(135deg,#312e81,#a78bfa)!important}
+html.nava-app-v9 .nava-search-user-avatar-v5.is-preset[data-avatar='shadow']{background:linear-gradient(135deg,#111827,#64748b)!important}
+
+html.nava-app-v9 body.nava-app-profile .nava-app-profile-live-v12128{min-width:0!important;max-width:720px!important}
+html.nava-app-v9 body.nava-app-profile .nava-profile-name,html.nava-app-v9 body.nava-app-profile .nava-profile-username,html.nava-app-v9 body.nava-app-profile .nava-profile-bio{overflow-wrap:anywhere!important}
+html.nava-app-v9 body.nava-app-profile .nava-profile-name-row{max-width:100%!important}
+
+html.nava-app-v9 .nava-profile-edit-modal .nava-admin-profile-settings{margin-top:10px!important;padding:10px!important;border:1px solid #cbd9ec!important;border-radius:9px!important;background:#f7f9fc!important;box-shadow:none!important}
+html.dark.nava-app-v9 .nava-profile-edit-modal .nava-admin-profile-settings{background:#172033!important;border-color:#334155!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-admin-settings-title{font-size:12px!important;font-weight:900!important;color:#425d80!important}
+html.dark.nava-app-v9 .nava-profile-edit-modal .nava-admin-settings-title{color:#c9dcf5!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-admin-settings-note{font-size:10px!important;line-height:1.45!important;margin:3px 0 9px!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-upload-card{padding:9px!important;border:1px solid var(--nava-line)!important;border-radius:8px!important;background:var(--nava-surface)!important;overflow:hidden!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-upload-card strong{font-size:11px!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-upload-card p{font-size:9.5px!important;line-height:1.45!important;margin:3px 0 7px!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-upload-preview{border-color:#cbd9ec!important;background:#f8fafc!important;border-radius:8px!important}
+html.dark.nava-app-v9 .nava-profile-edit-modal .nava-upload-preview{border-color:#40516a!important;background:#111827!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-upload-preview img{flex:0 0 auto!important;object-fit:cover!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-upload-rule{display:inline-flex!important;max-width:100%!important;white-space:normal!important;line-height:1.3!important;background:#edf4ff!important;color:#4f709c!important}
+html.dark.nava-app-v9 .nava-profile-edit-modal .nava-upload-rule{background:#26364d!important;color:#c9dcf5!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-banner-choice,html.nava-app-v9 .nava-profile-edit-modal .nava-avatar-choice{min-width:0!important;overflow:hidden!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-banner-choice-label,html.nava-app-v9 .nava-profile-edit-modal .nava-avatar-choice-label{max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-toggle-row{width:100%!important;max-width:100%!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-toggle-copy{flex:1 1 auto!important;max-width:calc(100% - 54px)!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-toggle-copy strong,html.nava-app-v9 .nava-profile-edit-modal .nava-toggle-copy span{overflow-wrap:anywhere!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-file-input{font-size:10px!important;text-overflow:ellipsis!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-file-input::file-selector-button{min-height:36px!important;border-radius:7px!important}
+
+/* Fixed sheets must sit above the app bars and stay inside the viewport. */
+html.nava-app-v9 .nava-modal-backdrop{z-index:10550!important;max-width:100vw!important;overflow:hidden!important}
+html.nava-app-v9 .nava-profile-edit-modal{max-width:100vw!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-modal-body{max-width:100%!important;overscroll-behavior:contain!important}
+html.nava-app-v9 #nava-app-search-v2{max-width:100vw!important;overflow-x:hidden!important}
+html.nava-app-v9 .nava-search-results-v2,html.nava-app-v9 .nava-search-row-v2{min-width:0!important;max-width:100%!important}
+html.nava-app-v9 .nava-search-row-v2>div{min-width:0!important}
+
+@media(max-width:390px){
+  html.nava-app-v9 .nava-profile-edit-modal .nava-avatar-picker{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  html.nava-app-v9 .nava-profile-edit-modal .nava-banner-picker{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  html.nava-app-v9 .nava-profile-edit-modal .nava-admin-upload-grid{grid-template-columns:minmax(0,1fr)!important}
+  html.nava-app-v9 .nava-search-row-v2{grid-template-columns:48px minmax(0,1fr)!important;gap:8px!important;padding:7px!important}
+  html.nava-app-v9 .nava-search-user-avatar-v5{width:48px!important;height:48px!important}
+}
+@media(max-width:360px){
+  html.nava-app-v9 .nava-profile-edit-modal .nava-modal-body{padding:8px!important}
+  html.nava-app-v9 .nava-profile-edit-modal .nava-modal-actions{grid-template-columns:1fr!important;padding-left:8px!important;padding-right:8px!important}
+  html.nava-app-v9 .nava-profile-edit-modal .nava-profile-banner-settings,html.nava-app-v9 .nava-profile-edit-modal .nava-admin-profile-settings{padding:8px!important}
+  html.nava-app-v9 .nava-profile-edit-modal .nava-file-input::file-selector-button{display:block!important;width:100%!important;margin:0 0 5px!important}
+  html.nava-app-v9 .nava-profile-actions-v5{grid-template-columns:1fr!important}
+}
