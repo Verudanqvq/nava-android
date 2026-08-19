@@ -4,27 +4,70 @@ c072f679623e01efd59fe376d4a34cd71b26f734165e9ff98d53bee15862ed50  /tmp/nava-apk/
 === MATCH FILES: shouldInterceptRequest ===
 /tmp/nava-decoded/smali/gx.smali
 /tmp/nava-decoded/smali/org/chromium/support_lib_boundary/ServiceWorkerClientBoundaryInterface.smali
-=== MATCH FILES: JavascriptInterface annotation ===
 === MATCH FILES: NavaNative/postMessage ===
 /tmp/nava-decoded/smali/com/verudanava/nava/MainActivity.smali
 /tmp/nava-decoded/smali/org/chromium/support_lib_boundary/JsReplyProxyBoundaryInterface.smali
 /tmp/nava-decoded/smali/org/chromium/support_lib_boundary/WebMessagePortBoundaryInterface.smali
 /tmp/nava-decoded/smali/org/chromium/support_lib_boundary/WebViewProviderBoundaryInterface.smali
-=== MATCH FILES: WebView setup ===
-/tmp/nava-decoded/smali/androidx/activity/b.smali
-/tmp/nava-decoded/smali/bx.smali
-/tmp/nava-decoded/smali/com/verudanava/nava/MainActivity.smali
-/tmp/nava-decoded/smali/gx.smali
-/tmp/nava-decoded/smali/lf.smali
-/tmp/nava-decoded/smali/org/chromium/support_lib_boundary/WebViewBuilderBoundaryInterface$Config.smali
-/tmp/nava-decoded/smali/rr.smali
+=== MAINACTIVITY HOOK LINES ===
+217:    const-string v0, "(function () {\n  if (window.__navaAndroidBridgeInstalled) return;\n  window.__navaAndroidBridgeInstalled = true;\n  window.__NAVA_ANDROID_APP__ = true;\n\n  function msgBox(){ return document.querySelector(\'[data-auth-message=\"1\"]\'); }\n  function setMessage(text,state){\n    var b=msgBox(); if(!b)return;\n    b.textContent=text||\'\'; b.classList.toggle(\'is-visible\',Boolean(text));\n    if(state)b.setAttribute(\'data-state\',state);else b.removeAttribute(\'data-state\');\n  }\n  function busy(on){ var b=document.querySelector(\'[data-auth-google=\"1\"]\');if(b)b.disabled=Boolean(on); }\n\n  document.addEventListener(\'click\',function(event){\n    var t=event.target;if(!t||!t.closest)return;\n    var b=t.closest(\'[data-auth-google=\"1\"]\');if(!b)return;\n    if(!window.NavaNative||typeof window.NavaNative.postMessage!==\'function\')return;\n    event.preventDefault();event.stopPropagation();if(event.stopImmediatePropagation)event.stopImmediatePropagation();\n    busy(true);setMessage(\'Google hesab\u0131n\u0131 se\u00e7...\',\'info\');window.NavaNative.postMessage(\'googleSignIn\');\n  },true);\n\n  window.navaAndroidGoogleResult=function(idToken){\n    try{\n      if(!window.firebase||!firebase.auth||!firebase.auth.GoogleAuthProvider)throw new Error(\'Firebase giri\u015f sistemi haz\u0131r de\u011fil.\');\n      setMessage(\'Google hesab\u0131nla giri\u015f yap\u0131l\u0131yor...\',\'info\');\n      var credential=firebase.auth.GoogleAuthProvider.credential(idToken);\n      firebase.auth().signInWithCredential(credential).then(function(result){\n        if(window.navaEnsureUserProfile&&result&&result.user)return window.navaEnsureUserProfile(result.user);\n        return null;\n      }).then(function(){\n        setMessage(\'Giri\u015f ba\u015far\u0131l\u0131.\',\'success\');busy(false);\n        var close=document.querySelector(\'.nava-modal-close\');if(close)setTimeout(function(){close.click();},160);\n      }).catch(function(error){busy(false);setMessage(error&&error.message?error.message:\'Google ile giri\u015f tamamlanamad\u0131.\',\'error\');});\n    }catch(error){busy(false);setMessage(error&&error.message?error.message:\'Google ile giri\u015f tamamlanamad\u0131.\',\'error\');}\n  };\n  window.navaAndroidGoogleError=function(message){busy(false);setMessage(message||\'Google ile giri\u015f tamamlanamad\u0131.\',\'error\');};\n})();"
+1937:.method public final onCreate(Landroid/os/Bundle;)V
+1941:    invoke-super {p0, p1}, Lyo;->onCreate(Landroid/os/Bundle;)V
+2080:    iput-object v0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2113:    invoke-static {v0}, Landroid/webkit/WebView;->setWebContentsDebuggingEnabled(Z)V
+2118:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2145:    invoke-virtual {v1, v4}, Landroid/webkit/WebView;->setBackgroundColor(I)V
+2150:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2158:    invoke-virtual {v1}, Landroid/webkit/WebView;->getSettings()Landroid/webkit/WebSettings;
+2293:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2301:    invoke-virtual {v1}, Landroid/webkit/WebView;->getSettings()Landroid/webkit/WebSettings;
+2361:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2369:    invoke-virtual {v1}, Landroid/webkit/WebView;->getSettings()Landroid/webkit/WebSettings;
+2436:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2447:    invoke-virtual {v1, v6, v4}, Landroid/webkit/WebView;->setRendererPriorityPolicy(IZ)V
+2452:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2469:    invoke-virtual {v1, v6}, Landroid/webkit/WebView;->setWebChromeClient(Landroid/webkit/WebChromeClient;)V
+2474:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2491:    invoke-virtual {v1, v6}, Landroid/webkit/WebView;->setWebViewClient(Landroid/webkit/WebViewClient;)V
+2496:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2513:    invoke-virtual {v1, v6}, Landroid/webkit/WebView;->setDownloadListener(Landroid/webkit/DownloadListener;)V
+2555:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2642:    const-string v8, "NavaNative"
+2646:    invoke-interface {v1, v8, v5, v6}, Lorg/chromium/support_lib_boundary/WebViewProviderBoundaryInterface;->addWebMessageListener(Ljava/lang/String;[Ljava/lang/String;Ljava/lang/reflect/InvocationHandler;)V
+2679:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2708:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2725:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2903:    iget-object v0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2971:    invoke-virtual {v0, p1}, Landroid/webkit/WebView;->loadUrl(Ljava/lang/String;)V
+2993:    invoke-virtual {v0, p1}, Landroid/webkit/WebView;->restoreState(Landroid/os/Bundle;)Landroid/webkit/WebBackForwardList;
+3437:    iget-object v0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+3449:    invoke-virtual {v0}, Landroid/webkit/WebView;->stopLoading()V
+3454:    iget-object v0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+3462:    invoke-virtual {v0}, Landroid/webkit/WebView;->destroy()V
+4741:    iget-object v0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+4749:    invoke-virtual {v0, p1}, Landroid/webkit/WebView;->saveState(Landroid/os/Bundle;)Landroid/webkit/WebBackForwardList;
+4917:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+4932:    invoke-virtual {v1}, Landroid/webkit/WebView;->copyBackForwardList()Landroid/webkit/WebBackForwardList;
+5070:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+5090:    invoke-virtual {v1, p0}, Landroid/webkit/WebView;->goBackOrForward(I)V
+5112:    invoke-virtual {v1}, Landroid/webkit/WebView;->getSettings()Landroid/webkit/WebSettings;
+5152:    iget-object p0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+5168:    invoke-virtual {p0, p1}, Landroid/webkit/WebView;->loadUrl(Ljava/lang/String;)V
+7089:    iget-object p0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+7143:    invoke-virtual {p0, p1, v0}, Landroid/webkit/WebView;->evaluateJavascript(Ljava/lang/String;Landroid/webkit/ValueCallback;)V
+=== GX HOOK LINES ===
+113:.method public final onPageFinished(Landroid/webkit/WebView;Ljava/lang/String;)V
+125:    invoke-super {p0, p1, p2}, Landroid/webkit/WebViewClient;->onPageFinished(Landroid/webkit/WebView;Ljava/lang/String;)V
+444:.method public final onReceivedError(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;Landroid/webkit/WebResourceError;)V
+448:    invoke-super {p0, p1, p2, p3}, Landroid/webkit/WebViewClient;->onReceivedError(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;Landroid/webkit/WebResourceError;)V
+977:.method public final shouldInterceptRequest(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;)Landroid/webkit/WebResourceResponse;
+1091:    invoke-super {p0, p1, p2}, Landroid/webkit/WebViewClient;->shouldInterceptRequest(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;)Landroid/webkit/WebResourceResponse;
 === ASSETS ===
 /tmp/nava-decoded/assets/dexopt/baseline.prof
 /tmp/nava-decoded/assets/dexopt/baseline.profm
 /tmp/nava-decoded/assets/nava_app_v11.css
 /tmp/nava-decoded/assets/nava_app_v11.js
 /tmp/nava-decoded/assets/offline.html
-
 ===== AndroidManifest decoded =====
 <?xml version="1.0" encoding="utf-8" standalone="no"?><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:compileSdkVersion="37" android:compileSdkVersionCodename="17" package="com.verudanava.nava" platformBuildVersionCode="37" platformBuildVersionName="17">
     <uses-permission android:name="android.permission.INTERNET"/>
