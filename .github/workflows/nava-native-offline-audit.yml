@@ -1,0 +1,55 @@
+name: Nava native offline audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-native-offline-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download APK
+        run: |
+          mkdir -p /tmp/nava
+          gh release download v12.1.29 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/nava
+      - name: Decode APK
+        shell: bash
+        run: |
+          set -e
+          VER=$(curl -fsSL https://api.github.com/repos/iBotPeaches/Apktool/releases/latest | python -c "import sys,json; print(json.load(sys.stdin)['tag_name'].lstrip('v'))")
+          curl -fsSL -o /tmp/apktool.jar "https://github.com/iBotPeaches/Apktool/releases/download/v${VER}/apktool_${VER}.jar"
+          java -jar /tmp/apktool.jar d -f -r /tmp/nava/Nava.apk -o /tmp/apk >/tmp/apktool.log 2>&1
+      - name: Capture patch points
+        shell: bash
+        run: |
+          {
+            echo '=== GX SMALI ==='
+            GX=$(find /tmp/apk -type f -path '*/defpackage/gx.smali' | head -1); echo "$GX"; test -n "$GX" && cat "$GX"
+            echo
+            echo '=== CH0 MESSAGE AREA ==='
+            CH=$(find /tmp/apk -type f -path '*/defpackage/ch0.smali' | head -1); echo "$CH"; test -n "$CH" && grep -n -B 35 -A 100 'pushTokenRequest' "$CH" || true
+            echo
+            echo '=== MAINACTIVITY BACK/CACHE AREA ==='
+            MA=$(find /tmp/apk -type f -path '*/com/verudanava/nava/MainActivity.smali' | head -1); echo "$MA"; test -n "$MA" && grep -n -E -B 18 -A 38 'setCacheMode|setWebViewClient|setDownloadListener|goBack|canGoBack|loadUrl' "$MA" | head -n 1200 || true
+            echo
+            echo '=== MANIFEST DECODED ==='
+            sed -n '1,260p' /tmp/apk/AndroidManifest.xml
+          } > native-offline-audit.txt
+      - name: Persist
+        shell: bash
+        run: |
+          git config user.name 'Nava Native Audit Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add native-offline-audit.txt
+          git commit -m 'Record native offline patch points [skip ci]' || true
+          git push || true
