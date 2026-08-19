@@ -58,6 +58,28 @@ for (const post of parsed) {
   if (data.seriesId) {
     const fs = await db.collection("seriesFollowers").doc(data.seriesId).collection("users").get();
     followerUsers = fs.size;
+
+    if (data.releaseId && post === parsed[0]) {
+      for (const follower of fs.docs) {
+        const uid = follower.id;
+        const notifId = "chapter_" + data.releaseId;
+        const notifSnap = await db.collection("users").doc(uid).collection("notifications").doc(notifId).get();
+        const tokenSnap = await db.collection("devicePushTokens").where("uid", "==", uid).get();
+        console.log("DIAG_RECIPIENT", JSON.stringify({
+          uidTail: uid.slice(-8),
+          notificationExists: notifSnap.exists,
+          notificationType: notifSnap.exists ? (notifSnap.data()?.type || "") : "",
+          notificationTitle: notifSnap.exists ? (notifSnap.data()?.title || "") : "",
+          notificationRead: notifSnap.exists ? !!notifSnap.data()?.read : null,
+          tokenCount: tokenSnap.size,
+          tokenApps: tokenSnap.docs.map(d => ({
+            appVersion: d.data()?.appVersion || "",
+            platform: d.data()?.platform || "",
+            hasToken: !!d.data()?.token
+          }))
+        }));
+      }
+    }
   }
   console.log("DIAG_POST", JSON.stringify({
     postId: post.postId,
