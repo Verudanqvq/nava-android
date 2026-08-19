@@ -1,0 +1,39 @@
+name: Nava Blogger live bootstrap tag
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-blogger-live-tag.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create stable bootstrap release
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view blogger-live-v2 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'release=existing' > blogger-live-tag-status.txt
+          else
+            gh release create blogger-live-v2 --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title 'Nava Blogger Live Bootstrap v2' --notes 'Stable one-time Blogger live loader bootstrap.'
+            echo 'release=created' > blogger-live-tag-status.txt
+          fi
+          echo 'tag=blogger-live-v2' >> blogger-live-tag-status.txt
+          echo "commit=$GITHUB_SHA" >> blogger-live-tag-status.txt
+      - name: Persist status
+        shell: bash
+        run: |
+          git config user.name 'Nava Blogger Live Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add blogger-live-tag-status.txt
+          git commit -m 'Record Blogger live bootstrap tag status [skip ci]' || true
+          git push || true
