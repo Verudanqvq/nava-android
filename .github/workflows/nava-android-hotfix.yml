@@ -46,37 +46,19 @@ jobs:
           test -s .github/nava-signing/private.pem.enc
           test -s android-signing/signing-payload.enc
           test -s android-signing/key-material.enc
-
           export NAVA_KDF_SECRET="$(printf '%s' "$FIREBASE_SERVICE_ACCOUNT" | sha256sum | cut -d' ' -f1)"
-          openssl enc -d -aes-256-cbc -pbkdf2 -iter 250000 \
-            -in .github/nava-signing/private.pem.enc \
-            -out /tmp/nava-private.pem \
-            -pass env:NAVA_KDF_SECRET
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 250000 -in .github/nava-signing/private.pem.enc -out /tmp/nava-private.pem -pass env:NAVA_KDF_SECRET
           unset NAVA_KDF_SECRET
-
-          openssl pkeyutl -decrypt \
-            -inkey /tmp/nava-private.pem \
-            -in android-signing/key-material.enc \
-            -out /tmp/key-material.bin \
-            -pkeyopt rsa_padding_mode:oaep \
-            -pkeyopt rsa_oaep_md:sha256
-
+          openssl pkeyutl -decrypt -inkey /tmp/nava-private.pem -in android-signing/key-material.enc -out /tmp/key-material.bin -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
           python - <<'PY'
           from pathlib import Path
-          d = Path('/tmp/key-material.bin').read_bytes()
-          if len(d) != 48:
-              raise SystemExit(f'bad key material length: {len(d)}')
+          d=Path('/tmp/key-material.bin').read_bytes()
+          if len(d)!=48: raise SystemExit(f'bad key material length: {len(d)}')
           Path('/tmp/aes-key.hex').write_text(d[:32].hex())
           Path('/tmp/aes-iv.hex').write_text(d[32:48].hex())
           PY
-
-          KEYHEX="$(cat /tmp/aes-key.hex)"
-          IVHEX="$(cat /tmp/aes-iv.hex)"
-          openssl enc -d -aes-256-cbc \
-            -K "$KEYHEX" -iv "$IVHEX" \
-            -in android-signing/signing-payload.enc \
-            -out /tmp/signing.zip
-
+          KEYHEX="$(cat /tmp/aes-key.hex)"; IVHEX="$(cat /tmp/aes-iv.hex)"
+          openssl enc -d -aes-256-cbc -K "$KEYHEX" -iv "$IVHEX" -in android-signing/signing-payload.enc -out /tmp/signing.zip
           mkdir -p /tmp/nava-signing
           unzip -q /tmp/signing.zip -d /tmp/nava-signing
           test -s /tmp/nava-signing/signing/nava-release.jks
@@ -99,11 +81,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python android-patch/patch-apk.py \
-            /tmp/nava-current/Nava.apk \
-            android-patch/push-block-v12.1.24.js \
-            /tmp/Nava-unsigned.apk \
-            40 | tee /tmp/patch-result.txt
+          python android-patch/patch-apk.py /tmp/nava-current/Nava.apk android-patch/push-block-v12.1.24.js /tmp/Nava-unsigned.apk 40 | tee /tmp/patch-result.txt
           grep -q 'PATCH_OK versionCode=40 js=12.1.24' /tmp/patch-result.txt
           printf 'patch=ok\n' >> /tmp/nava-android-build-status.txt
 
@@ -112,8 +90,7 @@ jobs:
         run: |
           set -euo pipefail
           BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
-          test -x "$BUILD_TOOLS/zipalign"
-          test -x "$BUILD_TOOLS/apksigner"
+          test -x "$BUILD_TOOLS/zipalign"; test -x "$BUILD_TOOLS/apksigner"
           printf '%s' "$BUILD_TOOLS" > /tmp/build-tools-path
           printf 'android_build_tools=%s\n' "$(basename "$BUILD_TOOLS")" >> /tmp/nava-android-build-status.txt
 
@@ -122,63 +99,19 @@ jobs:
         run: |
           set -uo pipefail
           set +x
-          BUILD_TOOLS="$(cat /tmp/build-tools-path)"
-          PROP=/tmp/nava-signing/keystore.properties
-
-          if "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk; then
-            printf 'zipalign=ok\n' >> /tmp/nava-android-build-status.txt
-          else
-            printf 'error=zipalign\n' >> /tmp/nava-android-build-status.txt
-            exit 1
-          fi
-
+          BUILD_TOOLS="$(cat /tmp/build-tools-path)"; PROP=/tmp/nava-signing/keystore.properties
+          if "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk; then printf 'zipalign=ok\n' >> /tmp/nava-android-build-status.txt; else printf 'error=zipalign\n' >> /tmp/nava-android-build-status.txt; exit 1; fi
           export NAVA_STORE_PASS="$(sed -n 's/^storePassword=//p' "$PROP" | tr -d '\r' | head -1)"
           export NAVA_KEY_PASS="$(sed -n 's/^keyPassword=//p' "$PROP" | tr -d '\r' | head -1)"
           KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROP" | tr -d '\r' | head -1)"
-          if [ -z "$NAVA_STORE_PASS" ] || [ -z "$NAVA_KEY_PASS" ] || [ -z "$KEY_ALIAS" ]; then
-            printf 'error=keystore_properties\n' >> /tmp/nava-android-build-status.txt
-            exit 1
-          fi
+          if [ -z "$NAVA_STORE_PASS" ] || [ -z "$NAVA_KEY_PASS" ] || [ -z "$KEY_ALIAS" ]; then printf 'error=keystore_properties\n' >> /tmp/nava-android-build-status.txt; exit 1; fi
           printf 'keystore_properties=ok\n' >> /tmp/nava-android-build-status.txt
-
-          if keytool -list -keystore /tmp/nava-signing/signing/nava-release.jks \
-              -storepass "$NAVA_STORE_PASS" -alias "$KEY_ALIAS" >/dev/null 2>&1; then
-            printf 'keystore_unlock=ok\n' >> /tmp/nava-android-build-status.txt
-          else
-            printf 'error=keystore_unlock\n' >> /tmp/nava-android-build-status.txt
-            exit 1
-          fi
-
-          if "$BUILD_TOOLS/apksigner" sign \
-              --ks /tmp/nava-signing/signing/nava-release.jks \
-              --ks-key-alias "$KEY_ALIAS" \
-              --ks-pass env:NAVA_STORE_PASS \
-              --key-pass env:NAVA_KEY_PASS \
-              --out /tmp/Nava.apk \
-              /tmp/Nava-aligned.apk >/tmp/apksigner-sign.txt 2>&1; then
-            printf 'apksigner_sign=ok\n' >> /tmp/nava-android-build-status.txt
-          else
-            printf 'error=apksigner_sign\n' >> /tmp/nava-android-build-status.txt
-            exit 1
-          fi
-
-          if "$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/apksigner-verify.txt 2>&1; then
-            printf 'apksigner_verify=ok\n' >> /tmp/nava-android-build-status.txt
-          else
-            printf 'error=apksigner_verify\n' >> /tmp/nava-android-build-status.txt
-            exit 1
-          fi
-
-          CERT="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' /tmp/apksigner-verify.txt | head -1 | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
-          if [ -z "$CERT" ]; then
-            printf 'error=cert_parse\n' >> /tmp/nava-android-build-status.txt
-            exit 1
-          fi
-          if [ "$CERT" != "$EXPECTED_CERT_SHA256" ]; then
-            printf 'error=cert_mismatch\ncert_sha256=%s\n' "$CERT" >> /tmp/nava-android-build-status.txt
-            exit 1
-          fi
-
+          if keytool -list -keystore /tmp/nava-signing/signing/nava-release.jks -storepass "$NAVA_STORE_PASS" -alias "$KEY_ALIAS" >/dev/null 2>&1; then printf 'keystore_unlock=ok\n' >> /tmp/nava-android-build-status.txt; else printf 'error=keystore_unlock\n' >> /tmp/nava-android-build-status.txt; exit 1; fi
+          if "$BUILD_TOOLS/apksigner" sign --ks /tmp/nava-signing/signing/nava-release.jks --ks-key-alias "$KEY_ALIAS" --ks-pass env:NAVA_STORE_PASS --key-pass env:NAVA_KEY_PASS --out /tmp/Nava.apk /tmp/Nava-aligned.apk >/tmp/apksigner-sign.txt 2>&1; then printf 'apksigner_sign=ok\n' >> /tmp/nava-android-build-status.txt; else printf 'error=apksigner_sign\n' >> /tmp/nava-android-build-status.txt; exit 1; fi
+          if "$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/apksigner-verify.txt 2>&1; then printf 'apksigner_verify=ok\n' >> /tmp/nava-android-build-status.txt; else printf 'error=apksigner_verify\n' >> /tmp/nava-android-build-status.txt; exit 1; fi
+          CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/apksigner-verify.txt | sed 's/.*digest:[[:space:]]*//' | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
+          if [ -z "$CERT" ]; then printf 'error=cert_parse\n' >> /tmp/nava-android-build-status.txt; exit 1; fi
+          if [ "$CERT" != "$EXPECTED_CERT_SHA256" ]; then printf 'error=cert_mismatch\ncert_sha256=%s\n' "$CERT" >> /tmp/nava-android-build-status.txt; exit 1; fi
           printf 'signing=ok\ncert_sha256=%s\n' "$CERT" >> /tmp/nava-android-build-status.txt
           sha256sum /tmp/Nava.apk | awk '{print "apk_sha256="$1}' >> /tmp/nava-android-build-status.txt
           unset NAVA_STORE_PASS NAVA_KEY_PASS
@@ -192,11 +125,7 @@ jobs:
             gh release upload "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --clobber
             gh release edit "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" --latest --title "Nava 12.1.24" --notes "Android push token registration fix."
           else
-            gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk \
-              --repo "$GITHUB_REPOSITORY" \
-              --title "Nava 12.1.24" \
-              --notes "Android push token registration fix." \
-              --latest
+            gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title "Nava 12.1.24" --notes "Android push token registration fix." --latest
           fi
           printf 'release=%s\nasset=Nava.apk\nstatus=success\nfinished=%s\n' "$TARGET_TAG" "$(date -u +%FT%TZ)" >> /tmp/nava-android-build-status.txt
 
@@ -205,14 +134,8 @@ jobs:
         shell: bash
         run: |
           set -u
-          if ! grep -q '^status=success$' /tmp/nava-android-build-status.txt 2>/dev/null; then
-            printf 'status=failed\nfinished=%s\n' "$(date -u +%FT%TZ)" >> /tmp/nava-android-build-status.txt
-          fi
+          if ! grep -q '^status=success$' /tmp/nava-android-build-status.txt 2>/dev/null; then printf 'status=failed\nfinished=%s\n' "$(date -u +%FT%TZ)" >> /tmp/nava-android-build-status.txt; fi
           cp /tmp/nava-android-build-status.txt android-build-status.txt
-          git config user.name "Nava Android Build Bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "Nava Android Build Bot"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add android-build-status.txt
-          if ! git diff --cached --quiet; then
-            git commit -m "Update Android build status [skip ci]"
-            git push
-          fi
+          if ! git diff --cached --quiet; then git commit -m "Update Android build status [skip ci]"; git push; fi
