@@ -1,8 +1,1137 @@
 === GX SMALI ===
+/tmp/apk/smali/gx.smali
+.class public final Lgx;
+.super Landroid/webkit/WebViewClient;
+.source "r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056"
 
+
+# instance fields
+.field public final synthetic a:Lcom/verudanava/nava/MainActivity;
+
+
+# direct methods
+.method public constructor <init>(Lcom/verudanava/nava/MainActivity;)V
+    .locals 0
+
+    .line 1
+    iput-object p1, p0, Lgx;->a:Lcom/verudanava/nava/MainActivity;
+
+    .line 2
+    .line 3
+    invoke-direct {p0}, Landroid/webkit/WebViewClient;-><init>()V
+
+    .line 4
+    .line 5
+    .line 6
+    return-void
+.end method
+
+
+# virtual methods
+.method public final onPageFinished(Landroid/webkit/WebView;Ljava/lang/String;)V
+    .locals 4
+
+    .line 1
+    iget-object v0, p0, Lgx;->a:Lcom/verudanava/nava/MainActivity;
+
+    .line 2
+    .line 3
+    iget-object v1, v0, Lcom/verudanava/nava/MainActivity;->G:Ljava/util/LinkedHashSet;
+
+    .line 4
+    .line 5
+    invoke-super {p0, p1, p2}, Landroid/webkit/WebViewClient;->onPageFinished(Landroid/webkit/WebView;Ljava/lang/String;)V
+
+    .line 6
+    .line 7
+    .line 8
+    if-eqz p1, :cond_0
+
+    .line 9
+    .line 10
+    invoke-virtual {p1}, Landroid/webkit/WebView;->getSettings()Landroid/webkit/WebSettings;
+
+    .line 11
+    .line 12
+    .line 13
+    move-result-object p0
+
+    .line 14
+    if-eqz p0, :cond_0
+
+    .line 15
+    .line 16
+    const/4 v2, -0x1
+
+    .line 17
+    invoke-virtual {p0, v2}, Landroid/webkit/WebSettings;->setCacheMode(I)V
+
+    .line 18
+    .line 19
+    .line 20
+    :cond_0
+    const/4 p0, 0x0
+
+    .line 21
+    if-eqz p2, :cond_2
+
+    .line 22
+    .line 23
+    :try_start_0
+    invoke-static {p2}, Landroid/net/Uri;->parse(Ljava/lang/String;)Landroid/net/Uri;
+
+    .line 24
+    .line 25
+    .line 26
+    move-result-object v2
+    :try_end_0
+    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
+
+    .line 27
+    goto :goto_0
+
+    .line 28
+    :catch_0
+    move-object v2, p0
+
+    .line 29
+    :goto_0
+    if-eqz v2, :cond_2
+
+    .line 30
+    .line 31
+    invoke-static {v2}, Lcom/verudanava/nava/MainActivity;->r(Landroid/net/Uri;)Z
+
+    .line 32
+    .line 33
+    .line 34
+    move-result v2
+
+    .line 35
+    if-eqz v2, :cond_2
+
+    .line 36
+    .line 37
+    invoke-static {p2}, Lcom/verudanava/nava/MainActivity;->t(Ljava/lang/String;)Ljava/lang/String;
+
+    .line 38
+    .line 39
+    .line 40
+    move-result-object v2
+
+    .line 41
+    invoke-virtual {v1, v2}, Ljava/util/AbstractCollection;->add(Ljava/lang/Object;)Z
+
+    .line 42
+    .line 43
+    .line 44
+    :goto_1
+    invoke-virtual {v1}, Ljava/util/AbstractCollection;->size()I
+
+    .line 45
+    .line 46
+    .line 47
+    move-result v2
+
+    .line 48
+    const/16 v3, 0x50
+
+    .line 49
+    .line 50
+    if-le v2, v3, :cond_2
+
+    .line 51
+    .line 52
+    invoke-static {v1}, Lbc;->e0(Ljava/util/Set;)Ljava/lang/Object;
+
+    .line 53
+    .line 54
+    .line 55
+    move-result-object v2
+
+    .line 56
+    check-cast v2, Ljava/lang/String;
+
+    .line 57
+    .line 58
+    if-nez v2, :cond_1
+
+    .line 59
+    .line 60
+    goto :goto_2
+
+    .line 61
+    :cond_1
+    invoke-virtual {v1, v2}, Ljava/util/AbstractCollection;->remove(Ljava/lang/Object;)Z
+
+    .line 62
+    .line 63
+    .line 64
+    goto :goto_1
+
+    .line 65
+    :cond_2
+    :goto_2
+    sget v1, Lcom/verudanava/nava/MainActivity;->P:I
+
+    .line 66
+    .line 67
+    iget-object v1, v0, Lcom/verudanava/nava/MainActivity;->J:Lcc0;
+
+    .line 68
+    .line 69
+    invoke-virtual {v1}, Lcc0;->a()Ljava/lang/Object;
+
+    .line 70
+    .line 71
+    .line 72
+    move-result-object v1
+
+    .line 73
+    check-cast v1, Ljava/lang/Boolean;
+
+    .line 74
+    .line 75
+    invoke-virtual {v1}, Ljava/lang/Boolean;->booleanValue()Z
+
+    .line 76
+    .line 77
+    .line 78
+    move-result v1
+
+    .line 79
+    if-nez v1, :cond_5
+
+    .line 80
+    .line 81
+    if-eqz p2, :cond_5
+
+    .line 82
+    .line 83
+    invoke-static {p2}, Landroid/net/Uri;->parse(Ljava/lang/String;)Landroid/net/Uri;
+
+    .line 84
+    .line 85
+    .line 86
+    move-result-object p2
+
+    .line 87
+    invoke-virtual {p2}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+
+    .line 88
+    .line 89
+    .line 90
+    invoke-static {p2}, Lcom/verudanava/nava/MainActivity;->r(Landroid/net/Uri;)Z
+
+    .line 91
+    .line 92
+    .line 93
+    move-result p2
+
+    .line 94
+    if-eqz p2, :cond_5
+
+    .line 95
+    .line 96
+    if-eqz p1, :cond_3
+
+    .line 97
+    .line 98
+    iget-object p2, v0, Lcom/verudanava/nava/MainActivity;->L:Lcc0;
+
+    .line 99
+    .line 100
+    invoke-virtual {p2}, Lcc0;->a()Ljava/lang/Object;
+
+    .line 101
+    .line 102
+    .line 103
+    move-result-object p2
+
+    .line 104
+    check-cast p2, Ljava/lang/String;
+
+    .line 105
+    .line 106
+    invoke-virtual {p1, p2, p0}, Landroid/webkit/WebView;->evaluateJavascript(Ljava/lang/String;Landroid/webkit/ValueCallback;)V
+
+    .line 107
+    .line 108
+    .line 109
+    :cond_3
+    if-eqz p1, :cond_4
+
+    .line 110
+    .line 111
+    iget-object p2, v0, Lcom/verudanava/nava/MainActivity;->M:Ljava/lang/String;
+
+    .line 112
+    .line 113
+    invoke-virtual {p1, p2, p0}, Landroid/webkit/WebView;->evaluateJavascript(Ljava/lang/String;Landroid/webkit/ValueCallback;)V
+
+    .line 114
+    .line 115
+    .line 116
+    :cond_4
+    if-eqz p1, :cond_5
+
+    .line 117
+    .line 118
+    iget-object p2, v0, Lcom/verudanava/nava/MainActivity;->K:Lcc0;
+
+    .line 119
+    .line 120
+    invoke-virtual {p2}, Lcc0;->a()Ljava/lang/Object;
+
+    .line 121
+    .line 122
+    .line 123
+    move-result-object p2
+
+    .line 124
+    check-cast p2, Ljava/lang/String;
+
+    .line 125
+    .line 126
+    invoke-virtual {p1, p2, p0}, Landroid/webkit/WebView;->evaluateJavascript(Ljava/lang/String;Landroid/webkit/ValueCallback;)V
+
+    .line 127
+    .line 128
+    .line 129
+    :cond_5
+    return-void
+.end method
+
+.method public final onReceivedError(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;Landroid/webkit/WebResourceError;)V
+    .locals 0
+
+    .line 1
+    invoke-super {p0, p1, p2, p3}, Landroid/webkit/WebViewClient;->onReceivedError(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;Landroid/webkit/WebResourceError;)V
+
+    .line 2
+    .line 3
+    .line 4
+    if-eqz p2, :cond_0
+
+    .line 5
+    .line 6
+    invoke-interface {p2}, Landroid/webkit/WebResourceRequest;->isForMainFrame()Z
+
+    .line 7
+    .line 8
+    .line 9
+    move-result p0
+
+    .line 10
+    const/4 p3, 0x1
+
+    .line 11
+    if-ne p0, p3, :cond_0
+
+    .line 12
+    .line 13
+    invoke-interface {p2}, Landroid/webkit/WebResourceRequest;->getUrl()Landroid/net/Uri;
+
+    .line 14
+    .line 15
+    .line 16
+    move-result-object p0
+
+    .line 17
+    invoke-virtual {p0}, Landroid/net/Uri;->getScheme()Ljava/lang/String;
+
+    .line 18
+    .line 19
+    .line 20
+    move-result-object p0
+
+    .line 21
+    const-string p2, "https"
+
+    .line 22
+    .line 23
+    invoke-static {p0, p2}, Lrt;->b(Ljava/lang/Object;Ljava/lang/Object;)Z
+
+    .line 24
+    .line 25
+    .line 26
+    move-result p0
+
+    .line 27
+    if-eqz p0, :cond_0
+
+    .line 28
+    .line 29
+    if-eqz p1, :cond_0
+
+    .line 30
+    .line 31
+    const-string p0, "file:///android_asset/offline.html"
+
+    .line 32
+    .line 33
+    invoke-virtual {p1, p0}, Landroid/webkit/WebView;->loadUrl(Ljava/lang/String;)V
+
+    .line 34
+    .line 35
+    .line 36
+    :cond_0
+    return-void
+.end method
+
+.method public final shouldInterceptRequest(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;)Landroid/webkit/WebResourceResponse;
+    .locals 2
+
+    .line 1
+    if-eqz p2, :cond_0
+
+    .line 2
+    .line 3
+    invoke-interface {p2}, Landroid/webkit/WebResourceRequest;->getUrl()Landroid/net/Uri;
+
+    .line 4
+    .line 5
+    .line 6
+    move-result-object v0
+
+    .line 7
+    if-eqz v0, :cond_0
+
+    .line 8
+    .line 9
+    invoke-virtual {v0}, Landroid/net/Uri;->getHost()Ljava/lang/String;
+
+    .line 10
+    .line 11
+    .line 12
+    move-result-object v0
+
+    .line 13
+    goto :goto_0
+
+    .line 14
+    :cond_0
+    const/4 v0, 0x0
+
+    .line 15
+    :goto_0
+    if-nez v0, :cond_1
+
+    .line 16
+    .line 17
+    const-string v0, ""
+
+    .line 18
+    .line 19
+    :cond_1
+    sget-object v1, Ljava/util/Locale;->ROOT:Ljava/util/Locale;
+
+    .line 20
+    .line 21
+    invoke-virtual {v0, v1}, Ljava/lang/String;->toLowerCase(Ljava/util/Locale;)Ljava/lang/String;
+
+    .line 22
+    .line 23
+    .line 24
+    move-result-object v0
+
+    .line 25
+    invoke-virtual {v0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+
+    .line 26
+    .line 27
+    .line 28
+    const-string v1, "googlesyndication.com"
+
+    .line 29
+    .line 30
+    invoke-static {v0, v1}, Lcom/verudanava/nava/MainActivity;->q(Ljava/lang/String;Ljava/lang/String;)Z
+
+    .line 31
+    .line 32
+    .line 33
+    move-result v1
+
+    .line 34
+    if-nez v1, :cond_3
+
+    .line 35
+    .line 36
+    const-string v1, "doubleclick.net"
+
+    .line 37
+    .line 38
+    invoke-static {v0, v1}, Lcom/verudanava/nava/MainActivity;->q(Ljava/lang/String;Ljava/lang/String;)Z
+
+    .line 39
+    .line 40
+    .line 41
+    move-result v1
+
+    .line 42
+    if-nez v1, :cond_3
+
+    .line 43
+    .line 44
+    const-string v1, "googleadservices.com"
+
+    .line 45
+    .line 46
+    invoke-static {v0, v1}, Lcom/verudanava/nava/MainActivity;->q(Ljava/lang/String;Ljava/lang/String;)Z
+
+    .line 47
+    .line 48
+    .line 49
+    move-result v0
+
+    .line 50
+    if-eqz v0, :cond_2
+
+    .line 51
+    .line 52
+    goto :goto_1
+
+    .line 53
+    :cond_2
+    invoke-super {p0, p1, p2}, Landroid/webkit/WebViewClient;->shouldInterceptRequest(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;)Landroid/webkit/WebResourceResponse;
+
+    .line 54
+    .line 55
+    .line 56
+    move-result-object p0
+
+    .line 57
+    return-object p0
+
+    .line 58
+    :cond_3
+    :goto_1
+    new-instance p0, Landroid/webkit/WebResourceResponse;
+
+    .line 59
+    .line 60
+    new-instance p1, Ljava/io/ByteArrayInputStream;
+
+    .line 61
+    .line 62
+    const/4 p2, 0x0
+
+    .line 63
+    new-array p2, p2, [B
+
+    .line 64
+    .line 65
+    invoke-direct {p1, p2}, Ljava/io/ByteArrayInputStream;-><init>([B)V
+
+    .line 66
+    .line 67
+    .line 68
+    const-string p2, "text/plain"
+
+    .line 69
+    .line 70
+    const-string v0, "utf-8"
+
+    .line 71
+    .line 72
+    invoke-direct {p0, p2, v0, p1}, Landroid/webkit/WebResourceResponse;-><init>(Ljava/lang/String;Ljava/lang/String;Ljava/io/InputStream;)V
+
+    .line 73
+    .line 74
+    .line 75
+    return-object p0
+.end method
+
+.method public final shouldOverrideUrlLoading(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;)Z
+    .locals 3
+
+    .line 1
+    if-eqz p2, :cond_5
+
+    .line 2
+    .line 3
+    invoke-interface {p2}, Landroid/webkit/WebResourceRequest;->getUrl()Landroid/net/Uri;
+
+    .line 4
+    .line 5
+    .line 6
+    move-result-object p1
+
+    .line 7
+    if-nez p1, :cond_0
+
+    .line 8
+    .line 9
+    goto :goto_0
+
+    .line 10
+    :cond_0
+    invoke-interface {p2}, Landroid/webkit/WebResourceRequest;->isForMainFrame()Z
+
+    .line 11
+    .line 12
+    .line 13
+    move-result v0
+
+    .line 14
+    if-nez v0, :cond_1
+
+    .line 15
+    .line 16
+    goto :goto_0
+
+    .line 17
+    :cond_1
+    invoke-static {p1}, Lcom/verudanava/nava/MainActivity;->r(Landroid/net/Uri;)Z
+
+    .line 18
+    .line 19
+    .line 20
+    move-result v0
+
+    .line 21
+    const/4 v1, 0x1
+
+    .line 22
+    iget-object p0, p0, Lgx;->a:Lcom/verudanava/nava/MainActivity;
+
+    .line 23
+    .line 24
+    if-nez v0, :cond_3
+
+    .line 25
+    .line 26
+    invoke-interface {p2}, Landroid/webkit/WebResourceRequest;->hasGesture()Z
+
+    .line 27
+    .line 28
+    .line 29
+    move-result p2
+
+    .line 30
+    if-eqz p2, :cond_2
+
+    .line 31
+    .line 32
+    invoke-virtual {p0, p1}, Lcom/verudanava/nava/MainActivity;->v(Landroid/net/Uri;)V
+
+    .line 33
+    .line 34
+    .line 35
+    :cond_2
+    return v1
+
+    .line 36
+    :cond_3
+    invoke-static {p1}, Lcom/verudanava/nava/MainActivity;->p(Landroid/net/Uri;)Landroid/net/Uri;
+
+    .line 37
+    .line 38
+    .line 39
+    move-result-object v0
+
+    .line 40
+    invoke-virtual {v0}, Landroid/net/Uri;->toString()Ljava/lang/String;
+
+    .line 41
+    .line 42
+    .line 43
+    move-result-object v2
+
+    .line 44
+    invoke-virtual {p1}, Landroid/net/Uri;->toString()Ljava/lang/String;
+
+    .line 45
+    .line 46
+    .line 47
+    move-result-object p1
+
+    .line 48
+    invoke-static {v2, p1}, Lrt;->b(Ljava/lang/Object;Ljava/lang/Object;)Z
+
+    .line 49
+    .line 50
+    .line 51
+    move-result p1
+
+    .line 52
+    invoke-interface {p2}, Landroid/webkit/WebResourceRequest;->hasGesture()Z
+
+    .line 53
+    .line 54
+    .line 55
+    move-result p2
+
+    .line 56
+    if-nez p2, :cond_4
+
+    .line 57
+    .line 58
+    if-nez p1, :cond_5
+
+    .line 59
+    .line 60
+    :cond_4
+    invoke-virtual {v0}, Landroid/net/Uri;->toString()Ljava/lang/String;
+
+    .line 61
+    .line 62
+    .line 63
+    move-result-object p1
+
+    .line 64
+    invoke-virtual {p1}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+
+    .line 65
+    .line 66
+    .line 67
+    invoke-virtual {p0, p1}, Lcom/verudanava/nava/MainActivity;->s(Ljava/lang/String;)V
+
+    .line 68
+    .line 69
+    .line 70
+    return v1
+
+    .line 71
+    :cond_5
+    :goto_0
+    const/4 p0, 0x0
+
+    .line 72
+    return p0
+.end method
 
 === CH0 MESSAGE AREA ===
+/tmp/apk/smali/ch0.smali
+1878-
+1879-    .line 440
+1880-    :cond_14
+1881-    move-object v1, v5
+1882-
+1883-    .line 441
+1884-    const-string v5, "haptic"
+1885-
+1886-    .line 442
+1887-    .line 443
+1888-    invoke-virtual {v0, v5}, Ljava/lang/Object;->equals(Ljava/lang/Object;)Z
+1889-
+1890-    .line 444
+1891-    .line 445
+1892-    .line 446
+1893-    move-result v5
+1894-
+1895-    .line 447
+1896-    if-eqz v5, :cond_16
+1897-
+1898-    .line 448
+1899-    .line 449
+1900-    iget-object v0, v1, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1901-
+1902-    .line 450
+1903-    .line 451
+1904-    if-eqz v0, :cond_15
+1905-
+1906-    .line 452
+1907-    .line 453
+1908-    const/4 v1, 0x3
+1909-
+1910-    .line 454
+1911-    invoke-virtual {v0, v1}, Landroid/view/View;->performHapticFeedback(I)Z
+1912-
+1913-    .line 455
+1914-    .line 456
+1915-    .line 457
+1916-    return-void
+1917-
+1918-    .line 458
+1919-    :cond_15
+1920-    const-string v0, "webView"
+1921-
+1922-    .line 459
+1923-    .line 460
+1924-    invoke-static {v0}, Lrt;->w(Ljava/lang/String;)V
+1925-
+1926-    .line 461
+1927-    .line 462
+1928-    .line 463
+1929-    throw v2
+1930-
+1931-    .line 464
+1932-    :cond_16
+1933:    const-string v5, "pushTokenRequest"
+1934-
+1935-    .line 465
+1936-    .line 466
+1937-    invoke-virtual {v0, v5}, Ljava/lang/Object;->equals(Ljava/lang/Object;)Z
+1938-
+1939-    .line 467
+1940-    .line 468
+1941-    .line 469
+1942-    move-result v5
+1943-
+1944-    .line 470
+1945-    if-eqz v5, :cond_18
+1946-
+1947-    .line 471
+1948-    .line 472
+1949-    const-class v5, Lcom/google/firebase/messaging/FirebaseMessaging;
+1950-
+1951-    .line 473
+1952-    .line 474
+1953-    monitor-enter v5
+1954-
+1955-    .line 475
+1956-    :try_start_0
+1957-    invoke-static {}, Lzm;->b()Lzm;
+1958-
+1959-    .line 476
+1960-    .line 477
+1961-    .line 478
+1962-    move-result-object v0
+1963-
+1964-    .line 479
+1965-    invoke-static {v0}, Lcom/google/firebase/messaging/FirebaseMessaging;->getInstance(Lzm;)Lcom/google/firebase/messaging/FirebaseMessaging;
+1966-
+1967-    .line 480
+1968-    .line 481
+1969-    .line 482
+1970-    move-result-object v0
+1971-    :try_end_0
+1972-    .catchall {:try_start_0 .. :try_end_0} :catchall_0
+1973-
+1974-    .line 483
+1975-    monitor-exit v5
+1976-
+1977-    .line 484
+1978-    iget-object v2, v0, Lcom/google/firebase/messaging/FirebaseMessaging;->d:Lgi;
+1979-
+1980-    .line 485
+1981-    .line 486
+1982-    invoke-virtual {v2}, Lgi;->g()Z
+1983-
+1984-    .line 487
+1985-    .line 488
+1986-    .line 489
+1987-    move-result v2
+1988-
+1989-    .line 490
+1990-    if-eqz v2, :cond_17
+1991-
+1992-    .line 491
+1993-    .line 492
+1994-    new-instance v0, Ljava/lang/IllegalStateException;
+1995-
+1996-    .line 493
+1997-    .line 494
+1998-    const-string v2, "API disabled. Please use {@link #register()} instead or enable this API by removing {@code <meta-data android:name=\"firebase_messaging_installation_id_enabled\" android:value=\"true\" />} from your app\'s manifest."
+1999-
+2000-    .line 495
+2001-    .line 496
+2002-    invoke-direct {v0, v2}, Ljava/lang/IllegalStateException;-><init>(Ljava/lang/String;)V
+2003-
+2004-    .line 497
+2005-    .line 498
+2006-    .line 499
+2007-    invoke-static {v0}, Lyd0;->q(Ljava/lang/Exception;)Lvo0;
+2008-
+2009-    .line 500
+2010-    .line 501
+2011-    .line 502
+2012-    move-result-object v0
+2013-
+2014-    .line 503
+2015-    goto :goto_7
+2016-
+2017-    .line 504
+2018-    :cond_17
+2019-    new-instance v2, Lhc0;
+2020-
+2021-    .line 505
+2022-    .line 506
+2023-    invoke-direct {v2}, Lhc0;-><init>()V
+2024-
+2025-    .line 507
+2026-    .line 508
+2027-    .line 509
+2028-    iget-object v3, v0, Lcom/google/firebase/messaging/FirebaseMessaging;->g:Ljava/util/concurrent/ScheduledThreadPoolExecutor;
+2029-
+2030-    .line 510
+2031-    .line 511
+2032-    new-instance v5, Lkn;
+2033-
+2034-    .line 512
+2035-    .line 513
+2036-    invoke-direct {v5, v0, v2, v4}, Lkn;-><init>(Lcom/google/firebase/messaging/FirebaseMessaging;Lhc0;I)V
+2037-
+2038-    .line 514
+2039-    .line 515
+2040-    .line 516
+2041-    invoke-virtual {v3, v5}, Ljava/util/concurrent/ScheduledThreadPoolExecutor;->execute(Ljava/lang/Runnable;)V
+2042-
+2043-    .line 517
+2044-    .line 518
+2045-    .line 519
+2046-    iget-object v0, v2, Lhc0;->a:Lvo0;
+2047-
+2048-    .line 520
+2049-    .line 521
+2050-    :goto_7
+2051-    new-instance v2, Llf;
+2052-
+2053-    .line 522
+2054-    .line 523
+2055-    invoke-direct {v2, v6, v1}, Llf;-><init>(ILjava/lang/Object;)V
+2056-
+2057-    .line 524
+2058-    .line 525
+2059-    .line 526
+2060-    new-instance v3, Lma;
+2061-
+2062-    .line 527
+2063-    .line 528
+2064-    const/4 v4, 0x6
+2065-
+2066-    .line 529
+2067-    invoke-direct {v3, v4, v2}, Lma;-><init>(ILjava/lang/Object;)V
+2068-
+2069-    .line 530
+2070-    .line 531
+2071-    .line 532
+2072-    sget-object v2, Lic0;->a:Lm70;
+2073-
+2074-    .line 533
+2075-    .line 534
+2076-    invoke-virtual {v0, v2, v3}, Lvo0;->c(Ljava/util/concurrent/Executor;Le20;)V
+2077-
+2078-    .line 535
 
+=== BACK CALLBACKS ===
+--- /tmp/apk/smali/cp.smali
+--- /tmp/apk/smali/dd.smali
+43-    .line 12
+44-    .line 13
+45-    new-instance p2, Ll1;
+46-
+47-    .line 14
+48-    .line 15
+49-    const/4 v0, 0x3
+50-
+51-    .line 16
+52-    invoke-direct {p2, v0, p0}, Ll1;-><init>(ILjava/lang/Object;)V
+53-
+54-    .line 17
+55-    .line 18
+56-    .line 19
+57-    invoke-direct {p1, p2}, Landroidx/activity/b;-><init>(Ljava/lang/Runnable;)V
+58-
+59-    .line 20
+60-    .line 21
+61-    .line 22
+62-    iput-object p1, p0, Ldd;->e:Landroidx/activity/b;
+63-
+64-    .line 23
+65-    .line 24
+66-    return-void
+67-.end method
+68-
+69-.method public static final c(Ldd;)V
+70-    .locals 0
+71-
+72-    .line 1
+73:    invoke-super {p0}, Landroid/app/Dialog;->onBackPressed()V
+74-
+75-    .line 2
+76-    .line 3
+77-    .line 4
+78-    return-void
+79-.end method
+80-
+81-
+82-# virtual methods
+83-.method public final a()Lg3;
+84-    .locals 0
+85-
+86-    .line 1
+87-    iget-object p0, p0, Ldd;->d:Lup;
+88-
+89-    .line 2
+90-    .line 3
+91-    iget-object p0, p0, Lup;->c:Ljava/lang/Object;
+92-
+93-    .line 4
+94-    .line 5
+95-    check-cast p0, Lg3;
+96-
+97-    .line 6
+98-    .line 7
+99-    return-object p0
+100-.end method
+101-
+102-.method public addContentView(Landroid/view/View;Landroid/view/ViewGroup$LayoutParams;)V
+103-    .locals 0
+104-
+105-    .line 1
+106-    invoke-virtual {p1}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+107-
+108-    .line 2
+109-    .line 3
+110-    .line 4
+111-    invoke-virtual {p0}, Ldd;->b()V
+112-
+113-    .line 5
+114-    .line 6
+115-    .line 7
+116-    invoke-super {p0, p1, p2}, Landroid/app/Dialog;->addContentView(Landroid/view/View;Landroid/view/ViewGroup$LayoutParams;)V
+117-
+118-    .line 8
+119-    .line 9
+120-    .line 10
+121-    return-void
+122-.end method
+123-
+124-.method public final b()V
+125-    .locals 2
+126-
+127-    .line 1
+128-    invoke-virtual {p0}, Landroid/app/Dialog;->getWindow()Landroid/view/Window;
+129-
+130-    .line 2
+131-    .line 3
+132-    .line 4
+133-    move-result-object v0
+134-
+135-    .line 5
+136-    invoke-virtual {v0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+137-
+138-    .line 6
+139-    .line 7
+140-    .line 8
+141-    invoke-virtual {v0}, Landroid/view/Window;->getDecorView()Landroid/view/View;
+142-
+143-    .line 9
+144-    .line 10
+145-    .line 11
+146-    move-result-object v0
+147-
+148-    .line 12
+149-    invoke-virtual {v0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+150-
+151-    .line 13
+152-    .line 14
+153-    .line 15
+--
+238-
+239-.method public final e()Landroidx/lifecycle/a;
+240-    .locals 1
+241-
+242-    .line 1
+243-    iget-object v0, p0, Ldd;->c:Landroidx/lifecycle/a;
+244-
+245-    .line 2
+246-    .line 3
+247-    if-nez v0, :cond_0
+248-
+249-    .line 4
+250-    .line 5
+251-    new-instance v0, Landroidx/lifecycle/a;
+252-
+253-    .line 6
+254-    .line 7
+255-    invoke-direct {v0, p0}, Landroidx/lifecycle/a;-><init>(Lkv;)V
+256-
+257-    .line 8
+258-    .line 9
+259-    .line 10
+260-    iput-object v0, p0, Ldd;->c:Landroidx/lifecycle/a;
+261-
+262-    .line 11
+263-    .line 12
+264-    :cond_0
+265-    return-object v0
+266-.end method
+267-
+268:.method public final onBackPressed()V
+269-    .locals 0
+270-
+271-    .line 1
+272-    iget-object p0, p0, Ldd;->e:Landroidx/activity/b;
+273-
+274-    .line 2
+275-    .line 3
+276-    invoke-virtual {p0}, Landroidx/activity/b;->b()V
+277-
+278-    .line 4
+279-    .line 5
+280-    .line 6
+281-    return-void
+282-.end method
+283-
+284-.method public onCreate(Landroid/os/Bundle;)V
+285-    .locals 2
+286-
+287-    .line 1
+288-    invoke-super {p0, p1}, Landroid/app/Dialog;->onCreate(Landroid/os/Bundle;)V
+289-
+290-    .line 2
+291-    .line 3
+292-    .line 4
+293-    sget v0, Landroid/os/Build$VERSION;->SDK_INT:I
+294-
+295-    .line 5
+296-    .line 6
+297-    const/16 v1, 0x21
+298-
+299-    .line 7
+300-    .line 8
+301-    if-lt v0, v1, :cond_0
+302-
+303-    .line 9
+304-    .line 10
+305-    invoke-static {p0}, Lb0;->c(Ldd;)Landroid/window/OnBackInvokedDispatcher;
+306-
+307-    .line 11
+308-    .line 12
+309-    .line 13
+310-    move-result-object v0
+311-
+312-    .line 14
+313-    invoke-virtual {v0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+314-
+315-    .line 15
+316-    .line 16
+317-    .line 17
+318-    iget-object v1, p0, Ldd;->e:Landroidx/activity/b;
+319-
+320-    .line 18
+321-    .line 19
+322-    invoke-virtual {v1}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+323-
+324-    .line 20
+325-    .line 21
+326-    .line 22
+327-    iput-object v0, v1, Landroidx/activity/b;->e:Landroid/window/OnBackInvokedDispatcher;
+328-
+329-    .line 23
+330-    .line 24
+331-    iget-boolean v0, v1, Landroidx/activity/b;->g:Z
+332-
+333-    .line 25
+334-    .line 26
+335-    invoke-virtual {v1, v0}, Landroidx/activity/b;->c(Z)V
+336-
+337-    .line 27
+338-    .line 28
+339-    .line 29
+340-    :cond_0
+341-    iget-object v0, p0, Ldd;->d:Lup;
+342-
+343-    .line 30
+344-    .line 31
+345-    invoke-virtual {v0, p1}, Lup;->b(Landroid/os/Bundle;)V
+346-
+347-    .line 32
+348-    .line 33
+--- /tmp/apk/smali/o7.smali
 
 === MAINACTIVITY BACK/CACHE AREA ===
 /tmp/apk/smali/com/verudanava/nava/MainActivity.smali
@@ -337,14 +1466,3 @@
 2962-    return-void
 2963-.end method
 2964-
-
-=== MANIFEST DECODED ===
-  ;    \!  t                           (   4   L   n                    *  B  `  n            $  H  b  |          4  `               $  6  n      N        b      *  t      h    |	  
-  
-  :      l    <        h           p          >    B    T      H    "    j  2      ^    6      B      6  z    &  D  X  n             (  :  \   t h e m e    l a b e l    i c o n    n a m e   
- p e r m i s s i o n    p r o t e c t i o n L e v e l    e n a b l e d    e x p o r t e d    e x c l u d e F r o m R e c e n t s    a u t h o r i t i e s   	 i n i t O r d e r    g r a n t U r i P e r m i s s i o n s    p r i o r i t y   
- l a u n c h M o d e    c o n f i g C h a n g e s    v a l u e    r e s o u r c e    f i t s S y s t e m W i n d o w s    m i n S d k V e r s i o n    v e r s i o n C o d e    v e r s i o n N a m e    w i n d o w S o f t I n p u t M o d e    t a r g e t S d k V e r s i o n    a l l o w B a c k u p    s u p p o r t s R t l    e x t r a c t N a t i v e L i b s    u s e s C l e a r t e x t T r a f f i c    d i r e c t B o o t A w a r e    n e t w o r k S e c u r i t y C o n f i g   	 r o u n d I c o n    v i s i b l e T o I n s t a n t A p p s    c o m p i l e S d k V e r s i o n    c o m p i l e S d k V e r s i o n C o d e n a m e    a p p C o m p o n e n t F a c t o r y    1 2 . 1 . 2 9    1 7    a c t i o n    a c t i v i t y    a n d r o i d    a n d r o i d . i n t e n t . a c t i o n . M A I N     a n d r o i d . i n t e n t . c a t e g o r y . L A U N C H E R   ' a n d r o i d . p e r m i s s i o n . A C C E S S _ N E T W O R K _ S T A T E   # a n d r o i d . p e r m i s s i o n . B I N D _ J O B _ S E R V I C E    a n d r o i d . p e r m i s s i o n . D U M P    a n d r o i d . p e r m i s s i o n . I N T E R N E T   % a n d r o i d . p e r m i s s i o n . P O S T _ N O T I F I C A T I O N S   + a n d r o i d . p e r m i s s i o n . R E Q U E S T _ I N S T A L L _ P A C K A G E S     a n d r o i d . p e r m i s s i o n . U S E _ B I O M E T R I C   " a n d r o i d . p e r m i s s i o n . U S E _ F I N G E R P R I N T    a n d r o i d . p e r m i s s i o n . W A K E _ L O C K   # a n d r o i d . s u p p o r t . F I L E _ P R O V I D E R _ P A T H S   & a n d r o i d x . c o r e . a p p . C o r e C o m p o n e n t F a c t o r y   " a n d r o i d x . c o r e . c o n t e n t . F i l e P r o v i d e r   , a n d r o i d x . c r e d e n t i a l s . C R E D E N T I A L _ P R O V I D E R _ K E Y   B a n d r o i d x . c r e d e n t i a l s . p l a y s e r v i c e s . C r e d e n t i a l P r o v i d e r M e t a d a t a H o l d e r   D a n d r o i d x . c r e d e n t i a l s . p l a y s e r v i c e s . C r e d e n t i a l P r o v i d e r P l a y S e r v i c e s I m p l   I a n d r o i d x . c r e d e n t i a l s . p l a y s e r v i c e s . c o n t r o l l e r s . i d e n t i t y a u t h . H i d d e n A c t i v i t y   e a n d r o i d x . c r e d e n t i a l s . p l a y s e r v i c e s . c o n t r o l l e r s . i d e n t i t y c r e d e n t i a l s . I d e n t i t y C r e d e n t i a l A p i H i d d e n A c t i v i t y   + a n d r o i d x . e m o j i 2 . t e x t . E m o j i C o m p a t I n i t i a l i z e r   . a n d r o i d x . l i f e c y c l e . P r o c e s s L i f e c y c l e I n i t i a l i z e r   0 a n d r o i d x . p r o f i l e i n s t a l l e r . P r o f i l e I n s t a l l R e c e i v e r   5 a n d r o i d x . p r o f i l e i n s t a l l e r . P r o f i l e I n s t a l l e r I n i t i a l i z e r   4 a n d r o i d x . p r o f i l e i n s t a l l e r . a c t i o n . B E N C H M A R K _ O P E R A T I O N   0 a n d r o i d x . p r o f i l e i n s t a l l e r . a c t i o n . I N S T A L L _ P R O F I L E   - a n d r o i d x . p r o f i l e i n s t a l l e r . a c t i o n . S A V E _ P R O F I L E   * a n d r o i d x . p r o f i l e i n s t a l l e r . a c t i o n . S K I P _ F I L E    a n d r o i d x . s t a r t u p   ' a n d r o i d x . s t a r t u p . I n i t i a l i z a t i o n P r o v i d e r    a p p l i c a t i o n   > b a c k e n d : c o m . g o o g l e . a n d r o i d . d a t a t r a n s p o r t . c c t . C c t B a c k e n d F a c t o r y    c a t e g o r y    c c t   & c o m . g o o g l e . a n d r o i d . c 2 d m . i n t e n t . R E C E I V E   * c o m . g o o g l e . a n d r o i d . c 2 d m . p e r m i s s i o n . R E C E I V E   ' c o m . g o o g l e . a n d r o i d . c 2 d m . p e r m i s s i o n . S E N D   K c o m . g o o g l e . a n d r o i d . d a t a t r a n s p o r t . r u n t i m e . b a c k e n d s . T r a n s p o r t B a c k e n d D i s c o v e r y   h c o m . g o o g l e . a n d r o i d . d a t a t r a n s p o r t . r u n t i m e . s c h e d u l i n g . j o b s c h e d u l i n g . A l a r m M a n a g e r S c h e d u l e r B r o a d c a s t R e c e i v e r   Y c o m . g o o g l e . a n d r o i d . d a t a t r a n s p o r t . r u n t i m e . s c h e d u l i n g . j o b s c h e d u l i n g . J o b I n f o S c h e d u l e r S e r v i c e   = c o m . g o o g l e . a n d r o i d . g m s . a u t h . a p i . s i g n i n . R e v o c a t i o n B o u n d S e r v i c e   A c o m . g o o g l e . a n d r o i d . g m s . a u t h . a p i . s i g n i n . i n t e r n a l . S i g n I n H u b A c t i v i t y   I c o m . g o o g l e . a n d r o i d . g m s . a u t h . a p i . s i g n i n . p e r m i s s i o n . R E V O C A T I O N _ N O T I F I C A T I O N   < c o m . g o o g l e . a n d r o i d . g m s . c l o u d m e s s a g i n g . F I N I S H E D _ A F T E R _ H A N D L E D   3 c o m . g o o g l e . a n d r o i d . g m s . c o m m o n . a p i . G o o g l e A p i A c t i v i t y    c o m . g o o g l e . a n d r o i d . g m s . v e r s i o n   # c o m . g o o g l e . f i r e b a s e . M E S S A G I N G _ E V E N T   8 c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s . C o m p o n e n t D i s c o v e r y S e r v i c e   1 c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s . C o m p o n e n t R e g i s t r a r   M c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s : c o m . g o o g l e . f i r e b a s e . F i r e b a s e C o m m o n K t x R e g i s t r a r   S c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s : c o m . g o o g l e . f i r e b a s e . d a t a t r a n s p o r t . T r a n s p o r t R e g i s t r a r   b c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s : c o m . g o o g l e . f i r e b a s e . i n s t a l l a t i o n s . F i r e b a s e I n s t a l l a t i o n s K t x R e g i s t r a r   _ c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s : c o m . g o o g l e . f i r e b a s e . i n s t a l l a t i o n s . F i r e b a s e I n s t a l l a t i o n s R e g i s t r a r   Z c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s : c o m . g o o g l e . f i r e b a s e . m e s s a g i n g . F i r e b a s e M e s s a g i n g K t x R e g i s t r a r   W c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s : c o m . g o o g l e . f i r e b a s e . m e s s a g i n g . F i r e b a s e M e s s a g i n g R e g i s t r a r   2 c o m . g o o g l e . f i r e b a s e . i i d . F i r e b a s e I n s t a n c e I d R e c e i v e r   6 c o m . g o o g l e . f i r e b a s e . m e s s a g i n g . F i r e b a s e M e s s a g i n g S e r v i c e   1 c o m . g o o g l e . f i r e b a s e . p r o v i d e r . F i r e b a s e I n i t P r o v i d e r    c o m . v e r u d a n a v a . n a v a   < c o m . v e r u d a n a v a . n a v a . D Y N A M I C _ R E C E I V E R _ N O T _ E X P O R T E D _ P E R M I S S I O N     c o m . v e r u d a n a v a . n a v a . M a i n A c t i v i t y   0 c o m . v e r u d a n a v a . n a v a . N a v a F i r e b a s e M e s s a g i n g S e r v i c e   $ c o m . v e r u d a n a v a . n a v a . a n d r o i d x - s t a r t u p     c o m . v e r u d a n a v a . n a v a . f i l e p r o v i d e r   ( c o m . v e r u d a n a v a . n a v a . f i r e b a s e i n i t p r o v i d e r   * h t t p : / / s c h e m a s . a n d r o i d . c o m / a p k / r e s / a n d r o i d    i n t e n t - f i l t e r    m a n i f e s t   	 m e t a - d a t a    p a c k a g e   
- p e r m i s s i o n    p l a t f o r m B u i l d V e r s i o n C o d e    p l a t f o r m B u i l d V e r s i o n N a m e    p r o v i d e r    r e c e i v e r    s e r v i c e    u s e s - p e r m i s s i o n    u s e s - s d k             	          $ %  +p',1rsz        &   g          i            g        -   g      "     "   g        %   g       #     #   k   `     `   m     %   n         L      s            g           g        %          s    8      r            g      ,     ,          r    8      r            g      .     .          r    8      r            g      -     -          r    8      r            g      /     /          r    8      r            g      0     0          r    8      r            g      )     )          r    8      r            g      1     1          r    8      r            g      I     I          r    L      l            g      a     a   g                  l    8      r            g      a     a          r          D     
-       g         sg         g          g            g        g            g            g          g         g   !   3     3    L   %   q            g      c     c   g             $   (   h              8   )   $            g      T     T       )   $       (   h       %   q    t   -   o            g      4     4   g            g   	   e     e   g         L   2   j            g      2     2   g             2   j       -   o    t   7   %            g      b     b   g        g           g            $   <   h              8   =   $            g      '     '       =   $    8   ?   F            g      (     (       ?   F       <   h       7   %    `   C   q            g      6     6   g        g             L   G   j            g      5     5   g      7     7       G   j       C   q       L   %            g         (g      8     8   g        g            g          g            L   %       T   %            g         (g      9     9   g        g            g          g            T   %    t   \   %            g          g      O     O   g            g            \   %    t   e   q            g      N     N   g      P     P   g        g            e   q    `   k   p            g      ]     ]   g      J     J   g         $   o   h              8   p   $            g      H     H       p   $       o   h    L   s   j            g      Q     Q   g            s   j       k   p    `   {   q            g      ^     ^   g            g         8      h            g         8      $            g      T     T          $          h       {   q    `      q            g      U     U   g            g         L      j            g      [     [   g      V     V          j    L      j            g      \     \   g      V     V          j    L      j            g      Y     Y   g      V     V          j    L      j            g      Z     Z   g      V     V          j    L      j            g      W     W   g      V     V          j    L      j            g      X     X   g      V     V          j          q    `      %            g          g      R     R   g                   %          o            g      _     _   g            g   	   f     f   g   
-     d   g               o    `      o            g      C     C   g            g   	   d     d    L      j            g      :     :   g      B     B          j    L      j            g      ;     ;   g      B     B          j    L      j            g      =     =   g      B     B          j          o    L      j            g      S     S   g         
-       j          p            g      <     <   g      +     +   g        g        g             $      h              8      $            g      ?     ?          $          h    $      h              8      $            g      A     A          $          h    $      h              8      $            g      @     @          $          h    $      h              8      $            g      >     >          $          h          p    L      q            g      K     K   g             L      j            g      E     E   g      G     G          j          q    `      q            g      M     M   g      *     *   g                   q    L      p            g      L     L   g                   p          D          i          &   g   
