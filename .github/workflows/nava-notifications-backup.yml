@@ -7,7 +7,6 @@ on:
       - "notification-backend/**"
       - ".github/workflows/nava-notifications-backup.yml"
   schedule:
-    # Backup sweep, offset from the primary watcher.
     - cron: "4-59/5 * * * *"
   workflow_dispatch:
 
@@ -15,14 +14,13 @@ permissions:
   contents: read
 
 concurrency:
-  # Shared with the primary watcher so two scans never race each other.
-  group: nava-follower-notifications-v6
+  group: nava-follower-notifications-v7
   cancel-in-progress: true
 
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 4
     defaults:
       run:
         working-directory: notification-backend
@@ -38,11 +36,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: npm
-          cache-dependency-path: notification-backend/package-lock.json
 
       - name: Install backend
-        run: npm ci --omit=dev --no-audit --no-fund
+        run: npm install --omit=dev --no-audit --no-fund
 
       - name: Test notification engine
         run: npm test
