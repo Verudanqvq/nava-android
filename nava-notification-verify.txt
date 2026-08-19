@@ -1,0 +1,22 @@
+checkedAt=2026-08-19T23:36:34.970Z
+engine.updatedAt=2026-08-19T23:36:13.393Z
+engine.lastResult={"failed":0,"retry":0,"ignored":0,"baseline":false,"completedSkipped":0,"feedCount":28,"delivered":1}
+post={"title":"Tensura Cilt 22","kind":"volume","status":"completed","updatedAt":"2026-08-19T23:36:10.444Z","releaseId":"816954997184127789_1ly6611","reason":""}
+post={"title":"Tensura Cilt 21","kind":"volume","status":"completed","updatedAt":"2026-08-19T22:45:51.217Z","releaseId":"816954997184127789_1m71no2","reason":""}
+post={"title":"Tensura Cilt 20","kind":"volume","status":"completed","updatedAt":"2026-08-19T22:31:54.925Z","releaseId":"816954997184127789_1j6s4rz","reason":""}
+post={"title":"Tensura Cilt 19","kind":"volume","status":"completed","updatedAt":"2026-08-19T17:21:14.049Z","releaseId":"816954997184127789_nko5bj","reason":""}
+post={"title":"Tensura Cilt 18","kind":"volume","status":"completed","updatedAt":"2026-08-19T17:16:42.375Z","releaseId":"816954997184127789_xln9oy","reason":""}
+post={"title":"Tensura Cilt 17","kind":"volume","status":"completed","updatedAt":"2026-08-19T15:33:32.932Z","releaseId":"816954997184127789_12rk9g1","reason":""}
+post={"title":"Tensura Cilt 16","kind":"volume","status":"completed","updatedAt":"2026-08-19T14:36:21.515Z","releaseId":"816954997184127789_1bimc78","reason":""}
+post={"title":"Cilt 11 Bölüm 0.5","kind":"chapter","status":"baseline","updatedAt":"2026-08-19T14:24:21.342Z","releaseId":"","reason":""}
+post={"title":"Tensura Cilt 14","kind":"volume","status":"baseline","updatedAt":"2026-08-19T14:24:21.342Z","releaseId":"","reason":""}
+post={"title":"Cilt 11 Bölüm 6","kind":"chapter","status":"baseline","updatedAt":"2026-08-19T14:24:21.342Z","releaseId":"","reason":""}
+release={"title":"Tensura Cilt 22","seriesTitle":"Tensei Shitara Slime Datta Ken (Light Novel)","status":"completed","followers":2,"sent":2,"updatedAt":"2026-08-19T23:36:10.236Z","completedAt":"2026-08-19T23:36:10.236Z"}
+release={"title":"Tensura Cilt 21","seriesTitle":"Tensei Shitara Slime Datta Ken (Light Novel)","status":"completed","followers":2,"sent":2,"updatedAt":"2026-08-19T22:45:51.087Z","completedAt":"2026-08-19T22:45:51.087Z"}
+release={"title":"Tensura Cilt 20","seriesTitle":"Tensei Shitara Slime Datta Ken (Light Novel)","status":"completed","followers":2,"sent":2,"updatedAt":"2026-08-19T22:31:54.563Z","completedAt":"2026-08-19T22:31:54.563Z"}
+release={"title":"Tensura Cilt 19","seriesTitle":"Tensei Shitara Slime Datta Ken (Light Novel)","status":"completed","followers":2,"sent":2,"updatedAt":"2026-08-19T17:21:13.904Z","completedAt":"2026-08-19T17:21:13.904Z"}
+release={"title":"Tensura Cilt 18","seriesTitle":"Tensei Shitara Slime Datta Ken (Light Novel)","status":"completed","followers":2,"sent":2,"updatedAt":"2026-08-19T17:16:42.192Z","completedAt":"2026-08-19T17:16:42.192Z"}
+release={"title":"Tensura Cilt 17","seriesTitle":"Tensei Shitara Slime Datta Ken (Light Novel)","status":"completed","followers":2,"sent":2,"updatedAt":"2026-08-19T15:33:32.439Z","completedAt":"2026-08-19T15:33:32.439Z"}
+release={"title":"Tensura Cilt 16","seriesTitle":"Tensei Shitara Slime Datta Ken (Light Novel)","status":"completed","followers":2,"sent":2,"updatedAt":"2026-08-19T14:36:21.341Z","completedAt":"2026-08-19T14:36:21.341Z"}
+release={"title":"Tensura Cilt 13","seriesTitle":"Tensei Shitara Slime Datta Ken (Light Novel)","status":"completed","followers":2,"sent":2,"updatedAt":"2026-08-19T13:30:52.656Z","completedAt":"2026-08-19T13:30:52.656Z"}
+androidTokens=1 versions={"12.1.30":1}
