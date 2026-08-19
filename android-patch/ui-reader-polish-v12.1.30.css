@@ -1,0 +1,76 @@
+/* Nava Android v12.1.30 — safe-area, overlays, reader and small-screen polish. */
+html.nava-app-v9{
+  --nava-safe-top:env(safe-area-inset-top,0px);
+  --nava-safe-bottom:env(safe-area-inset-bottom,0px);
+  --nava-app-top-total:calc(var(--nava-top) + var(--nava-safe-top));
+  --nava-app-bottom-total:calc(var(--nava-bottom) + var(--nava-safe-bottom));
+  --nava-visual-height:100dvh;
+}
+html.nava-app-v9,html.nava-app-v9 body{max-width:100%!important;overflow-x:hidden!important}
+html.nava-app-v9.nava-app-overlay-open,html.nava-app-v9.nava-app-overlay-open body{overflow:hidden!important;overscroll-behavior:none!important}
+
+html.nava-app-v9 #nava-app-topbar{height:var(--nava-app-top-total)!important;padding-top:var(--nava-safe-top)!important;box-sizing:border-box!important}
+html.nava-app-v9 #nava-app-bottom{height:var(--nava-app-bottom-total)!important;padding-bottom:calc(7px + var(--nava-safe-bottom))!important;box-sizing:border-box!important}
+html.nava-app-v9 #nava-app-page{padding-top:calc(var(--nava-app-top-total) + 13px)!important;padding-bottom:calc(var(--nava-app-bottom-total) + 22px)!important}
+html.nava-app-v9 body.nava-app-profile main,html.nava-app-v9 body.nava-app-library main{padding-top:calc(var(--nava-app-top-total) + 10px)!important;padding-bottom:calc(var(--nava-app-bottom-total) + 22px)!important}
+html.nava-app-v9 body.nava-app-series main.nava-app-series-owned-v5{padding-top:calc(var(--nava-app-top-total) + 10px)!important;padding-bottom:calc(var(--nava-app-bottom-total) + 18px)!important}
+html.nava-app-v9 .nava-library-filter-v2{top:calc(var(--nava-app-top-total) + 5px)!important}
+
+html.nava-app-v9 #nava-app-search-v2{padding-top:calc(var(--nava-app-top-total) + 10px)!important;padding-bottom:calc(var(--nava-app-bottom-total) + 12px)!important;max-height:var(--nava-visual-height)!important;box-sizing:border-box!important}
+html.nava-app-v9 .nava-search-results-v2{max-height:min(calc(var(--nava-visual-height) - var(--nava-app-top-total) - 92px),520px)!important;overscroll-behavior:contain!important}
+html.nava-app-v9 .nava-search-head-v2,html.nava-app-v9 .nava-search-results-v2{min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+html.nava-app-v9 .nava-search-box-v2{min-width:0!important;width:100%!important;box-sizing:border-box!important}
+
+html.nava-app-v9 #nava-app-notifications-v9{max-height:var(--nava-visual-height)!important;overflow:hidden!important}
+html.nava-app-v9 .nava-app-notification-card-v9{top:calc(var(--nava-app-top-total) + 10px)!important;max-height:min(calc(var(--nava-visual-height) - var(--nava-app-top-total) - 26px),580px)!important;box-sizing:border-box!important}
+html.nava-app-v9 .nava-app-notification-list-v9{max-height:none!important;flex:1 1 auto!important;min-height:0!important;overscroll-behavior:contain!important}
+html.nava-app-v9 .nava-app-notification-copy-v9,html.nava-app-v9 .nava-app-notification-head-v9>div:first-child{min-width:0!important}
+html.nava-app-v9 .nava-app-notification-copy-v9 strong{overflow-wrap:anywhere!important}
+
+html.nava-app-v9 body.nava-app-reader main{padding-top:calc(56px + var(--nava-safe-top))!important;padding-bottom:calc(84px + var(--nava-safe-bottom))!important}
+html.nava-app-v9 #nava-reader-top-v2{height:calc(56px + var(--nava-safe-top))!important;padding-top:var(--nava-safe-top)!important;box-sizing:border-box!important}
+html.nava-app-v9 #nava-reader-bottom-v2{bottom:calc(9px + var(--nava-safe-bottom))!important;min-height:62px!important;height:62px!important}
+html.nava-app-v9 #nava-reader-settings-v2{bottom:calc(80px + var(--nava-safe-bottom))!important;max-height:min(62dvh,calc(var(--nava-visual-height) - 110px - var(--nava-safe-top) - var(--nava-safe-bottom)))!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+html.nava-app-v9 .nava-reader-chapter-card-v9{max-height:min(78dvh,calc(var(--nava-visual-height) - var(--nava-safe-top) - 18px))!important;padding-bottom:var(--nava-safe-bottom)!important;box-sizing:border-box!important}
+html.nava-app-v9 .nava-reader-chapter-list-v9{overscroll-behavior:contain!important;padding-bottom:calc(14px + var(--nava-safe-bottom))!important}
+html.nava-app-v9 body.nava-app-reader #reader{box-sizing:border-box!important;min-width:0!important;max-width:min(760px,100%)!important}
+html.nava-app-v9 body.nava-app-reader #reader img{object-fit:contain!important}
+
+html.nava-app-v9 #nava-app-topbar button,html.nava-app-v9 #nava-app-topbar a,
+html.nava-app-v9 #nava-app-bottom button,html.nava-app-v9 #nava-app-bottom a,
+html.nava-app-v9 #nava-reader-top-v2 button,html.nava-app-v9 #nava-reader-bottom-v2 button,
+html.nava-app-v9 .nava-search-back-v2,html.nava-app-v9 .nava-app-sheet-close-v9{touch-action:manipulation!important}
+@media (pointer:coarse){
+  html.nava-app-v9 #nava-app-topbar button,html.nava-app-v9 #nava-app-topbar a{min-width:44px!important;min-height:44px!important}
+  html.nava-app-v9 .nava-search-back-v2{min-width:44px!important;min-height:44px!important;width:44px!important;height:44px!important}
+  html.nava-app-v9 .nava-app-notification-head-actions-v9 button{min-height:40px!important}
+  html.nava-app-v9 .nava-app-sheet-close-v9{min-width:40px!important;width:40px!important}
+  html.nava-app-v9 .nava-reader-chapter-head-v9 button{min-width:44px!important;min-height:44px!important;width:44px!important;height:44px!important}
+}
+
+html.nava-app-v9 .nava-profile-app,html.nava-app-v9 .nava-profile-hero,html.nava-app-v9 .nava-profile-panel,html.nava-app-v9 .nava-profile-edit-modal{min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+html.nava-app-v9 .nava-profile-edit-modal{max-height:min(94dvh,var(--nava-visual-height))!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-modal-body{overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important}
+html.nava-app-v9 .nava-profile-name,html.nava-app-v9 .nava-profile-username,html.nava-app-v9 .nava-profile-bio{overflow-wrap:anywhere!important}
+
+@media(max-width:390px){
+  html.nava-app-v9 #nava-app-page{padding-left:11px!important;padding-right:11px!important}
+  html.nava-app-v9 .nava-app-notification-card-v9{left:7px!important;right:7px!important}
+  html.nava-app-v9 .nava-app-notification-head-v9{padding-left:9px!important;padding-right:8px!important}
+  html.nava-app-v9 .nava-app-notification-head-actions-v9{gap:4px!important}
+  html.nava-app-v9 .nava-app-notification-head-actions-v9 [data-nava-mark-all]{padding:0 7px!important;font-size:8.5px!important}
+  html.nava-app-v9 #nava-reader-bottom-v2{left:7px!important;right:7px!important;gap:3px!important}
+  html.nava-app-v9 .nava-reader-action-v2{font-size:8.5px!important;min-width:0!important}
+  html.nava-app-v9 .nava-reader-action-v2 svg{width:19px!important;height:19px!important}
+  html.nava-app-v9 .nava-reader-line-row-v9{align-items:flex-start!important;flex-direction:column!important}
+  html.nava-app-v9 .nava-reader-line-row-v9>div{width:100%!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  html.nava-app-v9 .nava-reader-line-row-v9 button{width:100%!important;padding:0 5px!important}
+}
+@media(max-width:340px){
+  html.nava-app-v9 .nava-app-brand{font-size:18px!important}
+  html.nava-app-v9 .nava-app-page-title-top{font-size:12px!important}
+  html.nava-app-v9 .nava-app-back-title{max-width:64vw!important}
+  html.nava-app-v9 .nava-profile-panel .nava-profile-grid,html.nava-app-v9 body.nava-app-library .nava-profile-grid{grid-template-columns:minmax(0,1fr)!important}
+  html.nava-app-v9 .nava-search-row-v2{grid-template-columns:44px minmax(0,1fr)!important}
+  html.nava-app-v9 .nava-search-user-avatar-v5,html.nava-app-v9 .nava-search-row-v2 img{width:44px!important;height:44px!important}
+}
