@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: nava-follower-notifications-v5
@@ -45,11 +45,37 @@ jobs:
       - name: Watch Blogger for five passes
         shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          mkdir -p ../nava-diagnostics
+          : > ../nava-diagnostics/latest.log
+          echo "run_started=$(date -u +%FT%TZ)" | tee -a ../nava-diagnostics/latest.log
+          echo "event=${GITHUB_EVENT_NAME}" | tee -a ../nava-diagnostics/latest.log
+          echo "sha=${GITHUB_SHA}" | tee -a ../nava-diagnostics/latest.log
+          rc=0
           for pass in 1 2 3 4 5; do
-            echo "===== NAVA V5 PASS $pass/5 ====="
-            npm run scan
+            echo "===== NAVA V5 PASS $pass/5 =====" | tee -a ../nava-diagnostics/latest.log
+            npm run scan 2>&1 | tee -a ../nava-diagnostics/latest.log || rc=$?
             if [ "$pass" != "5" ]; then
               sleep 60
             fi
           done
+          echo "run_finished=$(date -u +%FT%TZ)" | tee -a ../nava-diagnostics/latest.log
+          echo "exit_code=$rc" | tee -a ../nava-diagnostics/latest.log
+          exit $rc
+
+      - name: Persist live diagnostics
+        if: always()
+        shell: bash
+        run: |
+          cd ..
+          test -f nava-diagnostics/latest.log || {
+            mkdir -p nava-diagnostics
+            printf 'workflow_failed_before_scan\nrun_finished=%s\n' "$(date -u +%FT%TZ)" > nava-diagnostics/latest.log
+          }
+          git config user.name "Nava Diagnostics Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add nava-diagnostics/latest.log
+          if ! git diff --cached --quiet; then
+            git commit -m "Update Nava notification diagnostics [skip ci]"
+            git push
+          fi
