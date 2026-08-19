@@ -1,6 +1,6 @@
 # Nava Android
 
-Current stable Android release: **12.1.29** (`versionCode 45`).
+Current stable Android release: **12.1.30** (`versionCode 46`).
 
 ## Distribution
 
@@ -24,4 +24,8 @@ Current stable Android release: **12.1.29** (`versionCode 45`).
 
 `notification-backend/retry-push.mjs` retries recent completed releases for newly registered device tokens and deduplicates by token-document id while using the same system-notification fallback.
 
-Android 12.1.29 preserves the updater, signing, reader, read-state, icon and profile behavior, refreshes FCM registration to 12.1.29, and re-prompts the Android 13+ notification permission once for this release when it is still denied.
+Android 12.1.30 preserves the updater, signing, notifications, profile suite, read-state and reader navigation while adding safe-area/keyboard-aware UI sizing, small-screen overlay hardening, immediate reader-position persistence, controlled stale-cache cleanup, improved image decoding/lazy loading outside the reader, larger touch targets, and a corrected native `NavaAndroidApp/12.1.30` User-Agent marker.
+
+## Offline downloads
+
+The current APK already has a native `WebViewClient.shouldInterceptRequest` hook and an internal offline fallback page. That makes true offline chapter storage feasible without relying on fragile WebView cache-only behavior. The intended design is: download chapter/cilt content into app-private storage, list downloaded items, serve saved resources through the native interceptor when offline, and support delete/update controls. This is not included in 12.1.30 yet.
