@@ -1,0 +1,15 @@
+{
+  "name": "nava-free-follower-notifications",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "22"
+  },
+  "dependencies": {
+    "firebase-admin": "14.2.0"
+  },
+  "scripts": {
+    "scan": "node scan.mjs",
+    "test": "node test.mjs"
+  }
+}
