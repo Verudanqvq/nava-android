@@ -37,19 +37,20 @@ jobs:
             GX=$(find /tmp/apk -type f -path '*/defpackage/gx.smali' | head -1); echo "$GX"; test -n "$GX" && cat "$GX"
             echo
             echo '=== CH0 MESSAGE AREA ==='
-            CH=$(find /tmp/apk -type f -path '*/defpackage/ch0.smali' | head -1); echo "$CH"; test -n "$CH" && grep -n -B 35 -A 100 'pushTokenRequest' "$CH" || true
+            CH=$(find /tmp/apk -type f -path '*/defpackage/ch0.smali' | head -1); echo "$CH"; test -n "$CH" && grep -a -n -B 35 -A 100 'pushTokenRequest' "$CH" || true
             echo
             echo '=== MAINACTIVITY BACK/CACHE AREA ==='
-            MA=$(find /tmp/apk -type f -path '*/com/verudanava/nava/MainActivity.smali' | head -1); echo "$MA"; test -n "$MA" && grep -n -E -B 18 -A 38 'setCacheMode|setWebViewClient|setDownloadListener|goBack|canGoBack|loadUrl' "$MA" | head -n 1200 || true
+            MA=$(find /tmp/apk -type f -path '*/com/verudanava/nava/MainActivity.smali' | head -1); echo "$MA"; test -n "$MA" && grep -a -n -E -B 18 -A 38 'setCacheMode|setWebViewClient|setDownloadListener|goBack|canGoBack|loadUrl' "$MA" | head -n 1200 || true
             echo
             echo '=== MANIFEST DECODED ==='
             sed -n '1,260p' /tmp/apk/AndroidManifest.xml
-          } > native-offline-audit.txt
+          } > /tmp/native-raw.txt
+          iconv -f UTF-8 -t UTF-8 -c /tmp/native-raw.txt > native-offline-audit-utf8.txt
       - name: Persist
         shell: bash
         run: |
           git config user.name 'Nava Native Audit Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add native-offline-audit.txt
-          git commit -m 'Record native offline patch points [skip ci]' || true
+          git add native-offline-audit-utf8.txt
+          git commit -m 'Record sanitized native offline patch points [skip ci]' || true
           git push || true
