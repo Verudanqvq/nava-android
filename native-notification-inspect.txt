@@ -1,0 +1,1602 @@
+=== APK FILES / MANIFEST HINTS ===
+  1494536  1981-01-01 01:01   classes.dex
+       82  1981-01-01 01:01   firebase-encoders-json.properties
+       84  1981-01-01 01:01   firebase-encoders-proto.properties
+       72  1981-01-01 01:01   firebase-encoders.properties
+       78  1981-01-01 01:01   firebase-iid-interop.properties
+       98  1981-01-01 01:01   firebase-measurement-connector.properties
+     2381  1981-01-01 01:01   messaging_event.proto
+      883  1981-01-01 01:01   messaging_event_extension.proto
+       96  1981-01-01 01:01   play-services-cloud-messaging.properties
+    15120  1981-01-01 01:01   AndroidManifest.xml
+    66397  1981-01-01 01:01   META-INF/MANIFEST.MF
+
+=== DEX NOTIFICATION STRINGS ===
+API disabled. Please use {@link #register()} instead or enable this API by removing {@code <meta-data android:name="firebase_messaging_installation_id_enabled" android:value="true" />} from your app's manifest.
+API disabled. Please use {@link #unregister()} instead or enable this API by removing {@code <meta-data android:name="firebase_messaging_installation_id_enabled" android:value="true" />} from your app's manifest.
+FirebaseMessaging
+!Landroid/app/NotificationChannel;
+!Landroid/app/NotificationManager;
+1Lcom/google/firebase/messaging/FirebaseMessaging;
+=Lcom/google/firebase/messaging/FirebaseMessagingKtxRegistrar;
+:Lcom/google/firebase/messaging/FirebaseMessagingRegistrar;
+8Lcom/google/firebase/messaging/FirebaseMessagingService;
+2Lcom/verudanava/nava/NavaFirebaseMessagingService;
+NotificationManagerCompat
+%android.permission.POST_NOTIFICATIONS
+createNotificationChannel
+$firebase_messaging_auto_init_enabled
+*firebase_messaging_installation_id_enabled
+2firebase_messaging_notification_delegation_enabled
+getNotificationChannel
+nava_notification_permission
+notificationId
+pushDeleteToken
+pushTokenRequest
+releaseTitle
+seriesTitle
+
+=== JADX MATCH FILES ===
+/tmp/jadxout/sources/defpackage/rt.java
+/tmp/jadxout/sources/defpackage/li0.java
+/tmp/jadxout/sources/defpackage/wr.java
+/tmp/jadxout/sources/defpackage/c00.java
+/tmp/jadxout/sources/defpackage/ci.java
+/tmp/jadxout/sources/defpackage/k10.java
+/tmp/jadxout/sources/defpackage/l10.java
+/tmp/jadxout/sources/defpackage/w5.java
+/tmp/jadxout/sources/defpackage/ch0.java
+/tmp/jadxout/sources/defpackage/gd.java
+/tmp/jadxout/sources/com/google/firebase/messaging/FirebaseMessaging.java
+/tmp/jadxout/sources/com/google/firebase/messaging/FirebaseMessagingService.java
+/tmp/jadxout/sources/com/verudanava/nava/NavaFirebaseMessagingService.java
+
+=== JADX MATCHES ===
+/tmp/jadxout/sources/defpackage/rt.java:3:import android.app.NotificationManager;
+/tmp/jadxout/sources/defpackage/rt.java:824:                        NotificationManager notificationManager = (NotificationManager) context2.getSystemService(NotificationManager.class);
+/tmp/jadxout/sources/defpackage/ht.java:72:        if (Build.VERSION.SDK_INT >= 33 || !TextUtils.equals("android.permission.POST_NOTIFICATIONS", str)) {
+/tmp/jadxout/sources/defpackage/li0.java:7:import com.google.firebase.messaging.FirebaseMessagingService;
+/tmp/jadxout/sources/defpackage/li0.java:26:        FirebaseMessagingService firebaseMessagingService = (FirebaseMessagingService) this.b.d;
+/tmp/jadxout/sources/defpackage/wr.java:8:import android.app.NotificationChannel;
+/tmp/jadxout/sources/defpackage/wr.java:9:import android.app.NotificationManager;
+/tmp/jadxout/sources/defpackage/wr.java:132:        NotificationManager notificationManager = (NotificationManager) systemService;
+/tmp/jadxout/sources/defpackage/wr.java:169:        NotificationChannel notificationChannel = notificationManager.getNotificationChannel("com.google.android.gms.availability");
+/tmp/jadxout/sources/defpackage/wr.java:172:            notificationManager.createNotificationChannel(new NotificationChannel("com.google.android.gms.availability", string, 4));
+/tmp/jadxout/sources/defpackage/wr.java:175:            notificationManager.createNotificationChannel(notificationChannel);
+/tmp/jadxout/sources/defpackage/yc.java:55:                if (Build.VERSION.SDK_INT < 33 && TextUtils.equals(stringArrayExtra[i3], "android.permission.POST_NOTIFICATIONS")) {
+/tmp/jadxout/sources/defpackage/c00.java:3:import android.app.NotificationChannel;
+/tmp/jadxout/sources/defpackage/c00.java:4:import android.app.NotificationManager;
+/tmp/jadxout/sources/defpackage/c00.java:14:        NotificationManager notificationManager = (NotificationManager) contextWrapper.getSystemService(NotificationManager.class);
+/tmp/jadxout/sources/defpackage/c00.java:18:        NotificationChannel notificationChannel = new NotificationChannel("nava_follower_releases", "Takip edilen eserler", 3);
+/tmp/jadxout/sources/defpackage/c00.java:20:        notificationManager.createNotificationChannel(notificationChannel);
+/tmp/jadxout/sources/defpackage/ci.java:4:import com.google.firebase.messaging.FirebaseMessagingService;
+/tmp/jadxout/sources/defpackage/ci.java:69:                FirebaseMessagingService firebaseMessagingService = (FirebaseMessagingService) this.d;
+/tmp/jadxout/sources/defpackage/k10.java:35:        HandlerThread handlerThread = new HandlerThread("NotificationManagerCompat");
+/tmp/jadxout/sources/defpackage/l10.java:3:import android.app.NotificationManager;
+/tmp/jadxout/sources/defpackage/l10.java:12:    public final NotificationManager a;
+/tmp/jadxout/sources/defpackage/l10.java:18:        this.a = (NotificationManager) context.getSystemService("notification");
+/tmp/jadxout/sources/defpackage/w5.java:6:import android.app.NotificationChannel;
+/tmp/jadxout/sources/defpackage/w5.java:7:import android.app.NotificationManager;
+/tmp/jadxout/sources/defpackage/w5.java:42:import com.google.firebase.messaging.FirebaseMessagingService;
+/tmp/jadxout/sources/defpackage/w5.java:483:        FirebaseMessagingService firebaseMessagingService = (FirebaseMessagingService) this.e;
+/tmp/jadxout/sources/defpackage/w5.java:515:        FirebaseMessagingService firebaseMessagingService2 = (FirebaseMessagingService) this.e;
+/tmp/jadxout/sources/defpackage/w5.java:532:                NotificationManager notificationManager = (NotificationManager) firebaseMessagingService2.getSystemService(NotificationManager.class);
+/tmp/jadxout/sources/defpackage/w5.java:537:                    } else if (notificationManager.getNotificationChannel(strK9) == null) {
+/tmp/jadxout/sources/defpackage/w5.java:541:                    if (notificationManager.getNotificationChannel("fcm_fallback_notification_channel") == null) {
+/tmp/jadxout/sources/defpackage/w5.java:549:                        notificationManager.createNotificationChannel(new NotificationChannel("fcm_fallback_notification_channel", string, 3));
+/tmp/jadxout/sources/defpackage/w5.java:551:                } else if (notificationManager.getNotificationChannel(strK9) == null) {
+/tmp/jadxout/sources/defpackage/w5.java:556:                    } else if (notificationManager.getNotificationChannel(strK9) == null) {
+/tmp/jadxout/sources/defpackage/w5.java:560:                    if (notificationManager.getNotificationChannel("fcm_fallback_notification_channel") == null) {
+/tmp/jadxout/sources/defpackage/w5.java:568:                        notificationManager.createNotificationChannel(new NotificationChannel("fcm_fallback_notification_channel", string, 3));
+/tmp/jadxout/sources/defpackage/w5.java:860:            ((NotificationManager) ((FirebaseMessagingService) this.e).getSystemService("notification")).notify(str2, 0, f10Var.a());
+/tmp/jadxout/sources/defpackage/w5.java:1096:        ((NotificationManager) ((FirebaseMessagingService) this.e).getSystemService("notification")).notify(str3, 0, f10Var.a());
+/tmp/jadxout/sources/defpackage/ch0.java:235:                    if (str.equals("pushTokenRequest")) {
+/tmp/jadxout/sources/defpackage/gd.java:12:import com.google.firebase.messaging.FirebaseMessagingService;
+/tmp/jadxout/sources/defpackage/gd.java:125:        ((FirebaseMessagingService) this.d).a((Intent) this.e);
+/tmp/jadxout/sources/com/google/firebase/messaging/FirebaseMessaging.java:4:import android.app.NotificationManager;
+/tmp/jadxout/sources/com/google/firebase/messaging/FirebaseMessaging.java:388:            if ("com.google.android.gms".equals(((NotificationManager) context.getSystemService(NotificationManager.class)).getNotificationDelegate())) {
+/tmp/jadxout/sources/com/google/firebase/messaging/FirebaseMessagingService.java:33:public class FirebaseMessagingService extends Service {
+/tmp/jadxout/sources/com/google/firebase/messaging/FirebaseMessagingService.java:42:    public FirebaseMessagingService() {
+/tmp/jadxout/sources/com/google/firebase/messaging/FirebaseMessagingService.java:93:        FirebaseMessagingService firebaseMessagingService;
+/tmp/jadxout/sources/com/google/firebase/messaging/FirebaseMessagingService.java:243:                throw new UnsupportedOperationException("Method not decompiled: com.google.firebase.messaging.FirebaseMessagingService.b(android.content.Intent):void");
+/tmp/jadxout/sources/com/verudanava/nava/MainActivity.java:314:        if (Build.VERSION.SDK_INT >= 33 && ht.c(this, "android.permission.POST_NOTIFICATIONS") != 0) {
+/tmp/jadxout/sources/com/verudanava/nava/MainActivity.java:318:                this.N.E("android.permission.POST_NOTIFICATIONS");
+/tmp/jadxout/sources/com/verudanava/nava/NavaFirebaseMessagingService.java:9:import com.google.firebase.messaging.FirebaseMessagingService;
+/tmp/jadxout/sources/com/verudanava/nava/NavaFirebaseMessagingService.java:28:public final class NavaFirebaseMessagingService extends FirebaseMessagingService {
+/tmp/jadxout/sources/com/verudanava/nava/NavaFirebaseMessagingService.java:30:    @Override // com.google.firebase.messaging.FirebaseMessagingService
+/tmp/jadxout/sources/com/verudanava/nava/NavaFirebaseMessagingService.java:92:        String str5 = (String) map.get("seriesTitle");
+/tmp/jadxout/sources/com/verudanava/nava/NavaFirebaseMessagingService.java:100:        String str6 = (String) map.get("releaseTitle");
+/tmp/jadxout/sources/com/verudanava/nava/NavaFirebaseMessagingService.java:108:        String str7 = (String) map.get("notificationId");
+/tmp/jadxout/sources/com/verudanava/nava/NavaFirebaseMessagingService.java:116:        if (Build.VERSION.SDK_INT < 33 || ht.c(this, "android.permission.POST_NOTIFICATIONS") == 0) {
+/tmp/jadxout/sources/com/verudanava/nava/NavaFirebaseMessagingService.java:159:    @Override // com.google.firebase.messaging.FirebaseMessagingService
+
+=== LIKELY NAVA/FIREBASE FILE CONTENT ===
+--- /tmp/jadxout/sources/defpackage/li0.java
+package defpackage;
+
+import android.content.Intent;
+import android.os.Binder;
+import android.os.Process;
+import android.util.Log;
+import com.google.firebase.messaging.FirebaseMessagingService;
+
+/* JADX INFO: compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* JADX INFO: loaded from: classes.dex */
+public final class li0 extends Binder {
+    public final p60 b;
+
+    public li0(p60 p60Var) {
+        this.b = p60Var;
+    }
+
+    public final void a(mi0 mi0Var) {
+        if (Binder.getCallingUid() != Process.myUid()) {
+            throw new SecurityException("Binding only allowed within app");
+        }
+        if (Log.isLoggable("FirebaseMessaging", 3)) {
+            Log.d("FirebaseMessaging", "service received new intent via bind strategy");
+        }
+        Intent intent = mi0Var.a;
+        FirebaseMessagingService firebaseMessagingService = (FirebaseMessagingService) this.b.d;
+        hc0 hc0Var = new hc0();
+        firebaseMessagingService.c.execute(new ci(firebaseMessagingService, intent, hc0Var, 2));
+        hc0Var.a.a(new o30(), new ma(9, mi0Var));
+    }
+}
+--- /tmp/jadxout/sources/defpackage/ci.java
+package defpackage;
+
+import android.content.Intent;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.logging.Logger;
+
+/* JADX INFO: compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* JADX INFO: loaded from: classes.dex */
+public final /* synthetic */ class ci implements Runnable {
+    public final /* synthetic */ int c;
+    public final /* synthetic */ Object d;
+    public final /* synthetic */ Object e;
+    public final /* synthetic */ Object f;
+
+    public /* synthetic */ ci(fi fiVar, n8 n8Var, w60 w60Var, v7 v7Var) {
+        this.c = 0;
+        this.d = fiVar;
+        this.e = n8Var;
+        this.f = v7Var;
+    }
+
+    @Override // java.lang.Runnable
+    public final void run() {
+        switch (this.c) {
+            case 0:
+                fi fiVar = (fi) this.d;
+                n8 n8Var = (n8) this.e;
+                String str = n8Var.a;
+                v7 v7Var = (v7) this.f;
+                fiVar.getClass();
+                Logger logger = fi.f;
+                try {
+                    sd0 sd0VarA = fiVar.c.a(str);
+                    if (sd0VarA == null) {
+                        String str2 = "Transport backend '" + str + "' is not registered";
+                        logger.warning(str2);
+                        new IllegalArgumentException(str2);
+                    } else {
+                        fiVar.e.f(new di(fiVar, n8Var, ((oa) sd0VarA).a(v7Var), 0));
+                    }
+                    return;
+                } catch (Exception e) {
+                    logger.warning("Error scheduling event " + e.getMessage());
+                    return;
+                }
+            case 1:
+                gs gsVar = (gs) this.d;
+                l9 l9Var = (l9) this.e;
+                ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) this.f;
+                try {
+                    ho hoVarO = l9.o(gsVar.a);
+                    if (hoVarO == null) {
+                        throw new RuntimeException("EmojiCompat font provider not available on this device.");
+                    }
+                    go goVar = (go) hoVarO.a;
+                    synchronized (goVar.c) {
+                        goVar.e = threadPoolExecutor;
+                        break;
+                    }
+                    hoVarO.a.a(new kk(l9Var, threadPoolExecutor));
+                    return;
+                } catch (Throwable th) {
+                    l9Var.y(th);
+                    threadPoolExecutor.shutdown();
+                    return;
+                }
+            default:
+                FirebaseMessagingService firebaseMessagingService = (FirebaseMessagingService) this.d;
+                Intent intent = (Intent) this.e;
+                hc0 hc0Var = (hc0) this.f;
+                try {
+                    firebaseMessagingService.b(intent);
+                    return;
+                } finally {
+                    hc0Var.b(null);
+                }
+        }
+    }
+
+    public /* synthetic */ ci(Object obj, Object obj2, Object obj3, int i) {
+        this.c = i;
+        this.d = obj;
+        this.e = obj2;
+        this.f = obj3;
+    }
+}
+--- /tmp/jadxout/sources/defpackage/w5.java
+package defpackage;
+
+import android.app.ActivityManager;
+import android.app.KeyguardManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.PersistableBundle;
+import android.os.Process;
+import android.os.SystemClock;
+import android.os.Trace;
+import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.util.Base64;
+import android.util.Log;
+import android.util.TypedValue;
+import androidx.core.graphics.drawable.IconCompat;
+import com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.verudanava.nava.R;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.Adler32;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.xmlpull.v1.XmlPullParserException;
+
+/* JADX INFO: compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* JADX INFO: loaded from: classes.dex */
+public class w5 implements h40, z10 {
+    public static volatile w5 g;
+    public static final Object h = new Object();
+    public static w5 i;
+    public final /* synthetic */ int c;
+    public Object d;
+    public Object e;
+    public Object f;
+
+    public w5(Context context) {
+        this.c = 0;
+        this.f = context.getApplicationContext();
+        this.e = new HashSet();
+        this.d = new HashMap();
+    }
+
+    public static Object a(vo0 vo0Var) throws IOException {
+        try {
+            return yd0.b(vo0Var, 30L);
+        } catch (InterruptedException | TimeoutException e) {
+            throw new IOException("SERVICE_NOT_AVAILABLE", e);
+        } catch (ExecutionException e2) {
+            Throwable cause = e2.getCause();
+            if (cause instanceof IOException) {
+                throw ((IOException) cause);
+            }
+            if (cause instanceof RuntimeException) {
+                throw ((RuntimeException) cause);
+            }
+            throw new IOException(e2);
+        }
+    }
+
+    public static w5 c(SharedPreferences sharedPreferences, ScheduledThreadPoolExecutor scheduledThreadPoolExecutor) {
+        w5 w5Var = new w5(sharedPreferences, scheduledThreadPoolExecutor);
+        synchronized (((ArrayDeque) w5Var.e)) {
+            try {
+                ((ArrayDeque) w5Var.e).clear();
+                String string = ((SharedPreferences) w5Var.d).getString("topic_operation_queue", "");
+                if (!TextUtils.isEmpty(string) && string.contains(",")) {
+                    String[] strArrSplit = string.split(",", -1);
+                    if (strArrSplit.length == 0) {
+                        Log.e("FirebaseMessaging", "Corrupted queue. Please check the queue contents and item separator provided");
+                    }
+                    for (String str : strArrSplit) {
+                        if (!TextUtils.isEmpty(str)) {
+                            ((ArrayDeque) w5Var.e).add(str);
+                        }
+                    }
+                    return w5Var;
+                }
+                return w5Var;
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    public static w5 k(Context context) {
+        if (g == null) {
+            synchronized (h) {
+                try {
+                    if (g == null) {
+                        g = new w5(context);
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+        }
+        return g;
+    }
+
+    public static w5 m(Context context, AttributeSet attributeSet, int[] iArr, int i2) {
+        return new w5(context, context.obtainStyledAttributes(attributeSet, iArr, i2, 0));
+    }
+
+    public n8 b() {
+        String strConcat = ((String) this.d) == null ? " backendName" : "";
+        if (((i30) this.f) == null) {
+            strConcat = strConcat.concat(" priority");
+        }
+        if (strConcat.isEmpty()) {
+            return new n8((String) this.d, (byte[]) this.e, (i30) this.f);
+        }
+        mi.k("Missing required properties:".concat(strConcat));
+        return null;
+    }
+
+    @Override // defpackage.z10
+    public /* synthetic */ void d(vo0 vo0Var) {
+        s60 s60Var = (s60) this.d;
+        String str = (String) this.e;
+        ScheduledFuture scheduledFuture = (ScheduledFuture) this.f;
+        ba0 ba0Var = s60Var.a;
+        synchronized (ba0Var) {
+            ba0Var.remove(str);
+        }
+        scheduledFuture.cancel(false);
+    }
+
+    public void e(Bundle bundle) {
+        HashSet hashSet = (HashSet) this.e;
+        String string = ((Context) this.f).getString(R.string.androidx_startup);
+        if (bundle != null) {
+            try {
+                HashSet hashSet2 = new HashSet();
+                for (String str : bundle.keySet()) {
+                    if (string.equals(bundle.getString(str, null))) {
+                        Class<?> cls = Class.forName(str);
+                        if (et.class.isAssignableFrom(cls)) {
+                            hashSet.add(cls);
+                        }
+                    }
+                }
+                Iterator it = hashSet.iterator();
+                while (it.hasNext()) {
+                    f((Class) it.next(), hashSet2);
+                }
+            } catch (ClassNotFoundException e) {
+                throw new rc(e);
+            }
+        }
+    }
+
+    public Object f(Class cls, HashSet hashSet) {
+        Object objB;
+        HashMap map = (HashMap) this.d;
+        if (qh.p()) {
+            try {
+                qh.d(cls.getSimpleName());
+            } catch (Throwable th) {
+                Trace.endSection();
+                throw th;
+            }
+        }
+        if (hashSet.contains(cls)) {
+            throw new IllegalStateException("Cannot initialize " + cls.getName() + ". Cycle detected.");
+        }
+        if (map.containsKey(cls)) {
+            objB = map.get(cls);
+        } else {
+            hashSet.add(cls);
+            try {
+                et etVar = (et) cls.getDeclaredConstructor(null).newInstance(null);
+                List<Class> listA = etVar.a();
+                if (!listA.isEmpty()) {
+                    for (Class cls2 : listA) {
+                        if (!map.containsKey(cls2)) {
+                            f(cls2, hashSet);
+                        }
+                    }
+                }
+                objB = etVar.b((Context) this.f);
+                hashSet.remove(cls);
+                map.put(cls, objB);
+            } catch (Throwable th2) {
+                throw new rc(th2);
+            }
+        }
+        Trace.endSection();
+        return objB;
+    }
+
+    public ColorStateList g(int i2) {
+        int resourceId;
+        ColorStateList colorStateListH;
+        TypedArray typedArray = (TypedArray) this.d;
+        return (!typedArray.hasValue(i2) || (resourceId = typedArray.getResourceId(i2, 0)) == 0 || (colorStateListH = ht.h((Context) this.f, resourceId)) == null) ? typedArray.getColorStateList(i2) : colorStateListH;
+    }
+
+    @Override // defpackage.h40
+    public Object get() {
+        switch (this.c) {
+            case 9:
+                return new w5((Context) ((h40) this.d).get(), ((h40) this.e).get(), ((ks) this.f).get(), 6);
+            default:
+                return new vd0(new ks(25), new ks(24), (fi) ((gi) this.d).get(), (bf0) ((jd) this.e).get(), (y80) ((y80) this.f).get());
+        }
+    }
+
+    public Drawable h(int i2) {
+        int resourceId;
+        TypedArray typedArray = (TypedArray) this.d;
+        return (!typedArray.hasValue(i2) || (resourceId = typedArray.getResourceId(i2, 0)) == 0) ? typedArray.getDrawable(i2) : l9.r((Context) this.f, resourceId);
+    }
+
+    public Drawable i(int i2) {
+        int resourceId;
+        Drawable drawableE;
+        if (!((TypedArray) this.d).hasValue(i2) || (resourceId = ((TypedArray) this.d).getResourceId(i2, 0)) == 0) {
+            return null;
+        }
+        z3 z3VarA = z3.a();
+        Context context = (Context) this.f;
+        synchronized (z3VarA) {
+            drawableE = z3VarA.a.e(context, resourceId, true);
+        }
+        return drawableE;
+    }
+
+    public Typeface j(int i2, int i3, c5 c5Var) {
+        XmlPullParserException xmlPullParserException;
+        IOException iOException;
+        int resourceId = ((TypedArray) this.d).getResourceId(i2, 0);
+        if (resourceId != 0) {
+            TypedValue typedValue = (TypedValue) this.e;
+            if (typedValue == null) {
+                typedValue = new TypedValue();
+                this.e = typedValue;
+            }
+            Context context = (Context) this.f;
+            ThreadLocal threadLocal = f60.a;
+            if (!context.isRestricted()) {
+                Resources resources = context.getResources();
+                resources.getValue(resourceId, typedValue, true);
+                CharSequence charSequence = typedValue.string;
+                if (charSequence == null) {
+                    throw new Resources.NotFoundException("Resource \"" + resources.getResourceName(resourceId) + "\" (" + Integer.toHexString(resourceId) + ") is not a Font: " + typedValue);
+                }
+                String string = charSequence.toString();
+                if (!string.startsWith("res/")) {
+                    c5Var.a();
+                    return null;
+                }
+                int i4 = typedValue.assetCookie;
+                ax axVar = zd0.b;
+                Typeface typeface = (Typeface) axVar.a(zd0.b(resources, resourceId, string, i4, i3));
+                int i5 = 14;
+                if (typeface != null) {
+                    new Handler(Looper.getMainLooper()).post(new z5(c5Var, i5, typeface));
+                    return typeface;
+                }
+                try {
+                    try {
+                        if (!string.toLowerCase().endsWith(".xml")) {
+                            int i6 = typedValue.assetCookie;
+                            Typeface typefaceH = zd0.a.h(context, resources, resourceId, string);
+                            if (typefaceH != null) {
+                                axVar.b(zd0.b(resources, resourceId, string, i6, i3), typefaceH);
+                            }
+                            if (typefaceH != null) {
+                                new Handler(Looper.getMainLooper()).post(new z5(c5Var, i5, typefaceH));
+                            } else {
+                                c5Var.a();
+                            }
+                            return typefaceH;
+                        }
+                        mo moVarA = l9.A(resources.getXml(resourceId), resources);
+--- /tmp/jadxout/sources/defpackage/ch0.java
+package defpackage;
+
+import android.content.ClipData;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcel;
+import android.util.Log;
+import android.view.ContentInfo;
+import android.view.Window;
+import android.webkit.WebView;
+import android.widget.EditText;
+import com.google.android.material.sidesheet.SideSheetBehavior;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.verudanava.nava.MainActivity;
+import com.verudanava.nava.R;
+import java.lang.reflect.InvocationHandler;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import org.chromium.support_lib_boundary.JsReplyProxyBoundaryInterface;
+import org.chromium.support_lib_boundary.WebMessageBoundaryInterface;
+import org.chromium.support_lib_boundary.WebMessageListenerBoundaryInterface;
+import org.chromium.support_lib_boundary.WebMessagePayloadBoundaryInterface;
+import org.chromium.support_lib_boundary.WebMessagePortBoundaryInterface;
+
+/* JADX INFO: compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* JADX INFO: loaded from: classes.dex */
+public final class ch0 implements WebMessageListenerBoundaryInterface, yy, td, on, p1, h40, o50, e20, b20, y10 {
+    public final /* synthetic */ int c;
+    public Object d;
+
+    public /* synthetic */ ch0(int i) {
+        this.c = i;
+        switch (i) {
+            case 15:
+                this.d = new CountDownLatch(1);
+                break;
+        }
+    }
+
+    @Override // defpackage.yy
+    public void a(hy hyVar, boolean z) {
+        switch (this.c) {
+            case 1:
+                if (hyVar instanceof kb0) {
+                    ((kb0) hyVar).z.k().c(false);
+                }
+                yy yyVar = ((f1) this.d).g;
+                if (yyVar != null) {
+                    yyVar.a(hyVar, z);
+                }
+                break;
+            default:
+                ((w3) this.d).q(hyVar);
+                break;
+        }
+    }
+
+    @Override // defpackage.o50
+    public void accept(Object obj, Object obj2) {
+        hc0 hc0Var = (hc0) obj2;
+        yj0 yj0Var = (yj0) ((zi0) obj).h();
+        yi0 yi0Var = (yi0) this.d;
+        Parcel parcelObtain = Parcel.obtain();
+        parcelObtain.writeInterfaceToken(yj0Var.d);
+        int i = jj0.a;
+        parcelObtain.writeInt(1);
+        yi0Var.writeToParcel(parcelObtain, 0);
+        try {
+            yj0Var.c.transact(1, parcelObtain, null, 1);
+            parcelObtain.recycle();
+            hc0Var.b(null);
+        } catch (Throwable th) {
+            parcelObtain.recycle();
+            throw th;
+        }
+    }
+
+    @Override // defpackage.td
+    public wd build() {
+        return new wd(new xk0(((ContentInfo.Builder) this.d).build()));
+    }
+
+    @Override // defpackage.p1
+    public void c(Object obj) {
+        Map map = (Map) obj;
+        jp jpVar = (jp) this.d;
+        ArrayList arrayList = new ArrayList(map.values());
+        int[] iArr = new int[arrayList.size()];
+        for (int i = 0; i < arrayList.size(); i++) {
+            iArr[i] = ((Boolean) arrayList.get(i)).booleanValue() ? 0 : -1;
+        }
+        gp gpVar = (gp) jpVar.C.pollFirst();
+        if (gpVar == null) {
+            Log.w("FragmentManager", "No permissions were requested for " + this);
+        } else {
+            String str = gpVar.c;
+            if (jpVar.c.d(str) == null) {
+                Log.w("FragmentManager", "Permission request result delivered for unknown Fragment " + str);
+            }
+        }
+    }
+
+    @Override // defpackage.y10
+    public void d() {
+        ((CountDownLatch) this.d).countDown();
+    }
+
+    @Override // defpackage.e20
+    public void e(Object obj) {
+        ((CountDownLatch) this.d).countDown();
+    }
+
+    @Override // defpackage.on
+    public Object f(pn pnVar, ee eeVar) {
+        Object objF = ((i4) this.d).f(new ch(0, pnVar), eeVar);
+        return objF == se.c ? objF : me0.a;
+    }
+
+    @Override // defpackage.td
+    public void g(Uri uri) {
+        ((ContentInfo.Builder) this.d).setLinkUri(uri);
+    }
+
+    @Override // defpackage.h40
+    public Object get() {
+        return this.d;
+    }
+
+    @Override // org.chromium.support_lib_boundary.FeatureFlagHolderBoundaryInterface
+    public String[] getSupportedFeatures() {
+        return new String[]{"WEB_MESSAGE_LISTENER", "WEB_MESSAGE_ARRAY_BUFFER"};
+    }
+
+    @Override // defpackage.b20
+    public void h(Exception exc) {
+        ((CountDownLatch) this.d).countDown();
+    }
+
+    @Override // defpackage.td
+    public void i(int i) {
+        ((ContentInfo.Builder) this.d).setFlags(i);
+    }
+
+    @Override // defpackage.yy
+    public boolean l(hy hyVar) {
+        switch (this.c) {
+            case 1:
+                f1 f1Var = (f1) this.d;
+                if (hyVar != f1Var.e) {
+                    ky kyVar = ((kb0) hyVar).A;
+                    yy yyVar = f1Var.g;
+                    if (yyVar != null) {
+                        return yyVar.l(hyVar);
+                    }
+                }
+                return false;
+            default:
+                Window.Callback callback = ((w3) this.d).n.getCallback();
+                if (callback == null) {
+                    return true;
+                }
+                callback.onMenuOpened(108, hyVar);
+                return true;
+        }
+    }
+
+    @Override // org.chromium.support_lib_boundary.WebMessageListenerBoundaryInterface
+    public void onPostMessage(WebView webView, InvocationHandler invocationHandler, Uri uri, boolean z, InvocationHandler invocationHandler2) throws PackageManager.NameNotFoundException {
+        c2 c2Var;
+        final FirebaseMessaging firebaseMessaging;
+        final FirebaseMessaging firebaseMessaging2;
+        vo0 vo0VarQ;
+        WebMessageBoundaryInterface webMessageBoundaryInterface = (WebMessageBoundaryInterface) l9.a(WebMessageBoundaryInterface.class, invocationHandler);
+        InvocationHandler[] ports = webMessageBoundaryInterface.getPorts();
+        xk0[] xk0VarArr = new xk0[ports.length];
+        final int i = 0;
+        for (int i2 = 0; i2 < ports.length; i2++) {
+            InvocationHandler invocationHandler3 = ports[i2];
+            xk0 xk0Var = new xk0(12);
+            xk0Var.d = (WebMessagePortBoundaryInterface) l9.a(WebMessagePortBoundaryInterface.class, invocationHandler3);
+            xk0VarArr[i2] = xk0Var;
+        }
+        hf hfVarA = null;
+        final int i3 = 1;
+        if (ih0.b.b()) {
+            WebMessagePayloadBoundaryInterface webMessagePayloadBoundaryInterface = (WebMessagePayloadBoundaryInterface) l9.a(WebMessagePayloadBoundaryInterface.class, webMessageBoundaryInterface.getMessagePayload());
+            int type = webMessagePayloadBoundaryInterface.getType();
+            c2Var = type != 0 ? type != 1 ? null : new c2(webMessagePayloadBoundaryInterface.getAsArrayBuffer()) : new c2(webMessagePayloadBoundaryInterface.getAsString());
+        } else {
+            c2Var = new c2(webMessageBoundaryInterface.getData());
+        }
+        if (c2Var != null) {
+            JsReplyProxyBoundaryInterface jsReplyProxyBoundaryInterface = (JsReplyProxyBoundaryInterface) l9.a(JsReplyProxyBoundaryInterface.class, invocationHandler2);
+            int i4 = 2;
+            cu cuVar = (cu) jsReplyProxyBoundaryInterface.getOrCreatePeer(new xh(i4, jsReplyProxyBoundaryInterface));
+            MainActivity mainActivity = ((bx) this.d).c;
+            int i5 = MainActivity.P;
+            webView.getClass();
+            uri.getClass();
+            cuVar.getClass();
+            boolean z2 = rt.b(uri.getScheme(), "https") && (rt.b(uri.getHost(), "www.verudanava.com") || rt.b(uri.getHost(), "verudanava.com") || rt.b(uri.getHost(), "verudanava.blogspot.com"));
+            if (z && z2) {
+                int i6 = c2Var.a;
+                if (i6 != 0) {
+                    StringBuilder sb = new StringBuilder("Wrong data accessor type detected. ");
+                    sb.append(i6 != 0 ? i6 != 1 ? "Unknown" : "ArrayBuffer" : "String");
+                    sb.append(" expected, but got ");
+                    sb.append("String");
+                    throw new IllegalStateException(sb.toString());
+                }
+                String str = (String) c2Var.b;
+                if (str == null) {
+                    return;
+                }
+                if (!str.equals("googleSignIn")) {
+                    if (str.equals("haptic")) {
+                        WebView webView2 = mainActivity.A;
+                        if (webView2 != null) {
+                            webView2.performHapticFeedback(3);
+                            return;
+                        } else {
+                            rt.w("webView");
+                            throw null;
+                        }
+                    }
+                    if (str.equals("pushTokenRequest")) {
+                        synchronized (FirebaseMessaging.class) {
+                            firebaseMessaging2 = FirebaseMessaging.getInstance(zm.b());
+                        }
+                        if (firebaseMessaging2.d.g()) {
+                            vo0VarQ = yd0.q(new IllegalStateException("API disabled. Please use {@link #register()} instead or enable this API by removing {@code <meta-data android:name=\"firebase_messaging_installation_id_enabled\" android:value=\"true\" />} from your app's manifest."));
+                        } else {
+                            final hc0 hc0Var = new hc0();
+                            firebaseMessaging2.g.execute(new Runnable() { // from class: kn
+                                @Override // java.lang.Runnable
+                                public final void run() {
+                                    switch (i3) {
+                                        case 0:
+                                            FirebaseMessaging firebaseMessaging3 = firebaseMessaging2;
+                                            hc0 hc0Var2 = hc0Var;
+                                            try {
+                                                y3 y3Var = firebaseMessaging3.c;
+                                                y3Var.getClass();
+                                                Bundle bundle = new Bundle();
+                                                bundle.putString("delete", "1");
+                                                yd0.a(y3Var.i(ud.c((zm) y3Var.a), bundle, false).d(new o30(), new mi(y3Var)));
+                                                xk0 xk0VarC = FirebaseMessaging.c(firebaseMessaging3.b);
+                                                String strD = firebaseMessaging3.d();
+                                                String strC = ud.c(firebaseMessaging3.a);
+                                                synchronized (xk0VarC) {
+                                                    String strM = xk0.m(strD, strC);
+                                                    SharedPreferences.Editor editorEdit = ((SharedPreferences) xk0VarC.d).edit();
+                                                    editorEdit.remove(strM);
+                                                    editorEdit.commit();
+                                                }
+                                                hc0Var2.b(null);
+                                                return;
+                                            } catch (Exception e) {
+                                                hc0Var2.a(e);
+                                                return;
+                                            }
+                                        default:
+                                            FirebaseMessaging firebaseMessaging4 = firebaseMessaging2;
+                                            hc0 hc0Var3 = hc0Var;
+                                            try {
+                                                hc0Var3.b(firebaseMessaging4.a());
+                                                return;
+                                            } catch (Exception e2) {
+                                                hc0Var3.a(e2);
+                                                return;
+                                            }
+                                    }
+                                }
+                            });
+                            vo0VarQ = hc0Var.a;
+                        }
+                        ma maVar = new ma(6, new lf(i4, mainActivity));
+                        m70 m70Var = ic0.a;
+                        vo0VarQ.c(m70Var, maVar);
+                        vo0VarQ.b(m70Var, new bx(mainActivity));
+                        return;
+                    }
+                    if (!str.equals("pushDeleteToken")) {
+                        if (str.startsWith("navigate:")) {
+                            mainActivity.s(jb0.g0(str, "navigate:"));
+                            return;
+                        }
+                        return;
+                    }
+                    synchronized (FirebaseMessaging.class) {
+                        firebaseMessaging = FirebaseMessaging.getInstance(zm.b());
+                    }
+                    if (firebaseMessaging.d.g()) {
+                        yd0.q(new IllegalStateException("API disabled. Please use {@link #unregister()} instead or enable this API by removing {@code <meta-data android:name=\"firebase_messaging_installation_id_enabled\" android:value=\"true\" />} from your app's manifest."));
+                        return;
+                    } else if (firebaseMessaging.e() == null) {
+                        yd0.r(null);
+                        return;
+                    } else {
+                        final hc0 hc0Var2 = new hc0();
+                        Executors.newSingleThreadExecutor(new b00("Firebase-Messaging-Network-Io")).execute(new Runnable() { // from class: kn
+                            @Override // java.lang.Runnable
+                            public final void run() {
+                                switch (i) {
+                                    case 0:
+                                        FirebaseMessaging firebaseMessaging3 = firebaseMessaging;
+                                        hc0 hc0Var3 = hc0Var2;
+                                        try {
+                                            y3 y3Var = firebaseMessaging3.c;
+                                            y3Var.getClass();
+                                            Bundle bundle = new Bundle();
+--- /tmp/jadxout/sources/defpackage/gd.java
+package defpackage;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.CancellationSignal;
+import android.os.Trace;
+import androidx.credentials.playservices.CredentialProviderPlayServicesImpl;
+import com.google.firebase.FirebaseCommonRegistrar;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/* JADX INFO: compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* JADX INFO: loaded from: classes.dex */
+public final /* synthetic */ class gd implements fd, b20, z10, de, z60, bc0 {
+    public final /* synthetic */ int c;
+    public final /* synthetic */ Object d;
+    public final /* synthetic */ Object e;
+
+    public /* synthetic */ gd(int i, Object obj, String str) {
+        this.c = i;
+        this.e = obj;
+        this.d = str;
+    }
+
+    @Override // defpackage.z60
+    public Object apply(Object obj) {
+        b70 b70Var = (b70) this.d;
+        n8 n8Var = (n8) this.e;
+        SQLiteDatabase sQLiteDatabase = (SQLiteDatabase) obj;
+        w7 w7Var = b70Var.f;
+        ArrayList arrayListD = b70Var.d(sQLiteDatabase, n8Var, w7Var.b);
+        for (i30 i30Var : i30.values()) {
+            if (i30Var != n8Var.c) {
+                int size = w7Var.b - arrayListD.size();
+                if (size <= 0) {
+                    break;
+                }
+                w5 w5VarA = n8.a();
+                w5VarA.r(n8Var.a);
+                if (i30Var == null) {
+                    mi.m("Null priority");
+                    return null;
+                }
+                w5VarA.f = i30Var;
+                w5VarA.e = n8Var.b;
+                arrayListD.addAll(b70Var.d(sQLiteDatabase, w5VarA.b(), size));
+            }
+        }
+        HashMap map = new HashMap();
+        StringBuilder sb = new StringBuilder("event_id IN (");
+        for (int i = 0; i < arrayListD.size(); i++) {
+            sb.append(((f8) arrayListD.get(i)).a);
+            if (i < arrayListD.size() - 1) {
+                sb.append(',');
+            }
+        }
+        sb.append(')');
+        Cursor cursorQuery = sQLiteDatabase.query("event_metadata", new String[]{"event_id", "name", "value"}, sb.toString(), null, null, null, null);
+        while (cursorQuery.moveToNext()) {
+            try {
+                long j = cursorQuery.getLong(0);
+                Set hashSet = (Set) map.get(Long.valueOf(j));
+                if (hashSet == null) {
+                    hashSet = new HashSet();
+                    map.put(Long.valueOf(j), hashSet);
+                }
+                hashSet.add(new a70(cursorQuery.getString(1), cursorQuery.getString(2)));
+            } catch (Throwable th) {
+                cursorQuery.close();
+                throw th;
+            }
+        }
+        cursorQuery.close();
+        ListIterator listIterator = arrayListD.listIterator();
+        while (listIterator.hasNext()) {
+            f8 f8Var = (f8) listIterator.next();
+            long j2 = f8Var.a;
+            if (map.containsKey(Long.valueOf(j2))) {
+                y3 y3VarC = f8Var.c.c();
+                for (a70 a70Var : (Set) map.get(Long.valueOf(j2))) {
+                    y3VarC.a(a70Var.a, a70Var.b);
+                }
+                listIterator.set(new f8(j2, f8Var.b, y3VarC.c()));
+            }
+        }
+        return arrayListD;
+    }
+
+    @Override // defpackage.bc0
+    public Object b() {
+        int i = this.c;
+        Object obj = this.e;
+        bf0 bf0Var = (bf0) this.d;
+        switch (i) {
+            case g30.BYTES_FIELD_NUMBER /* 8 */:
+                Iterable iterable = (Iterable) obj;
+                b70 b70Var = bf0Var.c;
+                b70Var.getClass();
+                if (iterable.iterator().hasNext()) {
+                    b70Var.a().compileStatement("DELETE FROM events WHERE _id in ".concat(b70.g(iterable))).execute();
+                }
+                break;
+            default:
+                for (Map.Entry entry : ((HashMap) obj).entrySet()) {
+                    bf0Var.i.e(((Integer) entry.getValue()).intValue(), uw.i, (String) entry.getKey());
+                }
+                break;
+        }
+        return null;
+    }
+
+    @Override // defpackage.z10
+    public void d(vo0 vo0Var) {
+        ((FirebaseMessagingService) this.d).a((Intent) this.e);
+    }
+
+    @Override // defpackage.fd
+    public Object e(gi giVar) {
+        int i = this.c;
+        Object obj = this.e;
+        String str = (String) this.d;
+        switch (i) {
+            case 0:
+                vc vcVar = (vc) obj;
+                try {
+                    Trace.beginSection(str);
+                    return vcVar.f.e(giVar);
+                } finally {
+                    Trace.endSection();
+                }
+            default:
+                Context context = (Context) giVar.a(Context.class);
+                int i2 = ((mi) obj).c;
+                String strValueOf = "";
+                switch (i2) {
+                    case 10:
+                        ApplicationInfo applicationInfo = context.getApplicationInfo();
+                        if (applicationInfo != null) {
+                            strValueOf = String.valueOf(applicationInfo.targetSdkVersion);
+                        }
+                        break;
+                    case 11:
+                        ApplicationInfo applicationInfo2 = context.getApplicationInfo();
+                        if (applicationInfo2 != null) {
+                            strValueOf = String.valueOf(applicationInfo2.minSdkVersion);
+                        }
+                        break;
+                    case 12:
+                        if (context.getPackageManager().hasSystemFeature("android.hardware.type.television")) {
+                            strValueOf = "tv";
+                        } else if (context.getPackageManager().hasSystemFeature("android.hardware.type.watch")) {
+                            strValueOf = "watch";
+                        } else if (context.getPackageManager().hasSystemFeature("android.hardware.type.automotive")) {
+                            strValueOf = "auto";
+                        } else if (context.getPackageManager().hasSystemFeature("android.hardware.type.embedded")) {
+                            strValueOf = "embedded";
+                        }
+                        break;
+                    default:
+                        String installerPackageName = context.getPackageManager().getInstallerPackageName(context.getPackageName());
+                        if (installerPackageName != null) {
+                            strValueOf = FirebaseCommonRegistrar.a(installerPackageName);
+                        }
+                        break;
+                }
+                return new a8(str, strValueOf);
+        }
+    }
+
+    @Override // defpackage.de
+    public Object f(vo0 vo0Var) {
+        switch (this.c) {
+            case 3:
+                gi giVar = (gi) this.d;
+                ExecutorService executorService = (ExecutorService) this.e;
+                giVar.getClass();
+                if (!vo0Var.i()) {
+                    return yd0.q(vo0Var.f() != null ? vo0Var.f() : new ExecutionException(new RuntimeException("Unexpected Error")));
+                }
+                String str = (String) vo0Var.g();
+                int i = 4;
+                return ((cn) ((dn) giVar.e)).d().e(Executors.newSingleThreadExecutor(new b00("Firebase-Messaging-Network-Io")), new gd(i, giVar, str)).d(executorService, new ma(i, str));
+            case 4:
+                gi giVar2 = (gi) this.e;
+                String str2 = (String) this.d;
+                zm zmVar = (zm) giVar2.d;
+                if (!vo0Var.i()) {
+                    return yd0.q(vo0Var.f() != null ? vo0Var.f() : new ExecutionException(new RuntimeException("Unexpected Error")));
+                }
+                String str3 = ((z7) vo0Var.g()).a;
+                zmVar.a();
+                mn mnVar = zmVar.c;
+                String str4 = mnVar.a;
+                zmVar.a();
+                l50 l50Var = new l50(ud.c(zmVar), mnVar.b, str4, str2, str3);
+                qt qtVar = (qt) giVar2.c;
+                gc0 gc0VarB = gc0.b();
+                gc0VarB.a = new em[]{si0.o};
+                gc0VarB.d = new i4(qtVar, l50Var, 29, false);
+                gc0VarB.c = 39001;
+                return qtVar.b(0, gc0VarB.a());
+            default:
+                i4 i4Var = (i4) this.e;
+                String str5 = (String) this.d;
+                synchronized (i4Var) {
+                    ((k6) i4Var.e).remove(str5);
+                    break;
+                }
+                return vo0Var;
+        }
+    }
+
+    /* JADX WARN: Code duplicated, block: B:26:0x0075  */
+    @Override // defpackage.b20
+    public void h(Exception exc) {
+        jr erVar;
+        nf nfVar = (nf) this.d;
+        CancellationSignal cancellationSignal = (CancellationSignal) this.e;
+        String str = ((exc instanceof r2) && pf.a.contains(Integer.valueOf(((r2) exc).c.c))) ? "GET_INTERRUPTED" : "GET_NO_CREDENTIALS";
+        String str2 = "During begin sign in, failure response from one tap: " + exc.getMessage();
+        int iHashCode = str.hashCode();
+        if (iHashCode != -1567968963) {
+            if (iHashCode != -154594663) {
+                if (iHashCode == 1996705159 && str.equals("GET_NO_CREDENTIALS")) {
+                    erVar = new v00(str2);
+                } else {
+                    erVar = new ir(str2, 2);
+                }
+            } else if (str.equals("GET_INTERRUPTED")) {
+                erVar = new ir(str2, 1);
+            } else {
+                erVar = new ir(str2, 2);
+            }
+        } else if (str.equals("GET_CANCELED_TAG")) {
+            erVar = new er(str2);
+        } else {
+            erVar = new ir(str2, 2);
+        }
+        CredentialProviderPlayServicesImpl.Companion.getClass();
+        if (yf.a(cancellationSignal)) {
+            return;
+        }
+        nfVar.d().execute(new kf(nfVar, erVar, 0));
+    }
+
+    public /* synthetic */ gd(Object obj, int i, Object obj2) {
+        this.c = i;
+        this.d = obj;
+        this.e = obj2;
+    }
+}
+--- /tmp/jadxout/sources/com/google/firebase/messaging/FirebaseMessagingService.java
+package com.google.firebase.messaging;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.text.TextUtils;
+import android.util.Log;
+import defpackage.b00;
+import defpackage.ci;
+import defpackage.gd;
+import defpackage.hc0;
+import defpackage.l9;
+import defpackage.li0;
+import defpackage.o30;
+import defpackage.p50;
+import defpackage.p60;
+import defpackage.s60;
+import defpackage.s80;
+import defpackage.vo0;
+import defpackage.w5;
+import defpackage.y80;
+import java.util.ArrayDeque;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+/* JADX INFO: compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* JADX INFO: loaded from: classes.dex */
+public class FirebaseMessagingService extends Service {
+    public static final ArrayDeque i = new ArrayDeque(10);
+    public final ExecutorService c;
+    public li0 d;
+    public final Object e;
+    public int f;
+    public int g;
+    public s60 h;
+
+    public FirebaseMessagingService() {
+        b00 b00Var = new b00("Firebase-Messaging-Intent-Handle");
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue(), b00Var);
+        threadPoolExecutor.allowCoreThreadTimeOut(true);
+        this.c = Executors.unconfigurableExecutorService(threadPoolExecutor);
+        this.e = new Object();
+        this.g = 0;
+    }
+
+    public final void a(Intent intent) {
+        if (intent != null) {
+            l9.n(intent);
+        }
+        synchronized (this.e) {
+            try {
+                int i2 = this.g - 1;
+                this.g = i2;
+                if (i2 == 0) {
+                    stopSelfResult(this.f);
+                }
+            } catch (Throwable th) {
+                throw th;
+            }
+        }
+    }
+
+    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+    /* JADX WARN: Code duplicated, block: B:36:0x00a2  */
+    /* JADX WARN: Code duplicated, block: B:40:0x00ad  */
+    /* JADX WARN: Code duplicated, block: B:43:0x00b6  */
+    /* JADX WARN: Code duplicated, block: B:44:0x00b8  */
+    /* JADX WARN: Code duplicated, block: B:47:0x00c1  */
+    /* JADX WARN: Code duplicated, block: B:48:0x00c3  */
+    /* JADX WARN: Code duplicated, block: B:51:0x00cc  */
+    /* JADX WARN: Code duplicated, block: B:52:0x00ce  */
+    /* JADX WARN: Code duplicated, block: B:55:0x00d7  */
+    /* JADX WARN: Code duplicated, block: B:57:0x00db  */
+    /* JADX WARN: Code duplicated, block: B:58:0x00e5  */
+    /* JADX WARN: Code duplicated, block: B:59:0x00e9  */
+    /* JADX WARN: Code duplicated, block: B:61:0x00ef  */
+    /* JADX WARN: Code duplicated, block: B:65:0x0100  */
+    /* JADX WARN: Code duplicated, block: B:66:0x010b  */
+    /* JADX WARN: Code duplicated, block: B:68:0x0114  */
+    /* JADX WARN: Code duplicated, block: B:71:0x0124  */
+    /* JADX WARN: Code duplicated, block: B:74:0x0142  */
+    /* JADX WARN: Code duplicated, block: B:75:0x0146  */
+    /* JADX WARN: Code duplicated, block: B:77:0x014f  */
+    /* JADX WARN: Code duplicated, block: B:81:0x015f  */
+    public final void b(Intent intent) {
+        String stringExtra;
+        Bundle extras;
+        FirebaseMessagingService firebaseMessagingService;
+        p60 p60Var;
+        ExecutorService executorServiceNewSingleThreadExecutor;
+        String stringExtra2;
+        int i2;
+        String action = intent.getAction();
+        if (!"com.google.android.c2dm.intent.RECEIVE".equals(action) && !"com.google.firebase.messaging.RECEIVE_DIRECT_BOOT".equals(action)) {
+            if ("com.google.firebase.messaging.NEW_TOKEN".equals(action)) {
+                d(intent.getStringExtra("token"));
+                return;
+            }
+            if ("com.google.firebase.messaging.FCM_REGISTERED".equals(action)) {
+                intent.getStringExtra("token");
+                return;
+            } else {
+                if ("com.google.firebase.messaging.FCM_UNREGISTERED".equals(action)) {
+                    intent.getStringExtra("token");
+                    return;
+                }
+                Log.d("FirebaseMessaging", "Unknown intent action: " + intent.getAction());
+                return;
+            }
+        }
+        String stringExtra3 = intent.getStringExtra("google.message_id");
+        if (TextUtils.isEmpty(stringExtra3)) {
+            stringExtra = intent.getStringExtra("message_type");
+            if (stringExtra == null) {
+                stringExtra = "gcm";
+            }
+            switch (stringExtra) {
+                case "deleted_messages":
+                    firebaseMessagingService = this;
+                    break;
+                case "gcm":
+                    l9.u(intent);
+                    extras = intent.getExtras();
+                    if (extras == null) {
+                        extras = new Bundle();
+                    }
+                    extras.remove("androidx.content.wakelockid");
+                    if (p60.l(extras)) {
+                        p60Var = new p60(extras);
+                        executorServiceNewSingleThreadExecutor = Executors.newSingleThreadExecutor(new b00("Firebase-Messaging-Network-Io"));
+                        firebaseMessagingService = this;
+                        try {
+                            if (new w5(firebaseMessagingService, p60Var, executorServiceNewSingleThreadExecutor, 5, false).l()) {
+                                executorServiceNewSingleThreadExecutor.shutdown();
+                            } else {
+                                executorServiceNewSingleThreadExecutor.shutdown();
+                                if (l9.E(intent)) {
+                                    l9.v("_nf", intent.getExtras());
+                                }
+                            }
+                        } catch (Throwable th) {
+                            executorServiceNewSingleThreadExecutor.shutdown();
+                            throw th;
+                        }
+                        break;
+                    } else {
+                        firebaseMessagingService = this;
+                    }
+                    firebaseMessagingService.c(new p50(extras));
+                    break;
+                case "send_error":
+                    if (intent.getStringExtra("google.message_id") == null) {
+                        intent.getStringExtra("message_id");
+                    }
+                    stringExtra2 = intent.getStringExtra("error");
+                    new s80(stringExtra2);
+                    if (stringExtra2 != null) {
+                        stringExtra2.toLowerCase(Locale.US).getClass();
+                    }
+                    firebaseMessagingService = this;
+                    break;
+                case "send_event":
+                    intent.getStringExtra("google.message_id");
+                    firebaseMessagingService = this;
+                    break;
+                default:
+                    Log.w("FirebaseMessaging", "Received message with unknown type: ".concat(stringExtra));
+                    firebaseMessagingService = this;
+                    break;
+            }
+        } else {
+            ArrayDeque arrayDeque = i;
+            if (!arrayDeque.contains(stringExtra3)) {
+                if (arrayDeque.size() >= 10) {
+                    arrayDeque.remove();
+                }
+                arrayDeque.add(stringExtra3);
+                stringExtra = intent.getStringExtra("message_type");
+                if (stringExtra == null) {
+                    stringExtra = "gcm";
+                }
+                switch (stringExtra) {
+                    case -2062414158:
+                        if (stringExtra.equals("deleted_messages")) {
+                        }
+                        break;
+                    case 102161:
+                        if (stringExtra.equals("gcm")) {
+                        }
+                        break;
+                    case 814694033:
+                        if (stringExtra.equals("send_error")) {
+                        }
+                        break;
+                    case 814800675:
+                        if (stringExtra.equals("send_event")) {
+                        }
+                        break;
+                }
+                /*  JADX ERROR: Method code generation error
+                    java.lang.NullPointerException: Switch insn not found in header
+                    	at java.base/java.util.Objects.requireNonNull(Objects.java:235)
+                    	at jadx.core.codegen.RegionGen.makeSwitch(RegionGen.java:246)
+                    	at jadx.core.dex.regions.SwitchRegion.generate(SwitchRegion.java:90)
+                    	at jadx.core.codegen.RegionGen.makeRegion(RegionGen.java:66)
+                    	at jadx.core.dex.regions.Region.generate(Region.java:35)
+                    	at jadx.core.codegen.RegionGen.makeRegion(RegionGen.java:66)
+                    	at jadx.core.codegen.RegionGen.makeRegionIndent(RegionGen.java:83)
+                    	at jadx.core.codegen.RegionGen.makeIf(RegionGen.java:126)
+                    	at jadx.core.dex.regions.conditions.IfRegion.generate(IfRegion.java:90)
+                    	at jadx.core.codegen.RegionGen.makeRegion(RegionGen.java:66)
+                    	at jadx.core.dex.regions.Region.generate(Region.java:35)
+                    	at jadx.core.codegen.RegionGen.makeRegion(RegionGen.java:66)
+                    	at jadx.core.codegen.RegionGen.makeRegionIndent(RegionGen.java:83)
+                    	at jadx.core.codegen.RegionGen.makeIf(RegionGen.java:140)
+                    	at jadx.core.dex.regions.conditions.IfRegion.generate(IfRegion.java:90)
+                    	at jadx.core.codegen.RegionGen.makeRegion(RegionGen.java:66)
+                    	at jadx.core.dex.regions.Region.generate(Region.java:35)
+                    	at jadx.core.codegen.RegionGen.makeRegion(RegionGen.java:66)
+                    	at jadx.core.dex.regions.Region.generate(Region.java:35)
+                    	at jadx.core.codegen.RegionGen.makeRegion(RegionGen.java:66)
+                    	at jadx.core.dex.regions.Region.generate(Region.java:35)
+                    	at jadx.core.codegen.RegionGen.makeRegion(RegionGen.java:66)
+                    	at jadx.core.codegen.MethodGen.addRegionInsns(MethodGen.java:291)
+                    	at jadx.core.codegen.MethodGen.addInstructions(MethodGen.java:270)
+                    	at jadx.core.codegen.ClassGen.addMethodCode(ClassGen.java:420)
+                    	at jadx.core.codegen.ClassGen.addMethod(ClassGen.java:345)
+                    	at jadx.core.codegen.ClassGen.lambda$addInnerClsAndMethods$3(ClassGen.java:299)
+                    	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:183)
+                    	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+                    	at java.base/java.util.stream.SortedOps$RefSortingSink.end(SortedOps.java:395)
+                    	at java.base/java.util.stream.Sink$ChainedReference.end(Sink.java:258)
+                    */
+                /*
+                    Method dump skipped, instruction units count: 498
+                    To view this dump add '--comments-level debug' option
+                */
+                throw new UnsupportedOperationException("Method not decompiled: com.google.firebase.messaging.FirebaseMessagingService.b(android.content.Intent):void");
+            }
+
+            @Override // android.app.Service
+            public final synchronized IBinder onBind(Intent intent) {
+                li0 li0Var;
+                try {
+                    if (Log.isLoggable("EnhancedIntentService", 3)) {
+                        Log.d("EnhancedIntentService", "Service received bind request");
+                    }
+                    li0Var = this.d;
+                    if (li0Var == null) {
+                        li0Var = new li0(new p60(7, this));
+                        this.d = li0Var;
+                    }
+                } catch (Throwable th) {
+                    throw th;
+                }
+                return li0Var;
+            }
+
+            @Override // android.app.Service
+            public final void onDestroy() {
+                this.c.shutdown();
+                super.onDestroy();
+            }
+
+            @Override // android.app.Service
+            public final int onStartCommand(Intent intent, int i2, int i3) {
+                synchronized (this.e) {
+                    this.f = i3;
+                    this.g++;
+                }
+                Intent intent2 = (Intent) ((ArrayDeque) y80.i().f).poll();
+                int i4 = 2;
+                if (intent2 == null) {
+                    a(intent);
+                    return 2;
+                }
+                hc0 hc0Var = new hc0();
+                this.c.execute(new ci(this, intent2, hc0Var, 2));
+                vo0 vo0Var = hc0Var.a;
+                if (vo0Var.h()) {
+                    a(intent);
+                    return 2;
+                }
+                vo0Var.a(new o30(), new gd(this, i4, intent));
+                return 3;
+            }
+
+            public void c(p50 p50Var) {
+            }
+
+            public void d(String str) {
+            }
+        }
+--- /tmp/jadxout/sources/com/verudanava/nava/NavaFirebaseMessagingService.java
+package com.verudanava.nava;
+
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import defpackage.bc;
+import defpackage.c00;
+import defpackage.d10;
+import defpackage.f10;
+import defpackage.h10;
+import defpackage.ht;
+import defpackage.jb0;
+import defpackage.k10;
+import defpackage.k6;
+import defpackage.l10;
+import defpackage.p50;
+import defpackage.si0;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Set;
+
+/* JADX INFO: compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* JADX INFO: loaded from: classes.dex */
+public final class NavaFirebaseMessagingService extends FirebaseMessagingService {
+    /* JADX WARN: Code duplicated, block: B:29:0x0082  */
+    @Override // com.google.firebase.messaging.FirebaseMessagingService
+    public final void c(p50 p50Var) {
+        String lowerCase;
+        String lowerCase2;
+        String string;
+        Set set = c00.a;
+        if (p50Var.d == null) {
+            Bundle bundle = p50Var.c;
+            k6 k6Var = new k6(0);
+            for (String str : bundle.keySet()) {
+                Object obj = bundle.get(str);
+                if (obj instanceof String) {
+                    String str2 = (String) obj;
+                    if (!str.startsWith("google.") && !str.startsWith("gcm.") && !str.equals("from") && !str.equals("message_type") && !str.equals("collapse_key")) {
+                        k6Var.put(str, str2);
+                    }
+                }
+            }
+            p50Var.d = k6Var;
+        }
+        HashMap map = new HashMap(p50Var.d);
+        String str3 = (String) map.get("url");
+        String string2 = str3 != null ? jb0.k0(str3).toString() : null;
+        if (string2 == null) {
+            string2 = "";
+        }
+        if (jb0.f0(string2)) {
+            string = null;
+        } else {
+            try {
+                Uri uri = Uri.parse(string2);
+                String scheme = uri.getScheme();
+                if (scheme != null) {
+                    lowerCase = scheme.toLowerCase(Locale.ROOT);
+                    lowerCase.getClass();
+                } else {
+                    lowerCase = null;
+                }
+                String host = uri.getHost();
+                if (host != null) {
+                    lowerCase2 = host.toLowerCase(Locale.ROOT);
+                    lowerCase2.getClass();
+                } else {
+                    lowerCase2 = null;
+                }
+                if (bc.d0(si0.p("https", "http"), lowerCase) && bc.d0(c00.a, lowerCase2)) {
+                    string = uri.buildUpon().scheme("https").authority("www.verudanava.com").build().toString();
+                } else {
+                    string = null;
+                }
+            } catch (Exception unused) {
+            }
+        }
+        if (string == null) {
+            return;
+        }
+        String str4 = (String) map.get("kind");
+        if (str4 == null) {
+            str4 = "";
+        }
+        String lowerCase3 = str4.toLowerCase(Locale.ROOT);
+        lowerCase3.getClass();
+        String str5 = (String) map.get("seriesTitle");
+        if (str5 == null) {
+            str5 = "";
+        }
+        String string3 = jb0.k0(str5).toString();
+        if (jb0.f0(string3)) {
+            string3 = "Takip ettiğin eser";
+        }
+        String str6 = (String) map.get("releaseTitle");
+        if (str6 == null) {
+            str6 = "";
+        }
+        String string4 = jb0.k0(str6).toString();
+        if (jb0.f0(string4)) {
+            string4 = lowerCase3.equals("volume") ? "Yeni cilt yayımlandı" : "Yeni bölüm yayımlandı";
+        }
+        String str7 = (String) map.get("notificationId");
+        if (str7 == null) {
+            str7 = "";
+        }
+        if (jb0.f0(str7)) {
+            str7 = string;
+        }
+        c00.a(this);
+        if (Build.VERSION.SDK_INT < 33 || ht.c(this, "android.permission.POST_NOTIFICATIONS") == 0) {
+            Intent intent = new Intent(this, (Class<?>) MainActivity.class);
+            intent.setFlags(603979776);
+            intent.putExtra("com.verudanava.nava.OPEN_URL", string);
+            PendingIntent activity = PendingIntent.getActivity(this, str7.hashCode(), intent, 201326592);
+            String strConcat = (lowerCase3.equals("volume") ? "Yeni cilt • " : "Yeni bölüm • ").concat(string3);
+            f10 f10Var = new f10(this, "nava_follower_releases");
+            f10Var.t.icon = android.R.drawable.ic_popup_reminder;
+            f10Var.e = f10.b(strConcat);
+            f10Var.f = f10.b(string4);
+            d10 d10Var = new d10();
+            d10Var.b = f10.b(string4);
+            f10Var.e(d10Var);
+            f10Var.g = activity;
+            f10Var.c(true);
+            f10Var.n = "event";
+            f10Var.j = 0;
+            Notification notificationA = f10Var.a();
+            notificationA.getClass();
+            l10 l10Var = new l10(this);
+            int iHashCode = str7.hashCode();
+            Bundle bundle2 = notificationA.extras;
+            if (bundle2 == null || !bundle2.getBoolean("android.support.useSideChannel")) {
+                l10Var.a.notify(null, iHashCode, notificationA);
+                return;
+            }
+            h10 h10Var = new h10(getPackageName(), iHashCode, notificationA);
+            synchronized (l10.e) {
+                try {
+                    k10 k10Var = l10.f;
+                    if (k10Var == null) {
+                        k10Var = new k10(getApplicationContext());
+                        l10.f = k10Var;
+                    }
+                    k10Var.b.obtainMessage(0, h10Var).sendToTarget();
+                } catch (Throwable th) {
+                    throw th;
+                }
+            }
+            l10Var.a.cancel(null, iHashCode);
+        }
+    }
+
+    @Override // com.google.firebase.messaging.FirebaseMessagingService
+    public final void d(String str) {
+        str.getClass();
+        getSharedPreferences("nava_push_token", 0).edit().putString("last", str).apply();
+    }
+}
