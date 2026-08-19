@@ -20,7 +20,7 @@ concurrency:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 3
     defaults:
       run:
         working-directory: notification-backend
@@ -42,7 +42,7 @@ jobs:
       - name: Test notification engine
         run: npm test
 
-      - name: Watch Blogger for five passes
+      - name: Scan Blogger now
         shell: bash
         run: |
           set -uo pipefail
@@ -51,14 +51,8 @@ jobs:
           echo "run_started=$(date -u +%FT%TZ)" | tee -a ../nava-diagnostics/latest.log
           echo "event=${GITHUB_EVENT_NAME}" | tee -a ../nava-diagnostics/latest.log
           echo "sha=${GITHUB_SHA}" | tee -a ../nava-diagnostics/latest.log
-          rc=0
-          for pass in 1 2 3 4 5; do
-            echo "===== NAVA V5 PASS $pass/5 =====" | tee -a ../nava-diagnostics/latest.log
-            npm run scan 2>&1 | tee -a ../nava-diagnostics/latest.log || rc=$?
-            if [ "$pass" != "5" ]; then
-              sleep 60
-            fi
-          done
+          npm run scan 2>&1 | tee -a ../nava-diagnostics/latest.log
+          rc=${PIPESTATUS[0]}
           echo "run_finished=$(date -u +%FT%TZ)" | tee -a ../nava-diagnostics/latest.log
           echo "exit_code=$rc" | tee -a ../nava-diagnostics/latest.log
           exit $rc
