@@ -1,0 +1,9 @@
+status=running
+started=2026-08-19T15:16:11Z
+signing_material=ok
+source_tag=v12.1.23
+source_apk=ok
+patch=ok
+android_build_tools=37.0.0
+status=failed
+finished=2026-08-19T15:16:14Z
