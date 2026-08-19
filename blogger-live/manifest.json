@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "version": "12.3.9-live.1",
-  "css": "releases/12.3.9-live.1.css",
-  "js": "releases/12.3.9-live.1.js",
-  "notes": "Initial no-op live layer. Baseline remains the Blogger theme."
+  "version": "12.3.9-live.2",
+  "css": "releases/12.3.9-live.2.css",
+  "js": "releases/12.3.9-live.2.js",
+  "notes": "Temporary self-removing live-loader connection test. Shows Nava Live check badge for 8 seconds."
 }
