@@ -5,9 +5,40 @@ from pathlib import Path
 
 RES_STRING_POOL_TYPE = 0x0001
 RES_XML_START_ELEMENT_TYPE = 0x0102
-OLD_VERSION = "12.1.25"
-NEW_VERSION = "12.1.26"
-NEW_CODE = 42
+OLD_VERSION = "12.1.26"
+NEW_VERSION = "12.1.27"
+NEW_CODE = 43
+
+PROFILE_ACTION_OLD = ".nava-profile-hero-actions{position:absolute!important;top:9px!important;right:9px!important;margin:0!important}"
+PROFILE_ACTION_NEW = "html.nava-app-v9 body.nava-app-profile .nava-profile-hero-actions{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;inset:auto!important;align-self:stretch!important;width:100%!important;margin:4px 0 0!important;display:flex!important}"
+CSS_PATCH_MARKER = "/* Nava Android v12.1.27 — profile/editor mobile layout fix. */"
+CSS_PATCH = r'''
+/* Nava Android v12.1.27 — profile/editor mobile layout fix. */
+html.nava-app-v9 body.nava-app-profile .nava-profile-hero{min-height:0!important}
+html.nava-app-v9 body.nava-app-profile .nava-profile-hero-inner{min-height:0!important;justify-content:flex-start!important;height:auto!important}
+html.nava-app-v9 body.nava-app-profile .nava-profile-hero .nava-profile-hero-actions{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;inset:auto!important;align-self:stretch!important;width:100%!important;margin:4px 0 0!important;display:flex!important}
+html.nava-app-v9 body.nava-app-profile .nava-profile-hero .nava-profile-edit{width:100%!important;min-height:38px!important;padding:8px 10px!important;justify-content:center!important;font-size:10.5px!important}
+
+html.nava-app-v9 .nava-profile-edit-modal{width:100%!important;max-width:none!important;height:min(94dvh,760px)!important;max-height:94dvh!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;border-radius:12px 12px 0 0!important;padding-bottom:0!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-modal-head{position:relative!important;top:auto!important;z-index:2!important;flex:0 0 auto!important;padding:10px 12px!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-modal-body{flex:1 1 auto!important;min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;padding:10px!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-modal-actions{position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;z-index:2!important;flex:0 0 auto!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;padding:8px 10px max(8px,env(safe-area-inset-bottom))!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-modal-actions .nava-btn{width:100%!important;min-width:0!important;margin:0!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-profile-edit-form{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-profile-edit-form *{box-sizing:border-box!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-field,html.nava-app-v9 .nava-profile-edit-modal .nava-profile-banner-settings,html.nava-app-v9 .nava-profile-edit-modal .nava-admin-profile-settings,html.nava-app-v9 .nava-profile-edit-modal .nava-admin-upload-grid,html.nava-app-v9 .nava-profile-edit-modal .nava-upload-card{min-width:0!important;max-width:100%!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-input,html.nava-app-v9 .nava-profile-edit-modal .nava-textarea,html.nava-app-v9 .nava-profile-edit-modal .nava-file-input{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-file-input{overflow:hidden!important;white-space:nowrap!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-avatar-picker{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-banner-picker{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-admin-upload-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:9px!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-upload-preview{display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;align-items:center!important;gap:8px!important;min-width:0!important;max-width:100%!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-upload-preview span,html.nava-app-v9 .nava-profile-edit-modal .nava-toggle-copy{min-width:0!important;overflow-wrap:anywhere!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-upload-remove{width:100%!important;max-width:100%!important;white-space:normal!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-toggle-row{align-items:center!important;gap:9px!important;min-width:0!important}
+html.nava-app-v9 .nava-profile-edit-modal .nava-switch{flex:0 0 44px!important}
+@media(max-width:380px){html.nava-app-v9 .nava-profile-edit-modal .nava-modal-actions{grid-template-columns:1fr!important}html.nava-app-v9 .nava-profile-edit-modal .nava-file-input::file-selector-button{width:100%!important;max-width:100%!important;margin:0 0 5px!important}}
+'''.strip()
 
 
 def u16(data, off):
@@ -152,6 +183,7 @@ def patch_manifest(raw, old_name=OLD_VERSION, new_name=NEW_VERSION, new_code=NEW
 
 def patch_js(original, replacement):
     markers = [
+        "/* Nava v12.1.26 — Firestore-safe Android push token registration.",
         "/* Nava v12.1.25 — Firestore-safe Android push token registration.",
         "/* Nava v12.1.24 — reliable FREE push token bridge.",
         "/* Nava v12.1.22 — FREE push token bridge."
@@ -169,10 +201,26 @@ def patch_js(original, replacement):
         raise ValueError("push bridge end marker not found")
     end += len(end_marker)
     patched = original[:start] + replacement.rstrip() + original[end:]
-    if "appVersion:'12.1.26'" not in patched:
-        raise ValueError("12.1.26 token registration marker missing after patch")
+    if "appVersion:'12.1.27'" not in patched:
+        raise ValueError("12.1.27 token registration marker missing after patch")
     if ".get().then(function(snapshot)" in replacement or "ref.get()" in replacement:
-        raise ValueError("Forbidden pre-read exists in 12.1.26 registration block")
+        raise ValueError("Forbidden pre-read exists in 12.1.27 registration block")
+    return patched
+
+
+def patch_css(original):
+    if CSS_PATCH_MARKER in original:
+        raise ValueError("12.1.27 CSS patch already present in source APK")
+    if PROFILE_ACTION_OLD not in original:
+        raise ValueError("Expected absolute profile action rule not found in Android CSS")
+    patched = original.replace(PROFILE_ACTION_OLD, PROFILE_ACTION_NEW, 1)
+    patched = patched.rstrip() + "\n\n" + CSS_PATCH + "\n"
+    if PROFILE_ACTION_OLD in patched:
+        raise ValueError("Old absolute profile action rule still present")
+    if CSS_PATCH_MARKER not in patched:
+        raise ValueError("Profile editor CSS patch marker missing")
+    if ".nava-profile-edit-modal" not in patched:
+        raise ValueError("Profile editor modal patch missing")
     return patched
 
 
@@ -196,10 +244,13 @@ def main():
 
     with zipfile.ZipFile(source, "r") as zin:
         names = set(zin.namelist())
-        if "assets/nava_app_v11.js" not in names or "AndroidManifest.xml" not in names:
+        required = {"assets/nava_app_v11.js", "assets/nava_app_v11.css", "AndroidManifest.xml"}
+        if not required.issubset(names):
             raise ValueError("Expected Nava APK files are missing")
         original_js = zin.read("assets/nava_app_v11.js").decode("utf-8")
+        original_css = zin.read("assets/nava_app_v11.css").decode("utf-8")
         patched_js = patch_js(original_js, push_block).encode("utf-8")
+        patched_css = patch_css(original_css).encode("utf-8")
         patched_manifest = patch_manifest(zin.read("AndroidManifest.xml"), new_code=new_code)
 
         with zipfile.ZipFile(target, "w") as zout:
@@ -208,20 +259,33 @@ def main():
                     continue
                 if info.filename == "assets/nava_app_v11.js":
                     zout.writestr(info, patched_js)
+                elif info.filename == "assets/nava_app_v11.css":
+                    zout.writestr(info, patched_css)
                 elif info.filename == "AndroidManifest.xml":
                     zout.writestr(info, patched_manifest)
                 else:
                     zout.writestr(info, zin.read(info.filename))
 
-    with zipfile.ZipFile(target, "r") as check:
+    allowed_changes = {"assets/nava_app_v11.js", "assets/nava_app_v11.css", "AndroidManifest.xml"}
+    with zipfile.ZipFile(source, "r") as src_check, zipfile.ZipFile(target, "r") as check:
         js = check.read("assets/nava_app_v11.js").decode("utf-8")
+        css = check.read("assets/nava_app_v11.css").decode("utf-8")
         manifest = check.read("AndroidManifest.xml")
-        if "appVersion:'12.1.26'" not in js:
+        if "appVersion:'12.1.27'" not in js:
             raise ValueError("Final APK JS verification failed")
+        if CSS_PATCH_MARKER not in css or PROFILE_ACTION_OLD in css:
+            raise ValueError("Final APK CSS verification failed")
         if manifest_version_code(manifest) != new_code:
             raise ValueError("Final APK manifest verification failed")
+        for name in src_check.namelist():
+            if is_old_signature_entry(name) or name in allowed_changes:
+                continue
+            if name not in check.namelist():
+                raise ValueError(f"Unexpected missing APK entry: {name}")
+            if src_check.read(name) != check.read(name):
+                raise ValueError(f"Unexpected changed APK entry: {name}")
 
-    print(f"PATCH_OK versionCode={new_code} js=12.1.26")
+    print(f"PATCH_OK versionCode={new_code} js=12.1.27 css=profile-editor-v12127 unchanged_entries=ok")
 
 
 if __name__ == "__main__":
