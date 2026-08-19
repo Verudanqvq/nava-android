@@ -1,54 +1,54 @@
-run_started=2026-08-19T17:18:47Z
-event=push
-sha=06c36df058e124d1e5621883696a7c8f0507c4c1
+run_started=2026-08-19T17:56:18Z
+event=schedule
+sha=90b0bbb01f8eccd8f6fda6f62f3f73de39a3c301
 ===== NAVA PASS 1/5 =====
 
 > scan
 > node scan.mjs
 
-FEED_MERGED {"sourcesOk":6,"sourceErrors":0,"entries":24}
-NAVA_SCAN_RESULT_V5 {"baseline":false,"feedCount":24,"delivered":0,"retry":0,"failed":0,"ignored":0,"completedSkipped":0}
+FEED_MERGED {"sourcesOk":6,"sourceErrors":0,"entries":25}
+NAVA_SCAN_RESULT_V5 {"baseline":false,"feedCount":25,"delivered":0,"retry":0,"failed":0,"ignored":0,"completedSkipped":0}
 ===== PUSH RETRY 1/5 =====
+NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_nko5bj","title":"Tensura Cilt 19","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_xln9oy","title":"Tensura Cilt 18","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_12rk9g1","title":"Tensura Cilt 17","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_1bimc78","title":"Tensura Cilt 16","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_bbqkgt","title":"Tensura Cilt 13","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_1aeqyib","title":"Cilt 12 Bölüm 0.5","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_1dq47dc","title":"Tensura Cilt 12","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
-NAVA_PUSH_RETRY_RESULT {"releases":6,"sent":0,"pendingNoToken":0,"failures":0}
+NAVA_PUSH_RETRY_RESULT {"releases":7,"sent":0,"pendingNoToken":0,"failures":0}
 ===== NAVA PASS 2/5 =====
 
 > scan
 > node scan.mjs
 
-FEED_MERGED {"sourcesOk":6,"sourceErrors":0,"entries":24}
-NAVA_SCAN_RESULT_V5 {"baseline":false,"feedCount":24,"delivered":0,"retry":0,"failed":0,"ignored":0,"completedSkipped":0}
+FEED_MERGED {"sourcesOk":6,"sourceErrors":0,"entries":25}
+NAVA_SCAN_RESULT_V5 {"baseline":false,"feedCount":25,"delivered":0,"retry":0,"failed":0,"ignored":0,"completedSkipped":0}
 ===== PUSH RETRY 2/5 =====
+NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_nko5bj","title":"Tensura Cilt 19","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_xln9oy","title":"Tensura Cilt 18","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_12rk9g1","title":"Tensura Cilt 17","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_1bimc78","title":"Tensura Cilt 16","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_bbqkgt","title":"Tensura Cilt 13","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_1aeqyib","title":"Cilt 12 Bölüm 0.5","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_1dq47dc","title":"Tensura Cilt 12","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
-NAVA_PUSH_RETRY_RESULT {"releases":6,"sent":0,"pendingNoToken":0,"failures":0}
+NAVA_PUSH_RETRY_RESULT {"releases":7,"sent":0,"pendingNoToken":0,"failures":0}
 ===== NAVA PASS 3/5 =====
 
 > scan
 > node scan.mjs
 
 FEED_MERGED {"sourcesOk":6,"sourceErrors":0,"entries":25}
-{"release":"Tensura Cilt 19","series":"Tensei Shitara Slime Datta Ken (Light Novel)","followers":2,"siteNotifications":2,"push":{"success":1,"failed":0,"cleaned":0}}
-NAVA_SCAN_RESULT_V5 {"baseline":false,"feedCount":25,"delivered":1,"retry":0,"failed":0,"ignored":0,"completedSkipped":0}
-NAVA_SCAN_DETAILS_V5 [{"postId":"3862773411839773499","title":"Tensura Cilt 19","status":"delivered","series":"Tensei Shitara Slime Datta Ken (Light Novel)"}]
+NAVA_SCAN_RESULT_V5 {"baseline":false,"feedCount":25,"delivered":0,"retry":0,"failed":0,"ignored":0,"completedSkipped":0}
 ===== PUSH RETRY 3/5 =====
-NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_nko5bj","title":"Tensura Cilt 19","followers":2,"tokens":1,"attempted":1,"success":1,"failed":0,"newlyDelivered":1}
+NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_nko5bj","title":"Tensura Cilt 19","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_xln9oy","title":"Tensura Cilt 18","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_12rk9g1","title":"Tensura Cilt 17","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_1bimc78","title":"Tensura Cilt 16","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_bbqkgt","title":"Tensura Cilt 13","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_1aeqyib","title":"Cilt 12 Bölüm 0.5","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_1dq47dc","title":"Tensura Cilt 12","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
-NAVA_PUSH_RETRY_RESULT {"releases":7,"sent":1,"pendingNoToken":0,"failures":0}
+NAVA_PUSH_RETRY_RESULT {"releases":7,"sent":0,"pendingNoToken":0,"failures":0}
 ===== NAVA PASS 4/5 =====
 
 > scan
@@ -113,5 +113,5 @@ DIAG_POST {"postId":"816954997184127789","title":"Tensei Shitara Slime Datta Ken
 DIAG_SERIES_FOLLOWERS {"seriesId":"1683086536901687502","title":"Mushoku Tensei: Jobless Reincarnation (Light Novel)","url":"https://www.verudanava.com/2026/07/mushoku-tensei-jobless-reincarnation.html?m=1","followers":1}
 DIAG_SERIES_FOLLOWERS {"seriesId":"4248616290363777800","title":"The Beginning After the End (Web Novel)","url":"https://www.verudanava.com/2026/07/the-beginning-after-end-web-novel-kapag.html?m=1","followers":1}
 DIAG_SERIES_FOLLOWERS {"seriesId":"816954997184127789","title":"Tensei Shitara Slime Datta Ken (Light Novel)","url":"https://www.verudanava.com/2026/07/tensei-shitara-slime-datta-ken-light.html","followers":2}
-run_finished=2026-08-19T17:23:46Z
+run_finished=2026-08-19T18:01:48Z
 exit_code=0
