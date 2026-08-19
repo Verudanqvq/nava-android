@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: nava-follower-notifications-v4
+  group: nava-follower-notifications-v5
   cancel-in-progress: false
 
 jobs:
@@ -34,15 +34,15 @@ jobs:
       - name: Install backend
         run: npm install --omit=dev --no-audit --no-fund
 
-      - name: Test matcher
+      - name: Test notification engine
         run: npm test
 
-      - name: Watch Blogger for 5 minutes
+      - name: Watch Blogger for five passes
         shell: bash
         run: |
           set -euo pipefail
           for pass in 1 2 3 4 5; do
-            echo "===== NAVA PASS $pass/5 ====="
+            echo "===== NAVA V5 PASS $pass/5 ====="
             npm run scan
             if [ "$pass" != "5" ]; then
               sleep 60
