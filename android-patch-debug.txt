@@ -1,0 +1,6 @@
+download_rc=0
+has_v12124_marker= True
+has_v12122_marker= False
+has_appversion_12124= True
+PATCH_OK versionCode=41 js=12.1.25
+patch_rc=0
