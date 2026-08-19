@@ -1,0 +1,56 @@
+name: Nava notification scheduler diagnostic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-notification-diagnose.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: notification-backend/package-lock.json
+      - name: Install
+        working-directory: notification-backend
+        run: npm ci --omit=dev --no-audit --no-fund
+      - name: Read scheduler state without scanning
+        working-directory: notification-backend
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE' > ../notification-scheduler-diagnose.txt
+          import { initializeApp, cert } from 'firebase-admin/app';
+          import { getFirestore } from 'firebase-admin/firestore';
+          const sa=JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT||'{}');
+          initializeApp({credential:cert(sa),projectId:'nava-01'});
+          const db=getFirestore();
+          const fmt=v=>v&&typeof v.toDate==='function'?v.toDate().toISOString():v||null;
+          const engine=await db.collection('releaseAutomation').doc('bloggerScannerGithubV5').get();
+          console.log('checkedAt='+new Date().toISOString());
+          if(engine.exists){const d=engine.data()||{};console.log('engine.updatedAt='+fmt(d.updatedAt));console.log('engine.lastResult='+JSON.stringify(d.lastResult||{}));}
+          const releases=await db.collection('chapterReleases').orderBy('updatedAt','desc').limit(5).get();
+          for(const x of releases.docs){const d=x.data()||{};console.log('release='+JSON.stringify({id:x.id,title:d.title||'',seriesTitle:d.seriesTitle||'',status:d.status||'',followers:d.followerCount||0,sent:d.sentCount||0,updatedAt:fmt(d.updatedAt),completedAt:fmt(d.completedAt)}));}
+          const posts=await db.collection('releaseAutomationPostsV5').orderBy('updatedAt','desc').limit(8).get();
+          for(const x of posts.docs){const d=x.data()||{};console.log('post='+JSON.stringify({title:d.title||'',kind:d.kind||'',status:d.status||'',updatedAt:fmt(d.updatedAt),releaseId:d.releaseId||'',reason:d.reason||''}));}
+          const tokens=await db.collection('devicePushTokens').where('platform','==','android').get();
+          const versions={};for(const x of tokens.docs){const v=String((x.data()||{}).appVersion||'unknown');versions[v]=(versions[v]||0)+1;}
+          console.log('androidTokens='+tokens.size+' versions='+JSON.stringify(versions));
+          NODE
+      - name: Persist diagnostic
+        run: |
+          git config user.name 'Nava Diagnostic Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add notification-scheduler-diagnose.txt
+          git commit -m 'Record notification scheduler diagnostic [skip ci]' || true
+          git push || true
