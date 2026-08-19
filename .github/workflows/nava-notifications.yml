@@ -53,6 +53,10 @@ jobs:
           echo "sha=${GITHUB_SHA}" | tee -a ../nava-diagnostics/latest.log
           npm run scan 2>&1 | tee -a ../nava-diagnostics/latest.log
           rc=${PIPESTATUS[0]}
+          echo "===== LIVE FEED/STATE DIAG =====" | tee -a ../nava-diagnostics/latest.log
+          node diagnose.mjs 2>&1 | tee -a ../nava-diagnostics/latest.log
+          diag_rc=${PIPESTATUS[0]}
+          if [ "$rc" -eq 0 ] && [ "$diag_rc" -ne 0 ]; then rc=$diag_rc; fi
           echo "run_finished=$(date -u +%FT%TZ)" | tee -a ../nava-diagnostics/latest.log
           echo "exit_code=$rc" | tee -a ../nava-diagnostics/latest.log
           exit $rc
