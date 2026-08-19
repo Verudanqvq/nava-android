@@ -1,0 +1,827 @@
+=== BEFORE ===
+{
+  "checkedAt": "2026-08-19T22:32:09.787Z",
+  "engine": {
+    "exists": true,
+    "initialized": true,
+    "version": 5,
+    "updatedAt": "2026-08-19T22:32:00.503Z",
+    "lastResult": {
+      "failed": 0,
+      "retry": 0,
+      "ignored": 0,
+      "baseline": false,
+      "completedSkipped": 0,
+      "feedCount": 26,
+      "delivered": 1
+    },
+    "baselineCount": 21
+  },
+  "tokens": {
+    "docs": 1,
+    "validTokenDocs": 1,
+    "uniqueUids": 1,
+    "versions": {
+      "12.1.28": 1
+    },
+    "platforms": {
+      "android": 1
+    },
+    "newestAt": "2026-08-19T22:29:09.838Z"
+  },
+  "followers": [
+    {
+      "seriesId": "816954997184127789",
+      "title": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "followers": 2
+    },
+    {
+      "seriesId": "1683086536901687502",
+      "title": "Mushoku Tensei: Jobless Reincarnation (Light Novel)",
+      "followers": 1
+    },
+    {
+      "seriesId": "4248616290363777800",
+      "title": "The Beginning After the End (Web Novel)",
+      "followers": 1
+    }
+  ],
+  "recentPosts": [
+    {
+      "id": "4771716501605087453",
+      "title": "Tensura Cilt 20",
+      "kind": "volume",
+      "status": "completed",
+      "reason": "",
+      "updatedAt": "2026-08-19T22:31:54.925Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-20.html"
+    },
+    {
+      "id": "3862773411839773499",
+      "title": "Tensura Cilt 19",
+      "kind": "volume",
+      "status": "completed",
+      "reason": "",
+      "updatedAt": "2026-08-19T17:21:14.049Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-19.html"
+    },
+    {
+      "id": "9131240884834478922",
+      "title": "Tensura Cilt 18",
+      "kind": "volume",
+      "status": "completed",
+      "reason": "",
+      "updatedAt": "2026-08-19T17:16:42.375Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-18.html"
+    },
+    {
+      "id": "4568242808877453256",
+      "title": "Tensura Cilt 17",
+      "kind": "volume",
+      "status": "completed",
+      "reason": "",
+      "updatedAt": "2026-08-19T15:33:32.932Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-17.html"
+    },
+    {
+      "id": "8659357545154013700",
+      "title": "Tensura Cilt 16",
+      "kind": "volume",
+      "status": "completed",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:36:21.515Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-16.html"
+    },
+    {
+      "id": "1314776166666248700",
+      "title": "Cilt 11 Bölüm 2",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-2.html"
+    },
+    {
+      "id": "1683086536901687502",
+      "title": "Mushoku Tensei: Jobless Reincarnation (Light Novel)",
+      "kind": "",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/mushoku-tensei-jobless-reincarnation.html"
+    },
+    {
+      "id": "1774668870858108757",
+      "title": "Tensura Cilt 13",
+      "kind": "volume",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-13.html"
+    },
+    {
+      "id": "2357728344893571705",
+      "title": "Tensura Cilt 11",
+      "kind": "volume",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/tensura-cilt-11.html"
+    },
+    {
+      "id": "2838072966589071911",
+      "title": "Re:Zero Kara Hajimeru Isekai Seikatsu (Light Novel)",
+      "kind": "",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/rezero-kara-hajimeru-isekai-seikatsu.html"
+    },
+    {
+      "id": "312449356060881417",
+      "title": "Cilt 11 Bölüm 0",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-0.html"
+    },
+    {
+      "id": "3685696735437175421",
+      "title": "Cilt 11 Bölüm 4",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-4.html"
+    },
+    {
+      "id": "3867508801863209895",
+      "title": "Tensura Cilt 15",
+      "kind": "volume",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-15.html"
+    },
+    {
+      "id": "4248616290363777800",
+      "title": "The Beginning After the End (Web Novel)",
+      "kind": "",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/the-beginning-after-end-web-novel-kapag.html"
+    },
+    {
+      "id": "4298603139426706917",
+      "title": "Cilt 11 Bölüm 3",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-3.html"
+    },
+    {
+      "id": "5354967993880862525",
+      "title": "Cilt 12 Bölüm 1",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/08/cilt-12-bolum-1.html"
+    },
+    {
+      "id": "5571224105736483720",
+      "title": "Cilt 11 Bölüm 7",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-7.html"
+    },
+    {
+      "id": "6503376432532001532",
+      "title": "Cilt 12 Bölüm 0.5",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/08/cilt-12-bolum-05.html"
+    },
+    {
+      "id": "7037184379363536636",
+      "title": "Tensura Cilt 12",
+      "kind": "volume",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-12.html"
+    },
+    {
+      "id": "7456521106602551348",
+      "title": "Cilt 11 Bölüm 5",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-5.html"
+    }
+  ],
+  "recentReleases": [
+    {
+      "id": "816954997184127789_1j6s4rz",
+      "title": "Tensura Cilt 20",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T22:31:54.563Z",
+      "updatedAt": "2026-08-19T22:31:54.563Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-20.html"
+    },
+    {
+      "id": "816954997184127789_nko5bj",
+      "title": "Tensura Cilt 19",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T17:21:13.904Z",
+      "updatedAt": "2026-08-19T17:21:13.904Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-19.html"
+    },
+    {
+      "id": "816954997184127789_xln9oy",
+      "title": "Tensura Cilt 18",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T17:16:42.192Z",
+      "updatedAt": "2026-08-19T17:16:42.192Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-18.html"
+    },
+    {
+      "id": "816954997184127789_12rk9g1",
+      "title": "Tensura Cilt 17",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T15:33:32.439Z",
+      "updatedAt": "2026-08-19T15:33:32.439Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-17.html"
+    },
+    {
+      "id": "816954997184127789_1bimc78",
+      "title": "Tensura Cilt 16",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T14:36:21.341Z",
+      "updatedAt": "2026-08-19T14:36:21.341Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-16.html"
+    },
+    {
+      "id": "816954997184127789_bbqkgt",
+      "title": "Tensura Cilt 13",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T13:30:52.656Z",
+      "updatedAt": "2026-08-19T13:30:52.656Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-13.html"
+    },
+    {
+      "id": "816954997184127789_1aeqyib",
+      "title": "Cilt 12 Bölüm 0.5",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T13:30:49.052Z",
+      "updatedAt": "2026-08-19T13:30:49.052Z",
+      "url": "https://www.verudanava.com/2026/08/cilt-12-bolum-05.html"
+    },
+    {
+      "id": "816954997184127789_1dq47dc",
+      "title": "Tensura Cilt 12",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T13:14:39.227Z",
+      "updatedAt": "2026-08-19T13:14:39.227Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-12.html"
+    },
+    {
+      "id": "816954997184127789_r379ms",
+      "title": "Cilt 11 Bölüm 3",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": -1,
+      "pushFailure": -1,
+      "pushTokenCount": -1,
+      "pushPending": -1,
+      "completedAt": "",
+      "updatedAt": "2026-07-25T11:31:01.547Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-4.html"
+    },
+    {
+      "id": "816954997184127789_1juubdz",
+      "title": "Cilt 11 Bölüm 3",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "",
+      "followers": 1,
+      "siteSent": 1,
+      "pushSuccess": -1,
+      "pushFailure": -1,
+      "pushTokenCount": -1,
+      "pushPending": -1,
+      "completedAt": "",
+      "updatedAt": "2026-07-25T11:29:54.588Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-3.html"
+    }
+  ]
+}
+
+=== TESTS ===
+
+> test
+> node test.mjs
+
+{
+  "splitLabels": "PASS",
+  "combinedLabels": "PASS",
+  "newVolume": "PASS",
+  "crossSeriesIsolation": "PASS",
+  "bloggerCanonicalization": "PASS",
+  "dedupeDomainParity": "PASS",
+  "seriesPageAliasDiscovery": "PASS",
+  "newPostAfterBaseline": "PASS",
+  "retryUnmatchedOrFailed": "PASS",
+  "mergedMultipleFeedSources": "PASS",
+  "firstRunBaselineNoSpam": "PASS",
+  "newPostSend": "PASS",
+  "unresolvedPostRetryThenSend": "PASS",
+  "completedReleaseNoDuplicate": "PASS"
+}
+
+=== SCAN RC ===
+0
+=== SCAN LOG ===
+
+> scan
+> node scan.mjs
+
+FEED_MERGED {"sourcesOk":6,"sourceErrors":0,"entries":26}
+NAVA_SCAN_RESULT_V5 {"baseline":false,"feedCount":26,"delivered":0,"retry":0,"failed":0,"ignored":0,"completedSkipped":0}
+
+=== RETRY RC ===
+0
+=== RETRY LOG ===
+NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_1j6s4rz","title":"Tensura Cilt 20","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
+NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_nko5bj","title":"Tensura Cilt 19","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
+NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_xln9oy","title":"Tensura Cilt 18","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
+NAVA_PUSH_RETRY_RESULT {"releases":3,"sent":0,"pendingNoToken":0,"failures":0}
+
+=== AFTER ===
+{
+  "checkedAt": "2026-08-19T22:32:30.978Z",
+  "engine": {
+    "exists": true,
+    "initialized": true,
+    "version": 5,
+    "updatedAt": "2026-08-19T22:32:23.310Z",
+    "lastResult": {
+      "failed": 0,
+      "retry": 0,
+      "ignored": 0,
+      "baseline": false,
+      "completedSkipped": 0,
+      "feedCount": 26,
+      "delivered": 0
+    },
+    "baselineCount": 21
+  },
+  "tokens": {
+    "docs": 1,
+    "validTokenDocs": 1,
+    "uniqueUids": 1,
+    "versions": {
+      "12.1.28": 1
+    },
+    "platforms": {
+      "android": 1
+    },
+    "newestAt": "2026-08-19T22:29:09.838Z"
+  },
+  "followers": [
+    {
+      "seriesId": "816954997184127789",
+      "title": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "followers": 2
+    },
+    {
+      "seriesId": "1683086536901687502",
+      "title": "Mushoku Tensei: Jobless Reincarnation (Light Novel)",
+      "followers": 1
+    },
+    {
+      "seriesId": "4248616290363777800",
+      "title": "The Beginning After the End (Web Novel)",
+      "followers": 1
+    }
+  ],
+  "recentPosts": [
+    {
+      "id": "4771716501605087453",
+      "title": "Tensura Cilt 20",
+      "kind": "volume",
+      "status": "completed",
+      "reason": "",
+      "updatedAt": "2026-08-19T22:31:54.925Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-20.html"
+    },
+    {
+      "id": "3862773411839773499",
+      "title": "Tensura Cilt 19",
+      "kind": "volume",
+      "status": "completed",
+      "reason": "",
+      "updatedAt": "2026-08-19T17:21:14.049Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-19.html"
+    },
+    {
+      "id": "9131240884834478922",
+      "title": "Tensura Cilt 18",
+      "kind": "volume",
+      "status": "completed",
+      "reason": "",
+      "updatedAt": "2026-08-19T17:16:42.375Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-18.html"
+    },
+    {
+      "id": "4568242808877453256",
+      "title": "Tensura Cilt 17",
+      "kind": "volume",
+      "status": "completed",
+      "reason": "",
+      "updatedAt": "2026-08-19T15:33:32.932Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-17.html"
+    },
+    {
+      "id": "8659357545154013700",
+      "title": "Tensura Cilt 16",
+      "kind": "volume",
+      "status": "completed",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:36:21.515Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-16.html"
+    },
+    {
+      "id": "1314776166666248700",
+      "title": "Cilt 11 Bölüm 2",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-2.html"
+    },
+    {
+      "id": "1683086536901687502",
+      "title": "Mushoku Tensei: Jobless Reincarnation (Light Novel)",
+      "kind": "",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/mushoku-tensei-jobless-reincarnation.html"
+    },
+    {
+      "id": "1774668870858108757",
+      "title": "Tensura Cilt 13",
+      "kind": "volume",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-13.html"
+    },
+    {
+      "id": "2357728344893571705",
+      "title": "Tensura Cilt 11",
+      "kind": "volume",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/tensura-cilt-11.html"
+    },
+    {
+      "id": "2838072966589071911",
+      "title": "Re:Zero Kara Hajimeru Isekai Seikatsu (Light Novel)",
+      "kind": "",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/rezero-kara-hajimeru-isekai-seikatsu.html"
+    },
+    {
+      "id": "312449356060881417",
+      "title": "Cilt 11 Bölüm 0",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-0.html"
+    },
+    {
+      "id": "3685696735437175421",
+      "title": "Cilt 11 Bölüm 4",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-4.html"
+    },
+    {
+      "id": "3867508801863209895",
+      "title": "Tensura Cilt 15",
+      "kind": "volume",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-15.html"
+    },
+    {
+      "id": "4248616290363777800",
+      "title": "The Beginning After the End (Web Novel)",
+      "kind": "",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/the-beginning-after-end-web-novel-kapag.html"
+    },
+    {
+      "id": "4298603139426706917",
+      "title": "Cilt 11 Bölüm 3",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-3.html"
+    },
+    {
+      "id": "5354967993880862525",
+      "title": "Cilt 12 Bölüm 1",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/08/cilt-12-bolum-1.html"
+    },
+    {
+      "id": "5571224105736483720",
+      "title": "Cilt 11 Bölüm 7",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-7.html"
+    },
+    {
+      "id": "6503376432532001532",
+      "title": "Cilt 12 Bölüm 0.5",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/08/cilt-12-bolum-05.html"
+    },
+    {
+      "id": "7037184379363536636",
+      "title": "Tensura Cilt 12",
+      "kind": "volume",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-12.html"
+    },
+    {
+      "id": "7456521106602551348",
+      "title": "Cilt 11 Bölüm 5",
+      "kind": "chapter",
+      "status": "baseline",
+      "reason": "",
+      "updatedAt": "2026-08-19T14:24:21.342Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-5.html"
+    }
+  ],
+  "recentReleases": [
+    {
+      "id": "816954997184127789_1j6s4rz",
+      "title": "Tensura Cilt 20",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T22:31:54.563Z",
+      "updatedAt": "2026-08-19T22:31:54.563Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-20.html"
+    },
+    {
+      "id": "816954997184127789_nko5bj",
+      "title": "Tensura Cilt 19",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T17:21:13.904Z",
+      "updatedAt": "2026-08-19T17:21:13.904Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-19.html"
+    },
+    {
+      "id": "816954997184127789_xln9oy",
+      "title": "Tensura Cilt 18",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T17:16:42.192Z",
+      "updatedAt": "2026-08-19T17:16:42.192Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-18.html"
+    },
+    {
+      "id": "816954997184127789_12rk9g1",
+      "title": "Tensura Cilt 17",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T15:33:32.439Z",
+      "updatedAt": "2026-08-19T15:33:32.439Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-17.html"
+    },
+    {
+      "id": "816954997184127789_1bimc78",
+      "title": "Tensura Cilt 16",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T14:36:21.341Z",
+      "updatedAt": "2026-08-19T14:36:21.341Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-16.html"
+    },
+    {
+      "id": "816954997184127789_bbqkgt",
+      "title": "Tensura Cilt 13",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T13:30:52.656Z",
+      "updatedAt": "2026-08-19T13:30:52.656Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-13.html"
+    },
+    {
+      "id": "816954997184127789_1aeqyib",
+      "title": "Cilt 12 Bölüm 0.5",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T13:30:49.052Z",
+      "updatedAt": "2026-08-19T13:30:49.052Z",
+      "url": "https://www.verudanava.com/2026/08/cilt-12-bolum-05.html"
+    },
+    {
+      "id": "816954997184127789_1dq47dc",
+      "title": "Tensura Cilt 12",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "completed",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": 1,
+      "pushFailure": 0,
+      "pushTokenCount": 1,
+      "pushPending": 0,
+      "completedAt": "2026-08-19T13:14:39.227Z",
+      "updatedAt": "2026-08-19T13:14:39.227Z",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-12.html"
+    },
+    {
+      "id": "816954997184127789_r379ms",
+      "title": "Cilt 11 Bölüm 3",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "",
+      "followers": 2,
+      "siteSent": 2,
+      "pushSuccess": -1,
+      "pushFailure": -1,
+      "pushTokenCount": -1,
+      "pushPending": -1,
+      "completedAt": "",
+      "updatedAt": "2026-07-25T11:31:01.547Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-4.html"
+    },
+    {
+      "id": "816954997184127789_1juubdz",
+      "title": "Cilt 11 Bölüm 3",
+      "seriesId": "816954997184127789",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "status": "",
+      "followers": 1,
+      "siteSent": 1,
+      "pushSuccess": -1,
+      "pushFailure": -1,
+      "pushTokenCount": -1,
+      "pushPending": -1,
+      "completedAt": "",
+      "updatedAt": "2026-07-25T11:29:54.588Z",
+      "url": "https://www.verudanava.com/2026/07/cilt-11-bolum-3.html"
+    }
+  ]
+}
