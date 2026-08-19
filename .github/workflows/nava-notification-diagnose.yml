@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/nava-notification-diagnose.yml"
+      - "notification-backend/.scheduler-kick"
 
 permissions:
   contents: write
@@ -25,6 +26,8 @@ jobs:
       - name: Install
         working-directory: notification-backend
         run: npm ci --omit=dev --no-audit --no-fund
+      - name: Let watcher finish first
+        run: sleep 25
       - name: Read scheduler state without scanning
         working-directory: notification-backend
         shell: bash
@@ -53,4 +56,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add notification-scheduler-diagnose.txt
           git commit -m 'Record notification scheduler diagnostic [skip ci]' || true
+          git pull --rebase || true
           git push || true
