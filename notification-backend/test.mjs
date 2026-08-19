@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import {
   canonicalUrl, relationCandidates, parseEntry, seriesRecord,
-  resolveSeries, releaseId, hrefsFromHtml, unseenPostIds
+  resolveSeries, releaseId, hrefsFromHtml, unseenPostIds,
+  mergeEntriesByPostId, decidePostAction
 } from "./core.mjs";
 
 function entry(id, title, labels, url) {
@@ -69,14 +70,36 @@ const hrefs = hrefsFromHtml(
 );
 assert.deepEqual(hrefs,["https://www.verudanava.com/2026/08/tensura-cilt-12.html"]);
 
-
 const feedState = [{postId:"old1"},{postId:"old2"},{postId:"new1"}];
 assert.deepEqual(unseenPostIds(feedState,["old1","old2"]),["new1"]);
 assert.deepEqual(unseenPostIds(feedState,["old1","old2","new1"]),[]);
-
-// Unmatched/failed posts are intentionally not included in the state helper input;
-// when the state still lacks their ID, they remain candidates on the next pass.
 assert.deepEqual(unseenPostIds([{postId:"retry1"}],[]),["retry1"]);
+
+const feedA = [
+  entry("10001","Tensura Cilt 14",["Cilt","Tensura"],"https://www.verudanava.com/2026/08/tensura-cilt-14.html"),
+  entry("10002","Cilt 14 Bölüm 1",["Bölüm","Tensura Cilt 14"],"https://www.verudanava.com/2026/08/tensura-c14-b1.html")
+];
+const feedB = [feedA[1]];
+assert.equal(mergeEntriesByPostId([feedA,feedB]).length,2);
+
+assert.equal(decidePostAction({
+  initialized:false,postState:"",releaseCompleted:false,isRelease:true,seriesResolved:true
+}),"baseline");
+assert.equal(decidePostAction({
+  initialized:true,postState:"",releaseCompleted:false,isRelease:true,seriesResolved:true
+}),"send");
+assert.equal(decidePostAction({
+  initialized:true,postState:"retry",releaseCompleted:false,isRelease:true,seriesResolved:false
+}),"retry");
+assert.equal(decidePostAction({
+  initialized:true,postState:"retry",releaseCompleted:false,isRelease:true,seriesResolved:true
+}),"send");
+assert.equal(decidePostAction({
+  initialized:true,postState:"",releaseCompleted:true,isRelease:true,seriesResolved:true
+}),"complete");
+assert.equal(decidePostAction({
+  initialized:true,postState:"",releaseCompleted:false,isRelease:false,seriesResolved:false
+}),"ignore");
 
 console.log(JSON.stringify({
   splitLabels:"PASS",
@@ -87,5 +110,10 @@ console.log(JSON.stringify({
   dedupeDomainParity:"PASS",
   seriesPageAliasDiscovery:"PASS",
   newPostAfterBaseline:"PASS",
-  retryUnmatchedOrFailed:"PASS"
+  retryUnmatchedOrFailed:"PASS",
+  mergedMultipleFeedSources:"PASS",
+  firstRunBaselineNoSpam:"PASS",
+  newPostSend:"PASS",
+  unresolvedPostRetryThenSend:"PASS",
+  completedReleaseNoDuplicate:"PASS"
 },null,2));
