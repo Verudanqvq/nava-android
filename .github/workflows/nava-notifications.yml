@@ -1,6 +1,11 @@
 name: Nava follower notifications
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "notification-backend/**"
+      - ".github/workflows/nava-notifications.yml"
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
