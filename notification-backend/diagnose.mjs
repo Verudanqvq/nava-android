@@ -37,14 +37,54 @@ console.log("DIAG_COUNT", parsed.length);
 for (const post of parsed) {
   const ref = db.collection("releaseAutomationPostsV5").doc(docId(post.postId));
   const snap = await ref.get();
-  const state = snap.exists ? (snap.data()?.status || "") : "MISSING";
+  const data = snap.exists ? (snap.data() || {}) : {};
+  let release = null;
+  if (data.releaseId) {
+    const releaseSnap = await db.collection("chapterReleases").doc(data.releaseId).get();
+    if (releaseSnap.exists) {
+      const rd = releaseSnap.data() || {};
+      release = {
+        status: rd.status || "",
+        seriesId: rd.seriesId || "",
+        seriesTitle: rd.seriesTitle || "",
+        followerCount: rd.followerCount ?? null,
+        sentCount: rd.sentCount ?? null,
+        title: rd.title || "",
+        url: rd.url || ""
+      };
+    }
+  }
+  let followerUsers = null;
+  if (data.seriesId) {
+    const fs = await db.collection("seriesFollowers").doc(data.seriesId).collection("users").get();
+    followerUsers = fs.size;
+  }
   console.log("DIAG_POST", JSON.stringify({
     postId: post.postId,
     title: post.title,
     published: post.publishedMs ? new Date(post.publishedMs).toISOString() : "",
     kind: post.kind,
     labels: post.labels,
-    state,
+    state: snap.exists ? (data.status || "") : "MISSING",
+    stateSeriesId: data.seriesId || "",
+    stateSeriesTitle: data.seriesTitle || "",
+    releaseId: data.releaseId || "",
+    followerUsers,
+    release,
     url: post.url
   }));
+}
+
+const series = await db.collection("seriesFollowers").limit(300).get();
+for (const doc of series.docs) {
+  const users = await doc.ref.collection("users").get();
+  const d = doc.data() || {};
+  if (users.size > 0) {
+    console.log("DIAG_SERIES_FOLLOWERS", JSON.stringify({
+      seriesId: doc.id,
+      title: d.title || "",
+      url: d.url || "",
+      followers: users.size
+    }));
+  }
 }
