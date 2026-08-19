@@ -5,9 +5,9 @@ from pathlib import Path
 
 RES_STRING_POOL_TYPE = 0x0001
 RES_XML_START_ELEMENT_TYPE = 0x0102
-OLD_VERSION = "12.1.24"
-NEW_VERSION = "12.1.25"
-NEW_CODE = 41
+OLD_VERSION = "12.1.25"
+NEW_VERSION = "12.1.26"
+NEW_CODE = 42
 
 
 def u16(data, off):
@@ -152,6 +152,7 @@ def patch_manifest(raw, old_name=OLD_VERSION, new_name=NEW_VERSION, new_code=NEW
 
 def patch_js(original, replacement):
     markers = [
+        "/* Nava v12.1.25 — Firestore-safe Android push token registration.",
         "/* Nava v12.1.24 — reliable FREE push token bridge.",
         "/* Nava v12.1.22 — FREE push token bridge."
     ]
@@ -168,10 +169,10 @@ def patch_js(original, replacement):
         raise ValueError("push bridge end marker not found")
     end += len(end_marker)
     patched = original[:start] + replacement.rstrip() + original[end:]
-    if "appVersion:'12.1.25'" not in patched:
-        raise ValueError("12.1.25 token registration marker missing after patch")
+    if "appVersion:'12.1.26'" not in patched:
+        raise ValueError("12.1.26 token registration marker missing after patch")
     if ".get().then(function(snapshot)" in replacement or "ref.get()" in replacement:
-        raise ValueError("Forbidden pre-read exists in 12.1.25 registration block")
+        raise ValueError("Forbidden pre-read exists in 12.1.26 registration block")
     return patched
 
 
@@ -215,12 +216,12 @@ def main():
     with zipfile.ZipFile(target, "r") as check:
         js = check.read("assets/nava_app_v11.js").decode("utf-8")
         manifest = check.read("AndroidManifest.xml")
-        if "appVersion:'12.1.25'" not in js:
+        if "appVersion:'12.1.26'" not in js:
             raise ValueError("Final APK JS verification failed")
         if manifest_version_code(manifest) != new_code:
             raise ValueError("Final APK manifest verification failed")
 
-    print(f"PATCH_OK versionCode={new_code} js=12.1.25")
+    print(f"PATCH_OK versionCode={new_code} js=12.1.26")
 
 
 if __name__ == "__main__":
