@@ -1,0 +1,44 @@
+name: Nava APK UI inspect
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-apk-inspect.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_TAG: v12.1.26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract Android app web asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/nava-apk android-patch/_inspect
+          gh release download "$SOURCE_TAG" --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/nava-apk
+          test -s /tmp/nava-apk/Nava.apk
+          unzip -p /tmp/nava-apk/Nava.apk assets/nava_app_v11.js > android-patch/_inspect/nava_app_v11-v12.1.26.js
+          test -s android-patch/_inspect/nava_app_v11-v12.1.26.js
+          {
+            echo "source=$SOURCE_TAG"
+            wc -c android-patch/_inspect/nava_app_v11-v12.1.26.js
+            grep -nEi "profile|modal|mobile|android|webview|nava-profile|nava-modal" android-patch/_inspect/nava_app_v11-v12.1.26.js | head -n 250 || true
+          } > android-patch/_inspect/ui-grep.txt
+      - name: Persist temporary inspection files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Nava Android Inspect Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add android-patch/_inspect
+          git commit -m "Extract Android 12.1.26 web asset for UI inspection [skip ci]"
+          git push
