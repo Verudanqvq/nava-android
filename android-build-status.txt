@@ -1,9 +1,15 @@
 status=running
-started=2026-08-19T15:16:11Z
+started=2026-08-19T15:18:17Z
 signing_material=ok
 source_tag=v12.1.23
 source_apk=ok
 patch=ok
 android_build_tools=37.0.0
+zipalign=ok
+keystore_properties=ok
+keystore_unlock=ok
+apksigner_sign=ok
+apksigner_verify=ok
+error=cert_parse
 status=failed
-finished=2026-08-19T15:16:14Z
+finished=2026-08-19T15:18:20Z
