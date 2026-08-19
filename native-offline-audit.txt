@@ -1,350 +1,0 @@
-=== GX SMALI ===
-
-
-=== CH0 MESSAGE AREA ===
-
-
-=== MAINACTIVITY BACK/CACHE AREA ===
-/tmp/apk/smali/com/verudanava/nava/MainActivity.smali
-1198-    invoke-virtual {v1, v0}, Landroid/webkit/WebSettings;->setBuiltInZoomControls(Z)V
-1199-
-1200-    .line 143
-1201-    .line 144
-1202-    .line 145
-1203-    invoke-virtual {v1, v0}, Landroid/webkit/WebSettings;->setDisplayZoomControls(Z)V
-1204-
-1205-    .line 146
-1206-    .line 147
-1207-    .line 148
-1208-    invoke-virtual {v1, v0}, Landroid/webkit/WebSettings;->setSupportZoom(Z)V
-1209-
-1210-    .line 149
-1211-    .line 150
-1212-    .line 151
-1213-    const/4 v5, -0x1
-1214-
-1215-    .line 152
-1216:    invoke-virtual {v1, v5}, Landroid/webkit/WebSettings;->setCacheMode(I)V
-1217-
-1218-    .line 153
-1219-    .line 154
-1220-    .line 155
-1221-    invoke-virtual {v1, v4}, Landroid/webkit/WebSettings;->setMediaPlaybackRequiresUserGesture(Z)V
-1222-
-1223-    .line 156
-1224-    .line 157
-1225-    .line 158
-1226-    invoke-virtual {v1}, Landroid/webkit/WebSettings;->getUserAgentString()Ljava/lang/String;
-1227-
-1228-    .line 159
-1229-    .line 160
-1230-    .line 161
-1231-    move-result-object v5
-1232-
-1233-    .line 162
-1234-    new-instance v6, Ljava/lang/StringBuilder;
-1235-
-1236-    .line 163
-1237-    .line 164
-1238-    invoke-direct {v6}, Ljava/lang/StringBuilder;-><init>()V
-1239-
-1240-    .line 165
-1241-    .line 166
-1242-    .line 167
-1243-    invoke-virtual {v6, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-1244-
-1245-    .line 168
-1246-    .line 169
-1247-    .line 170
-1248-    const-string v5, " NavaAndroidApp/12.1.23"
-1249-
-1250-    .line 171
-1251-    .line 172
-1252-    invoke-virtual {v6, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-1253-
-1254-    .line 173
---
-1467-    .line 275
-1468-    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
-1469-
-1470-    .line 276
-1471-    .line 277
-1472-    if-eqz v1, :cond_14
-1473-
-1474-    .line 278
-1475-    .line 279
-1476-    new-instance v6, Lgx;
-1477-
-1478-    .line 280
-1479-    .line 281
-1480-    invoke-direct {v6, p0}, Lgx;-><init>(Lcom/verudanava/nava/MainActivity;)V
-1481-
-1482-    .line 282
-1483-    .line 283
-1484-    .line 284
-1485:    invoke-virtual {v1, v6}, Landroid/webkit/WebView;->setWebViewClient(Landroid/webkit/WebViewClient;)V
-1486-
-1487-    .line 285
-1488-    .line 286
-1489-    .line 287
-1490-    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
-1491-
-1492-    .line 288
-1493-    .line 289
-1494-    if-eqz v1, :cond_13
-1495-
-1496-    .line 290
-1497-    .line 291
-1498-    new-instance v6, Lex;
-1499-
-1500-    .line 292
-1501-    .line 293
-1502-    invoke-direct {v6, p0}, Lex;-><init>(Lcom/verudanava/nava/MainActivity;)V
-1503-
-1504-    .line 294
-1505-    .line 295
-1506-    .line 296
-1507:    invoke-virtual {v1, v6}, Landroid/webkit/WebView;->setDownloadListener(Landroid/webkit/DownloadListener;)V
-1508-
-1509-    .line 297
-1510-    .line 298
-1511-    .line 299
-1512-    const-string v1, "WEB_MESSAGE_LISTENER"
-1513-
-1514-    .line 300
-1515-    .line 301
-1516-    invoke-static {v1}, Lih0;->a(Ljava/lang/String;)Z
-1517-
-1518-    .line 302
-1519-    .line 303
-1520-    .line 304
-1521-    move-result v1
-1522-
-1523-    .line 305
-1524-    if-nez v1, :cond_5
-1525-
-1526-    .line 306
-1527-    .line 307
-1528-    const-string v1, "Android System WebView g\u00fcncellemesi gerekli."
-1529-
-1530-    .line 308
-1531-    .line 309
-1532-    invoke-static {p0, v1, v4}, Landroid/widget/Toast;->makeText(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;
-1533-
-1534-    .line 310
-1535-    .line 311
-1536-    .line 312
-1537-    move-result-object v1
-1538-
-1539-    .line 313
-1540-    invoke-virtual {v1}, Landroid/widget/Toast;->show()V
-1541-
-1542-    .line 314
-1543-    .line 315
-1544-    .line 316
-1545-    goto :goto_2
---
-1947-    const-string v1, "/"
-1948-
-1949-    .line 517
-1950-    .line 518
-1951-    invoke-virtual {p1, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-1952-
-1953-    .line 519
-1954-    .line 520
-1955-    .line 521
-1956-    invoke-virtual {p1}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
-1957-
-1958-    .line 522
-1959-    .line 523
-1960-    .line 524
-1961-    move-result-object p1
-1962-
-1963-    .line 525
-1964-    :cond_d
-1965:    invoke-virtual {v0, p1}, Landroid/webkit/WebView;->loadUrl(Ljava/lang/String;)V
-1966-
-1967-    .line 526
-1968-    .line 527
-1969-    .line 528
-1970-    goto :goto_4
-1971-
-1972-    .line 529
-1973-    :cond_e
-1974-    invoke-static {v3}, Lrt;->w(Ljava/lang/String;)V
-1975-
-1976-    .line 530
-1977-    .line 531
-1978-    .line 532
-1979-    throw v2
-1980-
-1981-    .line 533
-1982-    :cond_f
-1983-    if-eqz v0, :cond_10
-1984-
-1985-    .line 534
-1986-    .line 535
-1987-    invoke-virtual {v0, p1}, Landroid/webkit/WebView;->restoreState(Landroid/os/Bundle;)Landroid/webkit/WebBackForwardList;
-1988-
-1989-    .line 536
-1990-    .line 537
-1991-    .line 538
-1992-    :goto_4
-1993-    invoke-virtual {p0}, Landroidx/activity/a;->i()Landroidx/activity/b;
-1994-
-1995-    .line 539
-1996-    .line 540
-1997-    .line 541
-1998-    move-result-object p1
-1999-
-2000-    .line 542
-2001-    new-instance v0, Lcp;
-2002-
-2003-    .line 543
---
-2830-    .line 105
-2831-    .line 106
-2832-    if-eqz v8, :cond_6
-2833-
-2834-    .line 107
-2835-    .line 108
-2836-    if-eqz v1, :cond_5
-2837-
-2838-    .line 109
-2839-    .line 110
-2840-    invoke-virtual {v8}, Ljava/lang/Integer;->intValue()I
-2841-
-2842-    .line 111
-2843-    .line 112
-2844-    .line 113
-2845-    move-result p0
-2846-
-2847-    .line 114
-2848:    invoke-virtual {v1, p0}, Landroid/webkit/WebView;->goBackOrForward(I)V
-2849-
-2850-    .line 115
-2851-    .line 116
-2852-    .line 117
-2853-    return-void
-2854-
-2855-    .line 118
-2856-    :cond_5
-2857-    invoke-static {v2}, Lrt;->w(Ljava/lang/String;)V
-2858-
-2859-    .line 119
-2860-    .line 120
-2861-    .line 121
-2862-    throw v3
-2863-
-2864-    .line 122
-2865-    :cond_6
-2866-    if-eqz v1, :cond_9
-2867-
-2868-    .line 123
-2869-    .line 124
-2870-    invoke-virtual {v1}, Landroid/webkit/WebView;->getSettings()Landroid/webkit/WebSettings;
-2871-
-2872-    .line 125
-2873-    .line 126
-2874-    .line 127
-2875-    move-result-object v1
-2876-
-2877-    .line 128
-2878-    iget-object v4, p0, Lcom/verudanava/nava/MainActivity;->G:Ljava/util/LinkedHashSet;
-2879-
-2880-    .line 129
-2881-    .line 130
-2882-    invoke-virtual {v4, v0}, Ljava/util/AbstractCollection;->contains(Ljava/lang/Object;)Z
-2883-
-2884-    .line 131
-2885-    .line 132
-2886-    .line 133
-2887-    move-result v0
-2888-
-2889-    .line 134
-2890-    if-eqz v0, :cond_7
-2891-
-2892-    .line 135
-2893-    .line 136
-2894-    const/4 v0, 0x1
-2895-
-2896-    .line 137
-2897-    goto :goto_2
-2898-
-2899-    .line 138
-2900-    :cond_7
-2901-    const/4 v0, -0x1
-2902-
-2903-    .line 139
-2904-    :goto_2
-2905:    invoke-virtual {v1, v0}, Landroid/webkit/WebSettings;->setCacheMode(I)V
-2906-
-2907-    .line 140
-2908-    .line 141
-2909-    .line 142
-2910-    iget-object p0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
-2911-
-2912-    .line 143
-2913-    .line 144
-2914-    if-eqz p0, :cond_8
-2915-
-2916-    .line 145
-2917-    .line 146
-2918-    invoke-virtual {p1}, Landroid/net/Uri;->toString()Ljava/lang/String;
-2919-
-2920-    .line 147
-2921-    .line 148
-2922-    .line 149
-2923-    move-result-object p1
-2924-
-2925-    .line 150
-2926:    invoke-virtual {p0, p1}, Landroid/webkit/WebView;->loadUrl(Ljava/lang/String;)V
-2927-
-2928-    .line 151
-2929-    .line 152
-2930-    .line 153
-2931-    return-void
-2932-
-2933-    .line 154
-2934-    :cond_8
-2935-    invoke-static {v2}, Lrt;->w(Ljava/lang/String;)V
-2936-
-2937-    .line 155
-2938-    .line 156
-2939-    .line 157
-2940-    throw v3
-2941-
-2942-    .line 158
-2943-    :cond_9
-2944-    invoke-static {v2}, Lrt;->w(Ljava/lang/String;)V
-2945-
-2946-    .line 159
-2947-    .line 160
-2948-    .line 161
-2949-    throw v3
-2950-
-2951-    .line 162
-2952-    :cond_a
-2953-    invoke-static {v2}, Lrt;->w(Ljava/lang/String;)V
-2954-
-2955-    .line 163
-2956-    .line 164
-2957-    .line 165
-2958-    throw v3
-2959-
-2960-    .line 166
-2961-    :catch_0
-2962-    return-void
-2963-.end method
-2964-
-
-=== MANIFEST DECODED ===
-  ;    \!  t           ì                (   4   L   n   €   ”   ¼   Ö   ì     *  B  `  n  ‚  ¨  Æ  à  ú  $  H  b  |  ¢  Î  ð    4  `  †  ¼  æ  ø       $  6  n  ²    N  €  º    b  ¦  î  *  t  Ä    h  ð  |	  
-  à
-  :  š  þ  l  Ø  <  š  ò    h  ‚         p  È    ´  ˆ  >  ¼  B  Ø  T  ¾  þ  H  ¼  "  À  j  2  ô  ¬  ^  Æ  6  œ  Æ  B  †  ê  6  z  Î  &  D  X  n  €  ˜  Ì       (  :  \   t h e m e    l a b e l    i c o n    n a m e   
- p e r m i s s i o n    p r o t e c t i o n L e v e l    e n a b l e d    e x p o r t e d    e x c l u d e F r o m R e c e n t s    a u t h o r i t i e s   	 i n i t O r d e r    g r a n t U r i P e r m i s s i o n s    p r i o r i t y   
- l a u n c h M o d e    c o n f i g C h a n g e s    v a l u e    r e s o u r c e    f i t s S y s t e m W i n d o w s    m i n S d k V e r s i o n    v e r s i o n C o d e    v e r s i o n N a m e    w i n d o w S o f t I n p u t M o d e    t a r g e t S d k V e r s i o n    a l l o w B a c k u p    s u p p o r t s R t l    e x t r a c t N a t i v e L i b s    u s e s C l e a r t e x t T r a f f i c    d i r e c t B o o t A w a r e    n e t w o r k S e c u r i t y C o n f i g   	 r o u n d I c o n    v i s i b l e T o I n s t a n t A p p s    c o m p i l e S d k V e r s i o n    c o m p i l e S d k V e r s i o n C o d e n a m e    a p p C o m p o n e n t F a c t o r y    1 2 . 1 . 2 9    1 7    a c t i o n    a c t i v i t y    a n d r o i d    a n d r o i d . i n t e n t . a c t i o n . M A I N     a n d r o i d . i n t e n t . c a t e g o r y . L A U N C H E R   ' a n d r o i d . p e r m i s s i o n . A C C E S S _ N E T W O R K _ S T A T E   # a n d r o i d . p e r m i s s i o n . B I N D _ J O B _ S E R V I C E    a n d r o i d . p e r m i s s i o n . D U M P    a n d r o i d . p e r m i s s i o n . I N T E R N E T   % a n d r o i d . p e r m i s s i o n . P O S T _ N O T I F I C A T I O N S   + a n d r o i d . p e r m i s s i o n . R E Q U E S T _ I N S T A L L _ P A C K A G E S     a n d r o i d . p e r m i s s i o n . U S E _ B I O M E T R I C   " a n d r o i d . p e r m i s s i o n . U S E _ F I N G E R P R I N T    a n d r o i d . p e r m i s s i o n . W A K E _ L O C K   # a n d r o i d . s u p p o r t . F I L E _ P R O V I D E R _ P A T H S   & a n d r o i d x . c o r e . a p p . C o r e C o m p o n e n t F a c t o r y   " a n d r o i d x . c o r e . c o n t e n t . F i l e P r o v i d e r   , a n d r o i d x . c r e d e n t i a l s . C R E D E N T I A L _ P R O V I D E R _ K E Y   B a n d r o i d x . c r e d e n t i a l s . p l a y s e r v i c e s . C r e d e n t i a l P r o v i d e r M e t a d a t a H o l d e r   D a n d r o i d x . c r e d e n t i a l s . p l a y s e r v i c e s . C r e d e n t i a l P r o v i d e r P l a y S e r v i c e s I m p l   I a n d r o i d x . c r e d e n t i a l s . p l a y s e r v i c e s . c o n t r o l l e r s . i d e n t i t y a u t h . H i d d e n A c t i v i t y   e a n d r o i d x . c r e d e n t i a l s . p l a y s e r v i c e s . c o n t r o l l e r s . i d e n t i t y c r e d e n t i a l s . I d e n t i t y C r e d e n t i a l A p i H i d d e n A c t i v i t y   + a n d r o i d x . e m o j i 2 . t e x t . E m o j i C o m p a t I n i t i a l i z e r   . a n d r o i d x . l i f e c y c l e . P r o c e s s L i f e c y c l e I n i t i a l i z e r   0 a n d r o i d x . p r o f i l e i n s t a l l e r . P r o f i l e I n s t a l l R e c e i v e r   5 a n d r o i d x . p r o f i l e i n s t a l l e r . P r o f i l e I n s t a l l e r I n i t i a l i z e r   4 a n d r o i d x . p r o f i l e i n s t a l l e r . a c t i o n . B E N C H M A R K _ O P E R A T I O N   0 a n d r o i d x . p r o f i l e i n s t a l l e r . a c t i o n . I N S T A L L _ P R O F I L E   - a n d r o i d x . p r o f i l e i n s t a l l e r . a c t i o n . S A V E _ P R O F I L E   * a n d r o i d x . p r o f i l e i n s t a l l e r . a c t i o n . S K I P _ F I L E    a n d r o i d x . s t a r t u p   ' a n d r o i d x . s t a r t u p . I n i t i a l i z a t i o n P r o v i d e r    a p p l i c a t i o n   > b a c k e n d : c o m . g o o g l e . a n d r o i d . d a t a t r a n s p o r t . c c t . C c t B a c k e n d F a c t o r y    c a t e g o r y    c c t   & c o m . g o o g l e . a n d r o i d . c 2 d m . i n t e n t . R E C E I V E   * c o m . g o o g l e . a n d r o i d . c 2 d m . p e r m i s s i o n . R E C E I V E   ' c o m . g o o g l e . a n d r o i d . c 2 d m . p e r m i s s i o n . S E N D   K c o m . g o o g l e . a n d r o i d . d a t a t r a n s p o r t . r u n t i m e . b a c k e n d s . T r a n s p o r t B a c k e n d D i s c o v e r y   h c o m . g o o g l e . a n d r o i d . d a t a t r a n s p o r t . r u n t i m e . s c h e d u l i n g . j o b s c h e d u l i n g . A l a r m M a n a g e r S c h e d u l e r B r o a d c a s t R e c e i v e r   Y c o m . g o o g l e . a n d r o i d . d a t a t r a n s p o r t . r u n t i m e . s c h e d u l i n g . j o b s c h e d u l i n g . J o b I n f o S c h e d u l e r S e r v i c e   = c o m . g o o g l e . a n d r o i d . g m s . a u t h . a p i . s i g n i n . R e v o c a t i o n B o u n d S e r v i c e   A c o m . g o o g l e . a n d r o i d . g m s . a u t h . a p i . s i g n i n . i n t e r n a l . S i g n I n H u b A c t i v i t y   I c o m . g o o g l e . a n d r o i d . g m s . a u t h . a p i . s i g n i n . p e r m i s s i o n . R E V O C A T I O N _ N O T I F I C A T I O N   < c o m . g o o g l e . a n d r o i d . g m s . c l o u d m e s s a g i n g . F I N I S H E D _ A F T E R _ H A N D L E D   3 c o m . g o o g l e . a n d r o i d . g m s . c o m m o n . a p i . G o o g l e A p i A c t i v i t y    c o m . g o o g l e . a n d r o i d . g m s . v e r s i o n   # c o m . g o o g l e . f i r e b a s e . M E S S A G I N G _ E V E N T   8 c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s . C o m p o n e n t D i s c o v e r y S e r v i c e   1 c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s . C o m p o n e n t R e g i s t r a r   M c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s : c o m . g o o g l e . f i r e b a s e . F i r e b a s e C o m m o n K t x R e g i s t r a r   S c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s : c o m . g o o g l e . f i r e b a s e . d a t a t r a n s p o r t . T r a n s p o r t R e g i s t r a r   b c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s : c o m . g o o g l e . f i r e b a s e . i n s t a l l a t i o n s . F i r e b a s e I n s t a l l a t i o n s K t x R e g i s t r a r   _ c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s : c o m . g o o g l e . f i r e b a s e . i n s t a l l a t i o n s . F i r e b a s e I n s t a l l a t i o n s R e g i s t r a r   Z c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s : c o m . g o o g l e . f i r e b a s e . m e s s a g i n g . F i r e b a s e M e s s a g i n g K t x R e g i s t r a r   W c o m . g o o g l e . f i r e b a s e . c o m p o n e n t s : c o m . g o o g l e . f i r e b a s e . m e s s a g i n g . F i r e b a s e M e s s a g i n g R e g i s t r a r   2 c o m . g o o g l e . f i r e b a s e . i i d . F i r e b a s e I n s t a n c e I d R e c e i v e r   6 c o m . g o o g l e . f i r e b a s e . m e s s a g i n g . F i r e b a s e M e s s a g i n g S e r v i c e   1 c o m . g o o g l e . f i r e b a s e . p r o v i d e r . F i r e b a s e I n i t P r o v i d e r    c o m . v e r u d a n a v a . n a v a   < c o m . v e r u d a n a v a . n a v a . D Y N A M I C _ R E C E I V E R _ N O T _ E X P O R T E D _ P E R M I S S I O N     c o m . v e r u d a n a v a . n a v a . M a i n A c t i v i t y   0 c o m . v e r u d a n a v a . n a v a . N a v a F i r e b a s e M e s s a g i n g S e r v i c e   $ c o m . v e r u d a n a v a . n a v a . a n d r o i d x - s t a r t u p     c o m . v e r u d a n a v a . n a v a . f i l e p r o v i d e r   ( c o m . v e r u d a n a v a . n a v a . f i r e b a s e i n i t p r o v i d e r   * h t t p : / / s c h e m a s . a n d r o i d . c o m / a p k / r e s / a n d r o i d    i n t e n t - f i l t e r    m a n i f e s t   	 m e t a - d a t a    p a c k a g e   
- p e r m i s s i o n    p l a t f o r m B u i l d V e r s i o n C o d e    p l a t f o r m B u i l d V e r s i o n N a m e    p r o v i d e r    r e c e i v e r    s e r v i c e    u s e s - p e r m i s s i o n    u s e s - s d k   €          	          $ % Ý +p€¯êì',1rsz        ÿÿÿÿ&   g    °      ÿÿÿÿÿÿÿÿi            g      ÿÿÿÿ  -   g      "     "   g      ÿÿÿÿ  %   g       #     #   ÿÿÿÿk   `     `   ÿÿÿÿm   ÿÿÿÿ  %   ÿÿÿÿn   ÿÿÿÿ      L      ÿÿÿÿÿÿÿÿs            g      ÿÿÿÿ     g      ÿÿÿÿ  %          ÿÿÿÿÿÿÿÿs    8      ÿÿÿÿÿÿÿÿr            g      ,     ,          ÿÿÿÿÿÿÿÿr    8      ÿÿÿÿÿÿÿÿr            g      .     .          ÿÿÿÿÿÿÿÿr    8      ÿÿÿÿÿÿÿÿr            g      -     -          ÿÿÿÿÿÿÿÿr    8      ÿÿÿÿÿÿÿÿr            g      /     /          ÿÿÿÿÿÿÿÿr    8      ÿÿÿÿÿÿÿÿr            g      0     0          ÿÿÿÿÿÿÿÿr    8      ÿÿÿÿÿÿÿÿr            g      )     )          ÿÿÿÿÿÿÿÿr    8      ÿÿÿÿÿÿÿÿr            g      1     1          ÿÿÿÿÿÿÿÿr    8      ÿÿÿÿÿÿÿÿr            g      I     I          ÿÿÿÿÿÿÿÿr    L      ÿÿÿÿÿÿÿÿl            g      a     a   g      ÿÿÿÿ            ÿÿÿÿÿÿÿÿl    8      ÿÿÿÿÿÿÿÿr            g      a     a          ÿÿÿÿÿÿÿÿr    ì      ÿÿÿÿÿÿÿÿD     
-       g       ÿÿÿÿ  sg      ÿÿÿÿ   g      ÿÿÿÿ    g      ÿÿÿÿ      g      ÿÿÿÿ  ÿÿÿÿg      ÿÿÿÿ      g      ÿÿÿÿ      g      ÿÿÿÿ    g      ÿÿÿÿ   g   !   3     3    L   %   ÿÿÿÿÿÿÿÿq            g      c     c   g      ÿÿÿÿ       $   (   ÿÿÿÿÿÿÿÿh              8   )   ÿÿÿÿÿÿÿÿ$            g      T     T       )   ÿÿÿÿÿÿÿÿ$       (   ÿÿÿÿÿÿÿÿh       %   ÿÿÿÿÿÿÿÿq    t   -   ÿÿÿÿÿÿÿÿo            g      4     4   g      ÿÿÿÿ      g   	   e     e   g      ÿÿÿÿ  ÿÿÿÿ L   2   ÿÿÿÿÿÿÿÿj            g      2     2   g      ÿÿÿÿ       2   ÿÿÿÿÿÿÿÿj       -   ÿÿÿÿÿÿÿÿo    t   7   ÿÿÿÿÿÿÿÿ%            g      b     b   g      ÿÿÿÿ  ÿÿÿÿg      ÿÿÿÿ     g      ÿÿÿÿ      $   <   ÿÿÿÿÿÿÿÿh              8   =   ÿÿÿÿÿÿÿÿ$            g      '     '       =   ÿÿÿÿÿÿÿÿ$    8   ?   ÿÿÿÿÿÿÿÿF            g      (     (       ?   ÿÿÿÿÿÿÿÿF       <   ÿÿÿÿÿÿÿÿh       7   ÿÿÿÿÿÿÿÿ%    `   C   ÿÿÿÿÿÿÿÿq            g      6     6   g      ÿÿÿÿ  ÿÿÿÿg      ÿÿÿÿ       L   G   ÿÿÿÿÿÿÿÿj            g      5     5   g      7     7       G   ÿÿÿÿÿÿÿÿj       C   ÿÿÿÿÿÿÿÿq    œ   L   ÿÿÿÿÿÿÿÿ%            g       ÿÿÿÿ  (g      8     8   g      ÿÿÿÿ  ÿÿÿÿg      ÿÿÿÿ      g      ÿÿÿÿ     g      ÿÿÿÿ  ÿÿÿÿ    L   ÿÿÿÿÿÿÿÿ%    œ   T   ÿÿÿÿÿÿÿÿ%            g       ÿÿÿÿ  (g      9     9   g      ÿÿÿÿ  ÿÿÿÿg      ÿÿÿÿ      g      ÿÿÿÿ     g      ÿÿÿÿ  ÿÿÿÿ    T   ÿÿÿÿÿÿÿÿ%    t   \   ÿÿÿÿÿÿÿÿ%            g       ÿÿÿÿ   g      O     O   g      ÿÿÿÿ      g      ÿÿÿÿ  ÿÿÿÿ    \   ÿÿÿÿÿÿÿÿ%    t   e   ÿÿÿÿÿÿÿÿq            g      N     N   g      P     P   g      ÿÿÿÿ  ÿÿÿÿg      ÿÿÿÿ  ÿÿÿÿ    e   ÿÿÿÿÿÿÿÿq    `   k   ÿÿÿÿÿÿÿÿp            g      ]     ]   g      J     J   g      ÿÿÿÿ  ÿÿÿÿ $   o   ÿÿÿÿÿÿÿÿh              8   p   ÿÿÿÿÿÿÿÿ$            g      H     H       p   ÿÿÿÿÿÿÿÿ$       o   ÿÿÿÿÿÿÿÿh    L   s   ÿÿÿÿÿÿÿÿj            g      Q     Q   g      ÿÿÿÿ  ÿÿÿÿ    s   ÿÿÿÿÿÿÿÿj       k   ÿÿÿÿÿÿÿÿp    `   {   ÿÿÿÿÿÿÿÿq            g      ^     ^   g      ÿÿÿÿ      g      ÿÿÿÿ  ÿÿÿÿ 8      ÿÿÿÿÿÿÿÿh            g      ÿÿÿÿ  þÿÿ 8   €   ÿÿÿÿÿÿÿÿ$            g      T     T       €   ÿÿÿÿÿÿÿÿ$          ÿÿÿÿÿÿÿÿh       {   ÿÿÿÿÿÿÿÿq    `   ƒ   ÿÿÿÿÿÿÿÿq            g      U     U   g      ÿÿÿÿ      g      ÿÿÿÿ  ÿÿÿÿ L   ‡   ÿÿÿÿÿÿÿÿj            g      [     [   g      V     V       ‡   ÿÿÿÿÿÿÿÿj    L   Š   ÿÿÿÿÿÿÿÿj            g      \     \   g      V     V       Š   ÿÿÿÿÿÿÿÿj    L      ÿÿÿÿÿÿÿÿj            g      Y     Y   g      V     V          ÿÿÿÿÿÿÿÿj    L      ÿÿÿÿÿÿÿÿj            g      Z     Z   g      V     V          ÿÿÿÿÿÿÿÿj    L   “   ÿÿÿÿÿÿÿÿj            g      W     W   g      V     V       “   ÿÿÿÿÿÿÿÿj    L   –   ÿÿÿÿÿÿÿÿj            g      X     X   g      V     V       –   ÿÿÿÿÿÿÿÿj       ƒ   ÿÿÿÿÿÿÿÿq    `   ›   ÿÿÿÿÿÿÿÿ%            g       ÿÿÿÿ   g      R     R   g      ÿÿÿÿ          ›   ÿÿÿÿÿÿÿÿ%    ˆ       ÿÿÿÿÿÿÿÿo            g      _     _   g      ÿÿÿÿ      g   	   f     f   g   
-   ÿÿÿÿ  d   g      ÿÿÿÿ  ÿÿÿÿ        ÿÿÿÿÿÿÿÿo    `   ¦   ÿÿÿÿÿÿÿÿo            g      C     C   g      ÿÿÿÿ      g   	   d     d    L   ª   ÿÿÿÿÿÿÿÿj            g      :     :   g      B     B       ª   ÿÿÿÿÿÿÿÿj    L   ­   ÿÿÿÿÿÿÿÿj            g      ;     ;   g      B     B       ­   ÿÿÿÿÿÿÿÿj    L   °   ÿÿÿÿÿÿÿÿj            g      =     =   g      B     B       °   ÿÿÿÿÿÿÿÿj       ¦   ÿÿÿÿÿÿÿÿo    L   µ   ÿÿÿÿÿÿÿÿj            g      S     S   g      ÿÿÿÿ   
-    µ   ÿÿÿÿÿÿÿÿj    ˆ   ¹   ÿÿÿÿÿÿÿÿp            g      <     <   g      +     +   g      ÿÿÿÿ  ÿÿÿÿg      ÿÿÿÿ  ÿÿÿÿg      ÿÿÿÿ       $   ¿   ÿÿÿÿÿÿÿÿh              8   À   ÿÿÿÿÿÿÿÿ$            g      ?     ?       À   ÿÿÿÿÿÿÿÿ$       ¿   ÿÿÿÿÿÿÿÿh    $   Â   ÿÿÿÿÿÿÿÿh              8   Ã   ÿÿÿÿÿÿÿÿ$            g      A     A       Ã   ÿÿÿÿÿÿÿÿ$       Â   ÿÿÿÿÿÿÿÿh    $   Å   ÿÿÿÿÿÿÿÿh              8   Æ   ÿÿÿÿÿÿÿÿ$            g      @     @       Æ   ÿÿÿÿÿÿÿÿ$       Å   ÿÿÿÿÿÿÿÿh    $   È   ÿÿÿÿÿÿÿÿh              8   É   ÿÿÿÿÿÿÿÿ$            g      >     >       É   ÿÿÿÿÿÿÿÿ$       È   ÿÿÿÿÿÿÿÿh       ¹   ÿÿÿÿÿÿÿÿp    L   Í   ÿÿÿÿÿÿÿÿq            g      K     K   g      ÿÿÿÿ       L   Ð   ÿÿÿÿÿÿÿÿj            g      E     E   g      G     G       Ð   ÿÿÿÿÿÿÿÿj       Í   ÿÿÿÿÿÿÿÿq    `   Ô   ÿÿÿÿÿÿÿÿq            g      M     M   g      *     *   g      ÿÿÿÿ          Ô   ÿÿÿÿÿÿÿÿq    L   Ú   ÿÿÿÿÿÿÿÿp            g      L     L   g      ÿÿÿÿ          Ú   ÿÿÿÿÿÿÿÿp          ÿÿÿÿÿÿÿÿD          ÿÿÿÿÿÿÿÿi          ÿÿÿÿ&   g   
