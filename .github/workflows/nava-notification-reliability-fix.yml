@@ -1,0 +1,107 @@
+name: Nava notification reliability fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-notification-reliability-fix.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Patch notification payloads
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          scan=Path('notification-backend/scan.mjs')
+          s=scan.read_text()
+          old='''    const result = await messaging.sendEachForMulticast({\n      tokens,\n      data: {'''
+          new='''    const systemTitle = (release.kind === "volume" ? "Yeni cilt • " : "Yeni bölüm • ") + (series.title || "Takip ettiğin eser");\n    const result = await messaging.sendEachForMulticast({\n      tokens,\n      notification: {\n        title: systemTitle,\n        body: release.title || (release.kind === "volume" ? "Yeni cilt yayımlandı" : "Yeni bölüm yayımlandı")\n      },\n      data: {'''
+          if s.count(old)!=1: raise SystemExit(f'scan multicast marker count={s.count(old)}')
+          s=s.replace(old,new,1)
+          old_android='''      android: {\n        priority: "high",\n        ttl: 24 * 60 * 60 * 1000\n      }'''
+          new_android='''      android: {\n        priority: "high",\n        ttl: 24 * 60 * 60 * 1000,\n        notification: {\n          channelId: "nava_follower_releases",\n          tag: notificationId\n        }\n      }'''
+          if s.count(old_android)!=1: raise SystemExit(f'scan android marker count={s.count(old_android)}')
+          s=s.replace(old_android,new_android,1)
+          scan.write_text(s)
+
+          retry=Path('notification-backend/retry-push.mjs')
+          r=retry.read_text()
+          old='''    const result = await messaging.sendEachForMulticast({\n      tokens,\n      data: {'''
+          new='''    const systemTitle = (kind === "volume" ? "Yeni cilt • " : "Yeni bölüm • ") + seriesTitle;\n    const result = await messaging.sendEachForMulticast({\n      tokens,\n      notification: {\n        title: systemTitle,\n        body: releaseTitle\n      },\n      data: {'''
+          if r.count(old)!=1: raise SystemExit(f'retry multicast marker count={r.count(old)}')
+          r=r.replace(old,new,1)
+          if r.count(old_android)!=1: raise SystemExit(f'retry android marker count={r.count(old_android)}')
+          r=r.replace(old_android,new_android,1)
+          retry.write_text(r)
+          PY
+          grep -n "notification:" notification-backend/scan.mjs notification-backend/retry-push.mjs
+          grep -n "nava_follower_releases" notification-backend/scan.mjs notification-backend/retry-push.mjs
+      - name: Install and test backend
+        working-directory: notification-backend
+        run: |
+          npm install --omit=dev --no-audit --no-fund
+          npm test
+          node --check scan.mjs
+          node --check retry-push.mjs
+      - name: Commit reliability fix
+        shell: bash
+        run: |
+          git config user.name 'Nava Notification Fix Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add notification-backend/scan.mjs notification-backend/retry-push.mjs
+          git commit -m 'Add system notification payload fallback'
+          git push
+      - name: Send direct Android test notification
+        working-directory: notification-backend
+        shell: bash
+        run: |
+          node --input-type=module - <<'NODE' > /tmp/push-test.txt 2>&1
+          import { initializeApp, cert } from 'firebase-admin/app';
+          import { getFirestore } from 'firebase-admin/firestore';
+          import { getMessaging } from 'firebase-admin/messaging';
+          const sa=JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT||'{}');
+          initializeApp({credential:cert(sa),projectId:'nava-01'});
+          const db=getFirestore(), messaging=getMessaging();
+          const snap=await db.collection('devicePushTokens').where('platform','==','android').get();
+          const docs=snap.docs.filter(d=>String(d.data()?.token||'').trim());
+          const tokens=docs.map(d=>String(d.data().token).trim());
+          let success=0,failed=0,codes=[];
+          for(let i=0;i<tokens.length;i+=500){
+            const chunk=tokens.slice(i,i+500);
+            const result=await messaging.sendEachForMulticast({
+              tokens:chunk,
+              notification:{title:'Nava bildirim testi',body:'Android bildirim sistemi kontrol mesajı.'},
+              data:{kind:'chapter',seriesTitle:'Nava',releaseTitle:'Android bildirim sistemi kontrol mesajı.',url:'https://www.verudanava.com/',notificationId:'nava_direct_test_'+Date.now()},
+              android:{priority:'high',ttl:3600000,notification:{channelId:'nava_follower_releases',tag:'nava_direct_test'}}
+            });
+            success+=result.successCount;failed+=result.failureCount;
+            codes.push(...result.responses.filter(x=>!x.success).map(x=>x.error?.code||'unknown'));
+          }
+          console.log(JSON.stringify({checkedAt:new Date().toISOString(),tokenDocs:docs.length,success,failed,errorCodes:[...new Set(codes)]},null,2));
+          NODE
+          cat /tmp/push-test.txt
+      - name: Persist test result
+        if: always()
+        shell: bash
+        run: |
+          test -f /tmp/push-test.txt || echo '{"test":"did-not-run"}' > /tmp/push-test.txt
+          cp /tmp/push-test.txt notification-reliability-status.txt
+          git pull --rebase
+          git add notification-reliability-status.txt
+          git commit -m 'Record notification reliability test [skip ci]' || true
+          git push || true
