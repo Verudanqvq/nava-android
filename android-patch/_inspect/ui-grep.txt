@@ -1,0 +1,58 @@
+source=v12.1.26
+79425 android-patch/_inspect/nava_app_v11-v12.1.26.js
+5:  w.__NAVA_ANDROID_APP__ = true;
+29:    profile:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.7-4 3.2-6 7-6s6.3 2 7 6"/></svg>',
+164:    if(/\/p\/profil\.html$/i.test(p)&&q.get('app')==='profile')return'profile';
+175:  function applyRoute(r){state.route=r;d.documentElement.classList.add('nava-app-v9');if(!d.body)return;['home','discover','volume','library','profile','series','reader','general'].forEach(function(x){d.body.classList.remove('nava-app-'+x)});d.body.classList.add('nava-app-'+r);}
+187:    if(['home','discover','library','profile'].indexOf(state.route)>=0){var brand=e('div','nava-app-brand');brand.innerHTML='<span>Nava</span>';top.appendChild(brand);}
+195:  function renderBottom(b){b.replaceChildren(nav('Ana',I.home,'/','home'),nav('Keşfet',I.discover,'/search/label/Series','discover'),nav('Kütüphane',I.library,'/p/profil.html?app=library','library'),nav('Profil',I.profile,'/p/profil.html?app=profile','profile'));}
+415:  function decorateLibrary(){removePage();var app=d.querySelector('.nava-profile-app');if(!app)return;var head=d.getElementById('nava-app-library-head-v2');if(!head){head=e('div','nava-app-library-head-v2');head.id='nava-app-library-head-v2';head.append(e('div','nava-app-library-title-v2','Kütüphanem'),e('div','nava-app-library-sub-v2','Okuma listeni ve ilerlemeni yönet.'));app.insertBefore(head,app.firstChild);var f=e('div','nava-library-filter-v2');f.id='nava-library-filter-v2';[['all','Tümü'],['plan','Okuyacağım'],['reading','Okuyorum'],['completed','Tamamladım'],['paused','Beklemede'],['dropped','Bıraktım']].forEach(function(pair){var b=e('button',pair[0]==='all'?'is-active':'',pair[1]);b.type='button';b.onclick=function(){state.libraryFilter=pair[0];f.querySelectorAll('button').forEach(function(x){x.classList.toggle('is-active',x===b)});applyLibraryFilter();postNative('haptic')};f.append(b)});head.after(f);}applyLibraryFilter();}
+416:  function applyLibraryFilter(){d.querySelectorAll('.nava-profile-library-card').forEach(function(card){var s=card.querySelector('.nava-library-status-select'),v=s?s.value:'';card.style.display=(state.libraryFilter==='all'||v===state.libraryFilter)?'':'none'});}
+422:  function isOwnProfileRoute(){
+425:  function ensureProfileActions(app){
+426:    var hero=app.querySelector('.nava-profile-hero');if(!hero)return;
+427:    var old=d.getElementById('nava-profile-actions-v5');
+428:    if(!isOwnProfileRoute()){if(old)old.remove();return;}
+430:    var bar=e('div','nava-profile-actions-v5');bar.id='nava-profile-actions-v5';
+431:    var user=e('button','nava-profile-action-v5');user.type='button';user.innerHTML=I.user+'<span>Kullanıcı Ara</span>';user.onclick=function(){openSearch('@')};
+432:    var logout=e('button','nava-profile-action-v5 is-danger');logout.type='button';logout.innerHTML=I.logout+'<span>Çıkış Yap</span>';logout.onclick=function(){logoutApp(logout)};
+435:  function normalizeProfileTabs(app){
+436:    var tabs=app.querySelector('.nava-profile-tabs');if(!tabs)return;
+437:    var own=isOwnProfileRoute();
+438:    d.body.classList.toggle('nava-app-own-profile',own);
+439:    var library=tabs.querySelector('[data-tab="library"]'),panel=app.querySelector('.nava-profile-panel');
+441:      if(panel)panel.classList.add('nava-profile-panel-switching-v11');
+444:    }else if(panel)panel.classList.remove('nava-profile-panel-switching-v11');
+451:  function reorderProfile(app){
+452:    var hero=app.querySelector('.nava-profile-hero');if(!hero)return;
+453:    var actions=d.getElementById('nava-profile-actions-v5');
+454:    var fav=app.querySelector('.nava-profile-favorites');
+455:    var stats=app.querySelector('.nava-profile-stats');
+456:    var tabs=app.querySelector('.nava-profile-tabs');
+457:    var panel=app.querySelector('.nava-profile-panel');
+458:    var cont=d.getElementById('nava-profile-continue');if(cont)cont.remove();
+466:  function decorateProfile(){
+468:    var app=d.querySelector('.nava-profile-app');if(!app)return false;
+469:    app.classList.add('nava-app-profile-owned-v9');
+470:    ensureProfileActions(app);normalizeProfileTabs(app);reorderProfile(app);return true;
+542:    }).then(function(items){items=(items||[]).filter(Boolean);res.replaceChildren();if(!items.length){res.innerHTML='<div class="nava-search-state-v2">Kullanıcı bulunamadı.</div>';return}items.forEach(function(p){var a=e('a','nava-search-row-v2 nava-search-user-v5');a.href='/p/profil.html?app=profile&u='+encodeURIComponent(p.username||'');var av;if(p.avatarType==='google'&&/^https:\/\/lh\d+\.googleusercontent\.com\//i.test(String(p.photoURL||''))){av=e('img','nava-search-user-avatar-v5');av.referrerPolicy='no-referrer';av.src=p.photoURL}else{av=e('div','nava-search-user-avatar-v5 is-fallback',clean((p.displayName||p.username||'K').charAt(0),1).toUpperCase())}var c=e('div');c.append(e('div','nava-search-row-title-v2',p.displayName||p.username||'Kullanıcı'),e('div','nava-search-row-meta-v2','@'+(p.username||'')));a.append(av,c);res.append(a)})}).catch(function(){res.innerHTML='<div class="nava-search-state-v2">Kullanıcılar aranamadı.</div>'});
+574:    var target=state.route==='home'?'/search/label/Series':state.route==='discover'?'/':state.route==='library'?'/p/profil.html?app=profile':state.route==='profile'?'/p/profil.html?app=library':'';
+783:  function normalizeAuthModal(){
+784:    d.querySelectorAll('.nava-modal').forEach(function(box){
+793:    normalizeAuthModal();if(state.authUiBound)return;state.authUiBound=true;
+794:    d.addEventListener('click',function(){setTimeout(normalizeAuthModal,0)},true);
+797:  w.navaAndroidOpenSearch=openSearch;w.navaAndroidOpenNotifications=openNotifications;w.navaAndroidCloseOverlays=closeOverlays;
+826:    state.routeObserver=new MutationObserver(function(){if(queued)return;queued=true;requestAnimationFrame(function(){queued=false;if(state.route==='profile')decorateProfile();else if(state.route==='library'){decorateLibrary();applyLibraryFilter();}})});
+830:    if(state.route==='profile'||state.route==='library'){
+831:      var run=function(app){bindRouteObserver(app);if(state.route==='profile')decorateProfile();else decorateLibrary()};
+832:      var app=d.querySelector('.nava-profile-app');if(app)run(app);else waitForElement('.nava-profile-app',run,{timeout:10000});
+842:    if(r==='home')renderHome();else if(r==='discover')renderDiscover();else if(r==='volume')renderVolume();else if(r==='library'||r==='profile')setupDynamicRoute();else if(r==='series')decorateSeries();else removePage();
+861:/* Nava v12.1.26 — Firestore-safe Android push token registration.
+865:  if(w.__navaAndroidPushV12126)return;
+866:  w.__navaAndroidPushV12126=true;
+867:  if(!w.__NAVA_ANDROID_APP__)return;
+922:      platform:'android',
+934:      platform:'android',
+965:  w.navaAndroidPushToken=function(token){
+969:  w.navaAndroidPushTokenError=function(){
+973:  w.navaAndroidEnsurePushToken=function(){
