@@ -1,0 +1,70 @@
+name: Nava offline native inspect
+
+on:
+  push:
+    branches: [feat/offline-downloads-12-1-31]
+    paths:
+      - ".github/workflows/nava-offline-native-inspect.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/offline-downloads-12-1-31
+      - name: Install apktool
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y apktool >/dev/null
+      - name: Download stable APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/nava-apk
+          gh release download v12.1.30 -p Nava.apk -D /tmp/nava-apk
+          test -s /tmp/nava-apk/Nava.apk
+      - name: Decode focused native surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/nava-decoded
+          apktool d -f /tmp/nava-apk/Nava.apk -o /tmp/nava-decoded >/dev/null
+          OUT=native-offline-inspect.txt
+          : > "$OUT"
+          echo '=== APK ===' >> "$OUT"
+          sha256sum /tmp/nava-apk/Nava.apk >> "$OUT"
+          echo >> "$OUT"
+          echo '=== MATCH FILES: shouldInterceptRequest ===' >> "$OUT"
+          grep -RIl 'shouldInterceptRequest' /tmp/nava-decoded/smali* | sort >> "$OUT" || true
+          echo '=== MATCH FILES: addJavascriptInterface ===' >> "$OUT"
+          grep -RIl 'addJavascriptInterface' /tmp/nava-decoded/smali* | sort >> "$OUT" || true
+          echo '=== MATCH FILES: NavaNative/postMessage ===' >> "$OUT"
+          grep -RIl -E 'NavaNative|postMessage' /tmp/nava-decoded/smali* | sort >> "$OUT" || true
+          echo '=== MATCH FILES: notification channel ===' >> "$OUT"
+          grep -RIl 'nava_follower_releases' /tmp/nava-decoded/smali* | sort >> "$OUT" || true
+          echo '=== ASSETS ===' >> "$OUT"
+          find /tmp/nava-decoded/assets -maxdepth 2 -type f -printf '%p\n' | sort >> "$OUT" || true
+          echo >> "$OUT"
+          for f in $(grep -RIl -E 'shouldInterceptRequest|addJavascriptInterface|NavaNative|postMessage|nava_follower_releases' /tmp/nava-decoded/smali* | sort -u); do
+            echo "===== FILE $f =====" >> "$OUT"
+            sed -n '1,900p' "$f" >> "$OUT"
+            echo >> "$OUT"
+          done
+          echo '===== ASSET offline.html =====' >> "$OUT"
+          if [ -f /tmp/nava-decoded/assets/offline.html ]; then cat /tmp/nava-decoded/assets/offline.html >> "$OUT"; fi
+          echo >> "$OUT"
+          echo '===== AndroidManifest decoded =====' >> "$OUT"
+          sed -n '1,260p' /tmp/nava-decoded/AndroidManifest.xml >> "$OUT"
+          wc -c "$OUT"
+      - name: Persist inspection
+        run: |
+          git config user.name 'Nava Native Inspect Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add native-offline-inspect.txt
+          git commit -m 'Record native offline inspection [skip ci]' || true
+          git push origin HEAD:feat/offline-downloads-12-1-31
