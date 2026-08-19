@@ -1,7 +1,0 @@
-{
-  "checkedAt": "2026-08-19T22:36:47.962Z",
-  "tokenDocs": 1,
-  "success": 1,
-  "failed": 0,
-  "errorCodes": []
-}
