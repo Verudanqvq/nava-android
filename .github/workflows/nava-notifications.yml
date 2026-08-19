@@ -7,25 +7,29 @@ on:
       - "notification-backend/**"
       - ".github/workflows/nava-notifications.yml"
   schedule:
-    - cron: "*/5 * * * *"
+    # Avoid the top-of-hour GitHub Actions congestion window.
+    - cron: "2-57/5 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: nava-follower-notifications-v5
-  cancel-in-progress: false
+  group: nava-follower-notifications-v6
+  # A notification scan should finish quickly. Never let delayed cron runs queue
+  # behind one another; the newest run always scans the full current feed.
+  cancel-in-progress: true
 
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 3
     defaults:
       run:
         working-directory: notification-backend
     env:
       FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      NAVA_TRIGGER: ${{ github.event_name }}
 
     steps:
       - name: Checkout
@@ -35,31 +39,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: notification-backend/package-lock.json
 
       - name: Install backend
-        run: npm install --omit=dev --no-audit --no-fund
+        run: npm ci --omit=dev --no-audit --no-fund
 
       - name: Test notification engine
         run: npm test
 
-      - name: Watch Blogger for five passes
+      - name: Scan Blogger now
         shell: bash
         run: |
           set -uo pipefail
-          final_rc=0
-
-          for pass in 1 2 3 4 5; do
-            echo "===== NAVA PASS $pass/5 ====="
-
-            npm run scan
-            rc=$?
-            if [ "$rc" -ne 0 ]; then final_rc=$rc; fi
-
-            node retry-push.mjs
-            push_rc=$?
-            if [ "$push_rc" -ne 0 ]; then final_rc=$push_rc; fi
-
-            if [ "$pass" != "5" ]; then sleep 60; fi
-          done
-
-          exit $final_rc
+          echo "NAVA_TRIGGER=${NAVA_TRIGGER}"
+          npm run scan
+          scan_rc=$?
+          node retry-push.mjs
+          push_rc=$?
+          if [ "$scan_rc" -ne 0 ]; then exit "$scan_rc"; fi
+          exit "$push_rc"
