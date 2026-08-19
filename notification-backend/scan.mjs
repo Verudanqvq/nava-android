@@ -3,14 +3,18 @@ import { getFirestore, FieldValue, Timestamp } from "firebase-admin/firestore";
 import { getMessaging } from "firebase-admin/messaging";
 import {
   clean, normalize, docId, canonicalUrl, parseEntry, isGenericLabel,
-  stripVolumeSuffix, seriesRecord, resolveSeries, releaseId, hrefsFromHtml
+  stripVolumeSuffix, seriesRecord, resolveSeries, releaseId, hrefsFromHtml,
+  mergeEntriesByPostId, decidePostAction
 } from "./core.mjs";
 
 const PROJECT_ID = "nava-01";
-const FIRST_LOOKBACK_MS = 6 * 60 * 60 * 1000;
-const FEEDS = [
+const FEED_BASES = [
   "https://verudanava.blogspot.com/feeds/posts/summary?alt=json&max-results=150&orderby=published",
-  "https://www.verudanava.com/feeds/posts/summary?alt=json&max-results=150&orderby=published"
+  "https://verudanava.blogspot.com/feeds/posts/summary/-/B%C3%B6l%C3%BCm?alt=json&max-results=150&orderby=published",
+  "https://verudanava.blogspot.com/feeds/posts/summary/-/Cilt?alt=json&max-results=150&orderby=published",
+  "https://www.verudanava.com/feeds/posts/summary?alt=json&max-results=150&orderby=published",
+  "https://www.verudanava.com/feeds/posts/summary/-/B%C3%B6l%C3%BCm?alt=json&max-results=150&orderby=published",
+  "https://www.verudanava.com/feeds/posts/summary/-/Cilt?alt=json&max-results=150&orderby=published"
 ];
 
 function loadServiceAccount() {
@@ -27,31 +31,46 @@ initializeApp({ credential: cert(loadServiceAccount()), projectId: PROJECT_ID })
 const db = getFirestore();
 const messaging = getMessaging();
 
-async function fetchJson(url) {
-  const response = await fetch(url, {
-    headers: { "User-Agent": "NavaGitHubNotifications/1.0" },
-    signal: AbortSignal.timeout(20000)
-  });
-  if (!response.ok) throw new Error(`HTTP ${response.status}: ${url}`);
-  return response.json();
-}
-
 async function fetchEntries() {
-  let lastError = null;
-  for (const url of FEEDS) {
+  const groups = [];
+  const errors = [];
+  const stamp = Date.now();
+
+  for (const base of FEED_BASES) {
+    const url = base + (base.includes("?") ? "&" : "?") + "_nava=" + stamp;
     try {
-      const json = await fetchJson(url);
-      return Array.isArray(json?.feed?.entry) ? json.feed.entry : [];
+      const response = await fetch(url, {
+        headers: {
+          "User-Agent": "NavaGitHubNotifications/5.0",
+          "Cache-Control": "no-cache, no-store, max-age=0",
+          "Pragma": "no-cache"
+        },
+        signal: AbortSignal.timeout(20000)
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const json = await response.json();
+      groups.push(Array.isArray(json?.feed?.entry) ? json.feed.entry : []);
     } catch (error) {
-      lastError = error;
+      errors.push({ url: base, error: String(error?.message || error) });
     }
   }
-  throw lastError || new Error("Blogger feed alınamadı.");
+
+  const merged = mergeEntriesByPostId(groups);
+  if (!merged.length) {
+    throw new Error("Blogger feed boş/alınamadı: " + JSON.stringify(errors));
+  }
+  if (errors.length) console.warn("FEED_PARTIAL_ERRORS " + JSON.stringify(errors));
+  console.log("FEED_MERGED " + JSON.stringify({
+    sourcesOk: groups.length,
+    sourceErrors: errors.length,
+    entries: merged.length
+  }));
+  return merged;
 }
 
 async function fetchHtml(url) {
   const response = await fetch(url, {
-    headers: { "User-Agent": "NavaGitHubNotifications/1.0" },
+    headers: { "User-Agent": "NavaGitHubNotifications/5.0" },
     signal: AbortSignal.timeout(15000)
   });
   if (!response.ok) return "";
@@ -84,7 +103,6 @@ async function learnFromManualReleases(aliasMap, feedByUrl) {
 }
 
 async function learnFromSeriesPages(aliasMap, seriesDocs, feedByUrl) {
-  // Fetch in small groups so Blogger is not hammered.
   for (let i = 0; i < seriesDocs.length; i += 5) {
     const chunk = seriesDocs.slice(i, i + 5);
     await Promise.all(chunk.map(async (doc) => {
@@ -287,155 +305,200 @@ async function deliver(release, series) {
   return { skipped: false, rid, sent, pushResult };
 }
 
-const STATE_DOC = "bloggerScannerGithubV4";
+const ENGINE_DOC = "bloggerScannerGithubV5";
+const POST_STATE_COLLECTION = "releaseAutomationPostsV5";
 
-function recentIds(parsed, max=250) {
-  const out = [];
-  for (const item of parsed) {
-    if (item?.postId && !out.includes(item.postId)) out.push(item.postId);
-    if (out.length >= max) break;
+async function currentEngineState() {
+  const ref = db.collection("releaseAutomation").doc(ENGINE_DOC);
+  const snap = await ref.get();
+  return { ref, snap, data: snap.exists ? (snap.data() || {}) : {} };
+}
+
+async function baselineCurrentFeed(parsed, engineRef) {
+  let written = 0;
+  for (let i = 0; i < parsed.length; i += 350) {
+    const batch = db.batch();
+    for (const post of parsed.slice(i, i + 350)) {
+      if (!post.postId) continue;
+      const ref = db.collection(POST_STATE_COLLECTION).doc(docId(post.postId));
+      batch.set(ref, {
+        postId: post.postId,
+        title: post.title || "",
+        url: post.url || "",
+        kind: post.kind || "",
+        status: "baseline",
+        baselineAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp()
+      }, { merge: true });
+      written += 1;
+    }
+    await batch.commit();
   }
-  return out;
+
+  await engineRef.set({
+    version: 5,
+    initialized: true,
+    initializedAt: FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp(),
+    baselineCount: written,
+    lastResult: { baseline: true, feedCount: parsed.length, delivered: 0, retry: 0, failed: 0 }
+  }, { merge: true });
+
+  console.log("NAVA_BASELINE_V5 " + JSON.stringify({
+    feedCount: parsed.length,
+    baselineCount: written
+  }));
+}
+
+async function postState(postIdValue) {
+  const ref = db.collection(POST_STATE_COLLECTION).doc(docId(postIdValue));
+  const snap = await ref.get();
+  return { ref, snap, data: snap.exists ? (snap.data() || {}) : {} };
+}
+
+async function markPost(ref, post, status, extra={}) {
+  await ref.set({
+    postId: post.postId,
+    title: post.title || "",
+    url: post.url || "",
+    kind: post.kind || "",
+    status,
+    updatedAt: FieldValue.serverTimestamp(),
+    ...extra
+  }, { merge: true });
 }
 
 async function scan() {
-  const stateRef = db.collection("releaseAutomation").doc(STATE_DOC);
-  const stateSnap = await stateRef.get();
-
   const rawEntries = await fetchEntries();
   const parsed = rawEntries.map(parseEntry).filter((x) => x.postId);
 
-  // Fresh v4 state deliberately BASELINES the feed.
-  // Existing posts are remembered but NEVER notified during migration/install.
-  // Only posts that appear AFTER this baseline become candidates.
-  if (!stateSnap.exists) {
-    const baselineIds = recentIds(parsed, 250);
-    await stateRef.set({
-      version: 4,
-      initializedAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
-      seenPostIds: baselineIds,
-      lastResult: {
-        baseline: true,
-        feedCount: parsed.length,
-        candidates: 0,
-        delivered: 0,
-        completedSkipped: 0,
-        unmatched: 0,
-        failed: 0
-      }
-    });
-    console.log("NAVA_BASELINE_V4 " + JSON.stringify({
-      feedCount: parsed.length,
-      seenCount: baselineIds.length
-    }));
-    return;
-  }
-
-  const state = stateSnap.data() || {};
-  const seen = new Set(Array.isArray(state.seenPostIds) ? state.seenPostIds : []);
-
-  // IMPORTANT:
-  // Only genuinely unseen Blogger post IDs are candidates.
-  // An unmatched/failed new release is NOT added to seen, so it retries later.
-  const candidates = parsed.filter((x) => !seen.has(x.postId)).reverse();
-
-  if (!candidates.length) {
-    await stateRef.set({
-      updatedAt: FieldValue.serverTimestamp(),
-      lastResult: {
-        baseline: false,
-        feedCount: parsed.length,
-        candidates: 0,
-        delivered: 0,
-        completedSkipped: 0,
-        unmatched: 0,
-        failed: 0
-      }
-    }, { merge: true });
-    console.log("NAVA_SCAN_RESULT " + JSON.stringify({
-      candidates: 0, delivered: 0, completedSkipped: 0, unmatched: 0, failed: 0
-    }));
+  const engine = await currentEngineState();
+  if (!engine.snap.exists || engine.data.initialized !== true) {
+    await baselineCurrentFeed(parsed, engine.ref);
     return;
   }
 
   const catalog = await buildCatalog(parsed);
-  const markSeen = [];
-  let delivered = 0, completedSkipped = 0, unmatched = 0, failed = 0, irrelevant = 0;
+  let delivered = 0;
+  let retry = 0;
+  let failed = 0;
+  let ignored = 0;
+  let completedSkipped = 0;
+  const details = [];
 
-  for (const release of candidates) {
-    // Normal Blogger posts that are not Cilt/Bölüm are safe to mark seen.
-    if (!release.kind || !release.url) {
-      irrelevant += 1;
-      markSeen.push(release.postId);
+  const ordered = parsed.slice().sort((a,b) => (b.publishedMs || 0) - (a.publishedMs || 0));
+
+  for (const post of ordered) {
+    const state = await postState(post.postId);
+    const status = state.data.status || "";
+
+    if (status === "baseline" || status === "completed" || status === "ignored") {
       continue;
     }
 
-    const series = resolveSeries(release, catalog);
-    if (!series) {
-      unmatched += 1;
-      await db.collection("releaseAutomationUnmatched").doc(docId(release.postId)).set({
-        postId: release.postId,
-        title: release.title,
-        url: release.url,
-        labels: release.labels,
-        candidates: release.candidates,
-        kind: release.kind,
-        reason: "parent-series-not-resolved-safely",
-        updatedAt: FieldValue.serverTimestamp()
-      }, { merge: true });
-      console.log(`UNMATCHED_RETRY: ${release.title} | ${release.labels.join(" | ")}`);
-      // DO NOT mark seen -> retry next pass.
+    if (!post.kind || !post.url) {
+      ignored += 1;
+      await markPost(state.ref, post, "ignored", { reason: "not-cilt-or-bolum" });
       continue;
     }
 
-    const rid = releaseId(series.id, release.url);
-    const existing = await db.collection("chapterReleases").doc(rid).get();
+    const series = resolveSeries(post, catalog);
+    let releaseDone = false;
+    let rid = "";
 
-    if (existing.exists && existing.data()?.status === "completed") {
+    if (series) {
+      rid = releaseId(series.id, post.url);
+      const releaseSnap = await db.collection("chapterReleases").doc(rid).get();
+      releaseDone = releaseSnap.exists && releaseSnap.data()?.status === "completed";
+    }
+
+    const action = decidePostAction({
+      initialized: true,
+      postState: status,
+      releaseCompleted: releaseDone,
+      isRelease: true,
+      seriesResolved: !!series
+    });
+
+    if (action === "complete") {
       completedSkipped += 1;
-      markSeen.push(release.postId);
+      await markPost(state.ref, post, "completed", {
+        releaseId: rid || state.data.releaseId || "",
+        completedReason: releaseDone ? "chapterRelease-already-completed" : "post-state-completed"
+      });
+      continue;
+    }
+
+    if (action === "retry") {
+      retry += 1;
+      await markPost(state.ref, post, "retry", {
+        retryReason: "parent-series-not-resolved",
+        labels: post.labels || [],
+        candidates: post.candidates || []
+      });
+      details.push({ postId: post.postId, title: post.title, status: "retry", labels: post.labels });
+      console.log("NAVA_RETRY_UNMATCHED " + JSON.stringify({
+        postId: post.postId,
+        title: post.title,
+        labels: post.labels,
+        candidates: post.candidates
+      }));
       continue;
     }
 
     try {
-      const result = await deliver(release, series);
+      const result = await deliver(post, series);
       if (result?.skipped) completedSkipped += 1;
       else delivered += 1;
-      markSeen.push(release.postId);
+
+      await markPost(state.ref, post, "completed", {
+        releaseId: rid,
+        seriesId: series.id,
+        seriesTitle: series.title,
+        completedAt: FieldValue.serverTimestamp()
+      });
+      details.push({
+        postId: post.postId,
+        title: post.title,
+        status: result?.skipped ? "already-completed" : "delivered",
+        series: series.title
+      });
     } catch (error) {
       failed += 1;
-      console.error("DELIVERY_FAILED_RETRY:", release.title, error);
-      // DO NOT mark seen -> retry next pass.
+      await markPost(state.ref, post, "retry", {
+        retryReason: "delivery-failed",
+        lastError: clean(String(error?.stack || error), 1500)
+      });
+      details.push({ postId: post.postId, title: post.title, status: "failed-retry" });
+      console.error("NAVA_RETRY_FAILED " + JSON.stringify({
+        postId: post.postId,
+        title: post.title,
+        error: String(error?.message || error)
+      }));
     }
-  }
-
-  // Merge only successfully handled posts into the ring buffer.
-  const merged = [];
-  for (const id of [...markSeen.reverse(), ...(Array.isArray(state.seenPostIds) ? state.seenPostIds : [])]) {
-    if (id && !merged.includes(id)) merged.push(id);
-    if (merged.length >= 250) break;
   }
 
   const result = {
     baseline: false,
     feedCount: parsed.length,
-    candidates: candidates.length,
     delivered,
-    completedSkipped,
-    unmatched,
+    retry,
     failed,
-    irrelevant
+    ignored,
+    completedSkipped
   };
 
-  await stateRef.set({
-    version: 4,
+  await engine.ref.set({
+    version: 5,
+    initialized: true,
     updatedAt: FieldValue.serverTimestamp(),
-    seenPostIds: merged,
     lastResult: result
   }, { merge: true });
 
-  console.log("NAVA_SCAN_RESULT " + JSON.stringify(result));
+  console.log("NAVA_SCAN_RESULT_V5 " + JSON.stringify(result));
+  if (details.length) {
+    console.log("NAVA_SCAN_DETAILS_V5 " + JSON.stringify(details.slice(0, 50)));
+  }
 }
 
 await scan();
