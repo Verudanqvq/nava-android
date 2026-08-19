@@ -1,6 +1,6 @@
 # Nava Android
 
-Current stable Android release: **12.1.26** (`versionCode 42`).
+Current stable Android release: **12.1.27** (`versionCode 43`).
 
 ## Distribution
 
@@ -23,4 +23,4 @@ Current stable Android release: **12.1.26** (`versionCode 42`).
 
 `notification-backend/retry-push.mjs` retries recent completed releases for newly registered device tokens and deduplicates by token-document id.
 
-Android 12.1.26 preserves the Firestore-safe FCM token registration behavior from 12.1.25 while refreshing the package version for the current Nava site build.
+Android 12.1.27 preserves the existing updater, signing, reader, read-state, icon, and Firestore-safe FCM token behavior while fixing the Android-only profile/edit layout collision.
