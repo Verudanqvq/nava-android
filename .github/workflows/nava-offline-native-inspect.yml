@@ -32,8 +32,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf /tmp/nava-decoded
+          rm -rf /tmp/nava-decoded android-audit/v12.1.30
           apktool d -f /tmp/nava-apk/Nava.apk -o /tmp/nava-decoded >/dev/null
+          mkdir -p android-audit/v12.1.30/smali android-audit/v12.1.30/assets
+          cp /tmp/nava-decoded/smali/gx.smali android-audit/v12.1.30/smali/gx.smali
+          cp /tmp/nava-decoded/smali/com/verudanava/nava/MainActivity.smali android-audit/v12.1.30/smali/MainActivity.smali
+          cp /tmp/nava-decoded/smali/c00.smali android-audit/v12.1.30/smali/c00.smali
+          cp /tmp/nava-decoded/assets/offline.html android-audit/v12.1.30/assets/offline.html
+          cp /tmp/nava-decoded/assets/nava_app_v11.js android-audit/v12.1.30/assets/nava_app_v11.js
           OUT=native-offline-inspect.txt
           : > "$OUT"
           echo '=== APK ===' >> "$OUT"
@@ -41,23 +47,19 @@ jobs:
           echo >> "$OUT"
           echo '=== MATCH FILES: shouldInterceptRequest ===' >> "$OUT"
           grep -RIl 'shouldInterceptRequest' /tmp/nava-decoded/smali* | sort >> "$OUT" || true
-          echo '=== MATCH FILES: addJavascriptInterface ===' >> "$OUT"
-          grep -RIl 'addJavascriptInterface' /tmp/nava-decoded/smali* | sort >> "$OUT" || true
+          echo '=== MATCH FILES: JavascriptInterface annotation ===' >> "$OUT"
+          grep -RIl 'Landroid/webkit/JavascriptInterface;' /tmp/nava-decoded/smali* | sort >> "$OUT" || true
           echo '=== MATCH FILES: NavaNative/postMessage ===' >> "$OUT"
           grep -RIl -E 'NavaNative|postMessage' /tmp/nava-decoded/smali* | sort >> "$OUT" || true
-          echo '=== MATCH FILES: notification channel ===' >> "$OUT"
-          grep -RIl 'nava_follower_releases' /tmp/nava-decoded/smali* | sort >> "$OUT" || true
+          echo '=== MATCH FILES: WebView setup ===' >> "$OUT"
+          grep -RIl -E 'setWebViewClient|addJavascriptInterface|evaluateJavascript' /tmp/nava-decoded/smali* | sort >> "$OUT" || true
           echo '=== ASSETS ===' >> "$OUT"
           find /tmp/nava-decoded/assets -maxdepth 2 -type f -printf '%p\n' | sort >> "$OUT" || true
           echo >> "$OUT"
-          for f in $(grep -RIl -E 'shouldInterceptRequest|addJavascriptInterface|NavaNative|postMessage|nava_follower_releases' /tmp/nava-decoded/smali* | sort -u); do
-            echo "===== FILE $f =====" >> "$OUT"
-            sed -n '1,900p' "$f" >> "$OUT"
-            echo >> "$OUT"
+          for f in $(grep -RIl 'Landroid/webkit/JavascriptInterface;' /tmp/nava-decoded/smali* | sort -u); do
+            bn=$(basename "$f")
+            cp "$f" "android-audit/v12.1.30/smali/jsi-$bn"
           done
-          echo '===== ASSET offline.html =====' >> "$OUT"
-          if [ -f /tmp/nava-decoded/assets/offline.html ]; then cat /tmp/nava-decoded/assets/offline.html >> "$OUT"; fi
-          echo >> "$OUT"
           echo '===== AndroidManifest decoded =====' >> "$OUT"
           sed -n '1,260p' /tmp/nava-decoded/AndroidManifest.xml >> "$OUT"
           wc -c "$OUT"
@@ -65,6 +67,6 @@ jobs:
         run: |
           git config user.name 'Nava Native Inspect Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add native-offline-inspect.txt
-          git commit -m 'Record native offline inspection [skip ci]' || true
+          git add native-offline-inspect.txt android-audit/v12.1.30
+          git commit -m 'Record focused native offline snapshots [skip ci]' || true
           git push origin HEAD:feat/offline-downloads-12-1-31
