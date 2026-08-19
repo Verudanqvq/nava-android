@@ -1,6 +1,6 @@
-run_started=2026-08-19T14:46:24Z
+run_started=2026-08-19T14:48:41Z
 event=push
-sha=92c1298f4fba19f86e8f80a373be76bd4bdc91db
+sha=912a31b786ae89e98b32cb98f751622d81efe848
 
 > scan
 > node scan.mjs
@@ -9,6 +9,8 @@ FEED_MERGED {"sourcesOk":6,"sourceErrors":0,"entries":22}
 NAVA_SCAN_RESULT_V5 {"baseline":false,"feedCount":22,"delivered":0,"retry":0,"failed":0,"ignored":0,"completedSkipped":0}
 ===== LIVE FEED/STATE DIAG =====
 DIAG_COUNT 22
+DIAG_RECIPIENT {"uidTail":"wv5bEC92","notificationExists":true,"notificationType":"chapter","notificationTitle":"Tensura Cilt 16","notificationRead":false,"tokenCount":0,"tokenApps":[]}
+DIAG_RECIPIENT {"uidTail":"RIVB5hs2","notificationExists":true,"notificationType":"chapter","notificationTitle":"Tensura Cilt 16","notificationRead":false,"tokenCount":0,"tokenApps":[]}
 DIAG_POST {"postId":"8659357545154013700","title":"Tensura Cilt 16","published":"2026-08-19T14:31:10.982Z","kind":"volume","labels":["Cilt","Tensei Shitara Slime Datta Ken (Light Novel)","Tensura Cilt 16"],"state":"completed","stateSeriesId":"816954997184127789","stateSeriesTitle":"Tensei Shitara Slime Datta Ken (Light Novel)","releaseId":"816954997184127789_1bimc78","followerUsers":2,"release":{"status":"completed","seriesId":"816954997184127789","seriesTitle":"Tensei Shitara Slime Datta Ken (Light Novel)","followerCount":2,"sentCount":2,"title":"Tensura Cilt 16","url":"https://www.verudanava.com/2026/08/tensura-cilt-16.html"},"url":"https://www.verudanava.com/2026/08/tensura-cilt-16.html"}
 DIAG_POST {"postId":"5354967993880862525","title":"Cilt 12 Bölüm 1","published":"2026-08-19T13:50:54.436Z","kind":"chapter","labels":["Bölüm","Tensura Cilt 12"],"state":"baseline","stateSeriesId":"","stateSeriesTitle":"","releaseId":"","followerUsers":null,"release":null,"url":"https://www.verudanava.com/2026/08/cilt-12-bolum-1.html"}
 DIAG_POST {"postId":"3867508801863209895","title":"Tensura Cilt 15","published":"2026-08-19T13:48:44.002Z","kind":"volume","labels":["Cilt","Tensei Shitara Slime Datta Ken (Light Novel)","Tensura Cilt 15"],"state":"baseline","stateSeriesId":"","stateSeriesTitle":"","releaseId":"","followerUsers":null,"release":null,"url":"https://www.verudanava.com/2026/08/tensura-cilt-15.html"}
@@ -34,5 +36,5 @@ DIAG_POST {"postId":"816954997184127789","title":"Tensei Shitara Slime Datta Ken
 DIAG_SERIES_FOLLOWERS {"seriesId":"1683086536901687502","title":"Mushoku Tensei: Jobless Reincarnation (Light Novel)","url":"https://www.verudanava.com/2026/07/mushoku-tensei-jobless-reincarnation.html?m=1","followers":1}
 DIAG_SERIES_FOLLOWERS {"seriesId":"4248616290363777800","title":"The Beginning After the End (Web Novel)","url":"https://www.verudanava.com/2026/07/the-beginning-after-end-web-novel-kapag.html?m=1","followers":1}
 DIAG_SERIES_FOLLOWERS {"seriesId":"816954997184127789","title":"Tensei Shitara Slime Datta Ken (Light Novel)","url":"https://www.verudanava.com/2026/07/tensei-shitara-slime-datta-ken-light.html","followers":2}
-run_finished=2026-08-19T14:46:52Z
+run_finished=2026-08-19T14:48:53Z
 exit_code=0
