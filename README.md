@@ -1,6 +1,6 @@
 # Nava Android
 
-Current stable Android release: **12.1.28** (`versionCode 44`).
+Current stable Android release: **12.1.29** (`versionCode 45`).
 
 ## Distribution
 
@@ -19,8 +19,9 @@ Current stable Android release: **12.1.28** (`versionCode 44`).
 - reads `seriesFollowers/{seriesId}/users`;
 - writes the site's Firestore notification documents;
 - sends FCM only to Android token documents belonging to those follower UIDs;
+- sends both the existing data payload and an Android system-notification fallback on the `nava_follower_releases` channel;
 - stores per-post state so failed/unresolved posts retry instead of disappearing.
 
-`notification-backend/retry-push.mjs` retries recent completed releases for newly registered device tokens and deduplicates by token-document id.
+`notification-backend/retry-push.mjs` retries recent completed releases for newly registered device tokens and deduplicates by token-document id while using the same system-notification fallback.
 
-Android 12.1.28 preserves the updater, signing, reader, read-state, icon, and notification behavior while completing the Android profile suite: @ user search resolves Google/Nava/admin avatars, profile customization refreshes live, and admin/profile editor layouts are hardened for small screens.
+Android 12.1.29 preserves the updater, signing, reader, read-state, icon and profile behavior, refreshes FCM registration to 12.1.29, and re-prompts the Android 13+ notification permission once for this release when it is still denied.
