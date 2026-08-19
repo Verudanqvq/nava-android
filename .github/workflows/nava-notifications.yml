@@ -20,7 +20,7 @@ concurrency:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 8
     defaults:
       run:
         working-directory: notification-backend
@@ -42,7 +42,7 @@ jobs:
       - name: Test notification engine
         run: npm test
 
-      - name: Scan Blogger now
+      - name: Watch Blogger continuously for five passes
         shell: bash
         run: |
           set -uo pipefail
@@ -51,19 +51,33 @@ jobs:
           echo "run_started=$(date -u +%FT%TZ)" | tee -a ../nava-diagnostics/latest.log
           echo "event=${GITHUB_EVENT_NAME}" | tee -a ../nava-diagnostics/latest.log
           echo "sha=${GITHUB_SHA}" | tee -a ../nava-diagnostics/latest.log
-          npm run scan 2>&1 | tee -a ../nava-diagnostics/latest.log
-          rc=${PIPESTATUS[0]}
-          echo "===== PUSH RETRY =====" | tee -a ../nava-diagnostics/latest.log
-          node retry-push.mjs 2>&1 | tee -a ../nava-diagnostics/latest.log
-          push_rc=${PIPESTATUS[0]}
-          if [ "$rc" -eq 0 ] && [ "$push_rc" -ne 0 ]; then rc=$push_rc; fi
-          echo "===== LIVE FEED/STATE DIAG =====" | tee -a ../nava-diagnostics/latest.log
-          node diagnose.mjs 2>&1 | tee -a ../nava-diagnostics/latest.log
-          diag_rc=${PIPESTATUS[0]}
-          if [ "$rc" -eq 0 ] && [ "$diag_rc" -ne 0 ]; then rc=$diag_rc; fi
+
+          final_rc=0
+          for pass in 1 2 3 4 5; do
+            echo "===== NAVA PASS $pass/5 =====" | tee -a ../nava-diagnostics/latest.log
+
+            npm run scan 2>&1 | tee -a ../nava-diagnostics/latest.log
+            rc=${PIPESTATUS[0]}
+            if [ "$rc" -ne 0 ]; then final_rc=$rc; fi
+
+            echo "===== PUSH RETRY $pass/5 =====" | tee -a ../nava-diagnostics/latest.log
+            node retry-push.mjs 2>&1 | tee -a ../nava-diagnostics/latest.log
+            push_rc=${PIPESTATUS[0]}
+            if [ "$push_rc" -ne 0 ]; then final_rc=$push_rc; fi
+
+            if [ "$pass" = "5" ]; then
+              echo "===== LIVE FEED/STATE DIAG =====" | tee -a ../nava-diagnostics/latest.log
+              node diagnose.mjs 2>&1 | tee -a ../nava-diagnostics/latest.log
+              diag_rc=${PIPESTATUS[0]}
+              if [ "$diag_rc" -ne 0 ]; then final_rc=$diag_rc; fi
+            else
+              sleep 60
+            fi
+          done
+
           echo "run_finished=$(date -u +%FT%TZ)" | tee -a ../nava-diagnostics/latest.log
-          echo "exit_code=$rc" | tee -a ../nava-diagnostics/latest.log
-          exit $rc
+          echo "exit_code=$final_rc" | tee -a ../nava-diagnostics/latest.log
+          exit $final_rc
 
       - name: Persist live diagnostics
         if: always()
