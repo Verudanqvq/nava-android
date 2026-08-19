@@ -1,11 +1,35 @@
-run_started=2026-08-19T14:41:12Z
+run_started=2026-08-19T14:44:28Z
 event=push
-sha=e95ca293c70899892ef37c4a81101ecb49144f1c
+sha=822511224170b897e28bf3c72a1f96354c3aa0f4
 
 > scan
 > node scan.mjs
 
 FEED_MERGED {"sourcesOk":6,"sourceErrors":0,"entries":22}
 NAVA_SCAN_RESULT_V5 {"baseline":false,"feedCount":22,"delivered":0,"retry":0,"failed":0,"ignored":0,"completedSkipped":0}
-run_finished=2026-08-19T14:41:27Z
+===== LIVE FEED/STATE DIAG =====
+DIAG_COUNT 22
+DIAG_POST {"postId":"8659357545154013700","title":"Tensura Cilt 16","published":"2026-08-19T14:31:10.982Z","kind":"volume","labels":["Cilt","Tensei Shitara Slime Datta Ken (Light Novel)","Tensura Cilt 16"],"state":"completed","url":"https://www.verudanava.com/2026/08/tensura-cilt-16.html"}
+DIAG_POST {"postId":"5354967993880862525","title":"Cilt 12 Bölüm 1","published":"2026-08-19T13:50:54.436Z","kind":"chapter","labels":["Bölüm","Tensura Cilt 12"],"state":"baseline","url":"https://www.verudanava.com/2026/08/cilt-12-bolum-1.html"}
+DIAG_POST {"postId":"3867508801863209895","title":"Tensura Cilt 15","published":"2026-08-19T13:48:44.002Z","kind":"volume","labels":["Cilt","Tensei Shitara Slime Datta Ken (Light Novel)","Tensura Cilt 15"],"state":"baseline","url":"https://www.verudanava.com/2026/08/tensura-cilt-15.html"}
+DIAG_POST {"postId":"918227940215901822","title":"Tensura Cilt 14","published":"2026-08-19T13:33:55.064Z","kind":"volume","labels":["Cilt","Tensei Shitara Slime Datta Ken (Light Novel)"],"state":"baseline","url":"https://www.verudanava.com/2026/08/tensura-cilt-14.html"}
+DIAG_POST {"postId":"1774668870858108757","title":"Tensura Cilt 13","published":"2026-08-19T13:17:49.142Z","kind":"volume","labels":["Cilt","Tensei Shitara Slime Datta Ken (Light Novel)"],"state":"baseline","url":"https://www.verudanava.com/2026/08/tensura-cilt-13.html"}
+DIAG_POST {"postId":"6503376432532001532","title":"Cilt 12 Bölüm 0.5","published":"2026-08-19T13:16:39.749Z","kind":"chapter","labels":["Bölüm","Tensura Cilt 12"],"state":"baseline","url":"https://www.verudanava.com/2026/08/cilt-12-bolum-05.html"}
+DIAG_POST {"postId":"7037184379363536636","title":"Tensura Cilt 12","published":"2026-08-19T11:43:14.817Z","kind":"volume","labels":["Cilt","Tensei Shitara Slime Datta Ken (Light Novel)","Tensura Cilt 12"],"state":"baseline","url":"https://www.verudanava.com/2026/08/tensura-cilt-12.html"}
+DIAG_POST {"postId":"7518374058752897134","title":"Cilt 12 Bölüm 0","published":"2026-07-26T08:45:42.414Z","kind":"chapter","labels":["Bölüm","Tensura Cilt 12"],"state":"baseline","url":"https://www.verudanava.com/2026/07/cilt-12-bolum-0.html"}
+DIAG_POST {"postId":"4248616290363777800","title":"The Beginning After the End (Web Novel)","published":"2026-07-25T14:01:05.068Z","kind":"","labels":["Aksiyon","Büyü","Doğaüstü","Dövüş Sanatları","Fantastik","Okul Hayatı","Project","Romantizm","Series","Shounen","Tamamlandı","Tarihsel","TR","Web Novel","Yeni","İsekai"],"state":"baseline","url":"https://www.verudanava.com/2026/07/the-beginning-after-end-web-novel-kapag.html"}
+DIAG_POST {"postId":"5571224105736483720","title":"Cilt 11 Bölüm 7","published":"2026-07-25T10:41:17.813Z","kind":"chapter","labels":["Bölüm","Tensura Cilt 11"],"state":"baseline","url":"https://www.verudanava.com/2026/07/cilt-11-bolum-7.html"}
+DIAG_POST {"postId":"909944837357510595","title":"Cilt 11 Bölüm 6","published":"2026-07-25T10:41:01.569Z","kind":"chapter","labels":["Bölüm","Tensura Cilt 11"],"state":"baseline","url":"https://www.verudanava.com/2026/07/cilt-11-bolum-6.html"}
+DIAG_POST {"postId":"7456521106602551348","title":"Cilt 11 Bölüm 5","published":"2026-07-25T10:40:33.619Z","kind":"chapter","labels":["Bölüm","Tensura Cilt 11"],"state":"baseline","url":"https://www.verudanava.com/2026/07/cilt-11-bolum-5.html"}
+DIAG_POST {"postId":"3685696735437175421","title":"Cilt 11 Bölüm 4","published":"2026-07-25T10:40:26.392Z","kind":"chapter","labels":["Bölüm","Tensura Cilt 11"],"state":"baseline","url":"https://www.verudanava.com/2026/07/cilt-11-bolum-4.html"}
+DIAG_POST {"postId":"4298603139426706917","title":"Cilt 11 Bölüm 3","published":"2026-07-25T10:40:18.497Z","kind":"chapter","labels":["Bölüm","Tensura Cilt 11"],"state":"baseline","url":"https://www.verudanava.com/2026/07/cilt-11-bolum-3.html"}
+DIAG_POST {"postId":"1314776166666248700","title":"Cilt 11 Bölüm 2","published":"2026-07-25T10:39:12.934Z","kind":"chapter","labels":["Bölüm","Tensura Cilt 11"],"state":"baseline","url":"https://www.verudanava.com/2026/07/cilt-11-bolum-2.html"}
+DIAG_POST {"postId":"8601138725694791279","title":"Cilt 11 Bölüm 1","published":"2026-07-23T16:58:41.179Z","kind":"chapter","labels":["Bölüm","Tensura Cilt 11"],"state":"baseline","url":"https://www.verudanava.com/2026/07/cilt-11-bolum-1.html"}
+DIAG_POST {"postId":"976415121977904041","title":"Cilt 11 Bölüm 0.5","published":"2026-07-23T14:55:57.477Z","kind":"chapter","labels":["Bölüm","Tensura Cilt 11"],"state":"baseline","url":"https://www.verudanava.com/2026/07/cilt-11-bolum-05.html"}
+DIAG_POST {"postId":"312449356060881417","title":"Cilt 11 Bölüm 0","published":"2026-07-23T14:34:00.072Z","kind":"chapter","labels":["Bölüm","Tensura Cilt 11"],"state":"baseline","url":"https://www.verudanava.com/2026/07/cilt-11-bolum-0.html"}
+DIAG_POST {"postId":"2357728344893571705","title":"Tensura Cilt 11","published":"2026-07-23T14:29:08.258Z","kind":"volume","labels":["Cilt","Tensei Shitara Slime Datta Ken (Light Novel)","Tensura Cilt 11"],"state":"baseline","url":"https://www.verudanava.com/2026/07/tensura-cilt-11.html"}
+DIAG_POST {"postId":"1683086536901687502","title":"Mushoku Tensei: Jobless Reincarnation (Light Novel)","published":"2026-07-22T17:47:12.180Z","kind":"","labels":["Aksiyon","Drama","Ecchi","Fantezi","Harem","Komedi","Light Novel","M","Macera","Mushoku Tensei (Light Novel)","Project","Series","Tamamlandı","TR","Trajedi","Yeni","Yetişkin"],"state":"baseline","url":"https://www.verudanava.com/2026/07/mushoku-tensei-jobless-reincarnation.html"}
+DIAG_POST {"postId":"2838072966589071911","title":"Re:Zero Kara Hajimeru Isekai Seikatsu (Light Novel)","published":"2026-07-22T17:42:23.383Z","kind":"","labels":["Aksiyon","Askeri","Büyü","Doğaüstü","Drama","Dövüş Sanatları","Fantezi","Gizem","Güncel","Light Novel","Macera","Project","Psikolojik","Romantizm","Series","TR","Yaşamdan Kesitler","Yeni","İsekai"],"state":"baseline","url":"https://www.verudanava.com/2026/07/rezero-kara-hajimeru-isekai-seikatsu.html"}
+DIAG_POST {"postId":"816954997184127789","title":"Tensei Shitara Slime Datta Ken (Light Novel)","published":"2026-07-20T14:19:23.783Z","kind":"","labels":["Aksiyon","Fantezi","Harem","Komedi","Light Novel","Macera","Project","Series","Shounen","T","Tamamlandı","Tensei Shitara Slime Datta Ken (Light Novel)","TR","Yeni","İsekai"],"state":"baseline","url":"https://www.verudanava.com/2026/07/tensei-shitara-slime-datta-ken-light.html"}
+run_finished=2026-08-19T14:44:48Z
 exit_code=0
