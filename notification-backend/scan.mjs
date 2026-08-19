@@ -288,55 +288,35 @@ async function deliver(release, series) {
 }
 
 async function scan() {
-  const stateRef = db.collection("releaseAutomation").doc("bloggerScannerGithub");
-  const stateSnap = await stateRef.get();
   const rawEntries = await fetchEntries();
   const parsed = rawEntries.map(parseEntry).filter((x) => x.postId);
-  const oldSeen = new Set(
-    stateSnap.exists && Array.isArray(stateSnap.data()?.seenPostIds)
-      ? stateSnap.data().seenPostIds : []
-  );
 
-  const firstRun = !stateSnap.exists;
+  // IMPORTANT:
+  // "seenPostIds" is deliberately NOT used as a delivery gate anymore.
+  // Every run checks all recent Cilt/Bölüm posts again and chapterReleases/{releaseId}
+  // is the one authoritative dedupe source. This means a post cannot be permanently
+  // lost just because a previous scan saw it before the series relation was ready.
+  const LOOKBACK_MS = 24 * 60 * 60 * 1000;
   const now = Date.now();
-
-  // On first install, baseline old history but still catch the user's recent test posts.
-  const oldBaseline = firstRun
-    ? parsed.filter((x) => !x.publishedMs || now - x.publishedMs > FIRST_LOOKBACK_MS)
-            .map((x) => x.postId)
-    : [];
-
-  const candidates = (firstRun
-    ? parsed.filter((x) => x.publishedMs && now - x.publishedMs <= FIRST_LOOKBACK_MS)
-    : parsed.filter((x) => !oldSeen.has(x.postId))
-  ).reverse();
+  const candidates = parsed
+    .filter((x) => x.kind && x.url && x.publishedMs && now - x.publishedMs <= LOOKBACK_MS)
+    .reverse();
 
   if (!candidates.length) {
-    const keep = [];
-    [...parsed.map((x) => x.postId), ...oldSeen].forEach((id) => {
-      if (id && !keep.includes(id)) keep.push(id);
-    });
-    await stateRef.set({
+    await db.collection("releaseAutomation").doc("bloggerScannerGithub").set({
       updatedAt: FieldValue.serverTimestamp(),
-      seenPostIds: keep.slice(0, 300),
-      lastResult: { firstRun, candidates: 0, delivered: 0, unmatched: 0 }
+      lastResult: { candidates: 0, delivered: 0, completedSkipped: 0, unmatched: 0, failed: 0 }
     }, { merge: true });
-    console.log("No new release.");
+    console.log("No recent Cilt/Bölüm release.");
     return;
   }
 
   const catalog = await buildCatalog(parsed);
-  const deliveredIds = [];
-  const irrelevantIds = [];
-  let delivered = 0, unmatched = 0;
+  let delivered = 0, completedSkipped = 0, unmatched = 0, failed = 0;
 
   for (const release of candidates) {
-    if (!release.kind || !release.url) {
-      irrelevantIds.push(release.postId);
-      continue;
-    }
-
     const series = resolveSeries(release, catalog);
+
     if (!series) {
       unmatched += 1;
       await db.collection("releaseAutomationUnmatched").doc(docId(release.postId)).set({
@@ -349,36 +329,34 @@ async function scan() {
         reason: "parent-series-not-resolved-safely",
         updatedAt: FieldValue.serverTimestamp()
       }, { merge: true });
-      // Do NOT mark recent unmatched releases as seen; retry next run.
+      console.log(`UNMATCHED: ${release.title} | ${release.labels.join(" | ")}`);
+      continue;
+    }
+
+    const rid = releaseId(series.id, release.url);
+    const existing = await db.collection("chapterReleases").doc(rid).get();
+    if (existing.exists && existing.data()?.status === "completed") {
+      completedSkipped += 1;
       continue;
     }
 
     try {
-      await deliver(release, series);
-      deliveredIds.push(release.postId);
-      delivered += 1;
+      const result = await deliver(release, series);
+      if (result?.skipped) completedSkipped += 1;
+      else delivered += 1;
     } catch (error) {
-      console.error("Release delivery failed; will retry next run:", release.title, error);
+      failed += 1;
+      console.error("DELIVERY FAILED:", release.title, error);
     }
   }
 
-  const keep = [];
-  [...oldBaseline, ...deliveredIds, ...irrelevantIds, ...oldSeen].forEach((id) => {
-    if (id && !keep.includes(id)) keep.push(id);
-  });
-
-  await stateRef.set({
+  const result = { candidates: candidates.length, delivered, completedSkipped, unmatched, failed };
+  await db.collection("releaseAutomation").doc("bloggerScannerGithub").set({
     updatedAt: FieldValue.serverTimestamp(),
-    seenPostIds: keep.slice(0, 300),
-    lastResult: {
-      firstRun,
-      candidates: candidates.length,
-      delivered,
-      unmatched
-    }
+    lastResult: result
   }, { merge: true });
 
-  console.log(`Done. candidates=${candidates.length} delivered=${delivered} unmatched=${unmatched}`);
+  console.log("NAVA_SCAN_RESULT " + JSON.stringify(result));
 }
 
 await scan();
