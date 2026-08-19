@@ -190,8 +190,13 @@ async function sendPush(uids, release, series, notificationId) {
     const tokens = chunk.map((doc) => clean(doc.data()?.token, 4096)).filter(Boolean);
     if (!tokens.length) continue;
 
+    const systemTitle = (release.kind === "volume" ? "Yeni cilt • " : "Yeni bölüm • ") + (series.title || "Takip ettiğin eser");
     const result = await messaging.sendEachForMulticast({
       tokens,
+      notification: {
+        title: systemTitle,
+        body: release.title || (release.kind === "volume" ? "Yeni cilt yayımlandı" : "Yeni bölüm yayımlandı")
+      },
       data: {
         kind: release.kind,
         seriesTitle: series.title,
@@ -201,7 +206,11 @@ async function sendPush(uids, release, series, notificationId) {
       },
       android: {
         priority: "high",
-        ttl: 24 * 60 * 60 * 1000
+        ttl: 24 * 60 * 60 * 1000,
+        notification: {
+          channelId: "nava_follower_releases",
+          tag: notificationId
+        }
       }
     });
 

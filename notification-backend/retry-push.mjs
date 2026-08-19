@@ -85,8 +85,13 @@ async function sendOutstanding(releaseDoc) {
   for (let i = 0; i < pendingDocs.length; i += 500) {
     const chunk = pendingDocs.slice(i, i + 500);
     const tokens = chunk.map((doc) => clean(doc.data()?.token, 4096));
+    const systemTitle = (kind === "volume" ? "Yeni cilt • " : "Yeni bölüm • ") + seriesTitle;
     const result = await messaging.sendEachForMulticast({
       tokens,
+      notification: {
+        title: systemTitle,
+        body: releaseTitle
+      },
       data: {
         kind,
         seriesTitle,
@@ -96,7 +101,11 @@ async function sendOutstanding(releaseDoc) {
       },
       android: {
         priority: "high",
-        ttl: 24 * 60 * 60 * 1000
+        ttl: 24 * 60 * 60 * 1000,
+        notification: {
+          channelId: "nava_follower_releases",
+          tag: notificationId
+        }
       }
     });
 
