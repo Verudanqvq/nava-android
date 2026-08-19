@@ -1,11 +1,20 @@
+=== STEP RC ===
+install=0 before=0 tests=0 scan=0 retry=0 after=0
+=== INSTALL ===
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+npm warn deprecated uuid@9.0.1: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+
+added 221 packages in 8s
+=== BEFORE ERROR ===
 === BEFORE ===
 {
-  "checkedAt": "2026-08-19T22:32:09.787Z",
+  "checkedAt": "2026-08-19T22:33:08.799Z",
   "engine": {
     "exists": true,
     "initialized": true,
     "version": 5,
-    "updatedAt": "2026-08-19T22:32:00.503Z",
+    "updatedAt": "2026-08-19T22:32:23.310Z",
     "lastResult": {
       "failed": 0,
       "retry": 0,
@@ -13,7 +22,7 @@
       "baseline": false,
       "completedSkipped": 0,
       "feedCount": 26,
-      "delivered": 1
+      "delivered": 0
     },
     "baselineCount": 21
   },
@@ -391,7 +400,6 @@
     }
   ]
 }
-
 === TESTS ===
 
 > test
@@ -413,33 +421,27 @@
   "unresolvedPostRetryThenSend": "PASS",
   "completedReleaseNoDuplicate": "PASS"
 }
-
-=== SCAN RC ===
-0
-=== SCAN LOG ===
+=== SCAN ===
 
 > scan
 > node scan.mjs
 
 FEED_MERGED {"sourcesOk":6,"sourceErrors":0,"entries":26}
 NAVA_SCAN_RESULT_V5 {"baseline":false,"feedCount":26,"delivered":0,"retry":0,"failed":0,"ignored":0,"completedSkipped":0}
-
-=== RETRY RC ===
-0
-=== RETRY LOG ===
+=== RETRY ===
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_1j6s4rz","title":"Tensura Cilt 20","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_nko5bj","title":"Tensura Cilt 19","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_xln9oy","title":"Tensura Cilt 18","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
 NAVA_PUSH_RETRY_RESULT {"releases":3,"sent":0,"pendingNoToken":0,"failures":0}
-
+=== AFTER ERROR ===
 === AFTER ===
 {
-  "checkedAt": "2026-08-19T22:32:30.978Z",
+  "checkedAt": "2026-08-19T22:33:19.942Z",
   "engine": {
     "exists": true,
     "initialized": true,
     "version": 5,
-    "updatedAt": "2026-08-19T22:32:23.310Z",
+    "updatedAt": "2026-08-19T22:33:16.102Z",
     "lastResult": {
       "failed": 0,
       "retry": 0,
