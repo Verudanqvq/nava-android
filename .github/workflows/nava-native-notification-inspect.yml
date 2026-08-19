@@ -1,0 +1,76 @@
+name: Nava native notification inspect
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-native-notification-inspect.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download latest Nava APK
+        shell: bash
+        run: |
+          mkdir -p /tmp/nava
+          gh release download v12.1.28 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/nava
+          test -s /tmp/nava/Nava.apk
+      - name: Inspect manifest and dex strings
+        shell: bash
+        run: |
+          set +e
+          unzip -p /tmp/nava/Nava.apk classes.dex > /tmp/classes.dex
+          {
+            echo '=== APK FILES / MANIFEST HINTS ==='
+            unzip -l /tmp/nava/Nava.apk | grep -Ei 'manifest|classes|firebase|messag|notification' || true
+            echo
+            echo '=== DEX NOTIFICATION STRINGS ==='
+            strings -a /tmp/classes.dex | grep -Ei 'FirebaseMessaging|onMessageReceived|NotificationManager|NotificationChannel|POST_NOTIFICATIONS|pushTokenRequest|pushDeleteToken|releaseTitle|seriesTitle|notificationId|firebase_messaging|nava.*notification|notification.*nava' | head -n 500 || true
+          } > /tmp/native-inspect.txt
+      - name: Download JADX and decompile notification code
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          mkdir -p /tmp/jadxdl /tmp/jadxout
+          gh release download --repo skylot/jadx --pattern 'jadx-*.zip' --dir /tmp/jadxdl --clobber
+          ZIP="$(find /tmp/jadxdl -name 'jadx-*.zip' | head -1)"
+          test -n "$ZIP" || exit 0
+          unzip -q "$ZIP" -d /tmp/jadx
+          JADX="$(find /tmp/jadx -type f -path '*/bin/jadx' | head -1)"
+          chmod +x "$JADX"
+          "$JADX" --no-res -d /tmp/jadxout /tmp/nava/Nava.apk >/tmp/jadx.log 2>&1
+          {
+            echo
+            echo '=== JADX MATCH FILES ==='
+            grep -RIlE 'FirebaseMessagingService|onMessageReceived|NotificationManager|NotificationChannel|pushTokenRequest|releaseTitle|seriesTitle|notificationId' /tmp/jadxout/sources | head -n 50 || true
+            echo
+            echo '=== JADX MATCHES ==='
+            grep -RInE 'FirebaseMessagingService|onMessageReceived|NotificationManager|NotificationChannel|pushTokenRequest|releaseTitle|seriesTitle|notificationId|POST_NOTIFICATIONS' /tmp/jadxout/sources | head -n 800 || true
+            echo
+            echo '=== LIKELY NAVA/FIREBASE FILE CONTENT ==='
+            for f in $(grep -RIlE 'pushTokenRequest|onMessageReceived|FirebaseMessagingService' /tmp/jadxout/sources | head -n 12); do
+              echo "--- $f"
+              sed -n '1,320p' "$f"
+            done
+          } >> /tmp/native-inspect.txt
+      - name: Persist inspection
+        if: always()
+        shell: bash
+        run: |
+          test -f /tmp/native-inspect.txt || echo 'inspect failed before output' > /tmp/native-inspect.txt
+          cp /tmp/native-inspect.txt native-notification-inspect.txt
+          git config user.name 'Nava Native Inspect Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add native-notification-inspect.txt
+          git commit -m 'Record native notification inspection [skip ci]' || true
+          git push || true
