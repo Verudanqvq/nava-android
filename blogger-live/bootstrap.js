@@ -4,6 +4,20 @@
   if(w.__NAVA_BLOGGER_LIVE_LOADER__)return;
   w.__NAVA_BLOGGER_LIVE_LOADER__=true;
 
+  function showBootstrapProbe(){
+    function mount(){
+      if(d.getElementById('nava-live-bootstrap-probe'))return;
+      var el=d.createElement('div');
+      el.id='nava-live-bootstrap-probe';
+      el.textContent='Nava Loader ✓';
+      el.style.cssText='position:fixed;z-index:2147483647;top:12px;right:12px;padding:9px 12px;border-radius:8px;background:#163b67;color:#fff;font:700 12px/1.2 system-ui,-apple-system,Segoe UI,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.22);pointer-events:none';
+      (d.body||d.documentElement).appendChild(el);
+      setTimeout(function(){try{el.remove()}catch(_){}},20000);
+    }
+    if(d.body)mount();else d.addEventListener('DOMContentLoaded',mount,{once:true});
+  }
+  showBootstrapProbe();
+
   var RAW_MANIFEST='https://raw.githubusercontent.com/Verudanqvq/nava-android/main/blogger-live/manifest.json';
   var CDN_BASE='https://cdn.jsdelivr.net/gh/Verudanqvq/nava-android@main/blogger-live/';
   var SAFE_ASSET=/^[A-Za-z0-9._\/-]+\.(?:css|js)$/;
