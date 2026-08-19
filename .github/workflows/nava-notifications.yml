@@ -53,6 +53,10 @@ jobs:
           echo "sha=${GITHUB_SHA}" | tee -a ../nava-diagnostics/latest.log
           npm run scan 2>&1 | tee -a ../nava-diagnostics/latest.log
           rc=${PIPESTATUS[0]}
+          echo "===== PUSH RETRY =====" | tee -a ../nava-diagnostics/latest.log
+          node retry-push.mjs 2>&1 | tee -a ../nava-diagnostics/latest.log
+          push_rc=${PIPESTATUS[0]}
+          if [ "$rc" -eq 0 ] && [ "$push_rc" -ne 0 ]; then rc=$push_rc; fi
           echo "===== LIVE FEED/STATE DIAG =====" | tee -a ../nava-diagnostics/latest.log
           node diagnose.mjs 2>&1 | tee -a ../nava-diagnostics/latest.log
           diag_rc=${PIPESTATUS[0]}
