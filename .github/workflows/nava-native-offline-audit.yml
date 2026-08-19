@@ -34,16 +34,16 @@ jobs:
         run: |
           {
             echo '=== GX SMALI ==='
-            GX=$(find /tmp/apk -type f -path '*/defpackage/gx.smali' | head -1); echo "$GX"; test -n "$GX" && cat "$GX"
+            GX=$(find /tmp/apk -type f -name 'gx.smali' | head -1); echo "$GX"; test -n "$GX" && cat "$GX"
             echo
             echo '=== CH0 MESSAGE AREA ==='
-            CH=$(find /tmp/apk -type f -path '*/defpackage/ch0.smali' | head -1); echo "$CH"; test -n "$CH" && grep -a -n -B 35 -A 100 'pushTokenRequest' "$CH" || true
+            CH=$(find /tmp/apk -type f -name 'ch0.smali' | head -1); echo "$CH"; test -n "$CH" && grep -a -n -B 55 -A 145 'pushTokenRequest' "$CH" || true
+            echo
+            echo '=== BACK CALLBACKS ==='
+            for f in $(find /tmp/apk -type f \( -name 'dd.smali' -o -name 'o7.smali' -o -name 'cp.smali' \)); do echo "--- $f"; grep -a -n -B 30 -A 80 'onBackPressed\|goBack\|goBackOrForward\|evaluateJavascript' "$f" || true; done
             echo
             echo '=== MAINACTIVITY BACK/CACHE AREA ==='
-            MA=$(find /tmp/apk -type f -path '*/com/verudanava/nava/MainActivity.smali' | head -1); echo "$MA"; test -n "$MA" && grep -a -n -E -B 18 -A 38 'setCacheMode|setWebViewClient|setDownloadListener|goBack|canGoBack|loadUrl' "$MA" | head -n 1200 || true
-            echo
-            echo '=== MANIFEST DECODED ==='
-            sed -n '1,260p' /tmp/apk/AndroidManifest.xml
+            MA=$(find /tmp/apk -type f -path '*/com/verudanava/nava/MainActivity.smali' | head -1); echo "$MA"; test -n "$MA" && grep -a -n -E -B 18 -A 38 'setCacheMode|setWebViewClient|setDownloadListener|goBack|canGoBack|loadUrl|OnBackPressed' "$MA" | head -n 1500 || true
           } > /tmp/native-raw.txt
           iconv -f UTF-8 -t UTF-8 -c /tmp/native-raw.txt > native-offline-audit-utf8.txt
       - name: Persist
@@ -52,5 +52,6 @@ jobs:
           git config user.name 'Nava Native Audit Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add native-offline-audit-utf8.txt
-          git commit -m 'Record sanitized native offline patch points [skip ci]' || true
+          git commit -m 'Update sanitized native offline patch points [skip ci]' || true
+          git pull --rebase || true
           git push || true
