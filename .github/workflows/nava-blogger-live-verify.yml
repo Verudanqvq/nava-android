@@ -1,0 +1,41 @@
+name: Nava Blogger live verify
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-blogger-live-verify.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify stable CDN loader
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://cdn.jsdelivr.net/gh/Verudanqvq/nava-android@blogger-live-v2/blogger-live/bootstrap-v2.js'
+          MAN='https://raw.githubusercontent.com/Verudanqvq/nava-android/main/blogger-live/manifest.json'
+          CODE=$(curl -L -sS -o /tmp/bootstrap.js -w '%{http_code}' "$URL")
+          MCODE=$(curl -L -sS -o /tmp/manifest.json -w '%{http_code}' "$MAN")
+          {
+            echo "checkedAt=$(date -u +%FT%TZ)"
+            echo "cdnHttp=$CODE"
+            echo "manifestHttp=$MCODE"
+            if grep -q 'Nava Blogger Live Loader v2' /tmp/bootstrap.js; then echo 'loaderContent=ok'; else echo 'loaderContent=bad'; fi
+            if python -m json.tool /tmp/manifest.json >/dev/null 2>&1; then echo 'manifestJson=ok'; else echo 'manifestJson=bad'; fi
+          } > nava-blogger-live-verify.txt
+          cat nava-blogger-live-verify.txt
+      - name: Persist report
+        shell: bash
+        run: |
+          git config user.name 'Nava Blogger Verify Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add nava-blogger-live-verify.txt
+          git commit -m 'Record Blogger live verification [skip ci]' || true
+          git push || true
