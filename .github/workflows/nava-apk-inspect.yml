@@ -19,19 +19,32 @@ jobs:
       SOURCE_TAG: v12.1.26
     steps:
       - uses: actions/checkout@v4
-      - name: Extract Android app web asset
+      - name: Extract Android app web assets
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p /tmp/nava-apk android-patch/_inspect
           gh release download "$SOURCE_TAG" --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/nava-apk
           test -s /tmp/nava-apk/Nava.apk
+          unzip -l /tmp/nava-apk/Nava.apk > android-patch/_inspect/apk-list.txt
           unzip -p /tmp/nava-apk/Nava.apk assets/nava_app_v11.js > android-patch/_inspect/nava_app_v11-v12.1.26.js
           test -s android-patch/_inspect/nava_app_v11-v12.1.26.js
+          rm -rf android-patch/_inspect/css
+          mkdir -p android-patch/_inspect/css
+          python - <<'PY'
+          import zipfile, pathlib
+          apk=zipfile.ZipFile('/tmp/nava-apk/Nava.apk')
+          out=pathlib.Path('android-patch/_inspect/css')
+          for name in apk.namelist():
+              if name.startswith('assets/') and name.lower().endswith('.css'):
+                  p=out/pathlib.Path(name).name
+                  p.write_bytes(apk.read(name))
+          PY
           {
             echo "source=$SOURCE_TAG"
             wc -c android-patch/_inspect/nava_app_v11-v12.1.26.js
-            grep -nEi "profile|modal|mobile|android|webview|nava-profile|nava-modal" android-patch/_inspect/nava_app_v11-v12.1.26.js | head -n 250 || true
+            grep -nEi "profile|modal|mobile|android|webview|nava-profile|nava-modal" android-patch/_inspect/nava_app_v11-v12.1.26.js | head -n 300 || true
+            for f in android-patch/_inspect/css/*.css; do [ -e "$f" ] || continue; echo "--- $f"; grep -nEi "profile|modal|mobile|nava-profile|nava-modal" "$f" | head -n 500 || true; done
           } > android-patch/_inspect/ui-grep.txt
       - name: Persist temporary inspection files
         shell: bash
@@ -40,5 +53,7 @@ jobs:
           git config user.name "Nava Android Inspect Bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add android-patch/_inspect
-          git commit -m "Extract Android 12.1.26 web asset for UI inspection [skip ci]"
-          git push
+          if ! git diff --cached --quiet; then
+            git commit -m "Expand Android 12.1.26 UI inspection [skip ci]"
+            git push
+          fi
