@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import {
   canonicalUrl, relationCandidates, parseEntry, seriesRecord,
-  resolveSeries, releaseId, hrefsFromHtml
+  resolveSeries, releaseId, hrefsFromHtml, unseenPostIds
 } from "./core.mjs";
 
 function entry(id, title, labels, url) {
@@ -69,6 +69,15 @@ const hrefs = hrefsFromHtml(
 );
 assert.deepEqual(hrefs,["https://www.verudanava.com/2026/08/tensura-cilt-12.html"]);
 
+
+const feedState = [{postId:"old1"},{postId:"old2"},{postId:"new1"}];
+assert.deepEqual(unseenPostIds(feedState,["old1","old2"]),["new1"]);
+assert.deepEqual(unseenPostIds(feedState,["old1","old2","new1"]),[]);
+
+// Unmatched/failed posts are intentionally not included in the state helper input;
+// when the state still lacks their ID, they remain candidates on the next pass.
+assert.deepEqual(unseenPostIds([{postId:"retry1"}],[]),["retry1"]);
+
 console.log(JSON.stringify({
   splitLabels:"PASS",
   combinedLabels:"PASS",
@@ -76,5 +85,7 @@ console.log(JSON.stringify({
   crossSeriesIsolation:"PASS",
   bloggerCanonicalization:"PASS",
   dedupeDomainParity:"PASS",
-  seriesPageAliasDiscovery:"PASS"
+  seriesPageAliasDiscovery:"PASS",
+  newPostAfterBaseline:"PASS",
+  retryUnmatchedOrFailed:"PASS"
 },null,2));

@@ -2,20 +2,20 @@ name: Nava follower notifications
 
 on:
   schedule:
-    - cron: "2-57/5 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: nava-follower-notifications
+  group: nava-follower-notifications-v4
   cancel-in-progress: false
 
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 7
     defaults:
       run:
         working-directory: notification-backend
@@ -37,5 +37,14 @@ jobs:
       - name: Test matcher
         run: npm test
 
-      - name: Scan Blogger and notify followers
-        run: npm run scan
+      - name: Watch Blogger for 5 minutes
+        shell: bash
+        run: |
+          set -euo pipefail
+          for pass in 1 2 3 4 5; do
+            echo "===== NAVA PASS $pass/5 ====="
+            npm run scan
+            if [ "$pass" != "5" ]; then
+              sleep 60
+            fi
+          done

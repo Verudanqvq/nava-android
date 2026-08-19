@@ -203,3 +203,11 @@ export function hrefsFromHtml(html, baseUrl) {
   }
   return [...out];
 }
+
+
+export function unseenPostIds(parsed, seenIds) {
+  const seen = new Set(Array.isArray(seenIds) ? seenIds : []);
+  return (Array.isArray(parsed) ? parsed : [])
+    .filter((item) => item?.postId && !seen.has(item.postId))
+    .map((item) => item.postId);
+}
