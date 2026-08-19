@@ -1,4 +1,4 @@
-checkedAt=2026-08-19T23:37:44.454Z
+checkedAt=2026-08-19T23:43:22.137Z
 engine.updatedAt=2026-08-19T23:36:51.186Z
 engine.lastResult={"failed":0,"retry":0,"ignored":0,"baseline":false,"completedSkipped":0,"feedCount":28,"delivered":0}
 post={"title":"Tensura Cilt 22","kind":"volume","status":"completed","updatedAt":"2026-08-19T23:36:10.444Z","releaseId":"816954997184127789_1ly6611","reason":""}
