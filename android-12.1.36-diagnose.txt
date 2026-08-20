@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.36/patch-smali.py", line 51, in <module>
+    if __name__=='__main__': main()
+                             ^^^^^^
+  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.36/patch-smali.py", line 39, in main
+    mt=one(mt,anchor,hook,'notification repair startup hook')
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.36/patch-smali.py", line 12, in one
+    if n!=1: raise ValueError(f'{label} count={n}')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: notification repair startup hook count=2
+patch_rc=1
+/tmp/decoded/smali/com/verudanava/nava/MainActivity.smali:2493:    invoke-static {p0, v1}, Lcom/verudanava/nava/OfflineRuntime;->attach(Landroid/content/Context;Landroid/webkit/WebView;)V
+/tmp/decoded/smali/com/verudanava/nava/MainActivity.smali:2495:    invoke-static {p0}, Lc00;->a(Landroid/content/ContextWrapper;)V
+/tmp/decoded/smali/com/verudanava/nava/MainActivity.smali:2803:    invoke-static {p0}, Lc00;->a(Landroid/content/ContextWrapper;)V
+/tmp/decoded/smali/com/verudanava/nava/MainActivity.smali:2844:    const-string v5, "nava_notif_permission_v12129"
+/tmp/decoded/smali/c00.smali:43:    sput-object v0, Lc00;->a:Ljava/util/Set;
+/tmp/decoded/smali/c00.smali:160:    const-string v3, "nava_follower_releases_v3"
+/tmp/decoded/smali/com/verudanava/nava/NavaFirebaseMessagingService.smali:109:    sget-object v0, Lc00;->a:Ljava/util/Set;
+/tmp/decoded/smali/com/verudanava/nava/NavaFirebaseMessagingService.smali:505:    sget-object v4, Lc00;->a:Ljava/util/Set;
+/tmp/decoded/smali/com/verudanava/nava/NavaFirebaseMessagingService.smali:803:    invoke-static {p0}, Lc00;->a(Landroid/content/ContextWrapper;)V
+/tmp/decoded/smali/com/verudanava/nava/NavaFirebaseMessagingService.smali:937:    const-string v6, "nava_follower_releases_v3"
