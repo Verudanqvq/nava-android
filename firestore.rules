@@ -1,0 +1,328 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function verified() {
+      return signedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function isStaff() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/staff/$(request.auth.uid))
+        && get(/databases/$(database)/documents/staff/$(request.auth.uid)).data.role in ['admin', 'moderator'];
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/staff/$(request.auth.uid))
+        && get(/databases/$(database)/documents/staff/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function notBanned() {
+      return signedIn() && !exists(/databases/$(database)/documents/bans/$(request.auth.uid));
+    }
+
+    function publicLibrary(uid) {
+      return exists(/databases/$(database)/documents/users/$(uid))
+        && get(/databases/$(database)/documents/users/$(uid)).data.publicLibrary == true;
+    }
+
+    function publicFavorites(uid) {
+      return exists(/databases/$(database)/documents/users/$(uid))
+        && get(/databases/$(database)/documents/users/$(uid)).data.publicFavorites == true;
+    }
+
+    function publicRatings(uid) {
+      return exists(/databases/$(database)/documents/users/$(uid))
+        && get(/databases/$(database)/documents/users/$(uid)).data.publicRatings == true;
+    }
+
+    function publicComments(uid) {
+      return exists(/databases/$(database)/documents/users/$(uid))
+        && get(/databases/$(database)/documents/users/$(uid)).data.publicComments == true;
+    }
+
+    function validProfileCreate(uid) {
+      return request.resource.data.uid == uid
+        && request.resource.data.username is string
+        && request.resource.data.username.matches('^[a-z0-9_]{3,20}$')
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() >= 2
+        && request.resource.data.displayName.size() <= 40
+        && request.resource.data.bio is string
+        && request.resource.data.bio.size() <= 160
+        && request.resource.data.avatarType in ['google', 'preset']
+        && request.resource.data.publicFavorites is bool
+        && request.resource.data.publicLibrary is bool
+        && request.resource.data.publicRatings is bool
+        && request.resource.data.publicComments is bool;
+    }
+
+    function validProfileUpdate(uid) {
+      return request.resource.data.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'username','displayName','photoURL','avatarType','avatarId','bio',
+          'publicFavorites','publicLibrary','publicRatings','publicComments','updatedAt'
+        ])
+        && request.resource.data.username is string
+        && request.resource.data.username.matches('^[a-z0-9_]{3,20}$')
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() >= 2
+        && request.resource.data.displayName.size() <= 40
+        && request.resource.data.bio is string
+        && request.resource.data.bio.size() <= 160
+        && request.resource.data.avatarType in ['google', 'preset']
+        && request.resource.data.publicFavorites is bool
+        && request.resource.data.publicLibrary is bool
+        && request.resource.data.publicRatings is bool
+        && request.resource.data.publicComments is bool;
+    }
+
+    match /users/{uid} {
+      allow read: if true;
+      allow create: if verified() && isOwner(uid) && validProfileCreate(uid);
+      allow update: if verified() && isOwner(uid) && validProfileUpdate(uid);
+      allow delete: if isOwner(uid) || isAdmin();
+
+      match /library/{docId} {
+        allow read: if isOwner(uid) || publicLibrary(uid);
+        allow create, update, delete: if verified() && isOwner(uid);
+      }
+
+      match /favorites/{docId} {
+        allow read: if isOwner(uid) || publicFavorites(uid);
+        allow create, update, delete: if verified() && isOwner(uid);
+      }
+
+      match /ratings/{docId} {
+        allow read: if isOwner(uid) || publicRatings(uid);
+        allow create, update, delete: if verified() && isOwner(uid);
+      }
+
+      match /comments/{docId} {
+        allow read: if isOwner(uid) || publicComments(uid);
+        allow create: if verified() && isOwner(uid);
+        allow update, delete: if (verified() && isOwner(uid)) || isStaff();
+      }
+
+      match /reading/{path=**} {
+        allow read, write: if verified() && isOwner(uid);
+      }
+
+      match /notifications/{notificationId} {
+        allow read: if isOwner(uid);
+        allow create: if verified()
+          && request.resource.data.recipientUid == uid
+          && request.resource.data.actorUid == request.auth.uid
+          && (
+            request.resource.data.type in ['reply','like']
+            || isStaff()
+          );
+        allow update: if isOwner(uid) || isStaff();
+        allow delete: if isOwner(uid)
+          || isStaff()
+          || (verified() && resource.data.actorUid == request.auth.uid && resource.data.type == 'like');
+      }
+    }
+
+    match /usernames/{username} {
+      allow read: if true;
+      allow create: if verified()
+        && username.matches('^[a-z0-9_]{3,20}$')
+        && request.resource.data.uid == request.auth.uid;
+      allow update: if verified()
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == request.auth.uid;
+      allow delete: if verified() && resource.data.uid == request.auth.uid;
+    }
+
+    match /staff/{uid} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /adminProfiles/{uid} {
+      allow read: if true;
+      allow create, update: if verified()
+        && isOwner(uid)
+        && request.resource.data.uid == uid
+        && request.resource.data.keys().hasOnly([
+          'uid','customAvatarURL','bannerType','bannerId','bannerURL','glow','updatedAt'
+        ])
+        && request.resource.data.customAvatarURL is string
+        && request.resource.data.bannerType in ['preset','custom']
+        && request.resource.data.bannerId is string
+        && request.resource.data.bannerURL is string
+        && request.resource.data.glow is bool
+        && (
+          isAdmin()
+          || (
+            request.resource.data.customAvatarURL == ''
+            && request.resource.data.bannerType == 'preset'
+            && request.resource.data.bannerURL == ''
+            && request.resource.data.glow == false
+          )
+        );
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    match /bans/{uid} {
+      allow read: if isOwner(uid) || isStaff();
+      allow create, update, delete: if isStaff();
+    }
+
+    match /posts/{postId}/comments/{commentId} {
+      allow read: if true;
+      allow create: if verified() && notBanned()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.id == commentId
+        && request.resource.data.postId == postId
+        && request.resource.data.text is string
+        && request.resource.data.text.size() >= 2
+        && request.resource.data.text.size() <= 2000
+        && request.resource.data.status == 'visible'
+        && request.resource.data.likeCount == 0;
+      allow update: if isStaff()
+        || (
+          verified() && notBanned()
+          && resource.data.uid == request.auth.uid
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['text','edited','status','updatedAt'])
+          && request.resource.data.text is string
+          && request.resource.data.text.size() <= 2000
+          && request.resource.data.status in ['visible','deleted']
+        )
+        || (
+          verified() && notBanned()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likeCount','updatedAt'])
+          && request.resource.data.likeCount is int
+          && request.resource.data.likeCount >= 0
+          && (
+            request.resource.data.likeCount == resource.data.likeCount + 1
+            || request.resource.data.likeCount == resource.data.likeCount - 1
+          )
+        );
+      allow delete: if isStaff();
+
+      match /likes/{uid} {
+        allow read: if isOwner(uid);
+        allow create: if verified() && notBanned() && isOwner(uid)
+          && request.resource.data.uid == uid;
+        allow update: if false;
+        allow delete: if verified() && isOwner(uid);
+      }
+    }
+
+    match /commentRate/{uid} {
+      allow read, create, update, delete: if verified() && isOwner(uid);
+    }
+
+    match /reports/{reportId} {
+      allow create: if verified() && notBanned()
+        && request.resource.data.reporterUid == request.auth.uid
+        && request.resource.data.status == 'open';
+      allow read, update, delete: if isStaff();
+    }
+
+    match /bugReports/{reportId} {
+      allow create: if verified() && notBanned()
+        && request.resource.data.reporterUid == request.auth.uid
+        && request.resource.data.status == 'open';
+      allow read, update, delete: if isStaff();
+    }
+
+    match /bugReportRate/{uid} {
+      allow read, create, update, delete: if verified() && isOwner(uid);
+    }
+
+    match /contactMessages/{messageId} {
+      allow create: if verified() && notBanned()
+        && request.resource.data.senderUid == request.auth.uid
+        && request.resource.data.status == 'open';
+      allow read, update, delete: if isStaff();
+    }
+
+    match /contactMessageRate/{uid} {
+      allow read, create, update, delete: if verified() && isOwner(uid);
+    }
+
+    match /ratings/{workId} {
+      allow read: if true;
+      allow create: if verified()
+        && request.resource.data.workId == workId
+        && request.resource.data.count == 1
+        && request.resource.data.sum is number
+        && request.resource.data.sum >= 1
+        && request.resource.data.sum <= 10;
+      allow update: if verified()
+        && request.resource.data.workId == workId
+        && request.resource.data.count is int
+        && request.resource.data.count >= 1
+        && request.resource.data.sum is number
+        && request.resource.data.sum >= request.resource.data.count
+        && request.resource.data.sum <= request.resource.data.count * 10
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['workId','title','url','count','sum','updatedAt'])
+        && request.resource.data.count >= resource.data.count - 1
+        && request.resource.data.count <= resource.data.count + 1
+        && request.resource.data.sum >= resource.data.sum - 10
+        && request.resource.data.sum <= resource.data.sum + 10;
+      allow delete: if verified() && resource.data.count == 1;
+
+      match /votes/{uid} {
+        allow read: if isOwner(uid);
+        allow create, update: if verified() && isOwner(uid)
+          && request.resource.data.uid == uid
+          && request.resource.data.score is number
+          && request.resource.data.score >= 1
+          && request.resource.data.score <= 10;
+        allow delete: if verified() && isOwner(uid);
+      }
+    }
+
+    match /seriesFollowers/{seriesId} {
+      allow read: if true;
+      allow create: if verified()
+        && request.resource.data.seriesId == seriesId
+        && request.resource.data.title is string
+        && request.resource.data.url is string;
+      allow update, delete: if isAdmin();
+
+      match /users/{uid} {
+        allow read: if isOwner(uid) || isStaff();
+        allow create, update: if verified() && isOwner(uid)
+          && request.resource.data.uid == uid
+          && request.resource.data.seriesId == seriesId;
+        allow delete: if verified() && isOwner(uid);
+      }
+    }
+
+    match /chapterReleases/{releaseId} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
+    match /devicePushTokens/{tokenDocId} {
+      allow read: if signedIn() && resource.data.uid == request.auth.uid;
+      allow create: if verified() && request.resource.data.uid == request.auth.uid;
+      allow update: if verified()
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == request.auth.uid;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    // Backend-only automation state. Firebase Admin SDK bypasses these rules.
+    match /releaseAutomation/{docId} { allow read, write: if false; }
+    match /releaseAutomationPostsV5/{docId} { allow read, write: if false; }
+    match /releaseAutomationSeries/{docId} { allow read, write: if false; }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
