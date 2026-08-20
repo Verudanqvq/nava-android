@@ -1,0 +1,32 @@
+checkedAt=2026-08-20T11:31:46Z
+=== SCAN ===
+
+> scan
+> node scan.mjs
+
+FEED_MERGED {"sourcesOk":6,"sourceErrors":0,"entries":29}
+NAVA_SCAN_RESULT_V5 {"baseline":false,"feedCount":29,"delivered":0,"retry":0,"failed":0,"ignored":0,"completedSkipped":0}
+scan_rc=0
+=== RETRY ===
+NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_g5uefs","title":"Tensura Cilt 23","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
+NAVA_PUSH_RETRY_RESULT {"releases":1,"sent":0,"pendingNoToken":0,"failures":0}
+retry_rc=0
+/home/runner/work/nava-android/nava-android/notification-backend/node_modules/firebase-admin/lib/app/lifecycle.js:85
+            throw new error_1.FirebaseAppError({ code: error_1.AppErrorCode.NO_APP, message: errorMessage });
+                  ^
+
+FirebaseAppError: The default Firebase app does not exist. Make sure you call initializeApp() before using any of the Firebase services.
+    at AppStore.getApp (/home/runner/work/nava-android/nava-android/notification-backend/node_modules/firebase-admin/lib/app/lifecycle.js:85:19)
+    at getApp (/home/runner/work/nava-android/nava-android/notification-backend/node_modules/firebase-admin/lib/app/lifecycle.js:243:36)
+    at getFirestore (/home/runner/work/nava-android/nava-android/notification-backend/node_modules/firebase-admin/lib/firestore/index.js:51:90)
+    at file:///home/runner/work/nava-android/nava-android/notification-backend/[eval1]:5:10
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:282:26)
+    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:278:20)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+  code: 'app/no-app',
+  codePrefix: 'app'
+}
+
+Node.js v22.23.2
