@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: nava-follower-notifications-primary-v8
@@ -20,7 +20,7 @@ concurrency:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 7
     defaults:
       run:
         working-directory: notification-backend
@@ -44,6 +44,10 @@ jobs:
         if: github.event_name != 'schedule'
         run: npm test
 
+      - name: Capture state before push scan
+        if: github.event_name != 'schedule'
+        run: node diagnose.mjs before > ../notification-pipeline-diagnose.txt
+
       - name: Scan Blogger now
         shell: bash
         run: |
@@ -55,3 +59,20 @@ jobs:
           push_rc=$?
           if [ "$scan_rc" -ne 0 ]; then exit "$scan_rc"; fi
           exit "$push_rc"
+
+      - name: Capture state after push scan
+        if: always() && github.event_name != 'schedule'
+        shell: bash
+        run: |
+          node diagnose.mjs after >> ../notification-pipeline-diagnose.txt 2>&1 || true
+
+      - name: Persist push diagnosis
+        if: always() && github.event_name != 'schedule'
+        working-directory: .
+        run: |
+          git config user.name 'Nava Notification Diagnose Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add notification-pipeline-diagnose.txt
+          git commit -m 'Record notification pipeline diagnosis [skip ci]' || true
+          git push || true
