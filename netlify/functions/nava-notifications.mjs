@@ -1,11 +1,11 @@
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 
-function runNode(script) {
+function runNode(script, env) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [script], {
       cwd: process.cwd(),
-      env: process.env,
+      env,
       stdio: ['ignore', 'pipe', 'pipe']
     });
     let stdout = '', stderr = '';
@@ -22,9 +22,17 @@ function runNode(script) {
 }
 
 export default async () => {
+  const firebaseServiceAccount = Netlify.env.get('FIREBASE_SERVICE_ACCOUNT');
+  if (!firebaseServiceAccount) {
+    throw new Error('FIREBASE_SERVICE_ACCOUNT Netlify runtime env eksik.');
+  }
+
   const script = path.join(process.cwd(), 'notification-backend', 'scan.mjs');
-  await runNode(script);
-  return new Response('ok', { status: 200 });
+  await runNode(script, {
+    ...process.env,
+    FIREBASE_SERVICE_ACCOUNT: firebaseServiceAccount,
+    NAVA_TRIGGER: 'netlify-scheduled'
+  });
 };
 
 export const config = {
