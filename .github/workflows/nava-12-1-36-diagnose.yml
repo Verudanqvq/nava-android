@@ -1,0 +1,33 @@
+name: Nava 12.1.36 diagnose
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/nava-12-1-36-diagnose.yml"]
+permissions:
+  contents: write
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -qq && sudo apt-get install -y smali >/dev/null
+      - name: Diagnose
+        shell: bash
+        run: |
+          set +e
+          : > android-12.1.36-diagnose.txt
+          mkdir -p /tmp/current /tmp/decoded/smali/com/verudanava/nava
+          gh release download v12.1.35 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current >> android-12.1.36-diagnose.txt 2>&1
+          unzip -p /tmp/current/Nava.apk classes.dex > /tmp/base.dex
+          baksmali disassemble /tmp/base.dex -o /tmp/decoded/smali >> android-12.1.36-diagnose.txt 2>&1
+          cp android-patch/v12.1.36/notification-repair.smali /tmp/decoded/smali/com/verudanava/nava/NavaNotificationRepair.smali
+          python android-patch/v12.1.36/patch-smali.py /tmp/decoded >> android-12.1.36-diagnose.txt 2>&1
+          echo "patch_rc=$?" >> android-12.1.36-diagnose.txt
+          grep -R -n 'nava_follower_releases_v[23]\|nava_notif_permission\|OfflineRuntime;->attach\|Lc00;->a' /tmp/decoded/smali/com/verudanava/nava/MainActivity.smali /tmp/decoded/smali/c00.smali /tmp/decoded/smali/com/verudanava/nava/NavaFirebaseMessagingService.smali >> android-12.1.36-diagnose.txt 2>&1
+          git config user.name 'Nava Diagnose Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add android-12.1.36-diagnose.txt
+          git commit -m 'Record Android 12.1.36 diagnosis [skip ci]' || true
+          git push
