@@ -1,0 +1,39 @@
+/* Nava Android 12.1.38 — clearer download center styles. */
+html.nava-app-v9.nava-download-menu-open-v12138,
+html.nava-app-v9.nava-download-menu-open-v12138 body{overflow:hidden!important}
+#nava-download-menu-v12138{position:fixed;z-index:2147483500;inset:0;display:flex;align-items:flex-end;justify-content:center;background:rgba(15,23,42,.52);padding:0}
+#nava-download-menu-v12138[hidden]{display:none!important}
+#nava-download-menu-v12138 .nava-dl-menu-panel{width:min(660px,100%);max-height:78vh;overflow:auto;background:#fff;border:1px solid #dce5ee;border-bottom:0;border-radius:20px 20px 0 0;padding:14px 14px 18px;box-shadow:0 -18px 44px rgba(30,45,60,.18)}
+#nava-download-menu-v12138 .nava-dl-menu-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 2px 8px}
+#nava-download-menu-v12138 .nava-dl-menu-head>div{display:grid;gap:2px;min-width:0}
+#nava-download-menu-v12138 .nava-dl-menu-head strong{font-size:18px;line-height:1.2;color:#1f2937}
+#nava-download-menu-v12138 .nava-dl-menu-head span{font-size:11px;color:#7f8fa1}
+#nava-download-menu-v12138 .nava-dl-menu-close{width:40px;height:40px;border:1px solid #dce5ee;border-radius:11px;background:#f7f9fb;color:#60758c;font-size:23px;line-height:1}
+#nava-download-menu-v12138 .nava-dl-tip{margin:2px 0 11px;padding:9px 11px;border-radius:10px;background:#f2f7fc;color:#526b84;font-size:11.5px;line-height:1.45}
+#nava-download-menu-v12138 .nava-dl-menu-actions{display:grid;gap:9px}
+#nava-download-menu-v12138 .nava-dl-action{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:11px;width:100%;min-height:64px;padding:9px 11px;border:1px solid #dce5ee;border-radius:13px;background:#fff;color:#263648;text-align:left;box-shadow:none}
+#nava-download-menu-v12138 .nava-dl-action:active{background:#f7fafc}
+#nava-download-menu-v12138 .nava-dl-action:disabled{opacity:.58}
+#nava-download-menu-v12138 .nava-dl-action-icon{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:#edf4fb;color:#55799c}
+#nava-download-menu-v12138 .nava-dl-action-icon svg{width:21px;height:21px}
+#nava-download-menu-v12138 .nava-dl-action-copy{display:grid;gap:3px;min-width:0}
+#nava-download-menu-v12138 .nava-dl-action-copy strong{font-size:13.5px;line-height:1.2;color:#263648;white-space:normal}
+#nava-download-menu-v12138 .nava-dl-action-copy span{font-size:10.8px;line-height:1.35;color:#8493a3;white-space:normal}
+#nava-download-menu-v12138 .nava-dl-action-state{font-size:10.5px;font-weight:850;color:#55799c;white-space:nowrap}
+#nava-download-menu-v12138 .nava-dl-wifi{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:11px;padding:11px 12px;border:1px solid #e1e8ef;border-radius:12px;background:#f8fafc;color:#526274;font-size:12px;font-weight:750}
+#nava-download-menu-v12138 .nava-dl-wifi input{width:19px;height:19px;accent-color:#5f82a8}
+#nava-download-menu-v12138 .nava-dl-status{min-height:20px;padding:8px 2px 0;font-size:11.2px;line-height:1.4;color:#73869a}
+#nava-download-menu-v12138 .nava-dl-status.is-ok{color:#2f7652}
+#nava-download-menu-v12138 .nava-dl-status.is-error{color:#b64040}
+.dark.nava-app-v9 #nava-download-menu-v12138 .nava-dl-menu-panel,
+.dark.nava-app-v9 #nava-download-menu-v12138 .nava-dl-action{background:#111827!important;border-color:#2e3d50!important;color:#e5edf6!important}
+.dark.nava-app-v9 #nava-download-menu-v12138 .nava-dl-action-copy strong,
+.dark.nava-app-v9 #nava-download-menu-v12138 .nava-dl-menu-head strong{color:#eef4fa!important}
+.dark.nava-app-v9 #nava-download-menu-v12138 .nava-dl-action-icon,
+.dark.nava-app-v9 #nava-download-menu-v12138 .nava-dl-wifi,
+.dark.nava-app-v9 #nava-download-menu-v12138 .nava-dl-tip{background:#182538!important;border-color:#2e3d50!important;color:#bdd2e8!important}
+@media(max-width:390px){
+  #nava-download-menu-v12138 .nava-dl-menu-panel{padding:12px 11px 16px}
+  #nava-download-menu-v12138 .nava-dl-action{grid-template-columns:40px minmax(0,1fr) auto;gap:9px;padding:8px 9px}
+  #nava-download-menu-v12138 .nava-dl-action-icon{width:39px;height:39px}
+}
