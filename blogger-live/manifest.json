@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "version": "12.3.10-live.1",
-  "css": "releases/12.3.10-live.1.css",
-  "js": "releases/12.3.10-live.1.js",
-  "notes": "Nava-native blue visual system across auth/profile/comments/admin/modals; removes loader test badge and purple AI-like styling."
+  "version": "shutdown-1",
+  "css": "releases/shutdown.css",
+  "js": "releases/shutdown.js",
+  "notes": "Live visual layer disabled. Only suppresses the legacy pinned bootstrap test badge; no site styles or UI patches are loaded."
 }
