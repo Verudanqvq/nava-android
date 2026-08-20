@@ -1,6 +1,6 @@
 # Nava Android
 
-Current stable Android release: **12.1.38** (`versionCode 54`).
+Current stable Android release: **12.1.39** (`versionCode 55`).
 
 ## Distribution
 
@@ -8,11 +8,11 @@ Current stable Android release: **12.1.38** (`versionCode 54`).
 - Website Android button resolves to `/releases/latest/download/Nava.apk`.
 - The Android updater reads GitHub's `releases/latest` API, finds the exact `Nava.apk` asset, disables HTTP caching, and uses Android's package installer.
 - Stable signing certificate SHA-256: `AC:DE:7C:F2:16:85:24:48:A8:A8:27:7F:E4:BF:11:EA:C1:83:39:4E:6B:34:A8:62:B1:24:E6:93:D5:1D:09:FE`.
-- Android 12.1.38 release APK SHA-256: `b285d24743673965f2f84467b6191420102eefb2e14883266084ad500b8ee265`.
+- Android 12.1.39 release APK SHA-256: `290289dc9bb54f74f2fdcd7b1305d62a62d90dacef9772595aa9fcd6a0ed0a1f`.
 
 ## Follower notifications
 
-Follower-release scanning now runs from the Netlify `nava-notifications` production project as a scheduled function with `* * * * *` (once per minute). The old GitHub notification cron/shard workflows were removed; GitHub Actions now keeps only the permanent Firestore rules deployment workflow.
+Follower-release scanning runs from the Netlify `nava-notifications` production project as a scheduled function with `* * * * *` (once per minute). The old GitHub notification cron/shard workflows were removed; GitHub Actions keeps only the permanent Firestore rules deployment workflow.
 
 The scanner merges Blogger all-post, `Bölüm`, and `Cilt` feeds, resolves the parent series, writes site notifications, then sends high-priority data-only FCM to Android follower tokens. Firestore delivery leases prevent duplicate sends.
 
@@ -20,7 +20,7 @@ Notification copy is explicit by release type:
 - volume: `Yeni cilt geldi`;
 - chapter: `Yeni bölüm geldi`.
 
-Android 12.1.38 preserves the direct-native FCM renderer introduced in 12.1.37 and refreshes device registration as `appVersion: 12.1.38`. The renderer uses the Nava application icon resource for the Android notification symbol and keeps the high-importance `nava_follower_releases_v4` channel.
+Android 12.1.39 preserves the direct-native FCM renderer and Nava application notification icon, refreshes device registration as `appVersion: 12.1.39`, and keeps the high-importance `nava_follower_releases_v4` channel. The Android notification center now adds **Tümünü temizle** for deleting the signed-in user's notification documents in Firestore batches.
 
 ## Firestore rules
 
@@ -39,12 +39,12 @@ Android 12.1.31 introduced true native offline downloads and current releases pr
 - Wi-Fi-only mode;
 - saved HTML/static resources served by the native WebView interceptor.
 
-Android 12.1.38 upgrades the download action sheet into a clearer **İndirme Merkezi**. Reader pages can download the current chapter, volume pages can download the volume page plus its chapters, and series pages include **Tüm ciltleri indir**. The all-volume action scans the series' volume links, reads each volume page for chapter links, skips already-downloaded URLs, and sends the resulting items to the existing native `downloadBatch` queue.
+Android 12.1.38 introduced the clearer **İndirme Merkezi** and **Tüm ciltleri indir**. Android 12.1.39 keeps those actions but restores normal series-page volume-card navigation so tapping a `Cilt N` card opens the volume instead of being swallowed by an app route handler.
 
 ## UI and Blogger loader
 
-Android 12.1.34 introduced page-specific Home / series / reader layouts; 12.1.38 preserves those fixes and updates only the download-center layer where needed.
+Android 12.1.39 adds a final Android-only Nava blue/gray palette override for account, notification, auth, comment, profile/admin and rating accents, removing the remaining purple/AI-like emphasis without changing content semantics.
 
 The Android WebView blocks requests containing `/blogger-live/` at the native interceptor, so the old Blogger live loader cannot inject or flash inside the Android app.
 
-The updater, stable signing identity, profile suite, read-state, reader navigation, offline storage, Firestore deployment, notification delivery, and loader fixes remain preserved.
+The updater, stable signing identity, profile suite, read-state, reader navigation, offline storage, Firestore deployment, notification delivery, Netlify scheduler, and loader fixes remain preserved.
