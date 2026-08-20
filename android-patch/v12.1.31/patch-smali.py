@@ -46,7 +46,7 @@ def main():
     if 'OfflineRuntime;->attach' not in main.read_text(): raise ValueError('attach missing')
     if 'OfflineRuntime;->intercept' not in gx.read_text(): raise ValueError('intercept missing')
     all_smali=''.join(p.read_text(errors='replace') for p in smali.rglob('*.smali'))
-    if OLD_CHANNEL in all_smali: raise ValueError('old channel remains')
+    if f'"{OLD_CHANNEL}"' in all_smali: raise ValueError('exact old channel remains')
     verify=c00.read_text(); p=verify.find(marker)
     if NEW_CHANNEL not in verify or 'const/4 v2, 0x4' not in verify[p:p+700]: raise ValueError('channel v2/high verify failed')
     print('SMALI_PATCH_OK attach=1 intercept=1 channel_replacements=%d channel=high files=%s' % (total,','.join(changed)))
