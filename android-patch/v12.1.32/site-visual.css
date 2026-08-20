@@ -1,0 +1,77 @@
+/* Nava Android 12.1.32 — compact shell + site-native visual system. */
+html.nava-app-v9{
+  --nava-top:58px!important;
+  --nava-bottom:64px!important;
+  --nava-brand:#5f82a8;
+  --nava-brand-strong:#496b91;
+  --nava-brand-soft:#eaf2fb;
+  --nava-border:#d8e1eb;
+}
+html.nava-app-v9,html.nava-app-v9 body{height:auto!important;min-height:100%!important;max-height:none!important;overflow-x:hidden!important}
+html.nava-app-v9{overflow-y:auto!important;overscroll-behavior-y:auto!important}
+html.nava-app-v9 body{overflow-y:visible!important;padding-bottom:0!important;margin-bottom:0!important}
+html.nava-app-v9.nava-app-overlay-open,html.nava-app-v9.nava-app-overlay-open body{overflow:hidden!important}
+
+/* Compact top bar */
+html.nava-app-v9 #nava-app-topbar{height:calc(58px + var(--nava-safe-top))!important;min-height:0!important;padding:var(--nava-safe-top) 14px 0!important;background:#c6dafc!important;border-bottom:1px solid #b8cdea!important;box-shadow:none!important;gap:8px!important}
+html.nava-app-v9 #nava-app-topbar .nava-app-brand{color:#2f4666!important;font-size:22px!important;font-weight:900!important;letter-spacing:-.4px!important}
+html.nava-app-v9 #nava-app-topbar button,html.nava-app-v9 #nava-app-topbar a{min-width:40px!important;min-height:40px!important;width:40px!important;height:40px!important;border-radius:10px!important;border:1px solid rgba(65,91,124,.14)!important;background:rgba(255,255,255,.10)!important;color:#536f8e!important;box-shadow:none!important;padding:0!important}
+html.nava-app-v9 #nava-app-topbar button:hover,html.nava-app-v9 #nava-app-topbar a:hover{background:rgba(255,255,255,.28)!important;color:#405f82!important}
+html.nava-app-v9 #nava-app-topbar svg{width:22px!important;height:22px!important}
+html.nava-app-v9 #nava-app-topbar .nava-app-badge,html.nava-app-v9 #nava-app-topbar [class*='badge']{box-shadow:none!important}
+
+/* Correct page spacing: no giant dead tail below content. */
+html.nava-app-v9 #nava-app-page{padding-top:calc(58px + var(--nava-safe-top) + 12px)!important;padding-bottom:calc(64px + var(--nava-safe-bottom) + 8px)!important;min-height:0!important;height:auto!important;margin-bottom:0!important}
+html.nava-app-v9 body.nava-app-profile main,html.nava-app-v9 body.nava-app-library main,html.nava-app-v9 body.nava-app-series main.nava-app-series-owned-v5{padding-top:calc(58px + var(--nava-safe-top) + 10px)!important;padding-bottom:calc(64px + var(--nava-safe-bottom) + 8px)!important;min-height:0!important;height:auto!important;margin-bottom:0!important}
+html.nava-app-v9 main:last-child,html.nava-app-v9 #nava-app-page>*:last-child{margin-bottom:0!important}
+html.nava-app-v9 footer{display:none!important;margin:0!important;padding:0!important;min-height:0!important}
+
+/* Bottom bar — only required safe area, no duplicate spacer. */
+html.nava-app-v9 #nava-app-bottom{height:calc(64px + var(--nava-safe-bottom))!important;min-height:0!important;padding:5px 10px var(--nava-safe-bottom)!important;background:#fff!important;border-top:1px solid #e1e7ee!important;box-shadow:0 -4px 14px rgba(45,62,80,.06)!important;box-sizing:border-box!important}
+html.nava-app-v9 #nava-app-bottom a,html.nava-app-v9 #nava-app-bottom button{color:#8a96a4!important;background:transparent!important;border-radius:9px!important;box-shadow:none!important}
+html.nava-app-v9 #nava-app-bottom .is-active,html.nava-app-v9 #nava-app-bottom [aria-current='page']{color:#55779b!important;background:#eef4fb!important}
+
+/* Nava site visual system inside Android */
+html.nava-app-v9 .nava-btn,html.nava-app-v9 .nava-auth-tab,html.nava-app-v9 .nava-profile-tab,html.nava-app-v9 .nava-admin-nav-btn,html.nava-app-v9 .nava-comment-action{border-radius:9px!important;box-shadow:none!important;background-image:none!important}
+html.nava-app-v9 .nava-btn-primary{background:#5f82a8!important;border:1px solid #5f82a8!important;color:#fff!important;box-shadow:none!important}
+html.nava-app-v9 .nava-btn-primary:hover{background:#496b91!important;border-color:#496b91!important}
+html.nava-app-v9 .nava-btn-secondary{background:#f6f8fb!important;border:1px solid #d8e1eb!important;color:#334155!important}
+html.nava-app-v9 .nava-auth-tabs{background:#eef3f8!important;border:1px solid #dde6ef!important;border-radius:10px!important;padding:4px!important}
+html.nava-app-v9 .nava-auth-tab{color:#66778b!important;background:transparent!important}
+html.nava-app-v9 .nava-auth-tab.is-active{background:#fff!important;color:#496b91!important;box-shadow:0 1px 3px rgba(40,60,80,.10)!important}
+html.nava-app-v9 .nava-auth-forgot,html.nava-app-v9 .nava-auth-switch,html.nava-app-v9 .nava-notification-context{color:#496b91!important}
+html.nava-app-v9 .nava-auth-verify-icon{background:#eaf2fb!important;color:#496b91!important;border-radius:10px!important}
+html.nava-app-v9 .nava-input,html.nava-app-v9 .nava-textarea,html.nava-app-v9 .nava-file-input,html.nava-app-v9 .nava-admin-search input{border:1px solid #d8e1eb!important;background:#fff!important;color:#1f2937!important;border-radius:9px!important;box-shadow:none!important}
+html.nava-app-v9 .nava-input:focus,html.nava-app-v9 .nava-textarea:focus,html.nava-app-v9 .nava-file-input:focus,html.nava-app-v9 .nava-admin-search input:focus{border-color:#91adca!important;box-shadow:0 0 0 3px rgba(95,130,168,.12)!important;outline:none!important}
+html.nava-app-v9 .nava-switch input:checked + span{background:#5f82a8!important}
+html.nava-app-v9 .nava-modal-backdrop{background:rgba(15,23,42,.58)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html.nava-app-v9 .nava-modal{border-radius:12px!important;border-color:#d8e1eb!important;box-shadow:0 14px 38px rgba(30,45,60,.18)!important}
+html.nava-app-v9 .nava-profile-login,html.nava-app-v9 .nava-profile-private,html.nava-app-v9 .nava-profile-empty,html.nava-app-v9 .nava-profile-error,html.nava-app-v9 .nava-comment-card,html.nava-app-v9 .nava-comments-shell,html.nava-app-v9 .nava-admin-card,html.nava-app-v9 .nava-admin-summary-card,html.nava-app-v9 .nava-rating-card{border-color:#d8e1eb!important;border-radius:11px!important;box-shadow:none!important;background-image:none!important}
+html.nava-app-v9 .nava-profile-avatar-fallback{background:#5f82a8!important}
+html.nava-app-v9 .nava-avatar-choice.is-selected{border-color:#7f9fbe!important;background:#eef5fc!important}
+html.nava-app-v9 .nava-admin-nav-btn:hover,html.nava-app-v9 .nava-admin-nav-btn.is-active{color:#496b91!important;background:#fff!important;box-shadow:none!important}
+
+/* Offline UI: remove purple entirely. */
+html.nava-app-v9 .nava-offline-panel-v12131{background:#fff!important;color:#1f2937!important;border-color:#d8e1eb!important;box-shadow:0 -12px 34px rgba(45,62,80,.14)!important}
+html.nava-app-v9 .nava-offline-head-v12131{background:#fff!important}
+html.nava-app-v9 .nava-offline-head-v12131 strong{color:#1f2937!important}
+html.nava-app-v9 .nava-offline-pref-v12131,html.nava-app-v9 .nava-offline-card-v12131{background:#f8fafc!important;border-color:#d8e1eb!important;color:#334155!important}
+html.nava-app-v9 .nava-offline-copy-v12131 strong{color:#1f2937!important}
+html.nava-app-v9 .nava-offline-group-v12131 h3{color:#55779b!important}
+html.nava-app-v9 .nava-offline-actions-v12131 button,html.nava-app-v9 .nava-offline-close-v12131{background:#eef4fb!important;border-color:#d6e1ec!important;color:#4d6e91!important}
+html.nava-app-v9 .nava-offline-actions-v12131 button.is-open{background:#5f82a8!important;border-color:#5f82a8!important;color:#fff!important}
+html.nava-app-v9 .nava-offline-pref-v12131 input{accent-color:#5f82a8!important}
+
+/* Reader stays compact and safe. */
+html.nava-app-v9 body.nava-app-reader main{padding-top:calc(54px + var(--nava-safe-top))!important;padding-bottom:calc(74px + var(--nava-safe-bottom))!important}
+html.nava-app-v9 #nava-reader-top-v2{height:calc(54px + var(--nava-safe-top))!important;padding-top:var(--nava-safe-top)!important;background:#fff!important;border-bottom:1px solid #e2e8f0!important;box-shadow:none!important}
+html.nava-app-v9 #nava-reader-bottom-v2{bottom:calc(7px + var(--nava-safe-bottom))!important;height:58px!important;min-height:58px!important;border-color:#d8e1eb!important;box-shadow:0 8px 24px rgba(30,45,60,.12)!important}
+
+.dark.nava-app-v9 #nava-app-bottom{background:#111827!important;border-color:#273448!important}.dark.nava-app-v9 #nava-app-bottom .is-active,.dark.nava-app-v9 #nava-app-bottom [aria-current='page']{background:#1f3044!important;color:#bdd2e8!important}.dark.nava-app-v9 #nava-reader-top-v2{background:#111827!important;border-color:#273448!important}
+.dark.nava-app-v9 .nava-offline-panel-v12131,.dark.nava-app-v9 .nava-offline-head-v12131{background:#111827!important;color:#e5edf6!important}.dark.nava-app-v9 .nava-offline-head-v12131 strong{color:#f1f5f9!important}.dark.nava-app-v9 .nava-offline-pref-v12131,.dark.nava-app-v9 .nava-offline-card-v12131{background:#162132!important;border-color:#2b394b!important;color:#dbe5ef!important}.dark.nava-app-v9 .nava-offline-copy-v12131 strong{color:#f1f5f9!important}.dark.nava-app-v9 .nava-offline-actions-v12131 button,.dark.nava-app-v9 .nava-offline-close-v12131{background:#1d2b3e!important;border-color:#33445a!important;color:#bdd2e8!important}.dark.nava-app-v9 .nava-offline-actions-v12131 button.is-open{background:#5f82a8!important;color:#fff!important}
+
+@media(max-width:390px){
+  html.nava-app-v9 #nava-app-topbar{padding-left:11px!important;padding-right:11px!important;gap:6px!important}
+  html.nava-app-v9 #nava-app-topbar button,html.nava-app-v9 #nava-app-topbar a{min-width:38px!important;min-height:38px!important;width:38px!important;height:38px!important}
+  html.nava-app-v9 #nava-app-page{padding-left:11px!important;padding-right:11px!important}
+}
