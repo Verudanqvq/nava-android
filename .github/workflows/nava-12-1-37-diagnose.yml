@@ -1,4 +1,5 @@
 name: Nava 12.1.37 FCM hook diagnose
+# trigger: 2
 on:
   push:
     branches: [main]
@@ -28,7 +29,6 @@ jobs:
             echo '=== SERVICE METHODS ==='; grep -n '^\.method' "$F"
             echo '=== SERVICE DATA KEYS ==='; grep -n -B12 -A20 -E 'seriesTitle|releaseTitle|notificationId|Yeni b|Yeni c|NotificationManager;->notify' "$F" | head -260
             echo '=== MAIN STARTUP ANCHORS ==='; grep -n -B10 -A16 -E 'NavaNotificationRepair|OfflineRuntime;->attach|Lc00;->a' "$M"
-            echo '=== PATCH TRY ==='; python android-patch/v12.1.37/patch-smali.py /tmp/decoded 2>&1 || true
           } > android-12.1.37-diagnose.txt
       - name: Persist
         run: |
