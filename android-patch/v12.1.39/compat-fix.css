@@ -1,0 +1,69 @@
+/* Nava Android 12.1.39 — Nava blue/gray last-wins palette. */
+html.nava-app-v9{
+  --nava-brand:#5f82a8;
+  --nava-brand-strong:#496b91;
+  --nava-brand-soft:#edf4fb;
+  --nava-brand-line:#b9cee1;
+}
+html.nava-app-v9 .nava-btn-primary{background:#5f82a8!important;color:#fff!important;box-shadow:none!important}
+html.nava-app-v9 .nava-btn-primary:hover{background:#496b91!important}
+html.nava-app-v9 .nava-input:focus,
+html.nava-app-v9 .nava-textarea:focus,
+html.nava-app-v9 .nava-comment-textarea:focus{border-color:#7ea0c1!important;box-shadow:0 0 0 3px rgba(95,130,168,.16)!important}
+html.nava-app-v9 .nava-switch input:checked + span{background:#5f82a8!important}
+
+html.nava-app-v9 .nava-account-button:hover,
+html.nava-app-v9 .nava-account-button[aria-expanded='true'],
+html.nava-app-v9 .nava-notification-button:hover,
+html.nava-app-v9 .nava-notification-button[aria-expanded='true']{
+  border-color:#b9cee1!important;background:#edf4fb!important;color:#496b91!important;box-shadow:none!important
+}
+html.nava-app-v9 .nava-account-fallback,
+html.nava-app-v9 .nava-comment-avatar-fallback{background:#5f82a8!important;color:#fff!important}
+html.nava-app-v9 .nava-account-link:hover{background:#edf4fb!important;color:#496b91!important}
+html.nava-app-v9 .nava-notification-head-button{color:#496b91!important}
+html.nava-app-v9 .nava-notification-head-button:hover{background:#edf4fb!important}
+html.nava-app-v9 .nava-notification-clear-all-v12139{color:#9f3f3f!important}
+html.nava-app-v9 .nava-notification-clear-all-v12139:hover{background:#fff1f2!important;color:#b42323!important}
+html.nava-app-v9 .nava-notification-item.is-unread{background:linear-gradient(90deg,rgba(95,130,168,.11),rgba(255,255,255,0))!important}
+html.nava-app-v9 .nava-notification-item.is-unread:before{background:#5f82a8!important}
+html.nava-app-v9 .nava-notification-icon{background:#edf4fb!important;color:#496b91!important}
+html.nava-app-v9 .nava-notification-context{color:#55799c!important}
+
+html.nava-app-v9 .nava-auth-tab.is-active,
+html.nava-app-v9 .nava-auth-forgot,
+html.nava-app-v9 .nava-auth-switch,
+html.nava-app-v9 .nava-comment-author:hover,
+html.nava-app-v9 .nava-profile-tab.is-active,
+html.nava-app-v9 .nava-admin-nav-btn.is-active,
+html.nava-app-v9 .nava-comment-identity{color:#496b91!important}
+html.nava-app-v9 .nava-auth-verify-icon,
+html.nava-app-v9 .nava-avatar-choice.is-selected,
+html.nava-app-v9 .nava-comment-badge{background:#edf4fb!important;color:#496b91!important;border-color:#b9cee1!important;box-shadow:none!important}
+html.nava-app-v9 .nava-comment-auth{background:#f6f9fc!important}
+html.nava-app-v9 .nava-comment-replying{background:#edf4fb!important;color:#496b91!important}
+
+html.nava-app-v9 .nava-rating-bar span,
+html.nava-app-v9 .nava-rating-slider::-webkit-slider-runnable-track,
+html.nava-app-v9 .nava-rating-slider::-moz-range-track{
+  background:linear-gradient(90deg,#f7c744 0%,#d9a16e 35%,#7ea0c1 70%,#496b91 100%)!important;
+  box-shadow:none!important
+}
+
+.dark.nava-app-v9 .nava-account-button:hover,
+.dark.nava-app-v9 .nava-account-button[aria-expanded='true'],
+.dark.nava-app-v9 .nava-notification-button:hover,
+.dark.nava-app-v9 .nava-notification-button[aria-expanded='true']{background:#1d2b3d!important;border-color:#4f6f92!important;color:#bdd2e8!important}
+.dark.nava-app-v9 .nava-notification-item.is-unread{background:linear-gradient(90deg,rgba(95,130,168,.24),rgba(17,24,39,0))!important}
+.dark.nava-app-v9 .nava-notification-icon,
+.dark.nava-app-v9 .nava-auth-verify-icon,
+.dark.nava-app-v9 .nava-avatar-choice.is-selected,
+.dark.nava-app-v9 .nava-comment-badge,
+.dark.nava-app-v9 .nava-comment-replying{background:#1d2b3d!important;color:#bdd2e8!important;border-color:#334e6b!important}
+.dark.nava-app-v9 .nava-comment-auth{background:#111827!important}
+
+@media(max-width:767px){
+  html.nava-app-v9 #nava-notification-panel .nava-notification-head-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;width:100%!important}
+  html.nava-app-v9 #nava-notification-panel .nava-notification-head-button{min-height:38px!important;padding:.45rem .5rem!important;white-space:normal!important;text-align:center!important}
+  html.nava-app-v9 #nava-notification-panel .nava-notification-clear-all-v12139{grid-column:1/-1!important}
+}
