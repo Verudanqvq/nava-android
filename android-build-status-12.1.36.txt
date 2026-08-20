@@ -1,0 +1,9 @@
+status=running
+started=2026-08-20T12:00:19Z
+source_validation=ok
+repair=v3-channel+settings-fallback
+smali_tools=ok
+signing_material=ok
+source_apk=ok
+status=failed
+finished=2026-08-20T12:00:34Z
