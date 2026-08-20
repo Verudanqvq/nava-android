@@ -1,7 +1,7 @@
 from pathlib import Path
+import re
 import sys
 
-OLD_UA='NavaAndroidApp/12.1.33'
 NEW_UA='NavaAndroidApp/12.1.34'
 BLOCK='/blogger-live/'
 
@@ -18,14 +18,17 @@ def main():
     if not gx.is_file(): raise ValueError('gx.smali missing')
 
     ua_total=0
+    seen=[]
+    rx=re.compile(r'"NavaAndroidApp/\d+\.\d+\.\d+"')
     for f in smali.rglob('*.smali'):
         t=f.read_text(errors='replace')
-        n=t.count(f'"{OLD_UA}"')
-        if n:
-            t=t.replace(f'"{OLD_UA}"',f'"{NEW_UA}"')
+        matches=rx.findall(t)
+        if matches:
+            seen.extend(matches)
+            t,n=rx.subn(f'"{NEW_UA}"',t)
             f.write_text(t)
             ua_total+=n
-    if ua_total<1: raise ValueError('UA marker missing')
+    if ua_total<1: raise ValueError('UA marker missing; seen='+repr(seen[:10]))
 
     text=gx.read_text()
     anchor='''    :cond_9\n    if-eqz p2, :cond_16\n'''
@@ -37,8 +40,9 @@ def main():
     if BLOCK not in verify or ':nava_loader_continue_v12134' not in verify:
         raise ValueError('loader blocker verify failed')
     all_text=''.join(p.read_text(errors='replace') for p in smali.rglob('*.smali'))
-    if OLD_UA in all_text or NEW_UA not in all_text:
-        raise ValueError('UA verify failed')
-    print(f'SMALI_PATCH_OK loader_block={BLOCK} ua_replacements={ua_total} ua={NEW_UA}')
+    old_markers=[m for m in rx.findall(all_text) if NEW_UA not in m]
+    if old_markers or NEW_UA not in all_text:
+        raise ValueError('UA verify failed; old='+repr(old_markers[:10]))
+    print(f'SMALI_PATCH_OK loader_block={BLOCK} ua_replacements={ua_total} ua={NEW_UA} previous={seen[:5]}')
 
 if __name__=='__main__': main()
