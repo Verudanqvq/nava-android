@@ -117,5 +117,5 @@ def main():
         for name in a.namelist():
             if oldsig(name) or name in allowed: continue
             if name not in b.namelist() or a.read(name)!=b.read(name): raise ValueError('unexpected changed entry '+name)
-    print('PATCH_OK versionCode=59 versionName=12.1.43 ui=compact topbar=stable queue=persistent delete=single+volume+series scoped=ok')
+    print(f'PATCH_OK versionCode={NEW_CODE} versionName={NEW_VERSION} ui=compact topbar=stable queue=persistent delete=single+volume+series scoped=ok')
 if __name__=='__main__': main()
