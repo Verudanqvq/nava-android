@@ -1,0 +1,150 @@
+name: Nava Android 12.1.38 notification + downloads
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-android-12-1-38.yml"
+      - "android-patch/v12.1.38/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nava-android-12-1-38
+  cancel-in-progress: true
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+      EXPECTED_CERT_SHA256: acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51d09fe
+      EXPECTED_SOURCE_SHA256: 595e8ea3b8d6747772ae7490ca6e79c33a6d81aea29067fec9914ebb1ef8674f
+      SOURCE_TAG: v12.1.37
+      TARGET_TAG: v12.1.38
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare status
+        run: printf 'status=running\nstarted=%s\n' "$(date -u +%FT%TZ)" > /tmp/status.txt
+      - name: Validate sources
+        run: |
+          set -euo pipefail
+          python -m py_compile android-patch/v12.1.38/patch-smali.py android-patch/v12.1.38/patch-apk.py
+          node --check android-patch/v12.1.38/push-block.js
+          node --check android-patch/v12.1.38/download-menu.js
+          grep -q 'Yeni cilt geldi' android-patch/v12.1.38/NavaDirectNotification.java
+          grep -q 'Yeni bölüm geldi' android-patch/v12.1.38/NavaDirectNotification.java
+          grep -q 'getApplicationInfo().icon' android-patch/v12.1.38/NavaDirectNotification.java
+          grep -q 'Tüm ciltleri indir' android-patch/v12.1.38/download-menu.js
+          grep -q 'NEW_CODE=54' android-patch/v12.1.38/patch-apk.py
+          printf 'source_validation=ok\nnotification=text+app-icon\ndownload=center+all-volumes\n' >> /tmp/status.txt
+      - name: Install smali tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y smali >/dev/null
+          printf 'smali_tools=ok\n' >> /tmp/status.txt
+      - name: Recover signing material
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +x
+          export NAVA_KDF_SECRET="$(printf '%s' "$FIREBASE_SERVICE_ACCOUNT" | sha256sum | cut -d' ' -f1)"
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 250000 -in .github/nava-signing/private.pem.enc -out /tmp/nava-private.pem -pass env:NAVA_KDF_SECRET
+          unset NAVA_KDF_SECRET
+          openssl pkeyutl -decrypt -inkey /tmp/nava-private.pem -in android-signing/key-material.enc -out /tmp/key-material.bin -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
+          python - <<'PY'
+          from pathlib import Path
+          d=Path('/tmp/key-material.bin').read_bytes();assert len(d)==48
+          Path('/tmp/aes-key').write_text(d[:32].hex());Path('/tmp/aes-iv').write_text(d[32:].hex())
+          PY
+          openssl enc -d -aes-256-cbc -K "$(cat /tmp/aes-key)" -iv "$(cat /tmp/aes-iv)" -in android-signing/signing-payload.enc -out /tmp/signing.zip
+          mkdir -p /tmp/nava-signing; unzip -q /tmp/signing.zip -d /tmp/nava-signing
+          rm -f /tmp/nava-private.pem /tmp/key-material.bin /tmp/aes-key /tmp/aes-iv /tmp/signing.zip
+          printf 'signing_material=ok\n' >> /tmp/status.txt
+      - name: Download 12.1.37
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/current
+          gh release download "$SOURCE_TAG" --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current
+          GOT="$(sha256sum /tmp/current/Nava.apk | cut -d' ' -f1)"
+          test "$GOT" = "$EXPECTED_SOURCE_SHA256"
+          unzip -l /tmp/current/Nava.apk | grep -q 'classes3.dex'
+          printf 'source_apk=ok\nsource_sha256=%s\n' "$GOT" >> /tmp/status.txt
+      - name: Patch classes.dex UA
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/decoded/smali
+          unzip -p /tmp/current/Nava.apk classes.dex > /tmp/base.dex
+          baksmali disassemble /tmp/base.dex -o /tmp/decoded/smali
+          python android-patch/v12.1.38/patch-smali.py /tmp/decoded | tee /tmp/smali.txt
+          grep -q 'SMALI_PATCH_OK ua=12.1.38' /tmp/smali.txt
+          smali assemble /tmp/decoded/smali -o /tmp/classes.dex
+          rm -rf /tmp/verify-smali; baksmali disassemble /tmp/classes.dex -o /tmp/verify-smali
+          grep -q 'NavaDirectNotification;->ensure' /tmp/verify-smali/com/verudanava/nava/MainActivity.smali
+          grep -q 'NavaDirectNotification;->handle' /tmp/verify-smali/com/verudanava/nava/NavaFirebaseMessagingService.smali
+          printf 'native_hooks=preserved\nua=12.1.38\n' >> /tmp/status.txt
+      - name: Compile notification renderer
+        shell: bash
+        run: |
+          set -euo pipefail
+          ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -mindepth 2 -maxdepth 2 -name android.jar | sort -V | tail -1)"
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          test -s "$ANDROID_JAR"; test -x "$BUILD_TOOLS/d8"
+          mkdir -p /tmp/direct-classes /tmp/direct-dex
+          javac -source 8 -target 8 -bootclasspath "$ANDROID_JAR" -d /tmp/direct-classes android-patch/v12.1.38/NavaDirectNotification.java
+          jar cf /tmp/direct-notification.jar -C /tmp/direct-classes .
+          "$BUILD_TOOLS/d8" --lib "$ANDROID_JAR" --min-api 23 --output /tmp/direct-dex /tmp/direct-notification.jar
+          cp /tmp/direct-dex/classes.dex /tmp/classes3.dex
+          baksmali disassemble /tmp/classes3.dex -o /tmp/verify-direct
+          grep -q 'Yeni cilt geldi' /tmp/verify-direct/com/verudanava/nava/NavaDirectNotification.smali
+          grep -q 'Yeni bölüm geldi' /tmp/verify-direct/com/verudanava/nava/NavaDirectNotification.smali
+          grep -q 'getApplicationInfo' /tmp/verify-direct/com/verudanava/nava/NavaDirectNotification.smali
+          printf 'direct_renderer_compile=ok\nclasses3=ok\n' >> /tmp/status.txt
+      - name: Pack APK
+        run: |
+          set -euo pipefail
+          python android-patch/v12.1.38/patch-apk.py /tmp/current/Nava.apk /tmp/classes.dex /tmp/classes3.dex android-patch/v12.1.38/push-block.js android-patch/v12.1.38/download-menu.js android-patch/v12.1.38/download-menu.css /tmp/Nava-unsigned.apk "$EXPECTED_SOURCE_SHA256" | tee /tmp/patch.txt
+          grep -q 'PATCH_OK versionCode=54 versionName=12.1.38' /tmp/patch.txt
+          unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/final.js
+          node --check /tmp/final.js
+          grep -q "appVersion:'12.1.38'" /tmp/final.js
+          grep -q 'Tüm ciltleri indir' /tmp/final.js
+          printf 'pack=ok\njs=ok\nscoped=ok\n' >> /tmp/status.txt
+      - name: Align and sign
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +x
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk
+          PROP=/tmp/nava-signing/keystore.properties
+          export NAVA_STORE_PASS="$(sed -n 's/^storePassword=//p' "$PROP" | tr -d '\r' | head -1)"
+          export NAVA_KEY_PASS="$(sed -n 's/^keyPassword=//p' "$PROP" | tr -d '\r' | head -1)"
+          KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROP" | tr -d '\r' | head -1)"
+          "$BUILD_TOOLS/apksigner" sign --ks /tmp/nava-signing/signing/nava-release.jks --ks-key-alias "$KEY_ALIAS" --ks-pass env:NAVA_STORE_PASS --key-pass env:NAVA_KEY_PASS --out /tmp/Nava.apk /tmp/Nava-aligned.apk
+          "$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/verify.txt
+          CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/verify.txt | sed 's/.*digest:[[:space:]]*//' | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
+          test "$CERT" = "$EXPECTED_CERT_SHA256"
+          printf 'zipalign=ok\nsigning=ok\ncert_sha256=%s\n' "$CERT" >> /tmp/status.txt
+          sha256sum /tmp/Nava.apk | awk '{print "apk_sha256="$1}' >> /tmp/status.txt
+      - name: Publish 12.1.38
+        run: |
+          set -euo pipefail
+          NOTES='Bildirim metinleri cilt ve bölüm için net ayrıldı: Yeni cilt geldi / Yeni bölüm geldi. Android bildirimi Nava uygulama ikonunu kullanır. İndirme Merkezi sadeleştirildi; cilt indirme açıklamaları iyileştirildi ve eser sayfasına Tüm ciltleri indir eklendi. Bu seçenek cilt sayfalarını tarayıp cilt + bölüm bağlantılarını gerçek offline kuyruğuna verir. Mevcut direct-native FCM, updater, signing, offline runtime ve loader düzeltmeleri korunur.'
+          gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.38' --notes "$NOTES" --latest
+          printf 'release=v12.1.38\nasset=Nava.apk\nstatus=success\nfinished=%s\n' "$(date -u +%FT%TZ)" >> /tmp/status.txt
+      - name: Persist status
+        if: always()
+        run: |
+          if ! grep -q '^status=success$' /tmp/status.txt 2>/dev/null; then printf 'status=failed\nfinished=%s\n' "$(date -u +%FT%TZ)" >> /tmp/status.txt; fi
+          cp /tmp/status.txt android-build-status-12.1.38.txt
+          git config user.name 'Nava Android Build Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add android-build-status-12.1.38.txt
+          git commit -m 'Record Android 12.1.38 build [skip ci]' || true
+          git push || true
