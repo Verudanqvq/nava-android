@@ -1,0 +1,128 @@
+/* Nava Android 12.1.33 — hard safe-area reset + compact shell. */
+html.nava-app-v9{
+  --nava-safe-top:0px!important;
+  --nava-safe-bottom:0px!important;
+  --nava-safe-left:0px!important;
+  --nava-safe-right:0px!important;
+  --nava-top:56px!important;
+  --nava-bottom:68px!important;
+  --nava-app-top-total:56px!important;
+  --nava-app-bottom-total:68px!important;
+  --nava-visual-height:100vh!important;
+}
+html.nava-app-v9,html.nava-app-v9 body{height:auto!important;min-height:0!important;max-height:none!important;overflow-x:hidden!important;overscroll-behavior-y:auto!important}
+html.nava-app-v9{overflow-y:auto!important}
+html.nava-app-v9 body{overflow-y:visible!important;padding:0!important;margin:0!important}
+html.nava-app-v9.nava-app-overlay-open,html.nava-app-v9.nava-app-overlay-open body{overflow:hidden!important}
+
+/* WebView already starts below the Android status bar: do not add safe top again. */
+html.nava-app-v9 #nava-app-topbar{
+  top:0!important;
+  height:56px!important;
+  min-height:56px!important;
+  max-height:56px!important;
+  padding:0 14px!important;
+  margin:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  background:#c6dafc!important;
+  border-bottom:1px solid #b8cdea!important;
+  box-shadow:none!important;
+  box-sizing:border-box!important;
+}
+html.nava-app-v9 #nava-app-topbar .nava-app-brand{margin-right:auto!important;color:#2f4666!important;font-size:21px!important;line-height:1!important;font-weight:900!important}
+html.nava-app-v9 #nava-app-topbar button,html.nava-app-v9 #nava-app-topbar a{
+  flex:0 0 38px!important;
+  width:38px!important;
+  height:38px!important;
+  min-width:38px!important;
+  min-height:38px!important;
+  max-width:38px!important;
+  max-height:38px!important;
+  padding:0!important;
+  margin:0!important;
+  border-radius:9px!important;
+  border:1px solid rgba(65,91,124,.14)!important;
+  background:rgba(255,255,255,.10)!important;
+  color:#536f8e!important;
+  box-shadow:none!important;
+}
+html.nava-app-v9 #nava-app-topbar svg{width:21px!important;height:21px!important}
+
+/* One document scroll, exact fixed-bar compensation only. */
+html.nava-app-v9 #nava-app-page{
+  min-height:0!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+  margin:0!important;
+  padding-top:68px!important;
+  padding-bottom:78px!important;
+}
+html.nava-app-v9 body.nava-app-profile main,
+html.nava-app-v9 body.nava-app-library main,
+html.nava-app-v9 body.nava-app-series main.nava-app-series-owned-v5{
+  min-height:0!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+  margin-bottom:0!important;
+  padding-top:66px!important;
+  padding-bottom:78px!important;
+}
+html.nava-app-v9 footer{display:none!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important}
+html.nava-app-v9 #nava-app-page:after,html.nava-app-v9 main:after{min-height:0!important;height:0!important;margin:0!important;padding:0!important}
+
+/* WebView already ends above Android navigation bar: do not add safe bottom again. */
+html.nava-app-v9 #nava-app-bottom{
+  bottom:0!important;
+  height:68px!important;
+  min-height:68px!important;
+  max-height:68px!important;
+  padding:4px 8px 5px!important;
+  margin:0!important;
+  display:flex!important;
+  align-items:stretch!important;
+  background:#fff!important;
+  border-top:1px solid #e1e7ee!important;
+  box-shadow:0 -3px 10px rgba(45,62,80,.05)!important;
+  box-sizing:border-box!important;
+}
+html.nava-app-v9 #nava-app-bottom a,html.nava-app-v9 #nava-app-bottom button{
+  min-height:0!important;
+  height:auto!important;
+  padding:5px 4px!important;
+  margin:0!important;
+  border-radius:10px!important;
+  color:#8a96a4!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+html.nava-app-v9 #nava-app-bottom .is-active,html.nava-app-v9 #nava-app-bottom [aria-current='page']{background:#eef4fb!important;color:#55779b!important}
+
+/* Reader uses the same zero-inset model. */
+html.nava-app-v9 body.nava-app-reader main{padding-top:56px!important;padding-bottom:72px!important}
+html.nava-app-v9 #nava-reader-top-v2{top:0!important;height:54px!important;min-height:54px!important;padding-top:0!important}
+html.nava-app-v9 #nava-reader-bottom-v2{bottom:6px!important;height:58px!important;min-height:58px!important}
+html.nava-app-v9 #nava-reader-settings-v2{bottom:72px!important;max-height:calc(100vh - 96px)!important}
+
+/* Keep site-native blue styling and remove purple leftovers. */
+html.nava-app-v9 .nava-btn-primary,
+html.nava-app-v9 .nava-offline-actions-v12131 button.is-open{background:#5f82a8!important;border-color:#5f82a8!important;color:#fff!important;box-shadow:none!important}
+html.nava-app-v9 .nava-auth-tab.is-active,
+html.nava-app-v9 .nava-auth-forgot,
+html.nava-app-v9 .nava-auth-switch,
+html.nava-app-v9 .nava-notification-context,
+html.nava-app-v9 .nava-admin-nav-btn.is-active,
+html.nava-app-v9 .nava-admin-section-link,
+html.nava-app-v9 .nava-admin-userlink{color:#496b91!important}
+html.nava-app-v9 .nava-input:focus,html.nava-app-v9 .nava-textarea:focus,html.nava-app-v9 .nava-admin-search input:focus{border-color:#91adca!important;box-shadow:0 0 0 3px rgba(95,130,168,.12)!important}
+html.nava-app-v9 .nava-switch input:checked + span{background:#5f82a8!important}
+
+@media(max-width:390px){
+  html.nava-app-v9 #nava-app-topbar{padding-left:12px!important;padding-right:12px!important;gap:7px!important}
+  html.nava-app-v9 #nava-app-topbar .nava-app-brand{font-size:20px!important}
+  html.nava-app-v9 #nava-app-topbar button,html.nava-app-v9 #nava-app-topbar a{flex-basis:36px!important;width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;max-width:36px!important;max-height:36px!important}
+  html.nava-app-v9 #nava-app-page{padding-left:11px!important;padding-right:11px!important}
+}
