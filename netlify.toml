@@ -1,6 +1,7 @@
 [build]
   command = "echo Nava notification scheduler ready"
   functions = "netlify/functions"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF netlify.toml netlify/functions notification-backend package.json"
 
 [functions]
   node_bundler = "esbuild"
