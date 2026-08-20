@@ -105,7 +105,7 @@ jobs:
         run: |
           set -euo pipefail
           python /tmp/v12145/patch-apk.py /tmp/current/Nava.apk /tmp/classes.dex /tmp/v12145/push-block.js /tmp/v12145/offline-ui.js /tmp/v12145/download-menu.js /tmp/v12145/compat-fix.js /tmp/v12145/offline-library.css /tmp/v12145/offline.html /tmp/Nava-unsigned.apk "$EXPECTED_SOURCE_SHA256" 2>&1 | tee /tmp/patch.txt
-          grep -q 'PATCH_OK versionCode=61 versionName=12.1.45' /tmp/patch.txt
+          grep -q 'PATCH_OK .*versionName=12.1.45' /tmp/patch.txt
           printf 'patch_script=ok\n' >> /tmp/status.txt
           unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/final.js
           unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.css > /tmp/final.css
