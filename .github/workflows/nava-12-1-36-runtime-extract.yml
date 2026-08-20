@@ -1,4 +1,5 @@
 name: Nava 12.1.36 notification runtime extract
+# trigger: runtime-2
 
 on:
   push:
