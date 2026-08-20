@@ -1,0 +1,39 @@
+name: Nava 12.1.37 FCM hook diagnose
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/nava-12-1-37-diagnose.yml"]
+permissions:
+  contents: write
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -qq && sudo apt-get install -y smali >/dev/null
+      - shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/apk /tmp/smali
+          gh release download v12.1.36 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/apk
+          unzip -p /tmp/apk/Nava.apk classes.dex > /tmp/classes.dex
+          baksmali disassemble /tmp/classes.dex -o /tmp/smali
+          F=/tmp/smali/com/verudanava/nava/NavaFirebaseMessagingService.smali
+          M=/tmp/smali/com/verudanava/nava/MainActivity.smali
+          {
+            echo '=== SERVICE HEADER ==='; sed -n '1,120p' "$F"
+            echo '=== SERVICE METHODS ==='; grep -n '^\.method' "$F"
+            echo '=== SERVICE DATA KEYS ==='; grep -n -B12 -A20 -E 'seriesTitle|releaseTitle|notificationId|Yeni b|Yeni c|NotificationManager;->notify' "$F" | head -260
+            echo '=== MAIN STARTUP ANCHORS ==='; grep -n -B10 -A16 -E 'NavaNotificationRepair|OfflineRuntime;->attach|Lc00;->a' "$M"
+            echo '=== PATCH TRY ==='; python android-patch/v12.1.37/patch-smali.py /tmp/decoded 2>&1 || true
+          } > android-12.1.37-diagnose.txt
+      - name: Persist
+        run: |
+          git config user.name 'Nava Diagnose Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add android-12.1.37-diagnose.txt
+          git commit -m 'Record Android 12.1.37 FCM diagnosis [skip ci]' || true
+          git push
