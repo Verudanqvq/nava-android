@@ -1,0 +1,46 @@
+name: Nava UI inspect 12.1.33
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/nava-ui-inspect-v12-1-33.yml"]
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download current APK and inspect UI assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/nava
+          gh release download v12.1.33 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/nava
+          unzip -p /tmp/nava/Nava.apk assets/nava_app_v11.js > /tmp/nava/app.js
+          unzip -p /tmp/nava/Nava.apk assets/nava_app_v11.css > /tmp/nava/app.css
+          OUT=ui-inspect-v12.1.33.txt
+          : > "$OUT"
+          echo '=== JS reader/topbar/download markers ===' >> "$OUT"
+          grep -n -E 'nava-reader-top-v2|aria-label=.Yazı|nava-app-topbar|nava-offline|nava-app-bottom|nava-app-series|nava-app-home' /tmp/nava/app.js | head -160 >> "$OUT" || true
+          echo '=== CSS reader/topbar/bottom/series markers ===' >> "$OUT"
+          grep -n -E 'nava-reader-top-v2|nava-app-topbar|nava-app-bottom|nava-app-series|nava-app-page|nava-offline' /tmp/nava/app.css | tail -260 >> "$OUT" || true
+          echo '=== reader JS context ===' >> "$OUT"
+          python - <<'PY' >> "$OUT"
+          s=open('/tmp/nava/app.js').read()
+          for key in ['nava-reader-top-v2','aria-label="Yazı"','nava-offline-reader-download-v12131','nava-app-topbar']:
+              i=s.find(key)
+              print('\n###',key,'@',i)
+              if i>=0: print(s[max(0,i-1800):i+3200])
+          PY
+          echo '=== dimensions ===' >> "$OUT"
+          wc -c /tmp/nava/app.js /tmp/nava/app.css >> "$OUT"
+      - name: Persist inspect
+        run: |
+          git config user.name 'Nava UI Inspect Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add ui-inspect-v12.1.33.txt
+          git commit -m 'Record Android 12.1.33 UI inspection [skip ci]' || true
+          git push
