@@ -1,0 +1,48 @@
+name: Nava Firestore direct deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-firestore-direct-deploy.yml"
+      - "notification-backend/direct-rules-deploy.mjs"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nava-firestore-direct-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Firebase Admin SDK
+        run: npm --prefix notification-backend install --omit=dev --no-audit --no-fund
+      - name: Deploy rules directly
+        shell: bash
+        run: |
+          set -euo pipefail
+          node notification-backend/direct-rules-deploy.mjs | tee /tmp/direct-rules.log
+          grep -q 'FIRESTORE_RULES_DIRECT_DEPLOY_OK' /tmp/direct-rules.log
+          printf 'status=success\nmethod=firebase-admin-security-rules\nproject=nava-01\nfinished=%s\n' "$(date -u +%FT%TZ)" > firestore-direct-deploy-status.txt
+      - name: Persist status
+        if: always()
+        shell: bash
+        run: |
+          if [ ! -f firestore-direct-deploy-status.txt ]; then printf 'status=failed\nmethod=firebase-admin-security-rules\nproject=nava-01\nfinished=%s\n' "$(date -u +%FT%TZ)" > firestore-direct-deploy-status.txt; fi
+          git config user.name 'Nava Firestore Direct Deploy Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add firestore-direct-deploy-status.txt
+          git commit -m 'Record direct Firestore rules deployment [skip ci]' || true
+          git push || true
