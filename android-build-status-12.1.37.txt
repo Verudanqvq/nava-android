@@ -1,0 +1,10 @@
+status=running
+started=2026-08-20T12:29:15Z
+source_validation=ok
+notification=direct-native-data-only+local-self-test
+smali_tools=ok
+signing_material=ok
+source_apk=ok
+source_sha256=0e507cc5d1c85dbbb9ba02b3cdc2dce15af0b910e3eac7c83fe58ef4d087761b
+status=failed
+finished=2026-08-20T12:29:28Z
