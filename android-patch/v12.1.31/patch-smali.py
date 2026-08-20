@@ -24,7 +24,7 @@ def main():
     main.write_text(mt)
 
     gt=gx.read_text()
-    pat=re.compile(r'(\.method public final shouldInterceptRequest\(\s*Landroid/webkit/WebView;\s*Landroid/webkit/WebResourceRequest;\s*\)Landroid/webkit/WebResourceResponse;\s*\.locals 2\s*)')
+    pat=re.compile(r'(\.method public final shouldInterceptRequest\(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;\)Landroid/webkit/WebResourceResponse;\s+\.(?:locals|registers)\s+\d+\s*)')
     bridge='''\n    iget-object v0, p0, Lgx;->a:Lcom/verudanava/nava/MainActivity;\n\n    invoke-static {v0, p2}, Lcom/verudanava/nava/OfflineRuntime;->intercept(Landroid/content/Context;Landroid/webkit/WebResourceRequest;)Landroid/webkit/WebResourceResponse;\n\n    move-result-object v0\n\n    if-eqz v0, :nava_offline_continue_v12131\n\n    return-object v0\n\n    :nava_offline_continue_v12131\n\n'''
     gt,count=pat.subn(lambda m:m.group(1)+bridge,gt,count=1)
     if count!=1: raise ValueError(f'gx intercept method count={count}')
@@ -35,7 +35,7 @@ def main():
         t=f.read_text(errors='replace'); n=t.count(f'"{OLD_CHANNEL}"')
         if n:
             t=t.replace(f'"{OLD_CHANNEL}"',f'"{NEW_CHANNEL}"'); f.write_text(t); total+=n; changed.append(str(f.relative_to(root)))
-    if total<2: raise ValueError(f'notification channel replacements={total}')
+    if total!=2: raise ValueError(f'notification channel replacements={total}')
 
     ct=c00.read_text(); marker='const-string v1, "Takip edilen eserler"'; pos=ct.find(marker)
     if pos<0: raise ValueError('channel name marker missing')
