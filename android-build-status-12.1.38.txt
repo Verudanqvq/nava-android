@@ -1,0 +1,13 @@
+status=running
+started=2026-08-20T14:53:34Z
+source_validation=ok
+notification=text+app-icon
+download=center+all-volumes
+smali_tools=ok
+signing_material=ok
+source_apk=ok
+source_sha256=595e8ea3b8d6747772ae7490ca6e79c33a6d81aea29067fec9914ebb1ef8674f
+native_hooks=preserved
+ua=12.1.38
+status=failed
+finished=2026-08-20T14:54:18Z
