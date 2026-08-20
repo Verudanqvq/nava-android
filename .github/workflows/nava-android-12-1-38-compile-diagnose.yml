@@ -1,0 +1,45 @@
+name: Diagnose Android 12.1.38 renderer compile
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/nava-android-12-1-38-compile-diagnose.yml"]
+permissions:
+  contents: write
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and diagnose
+        shell: bash
+        run: |
+          set +e
+          : > /tmp/diag.txt
+          ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -mindepth 2 -maxdepth 2 -name android.jar | sort -V | tail -1)"
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          echo "android_jar=$ANDROID_JAR" >> /tmp/diag.txt
+          mkdir -p /tmp/direct-classes /tmp/direct-dex
+          javac -source 8 -target 8 -bootclasspath "$ANDROID_JAR" -d /tmp/direct-classes android-patch/v12.1.38/NavaDirectNotification.java > /tmp/javac.out 2>&1
+          echo "javac_exit=$?" >> /tmp/diag.txt
+          cat /tmp/javac.out >> /tmp/diag.txt
+          if [ -d /tmp/direct-classes/com/verudanava/nava ]; then echo 'javac_class=present' >> /tmp/diag.txt; fi
+          jar cf /tmp/direct-notification.jar -C /tmp/direct-classes . 2>> /tmp/diag.txt
+          "$BUILD_TOOLS/d8" --lib "$ANDROID_JAR" --min-api 23 --output /tmp/direct-dex /tmp/direct-notification.jar > /tmp/d8.out 2>&1
+          echo "d8_exit=$?" >> /tmp/diag.txt
+          cat /tmp/d8.out >> /tmp/diag.txt
+          if [ -f /tmp/direct-dex/classes.dex ]; then
+            echo 'dex=present' >> /tmp/diag.txt
+            sudo apt-get update -qq && sudo apt-get install -y smali >/dev/null
+            baksmali disassemble /tmp/direct-dex/classes.dex -o /tmp/verify-direct
+            grep -n 'Yeni cilt geldi\|Yeni bölüm geldi\|getApplicationInfo\|setSmallIcon' /tmp/verify-direct/com/verudanava/nava/NavaDirectNotification.smali >> /tmp/diag.txt 2>&1
+            echo "grep_exit=$?" >> /tmp/diag.txt
+          fi
+      - name: Persist diagnostic
+        if: always()
+        run: |
+          cp /tmp/diag.txt android-12.1.38-compile-diagnose.txt
+          git config user.name 'Nava Diagnose Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add android-12.1.38-compile-diagnose.txt
+          git commit -m 'Record Android 12.1.38 compile diagnosis [skip ci]' || true
+          git push || true
