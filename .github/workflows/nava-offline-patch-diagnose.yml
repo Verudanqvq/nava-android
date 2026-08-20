@@ -1,4 +1,5 @@
 name: Nava offline patch diagnose
+# rerun: multiline-signature-fix
 on:
   push:
     branches: [feat/offline-downloads-12-1-31]
@@ -27,13 +28,15 @@ jobs:
           unzip -p /tmp/current/Nava.apk classes.dex > /tmp/base.dex
           echo '=== disassemble ==='
           baksmali disassemble /tmp/base.dex -o /tmp/decoded/smali; echo "rc=$?"
+          echo '=== signature ==='
+          grep -n -A8 -B2 'shouldInterceptRequest' /tmp/decoded/smali/gx.smali | head -30 || true
           echo '=== patch ==='
           python android-patch/v12.1.31/patch-smali.py /tmp/decoded; echo "rc=$?"
           echo '=== assemble ==='
           smali assemble /tmp/decoded/smali -o /tmp/classes.dex; echo "rc=$?"
           ls -lh /tmp/classes.dex 2>/dev/null || true
           echo '=== relevant strings ==='
-          grep -R -n -E 'OfflineRuntime|nava_follower_releases|Takip edilen eserler' /tmp/decoded/smali/com/verudanava/nava /tmp/decoded/smali/gx.smali /tmp/decoded/smali/c00.smali 2>/dev/null | head -80 || true
+          grep -R -n -E 'OfflineRuntime|nava_follower_releases|Takip edilen eserler' /tmp/decoded/smali/com/verudanava/nava /tmp/decoded/smali/gx.smali /tmp/decoded/smali/c00.smali 2>/dev/null | head -100 || true
           exit 0
       - name: Persist
         run: |
