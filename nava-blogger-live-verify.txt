@@ -1,7 +1,0 @@
-checkedAt=2026-08-19T23:41:23Z
-cdnHttp=200
-oldCommitCdnHttp=200
-manifestHttp=200
-loaderContent=ok
-oldLoaderContent=ok
-manifestJson=ok
