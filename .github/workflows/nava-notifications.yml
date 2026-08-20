@@ -1,4 +1,4 @@
-name: Nava follower notifications
+name: Nava follower notifications minute 0
 
 on:
   push:
@@ -7,72 +7,40 @@ on:
       - "notification-backend/**"
       - ".github/workflows/nava-notifications.yml"
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0-55/5 * * * *"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: nava-follower-notifications-primary-v8
+  group: nava-follower-notifications-minute-0-v9
   cancel-in-progress: false
 
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 5
     defaults:
       run:
         working-directory: notification-backend
     env:
       FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-      NAVA_TRIGGER: ${{ github.event_name }}
-
+      NAVA_TRIGGER: minute0-${{ github.event_name }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Node 22
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "22"
-
-      - name: Install backend
-        run: npm install --omit=dev --no-audit --no-fund
-
-      - name: Test notification engine on code changes
-        if: github.event_name != 'schedule'
+      - run: npm install --omit=dev --no-audit --no-fund
+      - if: github.event_name != 'schedule'
         run: npm test
-
-      - name: Capture state before push scan
-        if: github.event_name != 'schedule'
-        run: node diagnose.mjs before > ../notification-pipeline-diagnose.txt
-
-      - name: Scan Blogger now
-        shell: bash
+      - shell: bash
         run: |
           set -uo pipefail
-          echo "NAVA_TRIGGER=${NAVA_TRIGGER}"
           npm run scan
           scan_rc=$?
           node retry-push.mjs
           push_rc=$?
           if [ "$scan_rc" -ne 0 ]; then exit "$scan_rc"; fi
           exit "$push_rc"
-
-      - name: Capture state after push scan
-        if: always() && github.event_name != 'schedule'
-        shell: bash
-        run: |
-          node diagnose.mjs after >> ../notification-pipeline-diagnose.txt 2>&1 || true
-
-      - name: Persist push diagnosis
-        if: always() && github.event_name != 'schedule'
-        working-directory: .
-        run: |
-          git config user.name 'Nava Notification Diagnose Bot'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git pull --rebase || true
-          git add notification-pipeline-diagnose.txt
-          git commit -m 'Record notification pipeline diagnosis [skip ci]' || true
-          git push || true
