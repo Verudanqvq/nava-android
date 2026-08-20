@@ -1,4 +1,5 @@
 name: Nava notification runtime diagnose
+# run: current-notification-test
 
 on:
   push:
