@@ -1,4 +1,5 @@
 name: Nava notification readonly diagnose
+# trigger: 2026-08-20T12:11Z
 
 on:
   push:
