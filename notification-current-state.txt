@@ -1,0 +1,661 @@
+{
+  "checkedAt": "2026-08-20T12:50:23.602Z",
+  "feed": {
+    "sourcesOk": 6,
+    "errors": [],
+    "latest": [
+      {
+        "postId": "4993051551259875535",
+        "title": "Tensura Cilt 9",
+        "kind": "volume",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-9.html",
+        "labels": [
+          "Cilt",
+          "Tensei Shitara Slime Datta Ken (Light Novel)",
+          "Tensura Cilt 9"
+        ]
+      },
+      {
+        "postId": "4125133695134823018",
+        "title": "Tensura Cilt 10",
+        "kind": "volume",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-10.html",
+        "labels": [
+          "Cilt",
+          "Tensei Shitara Slime Datta Ken (Light Novel)",
+          "Tensura Cilt 10"
+        ]
+      },
+      {
+        "postId": "266412052895439632",
+        "title": "Tensura Cilt 23",
+        "kind": "volume",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-23.html",
+        "labels": [
+          "Cilt",
+          "Tensei Shitara Slime Datta Ken (Light Novel)",
+          "Tensura Cilt 23"
+        ]
+      },
+      {
+        "postId": "7466477136443758318",
+        "title": "Tensura Cilt 22",
+        "kind": "volume",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-22.html",
+        "labels": [
+          "Cilt",
+          "Tensei Shitara Slime Datta Ken (Light Novel)",
+          "Tensura Cilt 22"
+        ]
+      },
+      {
+        "postId": "1265829938913410963",
+        "title": "Tensura Cilt 21",
+        "kind": "volume",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-21.html",
+        "labels": [
+          "Cilt",
+          "Tensei Shitara Slime Datta Ken (Light Novel)",
+          "Tensura Cilt 21"
+        ]
+      },
+      {
+        "postId": "4771716501605087453",
+        "title": "Tensura Cilt 20",
+        "kind": "volume",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-20.html",
+        "labels": [
+          "Cilt",
+          "Tensei Shitara Slime Datta Ken (Light Novel)",
+          "Tensura Cilt 20"
+        ]
+      },
+      {
+        "postId": "3862773411839773499",
+        "title": "Tensura Cilt 19",
+        "kind": "volume",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-19.html",
+        "labels": [
+          "Cilt",
+          "Tensei Shitara Slime Datta Ken (Light Novel)",
+          "Tensura Cilt 19"
+        ]
+      },
+      {
+        "postId": "9131240884834478922",
+        "title": "Tensura Cilt 18",
+        "kind": "volume",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-18.html",
+        "labels": [
+          "Cilt",
+          "Tensei Shitara Slime Datta Ken (Light Novel)",
+          "Tensura Cilt 18"
+        ]
+      },
+      {
+        "postId": "4568242808877453256",
+        "title": "Tensura Cilt 17",
+        "kind": "volume",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-17.html",
+        "labels": [
+          "Cilt",
+          "Tensei Shitara Slime Datta Ken (Light Novel)",
+          "Tensura Cilt 17"
+        ]
+      },
+      {
+        "postId": "8659357545154013700",
+        "title": "Tensura Cilt 16",
+        "kind": "volume",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-16.html",
+        "labels": [
+          "Cilt",
+          "Tensei Shitara Slime Datta Ken (Light Novel)",
+          "Tensura Cilt 16"
+        ]
+      },
+      {
+        "postId": "5354967993880862525",
+        "title": "Cilt 12 Bölüm 1",
+        "kind": "chapter",
+        "url": "https://www.verudanava.com/2026/08/cilt-12-bolum-1.html",
+        "labels": [
+          "Bölüm",
+          "Tensura Cilt 12"
+        ]
+      },
+      {
+        "postId": "3867508801863209895",
+        "title": "Tensura Cilt 15",
+        "kind": "volume",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-15.html",
+        "labels": [
+          "Cilt",
+          "Tensei Shitara Slime Datta Ken (Light Novel)",
+          "Tensura Cilt 15"
+        ]
+      }
+    ]
+  },
+  "engine": null,
+  "postStates": [
+    {
+      "postId": "4993051551259875535",
+      "title": "Tensura Cilt 9",
+      "exists": false,
+      "data": null
+    },
+    {
+      "postId": "4125133695134823018",
+      "title": "Tensura Cilt 10",
+      "exists": true,
+      "data": {
+        "completedAt": {
+          "_seconds": 1787228233,
+          "_nanoseconds": 240000000
+        },
+        "releaseId": "816954997184127789_16giay",
+        "kind": "volume",
+        "postId": "4125133695134823018",
+        "title": "Tensura Cilt 10",
+        "seriesId": "816954997184127789",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-10.html",
+        "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+        "status": "completed",
+        "updatedAt": {
+          "_seconds": 1787228233,
+          "_nanoseconds": 240000000
+        }
+      }
+    },
+    {
+      "postId": "266412052895439632",
+      "title": "Tensura Cilt 23",
+      "exists": true,
+      "data": {
+        "completedAt": {
+          "_seconds": 1787225399,
+          "_nanoseconds": 914000000
+        },
+        "releaseId": "816954997184127789_g5uefs",
+        "kind": "volume",
+        "postId": "266412052895439632",
+        "title": "Tensura Cilt 23",
+        "seriesId": "816954997184127789",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-23.html",
+        "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+        "status": "completed",
+        "updatedAt": {
+          "_seconds": 1787225399,
+          "_nanoseconds": 914000000
+        }
+      }
+    },
+    {
+      "postId": "7466477136443758318",
+      "title": "Tensura Cilt 22",
+      "exists": true,
+      "data": {
+        "completedAt": {
+          "_seconds": 1787182570,
+          "_nanoseconds": 444000000
+        },
+        "releaseId": "816954997184127789_1ly6611",
+        "kind": "volume",
+        "postId": "7466477136443758318",
+        "title": "Tensura Cilt 22",
+        "seriesId": "816954997184127789",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-22.html",
+        "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+        "status": "completed",
+        "updatedAt": {
+          "_seconds": 1787182570,
+          "_nanoseconds": 444000000
+        }
+      }
+    },
+    {
+      "postId": "1265829938913410963",
+      "title": "Tensura Cilt 21",
+      "exists": true,
+      "data": {
+        "completedAt": {
+          "_seconds": 1787179551,
+          "_nanoseconds": 217000000
+        },
+        "releaseId": "816954997184127789_1m71no2",
+        "kind": "volume",
+        "postId": "1265829938913410963",
+        "title": "Tensura Cilt 21",
+        "seriesId": "816954997184127789",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-21.html",
+        "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+        "status": "completed",
+        "updatedAt": {
+          "_seconds": 1787179551,
+          "_nanoseconds": 217000000
+        }
+      }
+    },
+    {
+      "postId": "4771716501605087453",
+      "title": "Tensura Cilt 20",
+      "exists": true,
+      "data": {
+        "completedAt": {
+          "_seconds": 1787178714,
+          "_nanoseconds": 925000000
+        },
+        "releaseId": "816954997184127789_1j6s4rz",
+        "kind": "volume",
+        "postId": "4771716501605087453",
+        "title": "Tensura Cilt 20",
+        "seriesId": "816954997184127789",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-20.html",
+        "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+        "status": "completed",
+        "updatedAt": {
+          "_seconds": 1787178714,
+          "_nanoseconds": 925000000
+        }
+      }
+    },
+    {
+      "postId": "3862773411839773499",
+      "title": "Tensura Cilt 19",
+      "exists": true,
+      "data": {
+        "completedAt": {
+          "_seconds": 1787160074,
+          "_nanoseconds": 49000000
+        },
+        "releaseId": "816954997184127789_nko5bj",
+        "kind": "volume",
+        "postId": "3862773411839773499",
+        "title": "Tensura Cilt 19",
+        "seriesId": "816954997184127789",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-19.html",
+        "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+        "status": "completed",
+        "updatedAt": {
+          "_seconds": 1787160074,
+          "_nanoseconds": 49000000
+        }
+      }
+    },
+    {
+      "postId": "9131240884834478922",
+      "title": "Tensura Cilt 18",
+      "exists": true,
+      "data": {
+        "completedAt": {
+          "_seconds": 1787159802,
+          "_nanoseconds": 375000000
+        },
+        "releaseId": "816954997184127789_xln9oy",
+        "kind": "volume",
+        "postId": "9131240884834478922",
+        "title": "Tensura Cilt 18",
+        "seriesId": "816954997184127789",
+        "url": "https://www.verudanava.com/2026/08/tensura-cilt-18.html",
+        "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+        "status": "completed",
+        "updatedAt": {
+          "_seconds": 1787159802,
+          "_nanoseconds": 375000000
+        }
+      }
+    }
+  ],
+  "releases": [
+    {
+      "id": "816954997184127789_16giay",
+      "errorMessage": "",
+      "title": "Tensura Cilt 10",
+      "seriesId": "816954997184127789",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-10.html",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "createdAt": {
+        "_seconds": 1787228231,
+        "_nanoseconds": 523000000
+      },
+      "seriesUrl": "https://www.verudanava.com/2026/07/tensei-shitara-slime-datta-ken-light.html",
+      "createdBy": "github-action",
+      "releaseId": "816954997184127789_16giay",
+      "attemptId": "github_4125133695134823018_mt1hjkze",
+      "completedAt": {
+        "_seconds": 1787228232,
+        "_nanoseconds": 849000000
+      },
+      "pushDeliveredTokenDocs": [
+        "d_b4dadcfabbac409d322c41339959a744419816a7b7c6787f_PbSCN1Rln9bQ2fYa"
+      ],
+      "sentCount": 2,
+      "pushLastSuccessCount": 1,
+      "pushLastDeliveredAt": {
+        "_seconds": 1787228232,
+        "_nanoseconds": 849000000
+      },
+      "pushPendingTokenCount": 0,
+      "pushLastAttemptAt": {
+        "_seconds": 1787228232,
+        "_nanoseconds": 849000000
+      },
+      "pushLastFailureCount": 0,
+      "pushLastTokenCount": 1,
+      "followerCount": 2,
+      "status": "completed",
+      "updatedAt": {
+        "_seconds": 1787228232,
+        "_nanoseconds": 849000000
+      }
+    },
+    {
+      "id": "816954997184127789_g5uefs",
+      "errorMessage": "",
+      "title": "Tensura Cilt 23",
+      "seriesId": "816954997184127789",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-23.html",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "createdAt": {
+        "_seconds": 1787225397,
+        "_nanoseconds": 918000000
+      },
+      "seriesUrl": "https://www.verudanava.com/2026/07/tensei-shitara-slime-datta-ken-light.html",
+      "createdBy": "github-action",
+      "releaseId": "816954997184127789_g5uefs",
+      "attemptId": "github_266412052895439632_mt1fuufb",
+      "completedAt": {
+        "_seconds": 1787225399,
+        "_nanoseconds": 714000000
+      },
+      "pushDeliveredTokenDocs": [
+        "d_b4dadcfabbac409d322c41339959a744419816a7b7c6787f_PbSCN1Rln9bQ2fYa"
+      ],
+      "sentCount": 2,
+      "pushLastSuccessCount": 1,
+      "pushLastDeliveredAt": {
+        "_seconds": 1787225399,
+        "_nanoseconds": 714000000
+      },
+      "pushPendingTokenCount": 0,
+      "pushLastAttemptAt": {
+        "_seconds": 1787225399,
+        "_nanoseconds": 714000000
+      },
+      "pushLastFailureCount": 0,
+      "pushLastTokenCount": 1,
+      "followerCount": 2,
+      "status": "completed",
+      "updatedAt": {
+        "_seconds": 1787225399,
+        "_nanoseconds": 714000000
+      }
+    },
+    {
+      "id": "816954997184127789_1ly6611",
+      "errorMessage": "",
+      "title": "Tensura Cilt 22",
+      "seriesId": "816954997184127789",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-22.html",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "createdAt": {
+        "_seconds": 1787182568,
+        "_nanoseconds": 989000000
+      },
+      "seriesUrl": "https://www.verudanava.com/2026/07/tensei-shitara-slime-datta-ken-light.html",
+      "createdBy": "github-action",
+      "releaseId": "816954997184127789_1ly6611",
+      "attemptId": "github_7466477136443758318_mt0qcvtp",
+      "completedAt": {
+        "_seconds": 1787182570,
+        "_nanoseconds": 236000000
+      },
+      "followerCount": 2,
+      "sentCount": 2,
+      "status": "completed",
+      "updatedAt": {
+        "_seconds": 1787182570,
+        "_nanoseconds": 236000000
+      },
+      "pushDeliveredTokenDocs": [
+        "d_b4dadcfabbac409d322c41339959a744419816a7b7c6787f_PbSCN1Rln9bQ2fYa"
+      ],
+      "pushLastSuccessCount": 1,
+      "pushLastDeliveredAt": {
+        "_seconds": 1787182574,
+        "_nanoseconds": 420000000
+      },
+      "pushPendingTokenCount": 0,
+      "pushLastAttemptAt": {
+        "_seconds": 1787182574,
+        "_nanoseconds": 420000000
+      },
+      "pushLastFailureCount": 0,
+      "pushLastTokenCount": 1
+    },
+    {
+      "id": "816954997184127789_1m71no2",
+      "errorMessage": "",
+      "title": "Tensura Cilt 21",
+      "seriesId": "816954997184127789",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-21.html",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "createdAt": {
+        "_seconds": 1787179550,
+        "_nanoseconds": 384000000
+      },
+      "seriesUrl": "https://www.verudanava.com/2026/07/tensei-shitara-slime-datta-ken-light.html",
+      "createdBy": "github-action",
+      "releaseId": "816954997184127789_1m71no2",
+      "attemptId": "github_1265829938913410963_mt0ok6nk",
+      "completedAt": {
+        "_seconds": 1787179551,
+        "_nanoseconds": 87000000
+      },
+      "followerCount": 2,
+      "sentCount": 2,
+      "status": "completed",
+      "updatedAt": {
+        "_seconds": 1787179551,
+        "_nanoseconds": 87000000
+      },
+      "pushDeliveredTokenDocs": [
+        "d_b4dadcfabbac409d322c41339959a744419816a7b7c6787f_PbSCN1Rln9bQ2fYa"
+      ],
+      "pushLastSuccessCount": 1,
+      "pushLastDeliveredAt": {
+        "_seconds": 1787179554,
+        "_nanoseconds": 822000000
+      },
+      "pushPendingTokenCount": 0,
+      "pushLastAttemptAt": {
+        "_seconds": 1787179554,
+        "_nanoseconds": 822000000
+      },
+      "pushLastFailureCount": 0,
+      "pushLastTokenCount": 1
+    },
+    {
+      "id": "816954997184127789_1j6s4rz",
+      "errorMessage": "",
+      "title": "Tensura Cilt 20",
+      "seriesId": "816954997184127789",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-20.html",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "createdAt": {
+        "_seconds": 1787178712,
+        "_nanoseconds": 53000000
+      },
+      "seriesUrl": "https://www.verudanava.com/2026/07/tensei-shitara-slime-datta-ken-light.html",
+      "createdBy": "github-action",
+      "releaseId": "816954997184127789_1j6s4rz",
+      "attemptId": "github_4771716501605087453_mt0o27sl",
+      "completedAt": {
+        "_seconds": 1787178714,
+        "_nanoseconds": 563000000
+      },
+      "followerCount": 2,
+      "sentCount": 2,
+      "status": "completed",
+      "updatedAt": {
+        "_seconds": 1787178714,
+        "_nanoseconds": 563000000
+      },
+      "pushDeliveredTokenDocs": [
+        "d_b4dadcfabbac409d322c41339959a744419816a7b7c6787f_PbSCN1Rln9bQ2fYa"
+      ],
+      "pushLastSuccessCount": 1,
+      "pushLastDeliveredAt": {
+        "_seconds": 1787178722,
+        "_nanoseconds": 76000000
+      },
+      "pushPendingTokenCount": 0,
+      "pushLastAttemptAt": {
+        "_seconds": 1787178722,
+        "_nanoseconds": 76000000
+      },
+      "pushLastFailureCount": 0,
+      "pushLastTokenCount": 1
+    },
+    {
+      "id": "816954997184127789_nko5bj",
+      "errorMessage": "",
+      "title": "Tensura Cilt 19",
+      "seriesId": "816954997184127789",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-19.html",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "createdAt": {
+        "_seconds": 1787160073,
+        "_nanoseconds": 81000000
+      },
+      "seriesUrl": "https://www.verudanava.com/2026/07/tensei-shitara-slime-datta-ken-light.html",
+      "createdBy": "github-action",
+      "releaseId": "816954997184127789_nko5bj",
+      "attemptId": "github_3862773411839773499_mt0cypvd",
+      "completedAt": {
+        "_seconds": 1787160073,
+        "_nanoseconds": 904000000
+      },
+      "followerCount": 2,
+      "sentCount": 2,
+      "status": "completed",
+      "updatedAt": {
+        "_seconds": 1787160073,
+        "_nanoseconds": 904000000
+      },
+      "pushDeliveredTokenDocs": [
+        "d_b4dadcfabbac409d322c41339959a744419816a7b7c6787f_PbSCN1Rln9bQ2fYa"
+      ],
+      "pushLastSuccessCount": 1,
+      "pushLastDeliveredAt": {
+        "_seconds": 1787160077,
+        "_nanoseconds": 657000000
+      },
+      "pushPendingTokenCount": 0,
+      "pushLastAttemptAt": {
+        "_seconds": 1787160077,
+        "_nanoseconds": 657000000
+      },
+      "pushLastFailureCount": 0,
+      "pushLastTokenCount": 1
+    },
+    {
+      "id": "816954997184127789_xln9oy",
+      "errorMessage": "",
+      "title": "Tensura Cilt 18",
+      "seriesId": "816954997184127789",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-18.html",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "createdAt": {
+        "_seconds": 1787159800,
+        "_nanoseconds": 150000000
+      },
+      "seriesUrl": "https://www.verudanava.com/2026/07/tensei-shitara-slime-datta-ken-light.html",
+      "createdBy": "github-action",
+      "releaseId": "816954997184127789_xln9oy",
+      "attemptId": "github_9131240884834478922_mt0csv9y",
+      "completedAt": {
+        "_seconds": 1787159802,
+        "_nanoseconds": 192000000
+      },
+      "followerCount": 2,
+      "sentCount": 2,
+      "status": "completed",
+      "updatedAt": {
+        "_seconds": 1787159802,
+        "_nanoseconds": 192000000
+      },
+      "pushDeliveredTokenDocs": [
+        "d_b4dadcfabbac409d322c41339959a744419816a7b7c6787f_PbSCN1Rln9bQ2fYa"
+      ],
+      "pushLastSuccessCount": 1,
+      "pushLastDeliveredAt": {
+        "_seconds": 1787159811,
+        "_nanoseconds": 242000000
+      },
+      "pushPendingTokenCount": 0,
+      "pushLastAttemptAt": {
+        "_seconds": 1787159811,
+        "_nanoseconds": 242000000
+      },
+      "pushLastFailureCount": 0,
+      "pushLastTokenCount": 1
+    },
+    {
+      "id": "816954997184127789_12rk9g1",
+      "errorMessage": "",
+      "title": "Tensura Cilt 17",
+      "seriesId": "816954997184127789",
+      "url": "https://www.verudanava.com/2026/08/tensura-cilt-17.html",
+      "seriesTitle": "Tensei Shitara Slime Datta Ken (Light Novel)",
+      "createdAt": {
+        "_seconds": 1787153610,
+        "_nanoseconds": 799000000
+      },
+      "seriesUrl": "https://www.verudanava.com/2026/07/tensei-shitara-slime-datta-ken-light.html",
+      "createdBy": "github-action",
+      "releaseId": "816954997184127789_12rk9g1",
+      "attemptId": "github_4568242808877453256_mt0947jj",
+      "completedAt": {
+        "_seconds": 1787153612,
+        "_nanoseconds": 439000000
+      },
+      "followerCount": 2,
+      "sentCount": 2,
+      "status": "completed",
+      "updatedAt": {
+        "_seconds": 1787153612,
+        "_nanoseconds": 439000000
+      },
+      "pushDeliveredTokenDocs": [
+        "d_b4dadcfabbac409d322c41339959a744419816a7b7c6787f_PbSCN1Rln9bQ2fYa"
+      ],
+      "pushLastSuccessCount": 1,
+      "pushLastDeliveredAt": {
+        "_seconds": 1787159812,
+        "_nanoseconds": 406000000
+      },
+      "pushPendingTokenCount": 0,
+      "pushLastAttemptAt": {
+        "_seconds": 1787159812,
+        "_nanoseconds": 406000000
+      },
+      "pushLastFailureCount": 0,
+      "pushLastTokenCount": 1
+    }
+  ],
+  "tokens": [
+    {
+      "id": "d_b4dadcfabbac409d322c41339959a744419816a7b7c6787f_PbSCN1Rln9bQ2fYa",
+      "uid": "PbSCN1Rln9bQ2fYakeJNRIVB5hs2",
+      "appVersion": "12.1.37",
+      "notificationProtocol": "direct-native-v5",
+      "notificationChannel": "nava_follower_releases_v4",
+      "updatedAt": {
+        "_seconds": 1787229916,
+        "_nanoseconds": 350000000
+      }
+    }
+  ]
+}
