@@ -1,6 +1,6 @@
 # Nava Android
 
-Current stable Android release: **12.1.42** (`versionCode 58`).
+Current stable Android release: **12.1.43** (`versionCode 59`).
 
 ## Distribution
 
@@ -8,7 +8,7 @@ Current stable Android release: **12.1.42** (`versionCode 58`).
 - Website Android button resolves to `/releases/latest/download/Nava.apk`.
 - The Android updater reads GitHub's `releases/latest` API, finds the exact `Nava.apk` asset, disables HTTP caching, and uses Android's package installer.
 - Stable signing certificate SHA-256: `AC:DE:7C:F2:16:85:24:48:A8:A8:27:7F:E4:BF:11:EA:C1:83:39:4E:6B:34:A8:62:B1:24:E6:93:D5:1D:09:FE`.
-- Android 12.1.42 release APK SHA-256: `8f8f9a62b621cd53875939e8fc26aea4c42ec70fe0fe65bd7f287e5c02182062`.
+- Android 12.1.43 release APK SHA-256: `04f735bb9bf1bb3653651337402b26cd7e21eaab23ec173227d5b7418774bb58`.
 
 ## Follower notifications
 
@@ -20,7 +20,7 @@ Notification copy remains explicit by release type:
 - volume: `Yeni cilt geldi`;
 - chapter: `Yeni bölüm geldi`.
 
-Android 12.1.42 preserves the direct-native FCM renderer, Nava application notification icon, device registration, and the high-importance `nava_follower_releases_v4` channel. The mobile notification center fixes individual deletion and **Tümünü sil** so the signed-in user's Firestore notification documents are actually removed.
+Android 12.1.43 preserves the direct-native FCM renderer, Nava application notification icon, device registration, and the high-importance `nava_follower_releases_v4` channel. The mobile notification center keeps individual deletion and **Tümünü sil** so the signed-in user's Firestore notification documents are actually removed.
 
 ## Firestore rules
 
@@ -41,12 +41,19 @@ Android 12.1.31 introduced true native offline downloads and current releases pr
 
 Android 12.1.41 reorganized downloaded content into a collapsed **Eser → Cilt → Bölüm** hierarchy and removed generic `Nava` placeholders where meaningful metadata can be recovered.
 
-Android 12.1.42 adds bulk deletion at both hierarchy levels:
+Android 12.1.42 added bulk deletion at both hierarchy levels:
 - **Eseri sil** removes every downloaded item under that work;
 - **Cildi sil** removes every downloaded item under that volume;
 - individual **Sil** remains available for single entries.
 
-This keeps large offline libraries manageable without requiring users to delete every chapter one by one. The same hierarchy is content-type neutral and is intended to support Light Novel, Web Novel, Manga, Manhwa and similar content as long as they use the same work → volume/container → chapter structure.
+Android 12.1.43 is a stability hotfix for the app chrome and download entry points:
+- legacy download buttons injected into the top bar are hidden so the original top bar layout is preserved;
+- the old large download panel that could render at the bottom of volume pages is forcibly suppressed;
+- download access is now a small fixed Nava button that opens a compact sheet;
+- the compact sheet shows **Bölümü indir**, **Cildi indir**, or **Eseri indir** according to the current page, plus **İndirilenler** everywhere;
+- the 12.1.42 offline hierarchy, bulk deletion and native storage engine remain unchanged.
+
+The same hierarchy is content-type neutral and is intended to support Light Novel, Web Novel, Manga, Manhwa and similar content as long as they use the same work → volume/container → chapter structure.
 
 ## UI and Blogger loader
 
