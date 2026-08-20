@@ -1,0 +1,31 @@
+smali=/usr/bin/smali
+smali 2.5.2.git2771eae-debian (http://smali.org)
+Copyright (C) 2010 Ben Gruver (JesusFreke@JesusFreke.com)
+BSD license (http://www.opensource.org/licenses/bsd-license.php)
+baksmali=/usr/bin/baksmali
+baksmali 2.5.2.git2771eae-debian (http://smali.org)
+Copyright (C) 2010 Ben Gruver (JesusFreke@JesusFreke.com)
+BSD license (http://www.opensource.org/licenses/bsd-license.php)
+=== disassemble ===
+rc=0
+=== patch ===
+Traceback (most recent call last):
+  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.31/patch-smali.py", line 47, in <module>
+    if __name__=='__main__': main()
+                             ^^^^^^
+  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.31/patch-smali.py", line 26, in main
+    gt=replace_once(gt,method,inject,'gx intercept method')
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.31/patch-smali.py", line 9, in replace_once
+    if count!=1: raise ValueError(f'{label} count={count}')
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: gx intercept method count=0
+rc=1
+=== assemble ===
+rc=0
+-rw-r--r-- 1 runner runner 3.3M Aug 20 00:08 /tmp/classes.dex
+=== relevant strings ===
+/tmp/decoded/smali/com/verudanava/nava/MainActivity.smali:2493:    invoke-static {p0, v1}, Lcom/verudanava/nava/OfflineRuntime;->attach(Landroid/content/Context;Landroid/webkit/WebView;)V
+/tmp/decoded/smali/com/verudanava/nava/NavaFirebaseMessagingService.smali:937:    const-string v6, "nava_follower_releases"
+/tmp/decoded/smali/c00.smali:153:    const-string v1, "Takip edilen eserler"
+/tmp/decoded/smali/c00.smali:160:    const-string v3, "nava_follower_releases"
