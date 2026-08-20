@@ -8,22 +8,43 @@ Copyright (C) 2010 Ben Gruver (JesusFreke@JesusFreke.com)
 BSD license (http://www.opensource.org/licenses/bsd-license.php)
 === disassemble ===
 rc=0
+=== signature ===
+975-.end method
+976-
+977:.method public final shouldInterceptRequest(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;)Landroid/webkit/WebResourceResponse;
+978-    .registers 5
+979-
+980-    .line 1
+981-    if-eqz p2, :cond_d
+982-
+983-    .line 2
+984-    .line 3
+985-    invoke-interface {p2}, Landroid/webkit/WebResourceRequest;->getUrl()Landroid/net/Uri;
+--
+1089-    .line 53
+1090-    :cond_34
+1091:    invoke-super {p0, p1, p2}, Landroid/webkit/WebViewClient;->shouldInterceptRequest(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;)Landroid/webkit/WebResourceResponse;
+1092-
+1093-    .line 54
+1094-    .line 55
+1095-    .line 56
+1096-    move-result-object p0
+1097-
+1098-    .line 57
+1099-    return-object p0
 === patch ===
 Traceback (most recent call last):
-  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.31/patch-smali.py", line 47, in <module>
+  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.31/patch-smali.py", line 54, in <module>
     if __name__=='__main__': main()
                              ^^^^^^
-  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.31/patch-smali.py", line 26, in main
-    gt=replace_once(gt,method,inject,'gx intercept method')
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.31/patch-smali.py", line 9, in replace_once
-    if count!=1: raise ValueError(f'{label} count={count}')
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.31/patch-smali.py", line 30, in main
+    if count!=1: raise ValueError(f'gx intercept method count={count}')
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ValueError: gx intercept method count=0
 rc=1
 === assemble ===
 rc=0
--rw-r--r-- 1 runner runner 3.3M Aug 20 00:08 /tmp/classes.dex
+-rw-r--r-- 1 runner runner 3.3M Aug 20 00:10 /tmp/classes.dex
 === relevant strings ===
 /tmp/decoded/smali/com/verudanava/nava/MainActivity.smali:2493:    invoke-static {p0, v1}, Lcom/verudanava/nava/OfflineRuntime;->attach(Landroid/content/Context;Landroid/webkit/WebView;)V
 /tmp/decoded/smali/com/verudanava/nava/NavaFirebaseMessagingService.smali:937:    const-string v6, "nava_follower_releases"
