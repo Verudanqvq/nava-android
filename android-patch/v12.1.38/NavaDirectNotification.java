@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 
@@ -132,9 +131,6 @@ public final class NavaDirectNotification {
              .setAutoCancel(true)
              .setDefaults(Notification.DEFAULT_ALL)
              .setCategory(Notification.CATEGORY_SOCIAL);
-            if (Build.VERSION.SDK_INT >= 23) {
-                try { b.setLargeIcon(Icon.createWithResource(c, appIcon)); } catch (Throwable ignored) {}
-            }
             if (Build.VERSION.SDK_INT < 26) b.setPriority(Notification.PRIORITY_HIGH);
             nm.notify(id.hashCode(), b.build());
             try { c.getSharedPreferences(PREF, Context.MODE_PRIVATE).edit().putLong("last_notify_posted_at", System.currentTimeMillis()).apply(); } catch (Throwable ignored) {}
