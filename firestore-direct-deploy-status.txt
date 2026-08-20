@@ -1,4 +1,0 @@
-status=success
-method=firebase-admin-security-rules
-project=nava-01
-finished=2026-08-20T09:34:26Z
