@@ -7,20 +7,20 @@ on:
       - "notification-backend/**"
       - ".github/workflows/nava-notifications.yml"
   schedule:
-    - cron: "2-57/5 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: nava-follower-notifications-v7
-  cancel-in-progress: true
+  group: nava-follower-notifications-primary-v8
+  cancel-in-progress: false
 
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 5
     defaults:
       run:
         working-directory: notification-backend
@@ -40,7 +40,8 @@ jobs:
       - name: Install backend
         run: npm install --omit=dev --no-audit --no-fund
 
-      - name: Test notification engine
+      - name: Test notification engine on code changes
+        if: github.event_name != 'schedule'
         run: npm test
 
       - name: Scan Blogger now
