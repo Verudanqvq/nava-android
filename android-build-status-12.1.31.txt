@@ -1,6 +1,6 @@
 status=running
 branch=feat/offline-downloads-12-1-31
-started=2026-08-20T00:07:14Z
+started=2026-08-20T00:09:21Z
 source_validation=ok
 offline=app-private-storage+native-interceptor+downloads-ui
 notification_channel=v2-high
@@ -10,4 +10,4 @@ signing_material=ok
 source_apk=ok
 source_sha256=c072f679623e01efd59fe376d4a34cd71b26f734165e9ff98d53bee15862ed50
 status=failed
-finished=2026-08-20T00:07:39Z
+finished=2026-08-20T00:09:49Z
