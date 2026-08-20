@@ -1,0 +1,12 @@
+status=running
+started=2026-08-20T11:03:16Z
+source_validation=ok
+ui=home+series+reader-specific
+download=action-sheet
+loader=native-request-block
+smali_tools=ok
+signing_material=ok
+source_apk=ok
+source_sha256=48665cfbc1766b4d92f86643c5a79b98a655ec93827c26c81052a2ea3657aee8
+status=failed
+finished=2026-08-20T11:03:34Z
