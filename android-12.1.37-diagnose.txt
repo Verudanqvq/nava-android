@@ -384,12 +384,3 @@
 2819-
 2820-    .line 448
 2821-    .line 449
-=== PATCH TRY ===
-Traceback (most recent call last):
-  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.37/patch-smali.py", line 57, in <module>
-    if __name__=='__main__': main()
-                             ^^^^^^
-  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.37/patch-smali.py", line 14, in main
-    if not f.is_file(): raise ValueError('missing '+str(f))
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-ValueError: missing /tmp/decoded/smali/com/verudanava/nava/MainActivity.smali
