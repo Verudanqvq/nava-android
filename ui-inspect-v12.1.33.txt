@@ -1,0 +1,287 @@
+=== JS reader/topbar/download markers ===
+181:    var top=d.getElementById('nava-app-topbar');if(!top){top=e('header');top.id='nava-app-topbar';d.body.appendChild(top);}
+182:    var bottom=d.getElementById('nava-app-bottom');if(!bottom){bottom=e('nav');bottom.id='nava-app-bottom';d.body.appendChild(bottom);}
+477:    if(main)main.classList.add('nava-app-series-owned-v5');
+744:    removePage();var t=d.getElementById('nava-app-topbar');if(t)t.remove();var b=d.getElementById('nava-app-bottom');if(b)b.remove();var reader=d.getElementById('reader');if(!reader)return;
+746:    var meta=chapterMeta()||{volumeTitle:'Nava',chapterTitle:topTitle()};connectVolumeReadState(meta.volumeTitle||volumeLabelFromPage());var top=d.getElementById('nava-reader-top-v2');
+747:    if(!top){top=e('header');top.id='nava-reader-top-v2';var back=iconButton(I.back,'Geri');back.onclick=function(){history.length>1?history.back():location.assign('/')};var c=e('div','nava-reader-title-wrap-v2');c.append(e('div','nava-reader-kicker-v2',meta.volumeTitle||'Nava'),e('div','nava-reader-title-v2',meta.chapterTitle||topTitle()));var more=iconButton(I.text,'Yazı');more.onclick=toggleReaderSettings;top.append(back,c,more);var prog=e('div');prog.id='nava-reader-progress-v2';top.append(prog);d.body.append(top)}
+1051:      d.querySelectorAll('#nava-app-topbar button,#nava-app-bottom button,#nava-reader-top-v2 button,#nava-reader-bottom-v2 button').forEach(function(btn){
+1104:  function toast(message,tone){var x=el('div','nava-offline-toast-v12131 '+(tone||''),message);d.body.appendChild(x);requestAnimationFrame(function(){x.classList.add('is-show')});setTimeout(function(){x.classList.remove('is-show');setTimeout(function(){x.remove()},220)},2600)}
+1108:    var wrap=d.getElementById('nava-offline-sheet-v12131');if(wrap)return wrap;
+1109:    wrap=el('div','nava-offline-backdrop-v12131');wrap.id='nava-offline-sheet-v12131';wrap.hidden=true;
+1110:    var panel=el('section','nava-offline-panel-v12131');var head=el('header','nava-offline-head-v12131');var titles=el('div');titles.append(el('strong','','İndirilenler'),el('span','nava-offline-storage-v12131','0 MB'));
+1111:    var close=el('button','nava-offline-close-v12131','×');close.type='button';close.setAttribute('aria-label','Kapat');close.onclick=hideDownloads;head.append(titles,close);
+1112:    var prefs=el('label','nava-offline-pref-v12131');var check=d.createElement('input');check.type='checkbox';check.dataset.offlineWifi='1';check.onchange=function(){call('setWifiOnly',check.checked);state.index.wifiOnly=check.checked;toast(check.checked?'Yalnız Wi‑Fi açık.':'Mobil veride indirme açık.','success')};prefs.append(check,el('span','','Yalnız Wi‑Fi ile indir'));
+1113:    var status=el('div','nava-offline-status-v12131');status.dataset.offlineStatus='1';var list=el('div','nava-offline-list-v12131');list.dataset.offlineList='1';
+1116:  function showDownloads(){var s=sheet();s.hidden=false;d.documentElement.classList.add('nava-offline-sheet-open-v12131');renderList()}
+1117:  function hideDownloads(){var s=d.getElementById('nava-offline-sheet-v12131');if(s)s.hidden=true;d.documentElement.classList.remove('nava-offline-sheet-open-v12131')}
+1118:  function setStatus(text,tone){var x=sheet().querySelector('[data-offline-status]');x.textContent=text||'';x.className='nava-offline-status-v12131 '+(tone||'')}
+1122:    var storage=s.querySelector('.nava-offline-storage-v12131');if(storage)storage.textContent=fmt(idx.storageBytes||0);list.replaceChildren();
+1123:    var items=idx.items||[];if(!items.length){var empty=el('div','nava-offline-empty-v12131');empty.append(el('strong','','Henüz indirme yok'),el('p','','Bir bölümde indirme simgesine, ciltte ise “Cildi indir” düğmesine dokun.'));list.append(empty);return}
+1125:    Object.keys(groups).forEach(function(group){var sec=el('section','nava-offline-group-v12131');sec.append(el('h3','',group));groups[group].forEach(function(item){var card=el('article','nava-offline-card-v12131');var copy=el('div','nava-offline-copy-v12131');copy.append(el('strong','',clean(item.title,300)||'Bölüm'),el('span','',fmt(item.bytes||0)+' • '+new Date(Number(item.downloadedAt)||Date.now()).toLocaleDateString('tr-TR')));var actions=el('div','nava-offline-actions-v12131');var open=el('button','is-open','Aç');open.type='button';open.onclick=function(){call('open',item.url);hideDownloads()};var refresh=el('button','is-icon','');refresh.type='button';refresh.innerHTML=REFRESH;refresh.setAttribute('aria-label','Yeniden indir');refresh.onclick=function(){call('download',item.url,item.title,item.seriesTitle,item.kind||'chapter');setStatus('Güncelleniyor: '+clean(item.title,80),'busy')};var del=el('button','is-icon is-danger','');del.type='button';del.innerHTML=TRASH;del.setAttribute('aria-label','Sil');del.onclick=function(){call('delete',item.url);setStatus('Siliniyor…','busy')};actions.append(open,refresh,del);card.append(copy,actions);sec.append(card)});list.append(sec)});
+1132:  function iconButton(id,label,handler){var b=el('button','nava-app-icon-btn nava-offline-icon-v12131');b.id=id;b.type='button';b.setAttribute('aria-label',label);b.innerHTML=ICON;b.onclick=handler;return b}
+1135:      var top=d.getElementById('nava-reader-top-v2');if(top&&!d.getElementById('nava-offline-reader-download-v12131')){var b=iconButton('nava-offline-reader-download-v12131','Bölümü indir',downloadCurrent);var more=top.querySelector('button[aria-label="Yazı"]');top.insertBefore(b,more||top.lastElementChild)}
+1136:      var rb=d.getElementById('nava-offline-reader-download-v12131');if(rb){var yes=currentDownloaded();rb.classList.toggle('is-downloaded',yes);rb.setAttribute('aria-label',yes?'Bölümü yeniden indir':'Bölümü indir')}return;
+1138:    var topbar=d.getElementById('nava-app-topbar');if(!topbar)return;if(!d.getElementById('nava-offline-library-btn-v12131'))topbar.append(iconButton('nava-offline-library-btn-v12131','İndirilenler',showDownloads));var old=d.getElementById('nava-offline-volume-btn-v12131');if(isVolume()){if(!old){old=iconButton('nava-offline-volume-btn-v12131','Cildi indir',downloadVolume);topbar.append(old)}}else if(old)old.remove();
+=== CSS reader/topbar/bottom/series markers ===
+11:html.nava-app-path-home body main:not(#nava-app-page),html.nava-app-path-discover body main:not(#nava-app-page),html.nava-app-v9 body.nava-app-home main:not(#nava-app-page),html.nava-app-v9 body.nava-app-discover main:not(#nava-app-page),html.nava-app-path-home #Slider_Post,html.nava-app-path-home #section,html.nava-app-path-discover #status,html.nava-app-path-discover #main,html.nava-app-path-discover #Label2,html.nava-app-path-discover #Blog1{display:none!important;visibility:hidden!important}
+14:#nava-app-topbar{position:fixed;z-index:10040;top:0;left:0;right:0;height:var(--nava-top);display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 14px;background:var(--nava-blue);border-bottom:1px solid #b7cdf0;box-shadow:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+18:.nava-app-back-title{display:flex;align-items:center;gap:7px;min-width:0;max-width:72vw}.nava-app-page-title-top{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;font-size:14px;font-weight:700}
+19:#nava-app-bottom{position:fixed;z-index:10045;left:0;right:0;bottom:0;height:var(--nava-bottom);display:grid;grid-template-columns:repeat(4,1fr);align-items:center;padding:5px 8px 7px;background:#fff;border-top:1px solid var(--nava-line);box-shadow:none}
+23:#nava-app-page{position:relative;z-index:1;min-height:100vh;padding:calc(var(--nava-top) + 13px) 14px calc(var(--nava-bottom) + 22px);background:var(--nava-bg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+61:html.nava-app-v9 body.nava-app-series main.nava-app-series-owned-v5{padding:calc(var(--nava-top) + 10px) 10px calc(var(--nava-bottom) + 18px)!important;background:var(--nava-bg)!important;min-height:100vh}html.nava-app-v9 body.nava-app-series main>header[itemprop="mainEntity"]{margin:0 0 12px!important;background:transparent!important}.gta-series{display:grid!important;grid-template-columns:108px minmax(0,1fr)!important;gap:12px!important;padding:12px!important;border:1px solid var(--nava-line)!important;border-radius:18px!important;background:#fff!important}.gta-series img.thumb{width:108px!important;max-width:108px!important;height:154px!important;object-fit:cover!important;border-radius:13px!important}.gta-series h1[itemprop="name"]{font-size:19px!important;line-height:1.2!important;font-weight:800!important;margin:5px 0 7px!important}.gta-series>aside{grid-column:1/-1!important;padding-top:10px!important;border-top:1px solid var(--nava-line)!important}.gta-ax{display:block!important}#post-body{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}#post-body>div:first-child{margin:0 0 10px!important;padding:0 2px!important}#post-body>div:first-child h2{font-size:18px!important;font-weight:800!important}#myTab{padding:2px!important;border:1px solid var(--nava-line)!important;border-radius:999px!important;background:#fff!important}#myTab a{padding:5px 9px!important;font-size:10px!important}#chapters>div:first-child{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:8px!important;padding:10px!important;border:1px solid var(--nava-line)!important;border-radius:8px!important;background:#fff!important}#chapters>div:first-child h2{font-size:12px!important;font-weight:700!important;color:#52657f!important}#chapters #voice-search{width:100%!important;min-height:40px!important;border:1px solid #dfe6ef!important;border-radius:12px!important;padding:8px 34px 8px 11px!important;font-size:12px!important;background:#fff!important}#clwd{display:grid!important;gap:6px!important;margin-top:8px!important}#clwd .lastend{display:none!important}#clwd li{margin:0!important;padding:0!important;background:transparent!important}#clwd .eph-num{display:flex!important;align-items:center!important;min-height:48px!important;margin:0!important;padding:0 11px!important;border:1px solid var(--nava-line)!important;border-radius:12px!important;background:#fff!important;color:#273246!important;text-decoration:none!important;box-shadow:none!important}#clwd .eph-num .vcn{display:none!important}#clwd .eph-num .chapternum{min-width:0!important;font-size:12.5px!important;font-weight:800!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}#clwd .eph-num .chapterdate{margin-left:auto!important;font-size:9px!important;white-space:nowrap!important;color:#99a3b1!important}#clwd .nava-read-check{right:7px!important;width:16px!important;height:16px!important;font-size:9px!important}
+64:html.nava-app-v9 body.nava-app-reader{background:#fcfcfd!important;padding:0!important}html.nava-app-v9 body.nava-app-reader #nava-app-topbar,html.nava-app-v9 body.nava-app-reader #nava-app-bottom,html.nava-app-v9 body.nava-app-reader footer,html.nava-app-v9 body.nava-app-reader>nav:first-of-type,html.nava-app-v9 body.nava-app-reader #m91YjOFga6{display:none!important}html.nava-app-v9 body.nava-app-reader main{width:100%!important;max-width:none!important;margin:0!important;padding:60px 0 84px!important;background:#fcfcfd!important}html.nava-app-v9 body.nava-app-reader #read-dropdown,html.nava-app-v9 body.nava-app-reader [data-drawer-show="m91YjOFga6"]{visibility:hidden!important;position:absolute!important;pointer-events:none!important}html.nava-app-v9 body.nava-app-reader #reader{--nava-reader-font:18px;--nava-reader-line:1.78;max-width:760px!important;width:100%!important;margin:0 auto!important;padding:18px 18px 36px!important;border:0!important;background:transparent!important;box-shadow:none!important;color:#202536!important;font-size:var(--nava-reader-font)!important;line-height:var(--nava-reader-line)!important;overflow-wrap:anywhere!important}html.nava-app-v9 body.nava-app-reader #reader p,html.nava-app-v9 body.nava-app-reader #reader span,html.nava-app-v9 body.nava-app-reader #reader div,html.nava-app-v9 body.nava-app-reader #reader font,html.nava-app-v9 body.nava-app-reader #reader li,html.nava-app-v9 body.nava-app-reader #reader blockquote,html.nava-app-v9 body.nava-app-reader #reader a{font-size:var(--nava-reader-font)!important;line-height:var(--nava-reader-line)!important}html.nava-app-v9 body.nava-app-reader #reader p{margin:0 0 1.08em!important}html.nava-app-v9 body.nava-app-reader #reader h1{font-size:calc(var(--nava-reader-font)*1.42)!important}html.nava-app-v9 body.nava-app-reader #reader h2{font-size:calc(var(--nava-reader-font)*1.28)!important}html.nava-app-v9 body.nava-app-reader #reader h3{font-size:calc(var(--nava-reader-font)*1.16)!important}html.nava-app-v9 body.nava-app-reader #reader img{max-width:100%!important;height:auto!important}html.nava-app-v9 body.nava-app-reader #reader.mg{padding-left:0!important;padding-right:0!important;max-width:100%!important}html.nava-app-v9 body.nava-app-reader #reader.mg img{display:block!important;width:100%!important;border-radius:0!important;margin:0!important}
+65:#nava-reader-top-v2{position:fixed;z-index:10300;top:0;left:0;right:0;height:56px;display:grid;grid-template-columns:36px minmax(0,1fr) 36px;gap:8px;align-items:center;padding:0 10px;background:var(--nava-blue);border-bottom:1px solid #b7cdf0}.nava-reader-title-wrap-v2{min-width:0;text-align:center}.nava-reader-kicker-v2{font-size:9px;font-weight:700;color:#4d6587;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nava-reader-title-v2{margin-top:2px;font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#nava-reader-progress-v2{position:absolute;left:0;bottom:-1px;height:3px;width:0;background:var(--nava-yellow)}
+84:html.nava-app-v9 body.nava-app-volume #nava-app-page{padding-top:calc(var(--nava-top) + 12px)}
+125:html.dark.nava-app-v9,html.dark.nava-app-v9 body{--nava-bg:#111827;--nava-surface:#1f2937;--nava-surface-2:#172033;--nava-ink:#f3f4f6;--nava-muted:#9ca3af;--nava-line:#334155;--nava-accent:#bed4f5;background:#111827!important;color:#f3f4f6!important}html.dark.nava-app-v9 #nava-app-topbar,html.dark.nava-app-v9 #nava-reader-top-v2{background:#26364d;border-color:#354a67}html.dark.nava-app-v9 #nava-app-bottom{background:#111827;border-color:#334155}html.dark.nava-app-v9 #nava-app-page{background:#111827}.dark .nava-continue-card-v2,.dark .nava-chapter-row-v2,.dark .nava-filter-chip-v2,.dark .nava-search-row-v2,.dark .nava-profile-stat,.dark .nava-profile-panel,.dark .nava-profile-favorites{background:#1f2937!important;border-color:#334155!important}.dark #nava-reader-bottom-v2,.dark #nava-reader-settings-v2,.dark .nava-reader-chapter-card-v9,.dark .nava-app-comments-card-v9,.dark .nava-app-comments-owned-v9 .nava-comments-shell{background:#172033!important;border-color:#334155!important}.dark .nava-reader-chapter-link-v9,.dark .nava-volume-chapter-row-v9{background:#1f2937;border-color:#334155;color:#e5edf8}.dark .nava-volume-head-v9{background:#26364d;border-color:#405878;color:#f3f4f6}.dark .nava-volume-toolbar-v9{background:rgba(17,24,39,.94);border-color:#334155}.dark .nava-volume-search-v9{background:#1f2937;border-color:#334155;color:#f3f4f6}.dark .nava-app-comments-owned-v9 .nava-comment-body{color:#dbe3ee!important}.dark .nava-app-comments-owned-v9 .nava-comment-author{color:#f1f5f9!important}.dark .nava-app-comments-owned-v9 .nava-comment-action{background:#253246!important;color:#c8d2df!important}
+127:@media(max-width:360px){:root{--nava-top:56px;--nava-bottom:66px}#nava-app-page{padding-left:11px;padding-right:11px}.nava-hero-slide-v5{height:146px;flex-basis:calc(100vw - 34px)}.nava-series-card-v2{flex-basis:116px}.nava-series-cover-wrap-v2{width:116px;height:166px}.nava-app-section-title{font-size:17px}.nava-app-nav-item{font-size:9.5px}.nava-profile-actions-v5{gap:6px}}
+172:html.nava-app-v9 body.nava-app-series .gta-series>div:first-child{display:contents!important}
+173:html.nava-app-v9 body.nava-app-series .gta-series>div:first-child>img.thumb{grid-column:1!important;grid-row:1!important;align-self:start!important}
+174:html.nava-app-v9 body.nava-app-series .gta-series>div:nth-child(2){grid-column:2!important;grid-row:1!important;min-width:0!important}
+175:html.nava-app-v9 body.nava-app-series .gta-series>div:first-child>div.flex{grid-column:1/-1!important;grid-row:2!important;display:flex!important;align-items:flex-start!important;justify-content:center!important;gap:24px!important;width:100%!important;min-width:0!important;margin:0!important;padding:2px 4px 0!important}
+176:html.nava-app-v9 body.nava-app-series .gta-series>aside{grid-column:1/-1!important;grid-row:3!important;margin-top:0!important}
+177:html.nava-app-v9 body.nava-app-series .gta-series .nava-library-post,html.nava-app-v9 body.nava-app-series .gta-series .nava-favorite-post,html.nava-app-v9 body.nava-app-series .gta-series .nava-follow-post{width:64px!important;min-width:64px!important;max-width:64px!important}
+178:html.nava-app-v9 body.nava-app-series .gta-series .nava-library-label,html.nava-app-v9 body.nava-app-series .gta-series .nava-favorite-label,html.nava-app-v9 body.nava-app-series .gta-series .nava-follow-label{display:block!important;width:100%!important;margin-top:4px!important;font-size:10px!important;line-height:1.15!important;text-align:center!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important}
+179:@media(max-width:360px){html.nava-app-v9 body.nava-app-series .gta-series>div:first-child>div.flex{gap:14px!important}html.nava-app-v9 body.nava-app-series .gta-series .nava-library-post,html.nava-app-v9 body.nava-app-series .gta-series .nava-favorite-post,html.nava-app-v9 body.nava-app-series .gta-series .nava-follow-post{width:60px!important;min-width:60px!important;max-width:60px!important}}
+363:  --nava-app-bottom-total:calc(var(--nava-bottom) + var(--nava-safe-bottom));
+369:html.nava-app-v9 #nava-app-topbar{height:var(--nava-app-top-total)!important;padding-top:var(--nava-safe-top)!important;box-sizing:border-box!important}
+370:html.nava-app-v9 #nava-app-bottom{height:var(--nava-app-bottom-total)!important;padding-bottom:calc(7px + var(--nava-safe-bottom))!important;box-sizing:border-box!important}
+371:html.nava-app-v9 #nava-app-page{padding-top:calc(var(--nava-app-top-total) + 13px)!important;padding-bottom:calc(var(--nava-app-bottom-total) + 22px)!important}
+372:html.nava-app-v9 body.nava-app-profile main,html.nava-app-v9 body.nava-app-library main{padding-top:calc(var(--nava-app-top-total) + 10px)!important;padding-bottom:calc(var(--nava-app-bottom-total) + 22px)!important}
+373:html.nava-app-v9 body.nava-app-series main.nava-app-series-owned-v5{padding-top:calc(var(--nava-app-top-total) + 10px)!important;padding-bottom:calc(var(--nava-app-bottom-total) + 18px)!important}
+376:html.nava-app-v9 #nava-app-search-v2{padding-top:calc(var(--nava-app-top-total) + 10px)!important;padding-bottom:calc(var(--nava-app-bottom-total) + 12px)!important;max-height:var(--nava-visual-height)!important;box-sizing:border-box!important}
+388:html.nava-app-v9 #nava-reader-top-v2{height:calc(56px + var(--nava-safe-top))!important;padding-top:var(--nava-safe-top)!important;box-sizing:border-box!important}
+396:html.nava-app-v9 #nava-app-topbar button,html.nava-app-v9 #nava-app-topbar a,
+397:html.nava-app-v9 #nava-app-bottom button,html.nava-app-v9 #nava-app-bottom a,
+398:html.nava-app-v9 #nava-reader-top-v2 button,html.nava-app-v9 #nava-reader-bottom-v2 button,
+401:  html.nava-app-v9 #nava-app-topbar button,html.nava-app-v9 #nava-app-topbar a{min-width:44px!important;min-height:44px!important}
+414:  html.nava-app-v9 #nava-app-page{padding-left:11px!important;padding-right:11px!important}
+428:  html.nava-app-v9 .nava-app-page-title-top{font-size:12px!important}
+436:html.nava-offline-sheet-open-v12131,html.nava-offline-sheet-open-v12131 body{overflow:hidden!important}
+437:.nava-offline-icon-v12131{position:relative}.nava-offline-icon-v12131.is-downloaded:after{content:'';position:absolute;right:7px;bottom:7px;width:7px;height:7px;border-radius:999px;background:currentColor;border:2px solid var(--nava-app-bar-bg,#111827)}
+438:.nava-offline-backdrop-v12131{position:fixed;z-index:2147483200;inset:0;background:rgba(2,6,23,.64);display:flex;align-items:flex-end;justify-content:center;padding:0;overscroll-behavior:contain}.nava-offline-backdrop-v12131[hidden]{display:none!important}
+439:.nava-offline-panel-v12131{width:min(720px,100%);max-height:min(82vh,var(--nava-visual-height,82vh));overflow:auto;border-radius:22px 22px 0 0;background:#0f172a;color:#e5e7eb;border:1px solid #26334a;border-bottom:0;box-shadow:0 -18px 60px rgba(0,0,0,.35);padding:calc(14px + env(safe-area-inset-top,0px)) 14px calc(18px + env(safe-area-inset-bottom,0px));box-sizing:border-box}
+440:.nava-offline-head-v12131{display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:2;background:#0f172a;padding:4px 0 12px}.nava-offline-head-v12131>div{display:grid;gap:2px}.nava-offline-head-v12131 strong{font-size:19px;color:#f8fafc}.nava-offline-storage-v12131{font-size:12px;color:#94a3b8}.nava-offline-close-v12131{width:42px;height:42px;border:0;border-radius:12px;background:#1e293b;color:#e2e8f0;font-size:28px;line-height:1;display:grid;place-items:center}
+441:.nava-offline-pref-v12131{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid #29364a;border-radius:12px;background:#111c30;color:#cbd5e1;font-size:13px;font-weight:650}.nava-offline-pref-v12131 input{width:18px;height:18px;accent-color:#8b5cf6}.nava-offline-status-v12131{min-height:20px;margin:9px 2px 4px;font-size:12px;color:#94a3b8}.nava-offline-status-v12131.busy{color:#93c5fd}.nava-offline-status-v12131.success{color:#86efac}.nava-offline-status-v12131.warn{color:#fcd34d}.nava-offline-status-v12131.error{color:#fca5a5}
+442:.nava-offline-list-v12131{display:grid;gap:14px;margin-top:7px}.nava-offline-group-v12131{display:grid;gap:8px}.nava-offline-group-v12131 h3{margin:0;padding:2px 2px;color:#c4b5fd;font-size:13px;font-weight:800}.nava-offline-card-v12131{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px 12px;border:1px solid #29364a;border-radius:14px;background:#111827}.nava-offline-copy-v12131{display:grid;gap:3px;min-width:0}.nava-offline-copy-v12131 strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#f1f5f9;font-size:13px}.nava-offline-copy-v12131 span{color:#94a3b8;font-size:11px}.nava-offline-actions-v12131{display:flex;align-items:center;gap:6px}.nava-offline-actions-v12131 button{min-height:38px;border:1px solid #334155;border-radius:10px;background:#1e293b;color:#e2e8f0;font-size:12px;font-weight:750;padding:0 12px}.nava-offline-actions-v12131 button.is-open{background:#6d28d9;border-color:#7c3aed;color:#fff}.nava-offline-actions-v12131 button.is-icon{width:38px;padding:8px}.nava-offline-actions-v12131 button.is-icon svg{width:20px;height:20px}.nava-offline-actions-v12131 button.is-danger{color:#fca5a5}.nava-offline-empty-v12131{display:grid;gap:6px;text-align:center;padding:30px 18px;border:1px dashed #334155;border-radius:16px;color:#94a3b8}.nava-offline-empty-v12131 strong{color:#e2e8f0}.nava-offline-empty-v12131 p{margin:0;font-size:12px;line-height:1.55}
+443:.nava-offline-toast-v12131{position:fixed;z-index:2147483646;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));transform:translate(-50%,12px);opacity:0;max-width:min(88vw,430px);padding:10px 14px;border-radius:12px;background:#111827;color:#f8fafc;border:1px solid #334155;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:12px;font-weight:700;transition:.2s ease;pointer-events:none}.nava-offline-toast-v12131.is-show{opacity:1;transform:translate(-50%,0)}.nava-offline-toast-v12131.error{border-color:#7f1d1d}.nava-offline-toast-v12131.success{border-color:#166534}
+444:html:not(.dark) .nava-offline-panel-v12131,html:not(.dark) .nava-offline-head-v12131{background:#fff;color:#1e293b}html:not(.dark) .nava-offline-head-v12131 strong{color:#0f172a}html:not(.dark) .nava-offline-pref-v12131,html:not(.dark) .nava-offline-card-v12131{background:#f8fafc;border-color:#dbe3ef;color:#334155}html:not(.dark) .nava-offline-copy-v12131 strong{color:#0f172a}html:not(.dark) .nava-offline-close-v12131,html:not(.dark) .nava-offline-actions-v12131 button{background:#eef2ff;border-color:#dbe3ef;color:#334155}html:not(.dark) .nava-offline-actions-v12131 button.is-open{background:#6d28d9;color:#fff;border-color:#7c3aed}
+445:@media(max-width:540px){.nava-offline-panel-v12131{max-height:min(88vh,var(--nava-visual-height,88vh));border-radius:18px 18px 0 0;padding-left:10px;padding-right:10px}.nava-offline-card-v12131{grid-template-columns:1fr}.nava-offline-actions-v12131{display:grid;grid-template-columns:minmax(0,1fr) 42px 42px}.nava-offline-actions-v12131 button.is-open{width:100%}.nava-offline-actions-v12131 button.is-icon{width:42px}.nava-offline-toast-v12131{bottom:calc(76px + env(safe-area-inset-bottom,0px))}}
+462:html.nava-app-v9 #nava-app-topbar{height:calc(58px + var(--nava-safe-top))!important;min-height:0!important;padding:var(--nava-safe-top) 14px 0!important;background:#c6dafc!important;border-bottom:1px solid #b8cdea!important;box-shadow:none!important;gap:8px!important}
+463:html.nava-app-v9 #nava-app-topbar .nava-app-brand{color:#2f4666!important;font-size:22px!important;font-weight:900!important;letter-spacing:-.4px!important}
+464:html.nava-app-v9 #nava-app-topbar button,html.nava-app-v9 #nava-app-topbar a{min-width:40px!important;min-height:40px!important;width:40px!important;height:40px!important;border-radius:10px!important;border:1px solid rgba(65,91,124,.14)!important;background:rgba(255,255,255,.10)!important;color:#536f8e!important;box-shadow:none!important;padding:0!important}
+465:html.nava-app-v9 #nava-app-topbar button:hover,html.nava-app-v9 #nava-app-topbar a:hover{background:rgba(255,255,255,.28)!important;color:#405f82!important}
+466:html.nava-app-v9 #nava-app-topbar svg{width:22px!important;height:22px!important}
+467:html.nava-app-v9 #nava-app-topbar .nava-app-badge,html.nava-app-v9 #nava-app-topbar [class*='badge']{box-shadow:none!important}
+470:html.nava-app-v9 #nava-app-page{padding-top:calc(58px + var(--nava-safe-top) + 12px)!important;padding-bottom:calc(64px + var(--nava-safe-bottom) + 8px)!important;min-height:0!important;height:auto!important;margin-bottom:0!important}
+471:html.nava-app-v9 body.nava-app-profile main,html.nava-app-v9 body.nava-app-library main,html.nava-app-v9 body.nava-app-series main.nava-app-series-owned-v5{padding-top:calc(58px + var(--nava-safe-top) + 10px)!important;padding-bottom:calc(64px + var(--nava-safe-bottom) + 8px)!important;min-height:0!important;height:auto!important;margin-bottom:0!important}
+472:html.nava-app-v9 main:last-child,html.nava-app-v9 #nava-app-page>*:last-child{margin-bottom:0!important}
+476:html.nava-app-v9 #nava-app-bottom{height:calc(64px + var(--nava-safe-bottom))!important;min-height:0!important;padding:5px 10px var(--nava-safe-bottom)!important;background:#fff!important;border-top:1px solid #e1e7ee!important;box-shadow:0 -4px 14px rgba(45,62,80,.06)!important;box-sizing:border-box!important}
+477:html.nava-app-v9 #nava-app-bottom a,html.nava-app-v9 #nava-app-bottom button{color:#8a96a4!important;background:transparent!important;border-radius:9px!important;box-shadow:none!important}
+478:html.nava-app-v9 #nava-app-bottom .is-active,html.nava-app-v9 #nava-app-bottom [aria-current='page']{color:#55779b!important;background:#eef4fb!important}
+501:html.nava-app-v9 .nava-offline-panel-v12131{background:#fff!important;color:#1f2937!important;border-color:#d8e1eb!important;box-shadow:0 -12px 34px rgba(45,62,80,.14)!important}
+502:html.nava-app-v9 .nava-offline-head-v12131{background:#fff!important}
+503:html.nava-app-v9 .nava-offline-head-v12131 strong{color:#1f2937!important}
+504:html.nava-app-v9 .nava-offline-pref-v12131,html.nava-app-v9 .nava-offline-card-v12131{background:#f8fafc!important;border-color:#d8e1eb!important;color:#334155!important}
+505:html.nava-app-v9 .nava-offline-copy-v12131 strong{color:#1f2937!important}
+506:html.nava-app-v9 .nava-offline-group-v12131 h3{color:#55779b!important}
+507:html.nava-app-v9 .nava-offline-actions-v12131 button,html.nava-app-v9 .nava-offline-close-v12131{background:#eef4fb!important;border-color:#d6e1ec!important;color:#4d6e91!important}
+508:html.nava-app-v9 .nava-offline-actions-v12131 button.is-open{background:#5f82a8!important;border-color:#5f82a8!important;color:#fff!important}
+509:html.nava-app-v9 .nava-offline-pref-v12131 input{accent-color:#5f82a8!important}
+513:html.nava-app-v9 #nava-reader-top-v2{height:calc(54px + var(--nava-safe-top))!important;padding-top:var(--nava-safe-top)!important;background:#fff!important;border-bottom:1px solid #e2e8f0!important;box-shadow:none!important}
+516:.dark.nava-app-v9 #nava-app-bottom{background:#111827!important;border-color:#273448!important}.dark.nava-app-v9 #nava-app-bottom .is-active,.dark.nava-app-v9 #nava-app-bottom [aria-current='page']{background:#1f3044!important;color:#bdd2e8!important}.dark.nava-app-v9 #nava-reader-top-v2{background:#111827!important;border-color:#273448!important}
+517:.dark.nava-app-v9 .nava-offline-panel-v12131,.dark.nava-app-v9 .nava-offline-head-v12131{background:#111827!important;color:#e5edf6!important}.dark.nava-app-v9 .nava-offline-head-v12131 strong{color:#f1f5f9!important}.dark.nava-app-v9 .nava-offline-pref-v12131,.dark.nava-app-v9 .nava-offline-card-v12131{background:#162132!important;border-color:#2b394b!important;color:#dbe5ef!important}.dark.nava-app-v9 .nava-offline-copy-v12131 strong{color:#f1f5f9!important}.dark.nava-app-v9 .nava-offline-actions-v12131 button,.dark.nava-app-v9 .nava-offline-close-v12131{background:#1d2b3e!important;border-color:#33445a!important;color:#bdd2e8!important}.dark.nava-app-v9 .nava-offline-actions-v12131 button.is-open{background:#5f82a8!important;color:#fff!important}
+520:  html.nava-app-v9 #nava-app-topbar{padding-left:11px!important;padding-right:11px!important;gap:6px!important}
+521:  html.nava-app-v9 #nava-app-topbar button,html.nava-app-v9 #nava-app-topbar a{min-width:38px!important;min-height:38px!important;width:38px!important;height:38px!important}
+522:  html.nava-app-v9 #nava-app-page{padding-left:11px!important;padding-right:11px!important}
+534:  --nava-app-bottom-total:68px!important;
+543:html.nava-app-v9 #nava-app-topbar{
+558:html.nava-app-v9 #nava-app-topbar .nava-app-brand{margin-right:auto!important;color:#2f4666!important;font-size:21px!important;line-height:1!important;font-weight:900!important}
+559:html.nava-app-v9 #nava-app-topbar button,html.nava-app-v9 #nava-app-topbar a{
+575:html.nava-app-v9 #nava-app-topbar svg{width:21px!important;height:21px!important}
+578:html.nava-app-v9 #nava-app-page{
+589:html.nava-app-v9 body.nava-app-series main.nava-app-series-owned-v5{
+599:html.nava-app-v9 #nava-app-page:after,html.nava-app-v9 main:after{min-height:0!important;height:0!important;margin:0!important;padding:0!important}
+602:html.nava-app-v9 #nava-app-bottom{
+616:html.nava-app-v9 #nava-app-bottom a,html.nava-app-v9 #nava-app-bottom button{
+626:html.nava-app-v9 #nava-app-bottom .is-active,html.nava-app-v9 #nava-app-bottom [aria-current='page']{background:#eef4fb!important;color:#55779b!important}
+630:html.nava-app-v9 #nava-reader-top-v2{top:0!important;height:54px!important;min-height:54px!important;padding-top:0!important}
+636:html.nava-app-v9 .nava-offline-actions-v12131 button.is-open{background:#5f82a8!important;border-color:#5f82a8!important;color:#fff!important;box-shadow:none!important}
+648:  html.nava-app-v9 #nava-app-topbar{padding-left:12px!important;padding-right:12px!important;gap:7px!important}
+649:  html.nava-app-v9 #nava-app-topbar .nava-app-brand{font-size:20px!important}
+650:  html.nava-app-v9 #nava-app-topbar button,html.nava-app-v9 #nava-app-topbar a{flex-basis:36px!important;width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;max-width:36px!important;max-height:36px!important}
+651:  html.nava-app-v9 #nava-app-page{padding-left:11px!important;padding-right:11px!important}
+=== reader JS context ===
+
+### nava-reader-top-v2 @ 62957
+or(var i=0;i<items.length;i++){if(urlKey(items[i].url)===current){idx=i;break;}}
+      state.readerPrevUrl=idx>0?items[idx-1].url:'';state.readerNextUrl=idx>=0&&idx<items.length-1?items[idx+1].url:'';
+      if(state.readerPrevUrl)prewarmPage(state.readerPrevUrl);if(state.readerNextUrl)prewarmPage(state.readerNextUrl);
+      var bottom=d.getElementById('nava-reader-bottom-v2');if(bottom){
+        var prev=bottom.querySelector('[data-reader-nav=prev]'),next=bottom.querySelector('[data-reader-nav=next]');
+        if(prev){prev.disabled=!state.readerPrevUrl;prev.classList.toggle('is-disabled',!state.readerPrevUrl)}
+        if(next){next.disabled=!state.readerNextUrl;next.classList.toggle('is-disabled',!state.readerNextUrl)}
+      }
+      return items;
+    });
+  }
+  function readerAdjacent(dir){
+    var target=dir<0?state.readerPrevUrl:state.readerNextUrl;
+    if(target){smartNavigate(target);return;}
+    updateReaderAdjacent().then(function(){var u=dir<0?state.readerPrevUrl:state.readerNextUrl;if(u)smartNavigate(u)});
+  }
+  function readerNavAction(label,icon,dir){var b=readerAction(label,icon,function(){readerAdjacent(dir)});b.dataset.readerNav=dir<0?'prev':'next';b.classList.add('nava-reader-adjacent-v10');return b;}
+
+  function setupReader(){
+    removePage();var t=d.getElementById('nava-app-topbar');if(t)t.remove();var b=d.getElementById('nava-app-bottom');if(b)b.remove();var reader=d.getElementById('reader');if(!reader)return;
+    var drawer=d.getElementById('m91YjOFga6');if(drawer)drawer.style.setProperty('display','none','important');hideLegacyReaderChrome();applyReaderTypography();restoreReaderPosition();
+    var meta=chapterMeta()||{volumeTitle:'Nava',chapterTitle:topTitle()};connectVolumeReadState(meta.volumeTitle||volumeLabelFromPage());var top=d.getElementById('nava-reader-top-v2');
+    if(!top){top=e('header');top.id='nava-reader-top-v2';var back=iconButton(I.back,'Geri');back.onclick=function(){history.length>1?history.back():location.assign('/')};var c=e('div','nava-reader-title-wrap-v2');c.append(e('div','nava-reader-kicker-v2',meta.volumeTitle||'Nava'),e('div','nava-reader-title-v2',meta.chapterTitle||topTitle()));var more=iconButton(I.text,'Yazı');more.onclick=toggleReaderSettings;top.append(back,c,more);var prog=e('div');prog.id='nava-reader-progress-v2';top.append(prog);d.body.append(top)}
+    var bottom=d.getElementById('nava-reader-bottom-v2');if(!bottom){bottom=e('nav');bottom.id='nava-reader-bottom-v2';bottom.append(readerNavAction('Önceki',I.prev,-1),readerAction('Bölümler',I.chapters,openChapterSheet),readerAction('Okundu',I.check,function(){var x=d.querySelector('[data-nava-read-toggle]');if(x)x.click();setTimeout(syncRead,180)}),readerAction('Yorum',I.comments,openAppComments),readerNavAction('Sonraki',I.next,1));d.body.append(bottom)}
+    detectAppReaderMode(reader);ensureReaderSettings();syncRead();bindReadState();updateReaderAdjacent();normalizeReaderImages();setTimeout(function(){detectAppReaderMode(reader);normalizeReaderImages();},180);if(!state.readerScrollBound){state.readerScrollBound=true;w.addEventListener('scroll',readerProgress,{passive:true});readerProgress();}
+  }
+  function bindReadState(){var orig=d.querySelector('[data-nava-read-toggle]');if(!orig||state.readObserver)return;state.readObserver=new MutationObserver(syncRead);state.readObserver.observe(orig,{attributes:true,attributeFilter:['class','aria-pressed']});}
+  function syncRead(){
+    var orig=d.querySelector('[data-nava-read-toggle]'),bottom=d.getElementById('nava-reader-bottom-v2');
+    var isRead=!!(orig&&orig.classList.contains('is-read'));
+    if(bottom&&bottom.children[2])bottom.children[2].classList.toggle('is-active',isRead);
+
+    /* Tema Firestore snapshot'ı gelmeden önce buton false başlayabilir.
+       FALSE artık authoritative read state'i ASLA silmez. */
+    if(isRead){
+      var current=urlKey(location.href),meta=chapterMeta(),id=normalizeChapterId(meta&&meta.chapterId||'');
+      if(current)state.volumeReadSet.add(current);
+      if(id)state.volumeReadIds.add(id);
+      if(state.volumeReadUser&&state.volumeReadLabel)saveVolumeReadCache(state.volumeReadUser,state.volumeReadLabel,state.volumeReadSet,state.volumeReadIds);
+      decorateAllReadRows(state.volumeReadSet,state.volumeReadIds);
+    }
+  }
+  function readerProgress(){var max=Math.max(1,d.documentElement.scrollHeight-w.innerHeight),pct=Math.max(0,Math.min(100,w.scrollY/max*100)),p=d.getElementById('nava-reader-progress-v2');if(p)p.style.width=pct+'%';scheduleReaderPositionSave();}
+  function ensureReaderSettings(){
+    var box=d.getElementById('nava-reader-settings-v2');if(box)return box;box=e('section');box.id='nava-reader-settings-v2';box.hidden=true;
+    box.innerHTML='<div class="nava-reader-settings-title-v2">Okuma ayarları</div><div class="nava-reader-font-row-v2"><button class="nava-reader-font-btn-v2" data-dir="-1">A−</button><div class="nava-reader-font-value-v2">18 px</div><button class="nava-reader-font-btn-v2" data-dir="1">A+</
+
+### aria-label="Yazı" @ 97822
+ick=function(){call('delete',item.url);setStatus('Siliniyor…','busy')};actions.append(open,refresh,del);card.append(copy,actions);sec.append(card)});list.append(sec)});
+  }
+
+  function downloadCurrent(){var u=navaUrl(location.href);if(!u)return;call('download',u,currentTitle(),currentSeries(),isReader()?'chapter':(isVolume()?'volume':'page'));state.busy[u]=1;syncButtons();toast('İndirme başladı.','success')}
+  function collectVolume(){var seen=Object.create(null),out=[],series=volumeTitle()||currentTitle();[].slice.call(d.querySelectorAll('#cilt a[href],main a[href],article a[href],[data-nava-chapter-list] a[href]')).forEach(function(a){var u=navaUrl(a.href);if(!u||seen[u])return;var text=clean(a.textContent,240);var box=clean((a.closest('article,li,div,figure')||a).textContent,500);if(!/(?:bölüm|bolum|chapter)\s*\d/i.test(text+' '+box)&&!/\bchapter\b/i.test(u))return;seen[u]=1;out.push({url:u,title:text||box||'Bölüm',seriesTitle:series,kind:'chapter'})});return out.slice(0,300)}
+  function downloadVolume(){var items=collectVolume();if(!items.length){toast('Bu ciltte indirilecek bölüm bağlantısı bulunamadı.','error');return}call('downloadBatch',JSON.stringify(items));setStatus(items.length+' bölüm indirme sırasına alındı.','busy');toast(items.length+' bölüm indiriliyor.','success')}
+
+  function iconButton(id,label,handler){var b=el('button','nava-app-icon-btn nava-offline-icon-v12131');b.id=id;b.type='button';b.setAttribute('aria-label',label);b.innerHTML=ICON;b.onclick=handler;return b}
+  function syncButtons(){
+    if(isReader()){
+      var top=d.getElementById('nava-reader-top-v2');if(top&&!d.getElementById('nava-offline-reader-download-v12131')){var b=iconButton('nava-offline-reader-download-v12131','Bölümü indir',downloadCurrent);var more=top.querySelector('button[aria-label="Yazı"]');top.insertBefore(b,more||top.lastElementChild)}
+      var rb=d.getElementById('nava-offline-reader-download-v12131');if(rb){var yes=currentDownloaded();rb.classList.toggle('is-downloaded',yes);rb.setAttribute('aria-label',yes?'Bölümü yeniden indir':'Bölümü indir')}return;
+    }
+    var topbar=d.getElementById('nava-app-topbar');if(!topbar)return;if(!d.getElementById('nava-offline-library-btn-v12131'))topbar.append(iconButton('nava-offline-library-btn-v12131','İndirilenler',showDownloads));var old=d.getElementById('nava-offline-volume-btn-v12131');if(isVolume()){if(!old){old=iconButton('nava-offline-volume-btn-v12131','Cildi indir',downloadVolume);topbar.append(old)}}else if(old)old.remove();
+  }
+
+  w.navaOfflineNativeEvent=function(ev){ev=ev||{};var t=String(ev.type||'');if(t==='start'){state.busy[ev.url]=1;setStatus('İndiriliyor: '+clean(ev.title,90),'busy')}else if(t==='progress'){setStatus('İndiriliyor: '+clean(ev.title,70)+' • '+Number(ev.done||0)+'/'+Number(ev.total||0),'busy')}else if(t==='complete'){delete state.busy[ev.url];setStatus('İndirildi: '+clean(ev.title,90),'success');renderList();syncButtons()}else if(t==='deleted'){setStatus('İndirme silindi.','success');renderList();syncButtons()}else if(t==='batch-start'){setStatus(Number(ev.total||0)+' bölüm indiriliyor…','busy')}else if(t==='batch-complete'){setStatus('Toplu indirme tamamlandı: '+Number(ev.ok||0)+' başarılı'+(Number(ev.failed||0)?', '+Number(ev.failed)+' hata':''),Number(ev.failed||0)?'warn':'success');renderList();syncButtons()}else if(t==='error'){if(ev.url)delete state.busy[ev.url];setStatus(clean(ev.message,240)||'İndirme başarısız.','error');toast(clean(ev.message,220)||'İndirme başarısız.','error');syncButtons()}else if(t==='settings'){renderList()}};
+
+  function init(){sheet();loadIndex();syncButtons();if(!state.observer&&d.body){state.observer=new MutationObserver(function(){syncButtons()});state.observer.observe(d.body,{subtree:true,childList:true})}w.addEventListener('pageshow',function(){setTimeout(syncButtons,80);setTimeout(syncButtons,600)},{passive:true});d.addEventListener('visibilitychange',function(){if(!d.hidden)setTimeout(syncButtons,80)})}
+  if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  w.navaOpenDownloads=showDownloads;
+})(document,window);
+
+
+### nava-offline-reader-download-v12131 @ 97661
+: '+clean(item.title,80),'busy')};var del=el('button','is-icon is-danger','');del.type='button';del.innerHTML=TRASH;del.setAttribute('aria-label','Sil');del.onclick=function(){call('delete',item.url);setStatus('Siliniyor…','busy')};actions.append(open,refresh,del);card.append(copy,actions);sec.append(card)});list.append(sec)});
+  }
+
+  function downloadCurrent(){var u=navaUrl(location.href);if(!u)return;call('download',u,currentTitle(),currentSeries(),isReader()?'chapter':(isVolume()?'volume':'page'));state.busy[u]=1;syncButtons();toast('İndirme başladı.','success')}
+  function collectVolume(){var seen=Object.create(null),out=[],series=volumeTitle()||currentTitle();[].slice.call(d.querySelectorAll('#cilt a[href],main a[href],article a[href],[data-nava-chapter-list] a[href]')).forEach(function(a){var u=navaUrl(a.href);if(!u||seen[u])return;var text=clean(a.textContent,240);var box=clean((a.closest('article,li,div,figure')||a).textContent,500);if(!/(?:bölüm|bolum|chapter)\s*\d/i.test(text+' '+box)&&!/\bchapter\b/i.test(u))return;seen[u]=1;out.push({url:u,title:text||box||'Bölüm',seriesTitle:series,kind:'chapter'})});return out.slice(0,300)}
+  function downloadVolume(){var items=collectVolume();if(!items.length){toast('Bu ciltte indirilecek bölüm bağlantısı bulunamadı.','error');return}call('downloadBatch',JSON.stringify(items));setStatus(items.length+' bölüm indirme sırasına alındı.','busy');toast(items.length+' bölüm indiriliyor.','success')}
+
+  function iconButton(id,label,handler){var b=el('button','nava-app-icon-btn nava-offline-icon-v12131');b.id=id;b.type='button';b.setAttribute('aria-label',label);b.innerHTML=ICON;b.onclick=handler;return b}
+  function syncButtons(){
+    if(isReader()){
+      var top=d.getElementById('nava-reader-top-v2');if(top&&!d.getElementById('nava-offline-reader-download-v12131')){var b=iconButton('nava-offline-reader-download-v12131','Bölümü indir',downloadCurrent);var more=top.querySelector('button[aria-label="Yazı"]');top.insertBefore(b,more||top.lastElementChild)}
+      var rb=d.getElementById('nava-offline-reader-download-v12131');if(rb){var yes=currentDownloaded();rb.classList.toggle('is-downloaded',yes);rb.setAttribute('aria-label',yes?'Bölümü yeniden indir':'Bölümü indir')}return;
+    }
+    var topbar=d.getElementById('nava-app-topbar');if(!topbar)return;if(!d.getElementById('nava-offline-library-btn-v12131'))topbar.append(iconButton('nava-offline-library-btn-v12131','İndirilenler',showDownloads));var old=d.getElementById('nava-offline-volume-btn-v12131');if(isVolume()){if(!old){old=iconButton('nava-offline-volume-btn-v12131','Cildi indir',downloadVolume);topbar.append(old)}}else if(old)old.remove();
+  }
+
+  w.navaOfflineNativeEvent=function(ev){ev=ev||{};var t=String(ev.type||'');if(t==='start'){state.busy[ev.url]=1;setStatus('İndiriliyor: '+clean(ev.title,90),'busy')}else if(t==='progress'){setStatus('İndiriliyor: '+clean(ev.title,70)+' • '+Number(ev.done||0)+'/'+Number(ev.total||0),'busy')}else if(t==='complete'){delete state.busy[ev.url];setStatus('İndirildi: '+clean(ev.title,90),'success');renderList();syncButtons()}else if(t==='deleted'){setStatus('İndirme silindi.','success');renderList();syncButtons()}else if(t==='batch-start'){setStatus(Number(ev.total||0)+' bölüm indiriliyor…','busy')}else if(t==='batch-complete'){setStatus('Toplu indirme tamamlandı: '+Number(ev.ok||0)+' başarılı'+(Number(ev.failed||0)?', '+Number(ev.failed)+' hata':''),Number(ev.failed||0)?'warn':'success');renderList();syncButtons()}else if(t==='error'){if(ev.url)delete state.busy[ev.url];setStatus(clean(ev.message,240)||'İndirme başarısız.','error');toast(clean(ev.message,220)||'İndirme başarısız.','error');syncButtons()}else if(t==='settings'){renderList()}};
+
+  function init(){sheet();loadIndex();syncButtons();if(!state.observer&&d.body){state.observer=new MutationObserver(function(){syncButtons()});state.observer.observe(d.body,{subtree:true,childList:true})}w.addEventListener('pageshow',function(){setTimeout(syncButtons,80);setTimeout(syncButtons,600)},{passive:true});d.addEventListener('visibilitychange',function(){if(!d.hidden)setTimeout(syncButtons,80)})}
+  if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  w.navaOpenDownloads=showDownloads;
+})(document,window);
+
+
+### nava-app-topbar @ 11971
+ var heading=d.querySelector("header h1[itemprop='name'],main h1,h1");
+    var candidates=[heading&&heading.textContent,d.title];
+    for(var k=0;k<candidates.length;k++){
+      var value=clean(candidates[k],300).replace(/\s*[|–—-]\s*Nava(?:\s.*)?$/i,'');
+      var m=value.match(/^(.+?\b(?:cilt|volume|vol\.?)\s*\d+(?:\.\d+)?)/i);
+      if(m)return clean(m[1],300);
+    }
+    return'';
+  }
+
+  function route(){
+    var p=(location.pathname||'/').replace(/\/+$/,'')||'/';var q=new URLSearchParams(location.search);
+    if(p==='/')return'home';
+    if(/^\/search\/label\/Series$/i.test(p))return'discover';
+    if(/\/p\/profil\.html$/i.test(p)&&q.get('app')==='library')return'library';
+    if(/\/p\/profil\.html$/i.test(p)&&q.get('app')==='profile')return'profile';
+
+    /* Bölüm başlıklarında da 'Cilt 11 Bölüm 6' geçer; reader her zaman önce gelir. */
+    if(d.querySelector('[data-nava-chapter-meta],#reader'))return'reader';
+
+    /* Hem label URL'sini hem de normal Blogger cilt POST sayfasını volume olarak tanı. */
+    if(volumeLabelFromPage())return'volume';
+
+    if(d.querySelector("header[itemprop='mainEntity'][itemtype*='Book']"))return'series';
+    return'general';
+  }
+  function applyRoute(r){state.route=r;d.documentElement.classList.add('nava-app-v9');if(!d.body)return;['home','discover','volume','library','profile','series','reader','general'].forEach(function(x){d.body.classList.remove('nava-app-'+x)});d.body.classList.add('nava-app-'+r);}
+  function topTitle(){return clean(d.title.replace(/\s*[|–—-]\s*Nava.*$/i,''),90)||'Nava';}
+  function iconButton(icon,label){var b=e('button','nava-app-icon-btn');b.type='button';b.setAttribute('aria-label',label);b.innerHTML=icon;return b;}
+
+  function ensureShell(){
+    if(state.route==='reader')return;
+    var top=d.getElementById('nava-app-topbar');if(!top){top=e('header');top.id='nava-app-topbar';d.body.appendChild(top);}
+    var bottom=d.getElementById('nava-app-bottom');if(!bottom){bottom=e('nav');bottom.id='nava-app-bottom';d.body.appendChild(bottom);}
+    renderTop(top);renderBottom(bottom);
+  }
+  function renderTop(top){
+    top.replaceChildren();
+    if(['home','discover','library','profile'].indexOf(state.route)>=0){var brand=e('div','nava-app-brand');brand.innerHTML='<span>Nava</span>';top.appendChild(brand);}
+    else{var wrap=e('div','nava-app-back-title');var back=iconButton(I.back,'Geri');back.onclick=function(){history.length>1?history.back():location.assign('/')};wrap.append(back,e('div','nava-app-page-title-top',state.route==='volume'?'Bölümler':topTitle()));top.appendChild(wrap);}
+    var actions=e('div','nava-app-top-actions');
+    var search=iconButton(I.search,'Ara');search.onclick=openSearch;
+    var bell=iconButton(I.bell,'Bildirimler');bell.id='nava-app-bell';bell.classList.add('nava-app-bell-v9');bell.onclick=openNotifications;bell.insertAdjacentHTML('beforeend','<span class="nava-app-bell-badge-v9" hidden></span>');
+    actions.append(search,bell);top.appendChild(actions);syncNotificationBadge();connectAppNotifications();
+  }
+  function nav(label,icon,href,key){var a=e('a','nava-app-nav-item'+(state.route===key?' is-active':''));a.href=href;a.innerHTML='<span class="nava-app-nav-icon">'+icon+'</span><span>'+label+'</span>';a.onclick=function(){postNative('haptic')};return a;}
+  function renderBottom(b){b.replaceChildren(nav('Ana',I.home,'/','home'),nav('Keşfet',I.discover,'/search/label/Series','discover'),nav('Kütüphane',I.library,'/p/profil.html?app=library','library'),nav('Profil',I.profile,'/p/profil.html?app=profile','profile'));}
+  function ensurePage(){var p=d.getElementById('nava-app-page');if(!p){p=e('main');p.id='nava-app-page';d.body.appendChild(p);}return p;}
+  function removePage(){var p=d.getElementById('nava-app-page');if(p)p.remove();}
+  function hideOriginalOwnedContent(){
+    if(state.route!=='home'&&state.route!=='discover'&&state.route!=='volume')return;
+    ['#Slider_Post','#section','#status','#feed','#main','#Label2','#Blog1','.grid-area','.blog-posts','.post-outer-container'].forEach(function(sel){
+      d.querySelectorAll(sel).forEach(function(node){
+        if(node&&node.id!=='nava-app-page'&&!node.closest('#nava-app-page')){
+          node.style.setProperty('display','none','important');
+          node.style.setProperty('visibility','hidden','important');
+          node.setAttribute('aria-hidden','true');
+        }
+      });
+    });
+    d.querySelectorAll('main').forEach(function(node){
+      if(node.id!=='nava-app-page'&&!node.closest('#nava-app-page')){
+        node.style.setProperty('display','none','important');
+        node.style.setProperty('visibility','hidden','important');
+        node.setAttribute('aria-hidden','true');
+      }
+    });
+  }
+  function section(title,sub,right,href){var s=e('section','nava-app-section'),h=e('div','nava-app-section-head'),c=e('div');c.append(e('h2','nava-app-section-title',title));if(sub)c.append(e('div','nava-app-section-sub',sub));h.append(c);if(right){var a=e('a','nava-app-se
+=== dimensions ===
+100695 /tmp/nava/app.js
+ 95294 /tmp/nava/app.css
+195989 total
