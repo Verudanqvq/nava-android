@@ -88,10 +88,6 @@ async function sendOutstanding(releaseDoc) {
     const systemTitle = (kind === "volume" ? "Yeni cilt • " : "Yeni bölüm • ") + seriesTitle;
     const result = await messaging.sendEachForMulticast({
       tokens,
-      notification: {
-        title: systemTitle,
-        body: releaseTitle
-      },
       data: {
         kind,
         seriesTitle,
@@ -101,11 +97,7 @@ async function sendOutstanding(releaseDoc) {
       },
       android: {
         priority: "high",
-        ttl: 24 * 60 * 60 * 1000,
-        notification: {
-          channelId: "nava_follower_releases_v3",
-          tag: notificationId
-        }
+        ttl: 24 * 60 * 60 * 1000
       }
     });
 
