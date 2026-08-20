@@ -1,5 +1,5 @@
 name: Nava offline patch diagnose
-# rerun: multiline-signature-fix
+# rerun: register-directive-fix
 on:
   push:
     branches: [feat/offline-downloads-12-1-31]
@@ -35,8 +35,11 @@ jobs:
           echo '=== assemble ==='
           smali assemble /tmp/decoded/smali -o /tmp/classes.dex; echo "rc=$?"
           ls -lh /tmp/classes.dex 2>/dev/null || true
+          echo '=== re-disassemble ==='
+          rm -rf /tmp/verify && baksmali disassemble /tmp/classes.dex -o /tmp/verify; echo "rc=$?"
           echo '=== relevant strings ==='
           grep -R -n -E 'OfflineRuntime|nava_follower_releases|Takip edilen eserler' /tmp/decoded/smali/com/verudanava/nava /tmp/decoded/smali/gx.smali /tmp/decoded/smali/c00.smali 2>/dev/null | head -100 || true
+          grep -R -n -E 'OfflineRuntime|nava_follower_releases' /tmp/verify/com/verudanava/nava /tmp/verify/gx.smali /tmp/verify/c00.smali 2>/dev/null | head -100 || true
           exit 0
       - name: Persist
         run: |
