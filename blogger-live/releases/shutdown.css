@@ -1,0 +1,2 @@
+/* Nava live layer shutdown shim. No site styling. */
+#nava-loader-v2-test,#nava-live-connection-test{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
