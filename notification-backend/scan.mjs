@@ -159,9 +159,9 @@ function notificationPayload(uid, release, series, rid) {
     postId: series.id,
     commentId: "",
     targetId: rid,
-    title: release.title,
+    title: release.kind === "volume" ? "Yeni cilt geldi" : "Yeni bölüm geldi",
     url: release.url,
-    body: series.title,
+    body: series.title + " • " + release.title,
     read: false,
     createdAt: FieldValue.serverTimestamp(),
     updatedAt: FieldValue.serverTimestamp()
