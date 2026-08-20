@@ -1,0 +1,97 @@
+name: Nava notification readonly diagnose
+
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/nava-notification-readonly-diagnose.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install backend deps
+        run: npm --prefix notification-backend install --omit=dev --no-audit --no-fund
+      - name: Read-only diagnose
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE' > notification-readonly-diagnose.txt
+          import { initializeApp, cert } from './notification-backend/node_modules/firebase-admin/app/index.js';
+          import { getFirestore } from './notification-backend/node_modules/firebase-admin/firestore/index.js';
+
+          const sa=JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT||'{}');
+          initializeApp({credential:cert(sa),projectId:'nava-01'});
+          const db=getFirestore();
+          const clean=(v,n=500)=>String(v??'').trim().slice(0,n);
+          const millis=(v)=>{try{return v?.toMillis?.()||0}catch{return 0}};
+          const iso=(v)=>{const m=millis(v);return m?new Date(m).toISOString():''};
+          const canon=(s)=>{try{const u=new URL(s);u.hash='';return u.href.replace(/^https?:\/\/(?:www\.)?verudanava\.com/i,'https://www.verudanava.com').replace(/^https?:\/\/verudanava\.blogspot\.com/i,'https://www.verudanava.com')}catch{return clean(s,1000)}};
+          const postId=(e)=>clean(e?.id?.$t?.split('post-').pop()||'',200);
+          const entryUrl=(e)=>clean((e?.link||[]).find(x=>x.rel==='alternate')?.href||'',1200);
+          const labels=(e)=>(e?.category||[]).map(x=>clean(x?.term,120)).filter(Boolean);
+          const isRelease=(e)=>labels(e).some(x=>/^(cilt|bölüm|bolum)$/i.test(x))||/\b(cilt|bölüm|bolum|chapter|volume)\b/i.test(clean(e?.title?.$t,500));
+
+          const feedBases=[
+            'https://verudanava.blogspot.com/feeds/posts/summary?alt=json&max-results=30&orderby=published',
+            'https://verudanava.blogspot.com/feeds/posts/summary/-/B%C3%B6l%C3%BCm?alt=json&max-results=30&orderby=published',
+            'https://verudanava.blogspot.com/feeds/posts/summary/-/Cilt?alt=json&max-results=30&orderby=published',
+            'https://www.verudanava.com/feeds/posts/summary?alt=json&max-results=30&orderby=published',
+            'https://www.verudanava.com/feeds/posts/summary/-/B%C3%B6l%C3%BCm?alt=json&max-results=30&orderby=published',
+            'https://www.verudanava.com/feeds/posts/summary/-/Cilt?alt=json&max-results=30&orderby=published'
+          ];
+          const feedMap=new Map(); const feedErrors=[];
+          for(const base of feedBases){
+            try{
+              const r=await fetch(base+'&_diag='+Date.now(),{headers:{'Cache-Control':'no-cache','User-Agent':'NavaReadonlyDiagnose/1'},signal:AbortSignal.timeout(15000)});
+              if(!r.ok) throw new Error('HTTP '+r.status);
+              const j=await r.json();
+              for(const e of (j?.feed?.entry||[])){const id=postId(e);if(id)feedMap.set(id,e)}
+            }catch(e){feedErrors.push(base+' -> '+String(e?.message||e))}
+          }
+          const feed=[...feedMap.values()].filter(isRelease).sort((a,b)=>Date.parse(b?.published?.$t||0)-Date.parse(a?.published?.$t||0)).slice(0,10);
+
+          const engineSnap=await db.collection('releaseAutomation').doc('bloggerScannerGithubV5').get();
+          const engine=engineSnap.exists?engineSnap.data():{};
+          const statesSnap=await db.collection('releaseAutomationPostsV5').limit(250).get();
+          const states=new Map(statesSnap.docs.map(d=>[d.id,{id:d.id,...d.data()}]));
+          const relSnap=await db.collection('chapterReleases').limit(250).get();
+          const releases=relSnap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(millis(b.completedAt)||millis(b.updatedAt)||0)-(millis(a.completedAt)||millis(a.updatedAt)||0)).slice(0,20);
+          const tokensSnap=await db.collection('devicePushTokens').get();
+          const tokens=tokensSnap.docs.map(d=>({id:d.id,...d.data()}));
+          const followerRoots=await db.collection('seriesFollowers').limit(100).get();
+          const followerSummary=[];
+          for(const d of followerRoots.docs){const sub=await d.ref.collection('users').get();followerSummary.push({seriesId:d.id,title:clean(d.data()?.title,200),followers:sub.size,uids:sub.docs.map(x=>x.id)})}
+          const tokenUids=[...new Set(tokens.map(t=>clean(t.uid,200)).filter(Boolean))];
+          const notifSummary=[];
+          for(const uid of tokenUids){
+            const snap=await db.collection('users').doc(uid).collection('notifications').limit(100).get();
+            const docs=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(millis(b.createdAt)||millis(b.updatedAt)||0)-(millis(a.createdAt)||millis(a.updatedAt)||0)).slice(0,10);
+            notifSummary.push({uid, count:snap.size, latest:docs.map(x=>({id:x.id,type:x.type,title:clean(x.title,220),body:clean(x.body,220),createdAt:iso(x.createdAt),updatedAt:iso(x.updatedAt),url:canon(x.url)}))});
+          }
+
+          console.log('checkedAt='+new Date().toISOString());
+          console.log('feedErrors='+JSON.stringify(feedErrors));
+          console.log('engine='+JSON.stringify({exists:engineSnap.exists,version:engine.version,initialized:engine.initialized,updatedAt:iso(engine.updatedAt),lastResult:engine.lastResult||null}));
+          console.log('tokens='+JSON.stringify(tokens.map(t=>({docId:t.id,uid:t.uid,platform:t.platform,appVersion:t.appVersion,updatedAt:iso(t.updatedAt)}))));
+          console.log('followers='+JSON.stringify(followerSummary));
+          console.log('latestSiteNotifications='+JSON.stringify(notifSummary));
+          console.log('latestChapterReleases='+JSON.stringify(releases.map(r=>({id:r.id,title:clean(r.title,250),seriesTitle:clean(r.seriesTitle,250),status:r.status,createdAt:iso(r.createdAt),updatedAt:iso(r.updatedAt),completedAt:iso(r.completedAt),followerCount:r.followerCount,sentCount:r.sentCount,pushLastSuccessCount:r.pushLastSuccessCount,pushLastFailureCount:r.pushLastFailureCount,pushPendingTokenCount:r.pushPendingTokenCount,url:canon(r.url)}))));
+          console.log('latestFeedReleases='+JSON.stringify(feed.map(e=>{const id=postId(e),s=states.get(id)||{};return{postId:id,title:clean(e?.title?.$t,250),published:e?.published?.$t||'',labels:labels(e),url:canon(entryUrl(e)),state:{exists:!!states.get(id),status:s.status||'',updatedAt:iso(s.updatedAt),retryReason:s.retryReason||'',releaseId:s.releaseId||'',seriesTitle:s.seriesTitle||''}}}))); 
+          NODE
+      - name: Persist diagnosis
+        run: |
+          git config user.name 'Nava Readonly Diagnose Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add notification-readonly-diagnose.txt
+          git commit -m 'Record read-only notification diagnosis [skip ci]' || true
+          git push
