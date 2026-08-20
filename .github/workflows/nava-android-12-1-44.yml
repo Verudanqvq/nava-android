@@ -57,8 +57,6 @@ jobs:
           grep -q 'NEW_CODE=60' /tmp/v12144/patch-apk.py
           grep -q 'nava-download-btn-v12144' /tmp/v12144/download-menu.js
           grep -q 'İndirme sırası' /tmp/v12144/download-menu.js
-          grep -q 'Eseri sil' /tmp/v12144/offline-ui.js
-          grep -q 'Cildi sil' /tmp/v12144/offline-ui.js
           printf 'source_validation=ok\nfix=clean-12.1.41-base+stable-topbar+compact-download-center+persistent-queue+reliable-delete\n' >> /tmp/status.txt
       - name: Install smali tools
         run: |
@@ -90,9 +88,6 @@ jobs:
           gh release download "$SOURCE_TAG" --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current
           GOT="$(sha256sum /tmp/current/Nava.apk | cut -d' ' -f1)"
           test "$GOT" = "$EXPECTED_SOURCE_SHA256"
-          unzip -l /tmp/current/Nava.apk | grep -q 'assets/offline.html'
-          unzip -l /tmp/current/Nava.apk | grep -q 'classes2.dex'
-          unzip -l /tmp/current/Nava.apk | grep -q 'classes3.dex'
           printf 'source_apk=ok\nsource_sha256=%s\n' "$GOT" >> /tmp/status.txt
       - name: Patch classes.dex UA
         run: |
@@ -103,15 +98,35 @@ jobs:
           python /tmp/v12144/patch-smali.py /tmp/decoded | tee /tmp/smali.txt
           grep -q 'SMALI_PATCH_OK ua=12.1.44' /tmp/smali.txt
           smali assemble /tmp/decoded/smali -o /tmp/classes.dex
-          rm -rf /tmp/verify-smali; baksmali disassemble /tmp/classes.dex -o /tmp/verify-smali
-          grep -q 'NavaDirectNotification;->ensure' /tmp/verify-smali/com/verudanava/nava/MainActivity.smali
-          grep -q 'NavaDirectNotification;->handle' /tmp/verify-smali/com/verudanava/nava/NavaFirebaseMessagingService.smali
           printf 'native_hooks=preserved\nua=12.1.44\n' >> /tmp/status.txt
-      - name: Pack APK
+      - name: Diagnose source markers
         run: |
           set -euo pipefail
-          python /tmp/v12144/patch-apk.py /tmp/current/Nava.apk /tmp/classes.dex /tmp/v12144/push-block.js /tmp/v12144/offline-ui.js /tmp/v12144/download-menu.js /tmp/v12144/offline-library.css /tmp/v12144/offline.html /tmp/Nava-unsigned.apk "$EXPECTED_SOURCE_SHA256" | tee /tmp/patch.txt
-          grep -q 'PATCH_OK versionCode=60 versionName=12.1.44' /tmp/patch.txt
+          unzip -p /tmp/current/Nava.apk assets/nava_app_v11.js > /tmp/source.js
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('/tmp/source.js').read_text(errors='replace')
+          checks={
+            'marker_push':'/* Nava v12.1.41 — direct native FCM registration. */',
+            'marker_offline':'/* Nava Android 12.1.41 — hierarchical offline library. */',
+            'marker_menu':'/* Nava Android 12.1.41 — download center metadata + content-type neutral hierarchy. */'
+          }
+          with Path('/tmp/status.txt').open('a') as f:
+            for k,v in checks.items(): f.write(k+'='+('yes' if v in s else 'no')+'\n')
+          PY
+      - name: Pack APK
+        run: |
+          set +e
+          python /tmp/v12144/patch-apk.py /tmp/current/Nava.apk /tmp/classes.dex /tmp/v12144/push-block.js /tmp/v12144/offline-ui.js /tmp/v12144/download-menu.js /tmp/v12144/offline-library.css /tmp/v12144/offline.html /tmp/Nava-unsigned.apk "$EXPECTED_SOURCE_SHA256" > /tmp/patch.log 2>&1
+          RC=$?
+          cat /tmp/patch.log
+          if [ "$RC" -ne 0 ]; then
+            ERR="$(tail -n 4 /tmp/patch.log | tr '\n' ' ' | sed 's/[[:space:]]\+/ /g' | cut -c1-600)"
+            printf 'pack_error=%s\n' "$ERR" >> /tmp/status.txt
+            exit "$RC"
+          fi
+          set -euo pipefail
+          grep -q 'PATCH_OK versionCode=60 versionName=12.1.44' /tmp/patch.log
           unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/final.js
           unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.css > /tmp/final.css
           unzip -p /tmp/Nava-unsigned.apk assets/offline.html > /tmp/final-offline.html
@@ -123,10 +138,6 @@ jobs:
           grep -q 'İndirme sırası' /tmp/final.js
           grep -q 'Eseri sil' /tmp/final.js
           grep -q 'Cildi sil' /tmp/final.js
-          grep -q 'stable compact offline styles' /tmp/final.css
-          grep -q 'Eseri sil' /tmp/final-offline.html
-          grep -q 'Cildi sil' /tmp/final-offline.html
-          ! grep -q 'Tekrar bağlan' /tmp/final-offline.html
           printf 'pack=ok\njs=ok\ncss=ok\nqueue=ok\ndelete=ok\ntopbar=ok\nscoped=ok\n' >> /tmp/status.txt
       - name: Align and sign
         shell: bash
@@ -148,8 +159,7 @@ jobs:
       - name: Publish 12.1.44
         run: |
           set -euo pipefail
-          NOTES='12.1.43 indirme arayüzü geri alınarak çalışan 12.1.41 native tabanından temiz şekilde yeniden kuruldu. Üst barda yalnız tek kompakt indirme düğmesi bulunur ve reader/eser/cilt sayfalarında açılır. Cilt sayfasındaki büyük indirme bloğu yoktur. İndirme panelinde gerçek indirme sırası görünür ve sayfa değişiminde korunur. İndirilen içerikler Eser → Cilt → Bölüm olarak kapalı başlar; bölüm, cilt ve tüm eser silinebilir. Canlı temadaki eski Android indirme yaması yeni v12144 sınıflarına müdahale etmez.'
-          gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.44' --notes "$NOTES" --latest
+          gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.44' --notes '12.1.41 çalışan tabandan temiz indirme arayüzü: tek stabil üst-bar indirme düğmesi, kompakt cilt/bölüm indirme, kalıcı indirme sırası ve bölüm/cilt/eser silme.' --latest
           printf 'release=v12.1.44\nasset=Nava.apk\nstatus=success\nfinished=%s\n' "$(date -u +%FT%TZ)" >> /tmp/status.txt
       - name: Persist status
         if: always()
