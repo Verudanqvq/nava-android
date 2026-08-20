@@ -1,0 +1,65 @@
+name: Nava direct notification diagnose
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-notification-direct-diagnose.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install backend
+        working-directory: notification-backend
+        run: npm install --omit=dev --no-audit --no-fund
+      - name: Send three direct probes
+        working-directory: notification-backend
+        shell: bash
+        run: |
+          set -euo pipefail
+          : > ../notification-direct-diagnose.txt
+          echo "checkedAt=$(date -u +%FT%TZ)" >> ../notification-direct-diagnose.txt
+          node --input-type=module <<'NODE' >> ../notification-direct-diagnose.txt 2>&1
+          import { initializeApp, cert } from 'firebase-admin/app';
+          import { getFirestore } from 'firebase-admin/firestore';
+          import { getMessaging } from 'firebase-admin/messaging';
+          const sa=JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT||'{}');
+          const app=initializeApp({credential:cert(sa),projectId:'nava-01'});
+          const db=getFirestore(app), msg=getMessaging(app);
+          const snap=await db.collection('devicePushTokens').where('platform','==','android').get();
+          const docs=snap.docs.filter(d=>String(d.data()?.token||'').trim());
+          console.log(JSON.stringify({tokenDocs:docs.length,tokens:docs.map(d=>({id:d.id.slice(0,18)+'…',uid:String(d.data().uid||'').slice(0,8)+'…',appVersion:d.data().appVersion||'',updatedAt:d.data().updatedAt?.toMillis?.()||0}))}));
+          if(!docs.length) throw new Error('No Android token');
+          const token=String(docs[0].data().token).trim();
+          const stamp=Date.now().toString();
+          async function send(label,payload){
+            try{const id=await msg.send({token,...payload});console.log(JSON.stringify({label,ok:true,messageId:id}));}
+            catch(e){console.log(JSON.stringify({label,ok:false,code:e?.code||'',message:String(e?.message||e)}));}
+          }
+          await send('DATA_ONLY',{data:{kind:'chapter',seriesTitle:'Nava bildirim testi',releaseTitle:'Data-only test '+stamp,url:'https://www.verudanava.com/',notificationId:'diag_data_'+stamp},android:{priority:'high',ttl:3600000}});
+          await new Promise(r=>setTimeout(r,1200));
+          await send('SYSTEM_V2',{notification:{title:'Nava bildirim testi 2/3',body:'System + v2 kanal'},data:{kind:'chapter',seriesTitle:'Nava bildirim testi',releaseTitle:'System v2 '+stamp,url:'https://www.verudanava.com/',notificationId:'diag_v2_'+stamp},android:{priority:'high',ttl:3600000,notification:{channelId:'nava_follower_releases_v2',tag:'diag_v2_'+stamp}}});
+          await new Promise(r=>setTimeout(r,1200));
+          await send('SYSTEM_FALLBACK',{notification:{title:'Nava bildirim testi 3/3',body:'Android fallback kanal'},data:{kind:'chapter',seriesTitle:'Nava bildirim testi',releaseTitle:'Fallback '+stamp,url:'https://www.verudanava.com/',notificationId:'diag_fallback_'+stamp},android:{priority:'high',ttl:3600000,notification:{tag:'diag_fallback_'+stamp}}});
+          NODE
+      - name: Persist report
+        if: always()
+        run: |
+          git config user.name 'Nava Notification Diagnose Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add notification-direct-diagnose.txt
+          git commit -m 'Record direct notification diagnosis [skip ci]' || true
+          git push || true
