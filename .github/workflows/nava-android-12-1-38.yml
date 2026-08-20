@@ -101,7 +101,7 @@ jobs:
           cp /tmp/direct-dex/classes.dex /tmp/classes3.dex
           baksmali disassemble /tmp/classes3.dex -o /tmp/verify-direct
           grep -q 'Yeni cilt geldi' /tmp/verify-direct/com/verudanava/nava/NavaDirectNotification.smali
-          grep -q 'Yeni bölüm geldi' /tmp/verify-direct/com/verudanava/nava/NavaDirectNotification.smali
+          grep -q 'setSmallIcon' /tmp/verify-direct/com/verudanava/nava/NavaDirectNotification.smali
           grep -q 'getApplicationInfo' /tmp/verify-direct/com/verudanava/nava/NavaDirectNotification.smali
           printf 'direct_renderer_compile=ok\nclasses3=ok\n' >> /tmp/status.txt
       - name: Pack APK
