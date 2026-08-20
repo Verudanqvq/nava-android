@@ -1,5 +1,7 @@
 === disassemble ===
 rc=0
+=== UA markers ===
+/tmp/decoded/smali/com/verudanava/nava/MainActivity.smali:2254:    const-string v5, " NavaAndroidApp/12.1.33"
 === anchor ===
 978-    .registers 5
 979-
@@ -83,16 +85,16 @@ rc=0
 1306-    .line 20
 === patch ===
 Traceback (most recent call last):
-  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.34/patch-smali.py", line 44, in <module>
+  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.34/patch-smali.py", line 48, in <module>
     if __name__=='__main__': main()
                              ^^^^^^
-  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.34/patch-smali.py", line 28, in main
-    if ua_total<1: raise ValueError('UA marker missing')
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-ValueError: UA marker missing
+  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.34/patch-smali.py", line 31, in main
+    if ua_total<1: raise ValueError('UA marker missing; seen='+repr(seen[:10]))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: UA marker missing; seen=[]
 rc=1
 === assemble ===
 rc=0
--rw-r--r-- 1 runner runner 3.3M Aug 20 11:04 /tmp/classes.dex
+-rw-r--r-- 1 runner runner 3.3M Aug 20 11:07 /tmp/classes.dex
 === verify ===
 rc=0
