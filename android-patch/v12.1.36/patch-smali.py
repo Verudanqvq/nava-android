@@ -34,7 +34,11 @@ def main():
 
     mt=main.read_text(errors='replace')
     mt=one(mt,OLD_PREF,NEW_PREF,'notification permission preference')
-    anchor='    invoke-static {p0}, Lc00;->a(Landroid/content/ContextWrapper;)V\n'
+    anchor=(
+        '    invoke-static {p0, v1}, Lcom/verudanava/nava/OfflineRuntime;->attach(Landroid/content/Context;Landroid/webkit/WebView;)V\n'
+        '\n'
+        '    invoke-static {p0}, Lc00;->a(Landroid/content/ContextWrapper;)V\n'
+    )
     hook=anchor+'\n    invoke-static {p0}, Lcom/verudanava/nava/NavaNotificationRepair;->ensure(Landroid/content/Context;)V\n'
     mt=one(mt,anchor,hook,'notification repair startup hook')
     main.write_text(mt)
