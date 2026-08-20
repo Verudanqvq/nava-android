@@ -8,6 +8,7 @@ import {
 } from "./core.mjs";
 
 const PROJECT_ID = "nava-01";
+const DELIVERY_LEASE_MS = 3 * 60 * 1000;
 const FEED_BASES = [
   "https://verudanava.blogspot.com/feeds/posts/summary?alt=json&max-results=150&orderby=published",
   "https://verudanava.blogspot.com/feeds/posts/summary/-/B%C3%B6l%C3%BCm?alt=json&max-results=150&orderby=published",
@@ -41,7 +42,7 @@ async function fetchEntries() {
     try {
       const response = await fetch(url, {
         headers: {
-          "User-Agent": "NavaGitHubNotifications/5.0",
+          "User-Agent": "NavaGitHubNotifications/5.1",
           "Cache-Control": "no-cache, no-store, max-age=0",
           "Pragma": "no-cache"
         },
@@ -70,7 +71,7 @@ async function fetchEntries() {
 
 async function fetchHtml(url) {
   const response = await fetch(url, {
-    headers: { "User-Agent": "NavaGitHubNotifications/5.0" },
+    headers: { "User-Agent": "NavaGitHubNotifications/5.1" },
     signal: AbortSignal.timeout(15000)
   });
   if (!response.ok) return "";
@@ -180,15 +181,20 @@ async function tokensForUsers(uids) {
 
 async function sendPush(uids, release, series, notificationId) {
   const tokenDocs = await tokensForUsers(uids);
-  if (!tokenDocs.length) return { success: 0, failed: 0, cleaned: 0 };
+  if (!tokenDocs.length) {
+    return { success: 0, failed: 0, cleaned: 0, attempted: 0, deliveredTokenDocs: [] };
+  }
 
-  let success = 0, failed = 0, cleaned = 0;
+  let success = 0, failed = 0, cleaned = 0, attempted = 0;
   const deadRefs = [];
+  const deliveredTokenDocs = [];
 
   for (let i = 0; i < tokenDocs.length; i += 500) {
-    const chunk = tokenDocs.slice(i, i + 500);
-    const tokens = chunk.map((doc) => clean(doc.data()?.token, 4096)).filter(Boolean);
+    const chunk = tokenDocs.slice(i, i + 500)
+      .filter((doc) => clean(doc.data()?.token, 4096));
+    const tokens = chunk.map((doc) => clean(doc.data()?.token, 4096));
     if (!tokens.length) continue;
+    attempted += tokens.length;
 
     const systemTitle = (release.kind === "volume" ? "Yeni cilt • " : "Yeni bölüm • ") + (series.title || "Takip ettiğin eser");
     const result = await messaging.sendEachForMulticast({
@@ -218,11 +224,15 @@ async function sendPush(uids, release, series, notificationId) {
     failed += result.failureCount;
 
     result.responses.forEach((response, index) => {
-      if (response.success) return;
+      const tokenDoc = chunk[index];
+      if (response.success) {
+        deliveredTokenDocs.push(tokenDoc.id);
+        return;
+      }
       const code = response.error?.code || "";
       if (code === "messaging/registration-token-not-registered"
           || code === "messaging/invalid-registration-token") {
-        deadRefs.push(chunk[index].ref);
+        deadRefs.push(tokenDoc.ref);
       }
     });
   }
@@ -234,19 +244,32 @@ async function sendPush(uids, release, series, notificationId) {
     cleaned += Math.min(400, deadRefs.length - i);
   }
 
-  return { success, failed, cleaned };
+  return {
+    success,
+    failed,
+    cleaned,
+    attempted,
+    deliveredTokenDocs: [...new Set(deliveredTokenDocs)].slice(-500)
+  };
 }
 
 async function deliver(release, series) {
   const rid = releaseId(series.id, release.url);
   const releaseRef = db.collection("chapterReleases").doc(rid);
+  const attemptId = `github_${release.postId}_${Date.now().toString(36)}`;
 
-  const shouldSend = await db.runTransaction(async (tx) => {
+  const claim = await db.runTransaction(async (tx) => {
     const snap = await tx.get(releaseRef);
     const existing = snap.exists ? (snap.data() || {}) : {};
-    if (existing.status === "completed") return false;
+    if (existing.status === "completed") return "completed";
 
     const now = Timestamp.now();
+    const leaseUntilMs = existing.leaseUntil && typeof existing.leaseUntil.toMillis === "function"
+      ? existing.leaseUntil.toMillis() : 0;
+    if (existing.status === "sending" && leaseUntilMs > now.toMillis()) {
+      return "lease-active";
+    }
+
     tx.set(releaseRef, {
       releaseId: rid,
       seriesId: series.id,
@@ -255,18 +278,22 @@ async function deliver(release, series) {
       title: release.title,
       url: release.url,
       createdBy: "github-action",
-      attemptId: `github_${release.postId}_${Date.now().toString(36)}`,
+      attemptId,
       status: "sending",
+      leaseUntil: Timestamp.fromMillis(now.toMillis() + DELIVERY_LEASE_MS),
       errorMessage: "",
       followerCount: 0,
       sentCount: 0,
       createdAt: existing.createdAt || now,
       updatedAt: now
     }, { merge: true });
-    return true;
+    return "claimed";
   });
 
-  if (!shouldSend) return { skipped: true, rid };
+  if (claim !== "claimed") {
+    console.log("NAVA_DELIVERY_CLAIM " + JSON.stringify({ rid, claim, release: release.title }));
+    return { skipped: true, reason: claim, rid };
+  }
 
   const followerSnap = await db.collection("seriesFollowers")
     .doc(series.id).collection("users").get();
@@ -287,18 +314,29 @@ async function deliver(release, series) {
     sent += chunk.length;
   }
 
-  let pushResult = { success: 0, failed: 0, cleaned: 0 };
+  let pushResult = { success: 0, failed: 0, cleaned: 0, attempted: 0, deliveredTokenDocs: [] };
   try {
     pushResult = await sendPush(uids, release, series, "chapter_" + rid);
   } catch (error) {
     console.error("FCM push failed; site notification is already written:", error);
   }
 
+  const delivered = Array.isArray(pushResult.deliveredTokenDocs)
+    ? pushResult.deliveredTokenDocs : [];
+
   await releaseRef.set({
     followerCount: uids.length,
     sentCount: sent,
     status: "completed",
     errorMessage: "",
+    pushDeliveredTokenDocs: delivered,
+    pushLastAttemptAt: FieldValue.serverTimestamp(),
+    pushLastSuccessCount: Number(pushResult.success || 0),
+    pushLastFailureCount: Number(pushResult.failed || 0),
+    pushLastTokenCount: Number(pushResult.attempted || 0),
+    pushPendingTokenCount: Math.max(0, Number(pushResult.attempted || 0) - delivered.length),
+    ...(delivered.length ? { pushLastDeliveredAt: FieldValue.serverTimestamp() } : {}),
+    leaseUntil: FieldValue.delete(),
     completedAt: FieldValue.serverTimestamp(),
     updatedAt: FieldValue.serverTimestamp()
   }, { merge: true });
@@ -308,7 +346,13 @@ async function deliver(release, series) {
     series: series.title,
     followers: uids.length,
     siteNotifications: sent,
-    push: pushResult
+    push: {
+      success: pushResult.success,
+      failed: pushResult.failed,
+      cleaned: pushResult.cleaned,
+      attempted: pushResult.attempted,
+      deliveredTokenDocs: delivered.length
+    }
   }));
 
   return { skipped: false, rid, sent, pushResult };
@@ -457,6 +501,18 @@ async function scan() {
 
     try {
       const result = await deliver(post, series);
+      if (result?.skipped && result.reason === "lease-active") {
+        retry += 1;
+        await markPost(state.ref, post, "retry", {
+          retryReason: "delivery-lease-active",
+          releaseId: rid,
+          seriesId: series.id,
+          seriesTitle: series.title
+        });
+        details.push({ postId: post.postId, title: post.title, status: "lease-active", series: series.title });
+        continue;
+      }
+
       if (result?.skipped) completedSkipped += 1;
       else delivered += 1;
 
