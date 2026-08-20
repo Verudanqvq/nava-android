@@ -9,11 +9,13 @@ NEW_CODE=58
 OLD_PUSH='/* Nava v12.1.41 — direct native FCM registration. */'
 NEW_PUSH='/* Nava v12.1.42 — direct native FCM registration. */'
 OLD_OFFLINE='/* Nava Android 12.1.41 — hierarchical offline library. */'
-NEW_OFFLINE='/* Nava Android 12.1.42 — hierarchical offline library + bulk delete. */'
+NEW_OFFLINE='/* Nava Android 12.1.42 — simple hierarchical offline library. */'
+OLD_MENU='/* Nava Android 12.1.41 — download center metadata + content-type neutral hierarchy. */'
+NEW_MENU='/* Nava Android 12.1.42 — compact download hub. */'
 OLD_COMPAT='/* Nava Android 12.1.39 — restore volume navigation + clear all notifications. */'
-NEW_COMPAT='/* Nava Android 12.1.42 — volume navigation + reliable mobile notification deletion. */'
-MENU_MARKER='/* Nava Android 12.1.41 — download center metadata + content-type neutral hierarchy. */'
-CSS_MARKER='/* Nava Android 12.1.42 — offline bulk-delete styles. */'
+NEW_COMPAT='/* Nava Android 12.1.42 — stable volume navigation + notification deletion. */'
+OLD_CSS='/* Nava Android 12.1.41 — hierarchical offline library styles. */'
+NEW_CSS='/* Nava Android 12.1.42 — compact download/offline UI. */'
 
 def u16(d,o): return struct.unpack_from('<H',d,o)[0]
 def u32(d,o): return struct.unpack_from('<I',d,o)[0]
@@ -70,31 +72,33 @@ def oldsig(name):
     return u.startswith('META-INF/') and (leaf=='MANIFEST.MF' or leaf.endswith(('.SF','.RSA','.DSA','.EC')))
 
 def main():
-    if len(sys.argv)!=10: raise SystemExit('usage: patch-apk.py SRC DEX PUSH OFFLINE_JS COMPAT_JS OFFLINE_CSS OFFLINE_HTML OUT EXPECTED_SHA')
-    src,dexf,pushf,offlinejsf,compatf,cssf,offlinef,out,expected=sys.argv[1:]
+    if len(sys.argv)!=11: raise SystemExit('usage: patch-apk.py SRC DEX PUSH OFFLINE_JS MENU_JS COMPAT_JS OFFLINE_CSS OFFLINE_HTML OUT EXPECTED_SHA')
+    src,dexf,pushf,offlinejsf,menuf,compatf,cssf,offlinef,out,expected=sys.argv[1:]
     srcp=Path(src);got=hashlib.sha256(srcp.read_bytes()).hexdigest()
     if got.lower()!=expected.lower(): raise ValueError('source sha mismatch '+got)
-    dex=Path(dexf).read_bytes();push=Path(pushf).read_text();offlinejs=Path(offlinejsf).read_text();compat=Path(compatf).read_text();newcss=Path(cssf).read_text();offline=Path(offlinef).read_bytes()
+    dex=Path(dexf).read_bytes();push=Path(pushf).read_text();offlinejs=Path(offlinejsf).read_text();menu=Path(menuf).read_text();compat=Path(compatf).read_text();newcss=Path(cssf).read_text();offline=Path(offlinef).read_bytes()
     if not dex.startswith(b'dex\n') or b'NavaAndroidApp/12.1.42' not in dex: raise ValueError('patched dex invalid')
     if NEW_PUSH not in push or "appVersion:'12.1.42'" not in push: raise ValueError('push source invalid')
-    if NEW_OFFLINE not in offlinejs or 'Eseri sil' not in offlinejs or 'Cildi sil' not in offlinejs or 'queueBulkDelete' not in offlinejs: raise ValueError('offline JS invalid')
-    if NEW_COMPAT not in compat or 'data-nava-notification-ids' not in compat or 'Tümünü sil' not in compat: raise ValueError('notification compat invalid')
-    if CSS_MARKER not in newcss or 'nava-offline-group-delete-v12142' not in newcss: raise ValueError('offline CSS invalid')
+    if NEW_OFFLINE not in offlinejs or 'Eseri sil' not in offlinejs or 'Cildi sil' not in offlinejs or 'navaOpenDownloads' not in offlinejs: raise ValueError('offline JS invalid')
+    if NEW_MENU not in menu or 'nava-download-launcher-v12142' not in menu or 'Eseri indir' not in menu or 'Cildi indir' not in menu: raise ValueError('download hub invalid')
+    if NEW_COMPAT not in compat or 'Tümünü sil' not in compat: raise ValueError('notification compat invalid')
+    if NEW_CSS not in newcss or 'nava-download-launcher-v12142' not in newcss: raise ValueError('offline CSS invalid')
     html=offline.decode('utf-8')
-    if '<h1>İndirilenler</h1>' not in html or 'data-delete-series' not in html or 'data-delete-volume' not in html: raise ValueError('offline HTML bulk delete invalid')
-    if 'Tekrar bağlan' in html or 'Yalnız Wi' in html: raise ValueError('duplicate offline controls remain')
+    if '<h1>İndirilenler</h1>' not in html or 'data-series-delete' not in html or 'data-volume-delete' not in html: raise ValueError('offline HTML hierarchy invalid')
+    if 'Tekrar bağlan' in html or 'Bu cildi tamamen indir' in html or 'Tüm ciltleri indir' in html: raise ValueError('old confusing copy remains')
     with zipfile.ZipFile(srcp) as zin:
         names=set(zin.namelist())
         required={'AndroidManifest.xml','classes.dex','classes2.dex','classes3.dex','assets/nava_app_v11.js','assets/nava_app_v11.css','assets/offline.html'}
         if not required.issubset(names): raise ValueError('required APK entries missing')
         manifest=patch_manifest(zin.read('AndroidManifest.xml'))
         js=zin.read('assets/nava_app_v11.js').decode('utf-8')
-        if MENU_MARKER not in js: raise ValueError('12.1.41 download menu missing')
         js=replace_iife(js,OLD_PUSH,push)
         js=replace_iife(js,OLD_OFFLINE,offlinejs)
+        js=replace_iife(js,OLD_MENU,menu)
         js=replace_iife(js,OLD_COMPAT,compat)
         css=zin.read('assets/nava_app_v11.css').decode('utf-8')
-        if CSS_MARKER in css: raise ValueError('offline CSS already present')
+        pos=css.find(OLD_CSS)
+        if pos>=0: css=css[:pos].rstrip()
         css=css.rstrip()+'\n\n'+newcss.strip()+'\n'
         with zipfile.ZipFile(out,'w') as zout:
             for info in zin.infolist():
@@ -109,19 +113,21 @@ def main():
     allowed={'AndroidManifest.xml','classes.dex','assets/nava_app_v11.js','assets/nava_app_v11.css','assets/offline.html'}
     with zipfile.ZipFile(srcp) as a,zipfile.ZipFile(out) as b:
         fj=b.read('assets/nava_app_v11.js').decode();fc=b.read('assets/nava_app_v11.css').decode();fh=b.read('assets/offline.html').decode();fd=b.read('classes.dex')
-        if NEW_PUSH not in fj or NEW_OFFLINE not in fj or NEW_COMPAT not in fj or MENU_MARKER not in fj: raise ValueError('final JS replacements missing')
-        if OLD_OFFLINE in fj or OLD_COMPAT in fj: raise ValueError('old patched blocks remain')
-        if CSS_MARKER not in fc: raise ValueError('final offline CSS missing')
-        if 'Eseri sil' not in fj or 'Cildi sil' not in fj or 'Tümünü sil' not in fj: raise ValueError('bulk/delete UI missing')
-        if 'data-delete-series' not in fh or 'data-delete-volume' not in fh: raise ValueError('final offline HTML invalid')
-        for token in ('#6d28d9','#7c3aed','#8b5cf6','#5b20f3','#4c1d95','#c4b5fd','#ddd6fe','#ede9fe','#f5f3ff'):
-            if token.lower() in newcss.lower() or token.lower() in fh.lower(): raise ValueError('purple token in 12.1.42 offline UI '+token)
+        for marker in (NEW_PUSH,NEW_OFFLINE,NEW_MENU,NEW_COMPAT):
+            if marker not in fj: raise ValueError('final JS marker missing '+marker)
+        for marker in (OLD_OFFLINE,OLD_MENU,OLD_COMPAT):
+            if marker in fj: raise ValueError('old JS block remains '+marker)
+        if NEW_CSS not in fc: raise ValueError('final CSS missing')
+        if OLD_CSS in fc: raise ValueError('old offline CSS remains')
+        if 'nava-download-launcher-v12142' not in fj or 'nava-offline-sheet-v12142' not in fj: raise ValueError('new app UI missing')
+        if 'Bu cildi tamamen indir' in fj or 'Tüm ciltleri indir' in fj: raise ValueError('old confusing action copy remains')
+        if 'data-series-delete' not in fh or 'data-volume-delete' not in fh: raise ValueError('offline HTML delete menus missing')
         if b'NavaAndroidApp/12.1.42' not in fd: raise ValueError('UA missing')
         if b.read('classes2.dex')!=a.read('classes2.dex'): raise ValueError('offline runtime changed unexpectedly')
         if b.read('classes3.dex')!=a.read('classes3.dex'): raise ValueError('notification helper changed unexpectedly')
         for name in a.namelist():
             if oldsig(name) or name in allowed: continue
             if name not in b.namelist() or a.read(name)!=b.read(name): raise ValueError('unexpected changed entry '+name)
-    print('PATCH_OK versionCode=58 versionName=12.1.42 offline=bulk-delete notifications=mobile-delete-fix scoped=ok')
+    print('PATCH_OK versionCode=58 versionName=12.1.42 ui=compact-hub topbar=untouched offline=hierarchy-kebab notifications=delete-fix scoped=ok')
 
 if __name__=='__main__': main()
