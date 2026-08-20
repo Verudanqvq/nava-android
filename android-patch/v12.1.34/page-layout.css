@@ -1,0 +1,209 @@
+/* Nava Android 12.1.34 — page-specific home / series / reader layout. */
+html.nava-app-v9{
+  --nava-brand:#5f82a8;
+  --nava-brand-strong:#496b91;
+  --nava-brand-soft:#edf4fb;
+  --nava-line-soft:#dce5ee;
+}
+
+/* Legacy Blogger live-loader badge must never render inside the Android app. */
+html.nava-app-v9 #nava-loader-v2-test,
+html.nava-app-v9 #nava-live-connection-test{
+  display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+}
+
+/* ---------- Shared Android shell ---------- */
+html.nava-app-v9 #nava-app-topbar{
+  height:56px!important;min-height:56px!important;max-height:56px!important;
+  padding:0 14px!important;gap:7px!important;background:#c6dafc!important;
+  border-bottom:1px solid #b8cdea!important;box-shadow:none!important;
+}
+html.nava-app-v9 #nava-app-topbar .nava-app-brand{color:#2f4666!important;font-size:21px!important;font-weight:900!important}
+html.nava-app-v9 #nava-app-topbar .nava-app-page-title-top{color:#2f4666!important;font-size:12.5px!important;font-weight:800!important;max-width:48vw!important}
+html.nava-app-v9 #nava-app-topbar button,
+html.nava-app-v9 #nava-app-topbar a{
+  width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;
+  border:1px solid rgba(71,99,132,.14)!important;border-radius:10px!important;
+  background:rgba(255,255,255,.08)!important;color:#55728f!important;box-shadow:none!important;
+}
+html.nava-app-v9 #nava-app-topbar svg{width:21px!important;height:21px!important}
+
+/* Bottom navigation: no giant AI-looking active tile. */
+html.nava-app-v9 #nava-app-bottom{
+  height:64px!important;min-height:64px!important;max-height:64px!important;
+  padding:4px 8px!important;background:#fff!important;border-top:1px solid #e2e8f0!important;
+  box-shadow:0 -2px 10px rgba(30,45,60,.04)!important;
+}
+html.nava-app-v9 #nava-app-bottom a,
+html.nava-app-v9 #nava-app-bottom button{
+  width:min(78px,100%)!important;max-width:78px!important;height:56px!important;min-height:56px!important;
+  margin:0 auto!important;padding:4px 2px!important;border-radius:9px!important;background:transparent!important;
+  color:#8b97a4!important;box-shadow:none!important;
+}
+html.nava-app-v9 #nava-app-bottom .is-active,
+html.nava-app-v9 #nava-app-bottom [aria-current='page']{
+  background:transparent!important;color:#55799c!important;box-shadow:none!important;
+}
+html.nava-app-v9 #nava-app-bottom .is-active svg,
+html.nava-app-v9 #nava-app-bottom [aria-current='page'] svg{
+  background:#edf4fb!important;border-radius:9px!important;padding:4px!important;box-sizing:content-box!important;
+}
+
+/* ---------- Home ---------- */
+html.nava-app-path-home #nava-app-page,
+html.nava-app-v9 body.nava-app-home #nava-app-page{
+  padding-top:68px!important;padding-bottom:82px!important;min-height:0!important;height:auto!important;
+  overflow:visible!important;scroll-padding-bottom:76px!important;
+}
+html.nava-app-path-home .nava-app-section,
+html.nava-app-v9 body.nava-app-home .nava-app-section{margin-bottom:18px!important}
+html.nava-app-path-home .nava-series-card-v2,
+html.nava-app-v9 body.nava-app-home .nava-series-card-v2{overflow:visible!important}
+html.nava-app-path-home .nava-series-cover-wrap-v2,
+html.nava-app-v9 body.nava-app-home .nava-series-cover-wrap-v2{overflow:hidden!important;border-radius:10px!important}
+html.nava-app-path-home .nava-app-section:last-child,
+html.nava-app-v9 body.nava-app-home .nava-app-section:last-child{margin-bottom:0!important}
+
+/* ---------- Series detail ---------- */
+html.nava-app-v9 body.nava-app-series main.nava-app-series-owned-v5{
+  padding:66px 10px 86px!important;min-height:0!important;height:auto!important;overflow:visible!important;
+}
+html.nava-app-v9 body.nava-app-series .gta-series{
+  grid-template-columns:96px minmax(0,1fr)!important;gap:12px!important;padding:12px!important;
+  border:1px solid #dce5ee!important;border-radius:14px!important;background:#fff!important;box-shadow:none!important;
+}
+html.nava-app-v9 body.nava-app-series .gta-series>div:first-child>img.thumb{
+  width:96px!important;max-width:96px!important;height:138px!important;border-radius:10px!important;box-shadow:none!important;
+}
+html.nava-app-v9 body.nava-app-series .gta-series h1[itemprop='name']{
+  margin:4px 0 6px!important;font-size:18px!important;line-height:1.22!important;letter-spacing:-.2px!important;
+  display:-webkit-box!important;-webkit-line-clamp:3!important;-webkit-box-orient:vertical!important;overflow:hidden!important;
+}
+html.nava-app-v9 body.nava-app-series .gta-series>div:nth-child(2)>p{
+  margin:4px 0!important;font-size:12.5px!important;line-height:1.38!important;color:#526274!important;
+}
+html.nava-app-v9 body.nava-app-series .gta-series>div:first-child>div.flex{
+  gap:18px!important;padding:4px 2px 0!important;
+}
+html.nava-app-v9 body.nava-app-series .gta-series .nava-library-post,
+html.nava-app-v9 body.nava-app-series .gta-series .nava-favorite-post,
+html.nava-app-v9 body.nava-app-series .gta-series .nava-follow-post{
+  width:66px!important;min-width:66px!important;max-width:66px!important;
+}
+html.nava-app-v9 body.nava-app-series .nava-library-button,
+html.nava-app-v9 body.nava-app-series .nava-favorite-button,
+html.nava-app-v9 body.nava-app-series .nava-follow-button{
+  width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;
+  border:1px solid #d8e3ed!important;border-radius:10px!important;background:#fff!important;box-shadow:none!important;
+}
+html.nava-app-v9 body.nava-app-series .nava-library-button{color:#617e9d!important}
+html.nava-app-v9 body.nava-app-series .nava-library-post input:checked + .nava-library-button{color:#496b91!important;background:#edf4fb!important;border-color:#b8ccdf!important}
+html.nava-app-v9 body.nava-app-series .nava-library-label{color:#55799c!important}
+html.nava-app-v9 body.nava-app-series .nava-favorite-button{color:#9a6470!important}
+html.nava-app-v9 body.nava-app-series .nava-favorite-button.is-active{color:#d92d55!important;background:#fff1f4!important;border-color:#f3bbc8!important}
+html.nava-app-v9 body.nava-app-series .nava-favorite-label{color:#c52d50!important}
+html.nava-app-v9 body.nava-app-series .nava-follow-button{color:#55799c!important}
+html.nava-app-v9 body.nava-app-series .nava-follow-button.is-active{color:#356fa6!important;background:#eef6fd!important;border-color:#b8d4eb!important}
+html.nava-app-v9 body.nava-app-series .nava-follow-label{color:#356fa6!important}
+html.nava-app-v9 body.nava-app-series [data-status='Tamamlandı'],
+html.nava-app-v9 body.nava-app-series [data-bg='Tamamlandı'],
+html.nava-app-v9 body.nava-app-series .tamamlandı{
+  color:#3f6286!important;background:#eaf2fb!important;border-color:#cbdceb!important;box-shadow:none!important;
+}
+html.nava-app-v9 body.nava-app-series .gta-series menu button{
+  border-radius:10px!important;box-shadow:none!important;transform:none!important;
+}
+html.nava-app-v9 body.nava-app-series #chapters{scroll-margin-top:66px!important}
+html.nava-app-v9 body.nava-app-series #clwd{padding-bottom:8px!important}
+
+/* ---------- Reader ---------- */
+html.nava-app-v9 body.nava-app-reader main{
+  padding:58px 0 92px!important;min-height:0!important;height:auto!important;overflow:visible!important;
+}
+html.nava-app-v9 body.nava-app-reader #reader{
+  padding:14px 18px 34px!important;max-width:760px!important;
+}
+html.nava-app-v9 #nava-reader-top-v2{
+  top:0!important;height:56px!important;min-height:56px!important;max-height:56px!important;
+  display:grid!important;grid-template-columns:40px minmax(0,1fr) 40px 40px!important;
+  gap:6px!important;align-items:center!important;padding:0 10px!important;
+  background:#fff!important;border-bottom:1px solid #e0e7ef!important;box-shadow:none!important;box-sizing:border-box!important;
+}
+html.nava-app-v9 #nava-reader-top-v2>button{
+  position:static!important;float:none!important;inset:auto!important;margin:0!important;
+  width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;
+  border:1px solid #dce5ee!important;border-radius:10px!important;background:#fff!important;color:#5d7288!important;
+  box-shadow:none!important;transform:none!important;
+}
+html.nava-app-v9 #nava-reader-top-v2>button svg{width:20px!important;height:20px!important}
+html.nava-app-v9 #nava-reader-top-v2 .nava-reader-title-wrap-v2{
+  min-width:0!important;text-align:center!important;align-self:center!important;
+}
+html.nava-app-v9 #nava-reader-top-v2 .nava-reader-kicker-v2{
+  margin:0!important;font-size:11px!important;line-height:1.15!important;font-weight:850!important;color:#496b91!important;
+  text-transform:uppercase!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+html.nava-app-v9 #nava-reader-top-v2 .nava-reader-title-v2{
+  margin-top:2px!important;font-size:9.5px!important;line-height:1.1!important;font-weight:650!important;color:#8a98a8!important;
+  white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+html.nava-app-v9 #nava-reader-progress-v2{bottom:-1px!important;height:2px!important;background:#7ea0c1!important}
+html.nava-app-v9 #nava-reader-bottom-v2{
+  bottom:6px!important;height:64px!important;min-height:64px!important;border:1px solid #dce5ee!important;
+  border-radius:16px!important;background:#fff!important;box-shadow:0 8px 24px rgba(31,46,61,.10)!important;
+}
+html.nava-app-v9 #nava-reader-settings-v2{bottom:76px!important;max-height:calc(100vh - 100px)!important}
+
+/* ---------- Download action sheet ---------- */
+html.nava-app-v9.nava-download-menu-open-v12134,
+html.nava-app-v9.nava-download-menu-open-v12134 body{overflow:hidden!important}
+#nava-download-menu-v12134{position:fixed;z-index:2147483500;inset:0;display:flex;align-items:flex-end;justify-content:center;background:rgba(15,23,42,.46);padding:0}
+#nava-download-menu-v12134[hidden]{display:none!important}
+#nava-download-menu-v12134 .nava-dl-menu-panel{width:min(640px,100%);max-height:72vh;overflow:auto;background:#fff;border:1px solid #dce5ee;border-bottom:0;border-radius:18px 18px 0 0;padding:12px 12px 16px;box-shadow:0 -16px 38px rgba(30,45,60,.15)}
+#nava-download-menu-v12134 .nava-dl-menu-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 2px 10px}
+#nava-download-menu-v12134 .nava-dl-menu-head>div{display:grid;gap:2px;min-width:0}
+#nava-download-menu-v12134 .nava-dl-menu-head strong{font-size:17px;color:#1f2937}
+#nava-download-menu-v12134 .nava-dl-menu-head span{font-size:11px;color:#8795a5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#nava-download-menu-v12134 .nava-dl-menu-close{width:38px;height:38px;border:1px solid #dce5ee;border-radius:10px;background:#f7f9fb;color:#60758c;font-size:22px;line-height:1}
+#nava-download-menu-v12134 .nava-dl-menu-actions{display:grid;gap:8px}
+#nava-download-menu-v12134 .nava-dl-action{display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;min-height:58px;padding:8px 10px;border:1px solid #dce5ee;border-radius:12px;background:#fff;color:#263648;text-align:left;box-shadow:none}
+#nava-download-menu-v12134 .nava-dl-action-icon{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:#edf4fb;color:#55799c}
+#nava-download-menu-v12134 .nava-dl-action-icon svg{width:20px;height:20px}
+#nava-download-menu-v12134 .nava-dl-action-copy{display:grid;gap:2px;min-width:0}
+#nava-download-menu-v12134 .nava-dl-action-copy strong{font-size:13px;color:#263648;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#nava-download-menu-v12134 .nava-dl-action-copy span{font-size:10.5px;color:#8a98a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#nava-download-menu-v12134 .nava-dl-action-state{font-size:10.5px;font-weight:800;color:#55799c}
+#nava-download-menu-v12134 .nava-dl-wifi{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:10px 11px;border:1px solid #e1e8ef;border-radius:11px;background:#f8fafc;color:#526274;font-size:12px;font-weight:700}
+#nava-download-menu-v12134 .nava-dl-wifi input{width:18px;height:18px;accent-color:#5f82a8}
+#nava-download-menu-v12134 .nava-dl-status{min-height:18px;padding:7px 2px 0;font-size:11px;color:#7a8a9b}
+#nava-download-menu-v12134 .nava-dl-status.is-ok{color:#357b58}
+#nava-download-menu-v12134 .nava-dl-status.is-error{color:#b64040}
+
+/* Remove the last purple leftovers from auth/profile controls inside the app. */
+html.nava-app-v9 .nava-auth-tab.is-active,
+html.nava-app-v9 .nava-auth-forgot,
+html.nava-app-v9 .nava-auth-switch,
+html.nava-app-v9 .nava-comment-identity,
+html.nava-app-v9 .nava-profile-tab.is-active,
+html.nava-app-v9 .nava-admin-nav-btn.is-active{color:#496b91!important}
+html.nava-app-v9 .nava-auth-verify-icon,
+html.nava-app-v9 .nava-avatar-choice.is-selected{background:#edf4fb!important;color:#496b91!important;border-color:#b9cee1!important;box-shadow:none!important}
+
+.dark.nava-app-v9 #nava-reader-top-v2,
+.dark.nava-app-v9 #nava-reader-bottom-v2,
+.dark.nava-app-v9 #nava-download-menu-v12134 .nava-dl-menu-panel,
+.dark.nava-app-v9 #nava-download-menu-v12134 .nava-dl-action{background:#111827!important;border-color:#2e3d50!important;color:#e5edf6!important}
+.dark.nava-app-v9 #nava-reader-top-v2>button{background:#172033!important;border-color:#334155!important;color:#c1cedb!important}
+.dark.nava-app-v9 #nava-reader-top-v2 .nava-reader-kicker-v2{color:#bdd2e8!important}
+.dark.nava-app-v9 #nava-download-menu-v12134 .nava-dl-action-copy strong,
+.dark.nava-app-v9 #nava-download-menu-v12134 .nava-dl-menu-head strong{color:#eef4fa!important}
+.dark.nava-app-v9 #nava-download-menu-v12134 .nava-dl-action-icon,
+.dark.nava-app-v9 #nava-download-menu-v12134 .nava-dl-wifi{background:#182538!important;border-color:#2e3d50!important;color:#bdd2e8!important}
+
+@media(max-width:390px){
+  html.nava-app-v9 body.nava-app-series .gta-series{grid-template-columns:88px minmax(0,1fr)!important;gap:10px!important}
+  html.nava-app-v9 body.nava-app-series .gta-series>div:first-child>img.thumb{width:88px!important;max-width:88px!important;height:126px!important}
+  html.nava-app-v9 body.nava-app-series .gta-series>div:first-child>div.flex{gap:12px!important}
+  html.nava-app-v9 #nava-reader-top-v2{grid-template-columns:38px minmax(0,1fr) 38px 38px!important;gap:5px!important;padding-left:8px!important;padding-right:8px!important}
+  html.nava-app-v9 #nava-reader-top-v2>button{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important}
+}
