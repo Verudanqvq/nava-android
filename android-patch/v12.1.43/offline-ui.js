@@ -97,3 +97,4 @@
   w.navaQueueSingleDownload=queueSingle;
   w.navaGetDownloadQueue=queueData;
 })(document,window);
+// 12.1.44 diagnostic build trigger
