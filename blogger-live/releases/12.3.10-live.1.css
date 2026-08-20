@@ -1,0 +1,81 @@
+/* Nava 12.3.10-live.1 — site-native visual system, no purple/AI styling. */
+:root{
+  --nava-brand:#5f82a8;
+  --nava-brand-strong:#496b91;
+  --nava-brand-soft:#eaf2fb;
+  --nava-brand-softer:#f5f9fe;
+  --nava-header:#c6dafc;
+  --nava-border:#d8e1eb;
+  --nava-text:#1f2937;
+  --nava-muted:#7b8796;
+  --nava-surface:#ffffff;
+  --nava-surface-2:#f7f9fc;
+  --nava-dark:#111827;
+  --nava-dark-2:#172033;
+  --nava-dark-border:#2b3748;
+}
+#nava-loader-v2-test,#nava-live-connection-test{display:none!important}
+
+/* Kill purple visual language globally inside Nava components. */
+.nava-btn,.nava-auth-tab,.nava-header-control,.nava-account-button,.nava-notification-button,.nava-profile-tab,.nava-admin-nav-btn,.nava-comment-action,.nava-library-button,.nava-favorite-button,.nava-follow-button,.nava-reader-read-toggle{border-radius:.58rem!important;box-shadow:none!important;background-image:none!important}
+.nava-btn-primary{background:var(--nava-brand)!important;color:#fff!important;border:1px solid var(--nava-brand)!important;box-shadow:none!important}
+.nava-btn-primary:hover{background:var(--nava-brand-strong)!important;border-color:var(--nava-brand-strong)!important}
+.nava-btn-secondary{background:var(--nava-surface-2)!important;color:#334155!important;border:1px solid var(--nava-border)!important}
+.dark .nava-btn-secondary{background:#1a2536!important;color:#e5edf6!important;border-color:var(--nava-dark-border)!important}
+
+/* Auth / login / register */
+.nava-auth-tabs{background:#eef3f8!important;border:1px solid #dde6ef!important;border-radius:.62rem!important;padding:.25rem!important}
+.nava-auth-tab{color:#66778b!important;background:transparent!important}
+.nava-auth-tab.is-active{background:#fff!important;color:var(--nava-brand-strong)!important;box-shadow:0 1px 3px rgba(40,60,80,.10)!important}
+.dark .nava-auth-tabs{background:#172235!important;border-color:#2a374a!important}.dark .nava-auth-tab{color:#9aa9bb!important}.dark .nava-auth-tab.is-active{background:#202c3e!important;color:#c5d9ef!important}
+.nava-auth-google{border-radius:.58rem!important;border-color:var(--nava-border)!important;box-shadow:none!important}
+.nava-auth-forgot,.nava-auth-switch,.nava-admin-section-link,.nava-admin-userlink,.nava-notification-context{color:var(--nava-brand-strong)!important}
+.dark .nava-auth-forgot,.dark .nava-auth-switch,.dark .nava-admin-section-link,.dark .nava-admin-userlink,.dark .nava-notification-context{color:#a9c3df!important}
+.nava-auth-verify-icon{background:var(--nava-brand-soft)!important;color:var(--nava-brand-strong)!important;border-radius:.7rem!important}
+.dark .nava-auth-verify-icon{background:#24364b!important;color:#bfd4eb!important}
+
+/* Forms */
+.nava-input,.nava-textarea,.nava-file-input,.nava-admin-search input,.nava-release-field input,.nava-release-field select,.nava-release-field textarea{
+  border:1px solid var(--nava-border)!important;background:#fff!important;color:#1f2937!important;border-radius:.58rem!important;box-shadow:none!important
+}
+.nava-input:focus,.nava-textarea:focus,.nava-file-input:focus,.nava-admin-search input:focus,.nava-release-field input:focus,.nava-release-field select:focus,.nava-release-field textarea:focus{
+  border-color:#91adca!important;box-shadow:0 0 0 3px rgba(95,130,168,.12)!important;outline:none!important
+}
+.dark .nava-input,.dark .nava-textarea,.dark .nava-file-input,.dark .nava-admin-search input,.dark .nava-release-field input,.dark .nava-release-field select,.dark .nava-release-field textarea{background:#111b2b!important;color:#eef4fb!important;border-color:#314056!important}
+:focus-visible{outline:2px solid #7f9fbe!important;outline-offset:2px!important}.dark :focus-visible{outline-color:#a9c3df!important}
+.nava-switch input:checked + span{background:var(--nava-brand)!important}
+
+/* Modal / sheets: flatter, site-like, not floating AI cards. */
+.nava-modal-backdrop{background:rgba(15,23,42,.58)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.nava-modal{border-radius:.78rem!important;border:1px solid var(--nava-border)!important;box-shadow:0 14px 38px rgba(30,45,60,.18)!important;background:#fff!important}
+.dark .nava-modal{background:#111827!important;border-color:#2c394b!important;box-shadow:0 14px 38px rgba(0,0,0,.28)!important}
+.nava-modal-head{background:#f8fafc!important;border-color:#e2e8f0!important}.dark .nava-modal-head{background:#151f30!important;border-color:#2b3748!important}
+.nava-modal-close{border-radius:.45rem!important}
+
+/* Profile / comments / admin / notification surfaces. */
+.nava-profile-login,.nava-profile-private,.nava-profile-empty,.nava-profile-error,.nava-comment-card,.nava-comments-shell,.nava-admin-card,.nava-admin-summary-card,.nava-release-admin,.nava-rating-card{
+  border-color:var(--nava-border)!important;border-radius:.7rem!important;box-shadow:none!important;background-image:none!important
+}
+.dark .nava-profile-login,.dark .nava-profile-private,.dark .nava-profile-empty,.dark .nava-profile-error,.dark .nava-comment-card,.dark .nava-comments-shell,.dark .nava-admin-card,.dark .nava-admin-summary-card,.dark .nava-release-admin,.dark .nava-rating-card{border-color:#29384b!important;background:#111827!important}
+.nava-profile-avatar-fallback{background:var(--nava-brand)!important}
+.nava-avatar-choice.is-selected{border-color:#7f9fbe!important;background:#eef5fc!important}.dark .nava-avatar-choice.is-selected{background:#203147!important;border-color:#8eaccb!important}
+.nava-admin-nav{background:#f5f8fb!important;border-color:var(--nava-border)!important;border-radius:.65rem!important}.dark .nava-admin-nav{background:#111b2b!important;border-color:#2b3748!important}
+.nava-admin-nav-btn:hover,.nava-admin-nav-btn.is-active{color:var(--nava-brand-strong)!important;background:#fff!important;box-shadow:none!important}.dark .nava-admin-nav-btn:hover,.dark .nava-admin-nav-btn.is-active{background:#1c293b!important;color:#bdd2e8!important}
+.nava-admin-nav-count,.nava-admin-summary-count{background:#eaf2fb!important;color:var(--nava-brand-strong)!important}.dark .nava-admin-nav-count,.dark .nava-admin-summary-count{background:#26394f!important;color:#bdd2e8!important}
+.nava-admin-summary-card.is-active{border-color:#8ca9c7!important;box-shadow:0 0 0 2px rgba(95,130,168,.10)!important}
+.nava-admin-card.is-ban{border-left-color:#6f8faf!important}.nava-admin-pill.is-ban{background:#edf4fb!important;color:#4f7196!important}.dark .nava-admin-pill.is-ban{background:#23364b!important;color:#bdd2e8!important}
+
+/* Header controls harmonize with Nava blue. */
+.nava-header-control,.nava-account-button,.nava-notification-button{border-color:rgba(78,108,145,.18)!important;color:#536f8e!important;background:rgba(255,255,255,.10)!important}
+.nava-header-control:hover,.nava-account-button:hover,.nava-notification-button:hover{background:rgba(255,255,255,.32)!important;color:#405f82!important}
+
+/* Mobile: only one scroll surface, no duplicated safe-area footer gap. */
+html,body{height:auto!important;min-height:100%!important;max-height:none!important;overflow-x:hidden!important}
+body{padding-bottom:0!important}
+footer{padding-bottom:max(.8rem,env(safe-area-inset-bottom,0px))!important;margin-bottom:0!important}
+@media(max-width:767px){
+  html{overflow-y:auto!important;overscroll-behavior-y:auto!important}
+  body{overflow-y:visible!important;min-height:100%!important}
+  .nava-modal{border-radius:.78rem .78rem 0 0!important}
+  .nava-profile-edit-modal{border-radius:.78rem .78rem 0 0!important}
+}
