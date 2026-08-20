@@ -214,7 +214,7 @@ async function sendPush(uids, release, series, notificationId) {
         priority: "high",
         ttl: 24 * 60 * 60 * 1000,
         notification: {
-          channelId: "nava_follower_releases_v2",
+          channelId: "nava_follower_releases_v3",
           tag: notificationId
         }
       }
