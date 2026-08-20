@@ -1,0 +1,12 @@
+
+> scan
+> node scan.mjs
+
+FEED_MERGED {"sourcesOk":6,"sourceErrors":0,"entries":31}
+{"release":"Tensura Cilt 9","series":"Tensei Shitara Slime Datta Ken (Light Novel)","followers":2,"siteNotifications":2,"push":{"success":1,"failed":0,"cleaned":0,"attempted":1,"deliveredTokenDocs":1}}
+NAVA_SCAN_RESULT_V5 {"baseline":false,"feedCount":31,"delivered":1,"retry":0,"failed":0,"ignored":0,"completedSkipped":0}
+NAVA_SCAN_DETAILS_V5 [{"postId":"4993051551259875535","title":"Tensura Cilt 9","status":"delivered","series":"Tensei Shitara Slime Datta Ken (Light Novel)"}]
+NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_13jdddc","title":"Tensura Cilt 9","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
+NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_16giay","title":"Tensura Cilt 10","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
+NAVA_PUSH_RETRY_RELEASE {"releaseId":"816954997184127789_g5uefs","title":"Tensura Cilt 23","skipped":"all-current-tokens-delivered","followers":2,"tokens":1}
+NAVA_PUSH_RETRY_RESULT {"releases":3,"sent":0,"pendingNoToken":0,"failures":0}
