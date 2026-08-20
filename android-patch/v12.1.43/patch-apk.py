@@ -3,14 +3,16 @@ from pathlib import Path
 
 RES_STRING_POOL_TYPE=0x0001
 RES_XML_START_ELEMENT_TYPE=0x0102
-OLD_VERSION='12.1.42'
+OLD_VERSION='12.1.41'
 NEW_VERSION='12.1.43'
 NEW_CODE=59
-OLD_PUSH='/* Nava v12.1.42 — direct native FCM registration. */'
+OLD_PUSH='/* Nava v12.1.41 — direct native FCM registration. */'
 NEW_PUSH='/* Nava v12.1.43 — direct native FCM registration. */'
-OLD_COMPAT='/* Nava Android 12.1.42 — volume navigation + reliable mobile notification deletion. */'
-NEW_COMPAT='/* Nava Android 12.1.43 — stable chrome + compact download center + notification delete. */'
-CSS_MARKER='/* Nava Android 12.1.43 — stable topbar and compact download UI. */'
+OLD_OFFLINE='/* Nava Android 12.1.41 — hierarchical offline library. */'
+NEW_OFFLINE='/* Nava Android 12.1.43 — stable offline library + persistent queue. */'
+OLD_MENU='/* Nava Android 12.1.41 — download center metadata + content-type neutral hierarchy. */'
+NEW_MENU='/* Nava Android 12.1.43 — compact download center + stable topbar. */'
+CSS_MARKER='/* Nava Android 12.1.43 — stable compact offline styles. */'
 
 def u16(d,o): return struct.unpack_from('<H',d,o)[0]
 def u32(d,o): return struct.unpack_from('<I',d,o)[0]
@@ -67,26 +69,30 @@ def oldsig(name):
     return u.startswith('META-INF/') and (leaf=='MANIFEST.MF' or leaf.endswith(('.SF','.RSA','.DSA','.EC')))
 
 def main():
-    if len(sys.argv)!=8: raise SystemExit('usage: patch-apk.py SRC DEX PUSH COMPAT CSS OUT EXPECTED_SHA')
-    src,dexf,pushf,compatf,cssf,out,expected=sys.argv[1:]
+    if len(sys.argv)!=10: raise SystemExit('usage: patch-apk.py SRC DEX PUSH OFFLINE_JS MENU_JS CSS OFFLINE_HTML OUT EXPECTED_SHA')
+    src,dexf,pushf,offlinejsf,menuf,cssf,offlinef,out,expected=sys.argv[1:]
     srcp=Path(src);got=hashlib.sha256(srcp.read_bytes()).hexdigest()
     if got.lower()!=expected.lower(): raise ValueError('source sha mismatch '+got)
-    dex=Path(dexf).read_bytes();push=Path(pushf).read_text();compat=Path(compatf).read_text();hotcss=Path(cssf).read_text()
+    dex=Path(dexf).read_bytes();push=Path(pushf).read_text();offlinejs=Path(offlinejsf).read_text();menu=Path(menuf).read_text();newcss=Path(cssf).read_text();offline=Path(offlinef).read_bytes()
     if not dex.startswith(b'dex\n') or b'NavaAndroidApp/12.1.43' not in dex: raise ValueError('patched dex invalid')
     if NEW_PUSH not in push or "appVersion:'12.1.43'" not in push: raise ValueError('push source invalid')
-    if NEW_COMPAT not in compat or 'nava-download-fab-v12143' not in compat or 'nava-download-quick-v12143' not in compat or 'Tümünü sil' not in compat: raise ValueError('compat source invalid')
-    if CSS_MARKER not in hotcss or '#nava-download-menu-v12141' not in hotcss or '#nava-offline-library-btn-v12131' not in hotcss: raise ValueError('hotfix css invalid')
+    if NEW_OFFLINE not in offlinejs or 'Eseri sil' not in offlinejs or 'Cildi sil' not in offlinejs or 'navaQueueDownloadBatch' not in offlinejs: raise ValueError('offline JS invalid')
+    if NEW_MENU not in menu or 'İndirme sırası' not in menu or 'nava-download-btn-v12143' not in menu: raise ValueError('download menu invalid')
+    if CSS_MARKER not in newcss or '.nava-download-top-v12143' not in newcss: raise ValueError('CSS invalid')
+    html=offline.decode('utf-8')
+    if '<h1>İndirilenler</h1>' not in html or 'Eseri sil' not in html or 'Cildi sil' not in html: raise ValueError('offline HTML invalid')
+    if 'Tekrar bağlan' in html or 'Yalnız Wi' in html: raise ValueError('duplicate offline controls remain')
     with zipfile.ZipFile(srcp) as zin:
-        names=set(zin.namelist())
-        required={'AndroidManifest.xml','classes.dex','classes2.dex','classes3.dex','assets/nava_app_v11.js','assets/nava_app_v11.css','assets/offline.html'}
+        names=set(zin.namelist());required={'AndroidManifest.xml','classes.dex','classes2.dex','classes3.dex','assets/nava_app_v11.js','assets/nava_app_v11.css','assets/offline.html'}
         if not required.issubset(names): raise ValueError('required APK entries missing')
         manifest=patch_manifest(zin.read('AndroidManifest.xml'))
         js=zin.read('assets/nava_app_v11.js').decode('utf-8')
         js=replace_iife(js,OLD_PUSH,push)
-        js=replace_iife(js,OLD_COMPAT,compat)
+        js=replace_iife(js,OLD_OFFLINE,offlinejs)
+        js=replace_iife(js,OLD_MENU,menu)
         css=zin.read('assets/nava_app_v11.css').decode('utf-8')
-        if CSS_MARKER in css: raise ValueError('hotfix css already present')
-        css=css.rstrip()+'\n\n'+hotcss.strip()+'\n'
+        if CSS_MARKER in css: raise ValueError('12.1.43 CSS already present')
+        css=css.rstrip()+'\n\n'+newcss.strip()+'\n'
         with zipfile.ZipFile(out,'w') as zout:
             for info in zin.infolist():
                 if oldsig(info.filename): continue
@@ -95,21 +101,21 @@ def main():
                 elif info.filename=='classes.dex': data=dex
                 elif info.filename=='assets/nava_app_v11.js': data=js.encode()
                 elif info.filename=='assets/nava_app_v11.css': data=css.encode()
+                elif info.filename=='assets/offline.html': data=offline
                 zout.writestr(info,data)
-    allowed={'AndroidManifest.xml','classes.dex','assets/nava_app_v11.js','assets/nava_app_v11.css'}
+    allowed={'AndroidManifest.xml','classes.dex','assets/nava_app_v11.js','assets/nava_app_v11.css','assets/offline.html'}
     with zipfile.ZipFile(srcp) as a,zipfile.ZipFile(out) as b:
-        fj=b.read('assets/nava_app_v11.js').decode();fc=b.read('assets/nava_app_v11.css').decode();fd=b.read('classes.dex')
-        if NEW_PUSH not in fj or NEW_COMPAT not in fj: raise ValueError('final JS replacements missing')
-        if OLD_COMPAT in fj or OLD_PUSH in fj: raise ValueError('old replaced blocks remain')
-        if 'nava-download-fab-v12143' not in fj or 'Cildi indir' not in fj or 'Eseri indir' not in fj: raise ValueError('compact download UI missing')
-        if CSS_MARKER not in fc or '#nava-download-menu-v12141' not in fc: raise ValueError('final hotfix css missing')
+        fj=b.read('assets/nava_app_v11.js').decode();fc=b.read('assets/nava_app_v11.css').decode();fh=b.read('assets/offline.html').decode();fd=b.read('classes.dex')
+        if NEW_PUSH not in fj or NEW_OFFLINE not in fj or NEW_MENU not in fj: raise ValueError('final JS replacements missing')
+        if OLD_OFFLINE in fj or OLD_MENU in fj: raise ValueError('old 12.1.41 offline blocks remain')
+        if CSS_MARKER not in fc: raise ValueError('final CSS missing')
+        for token in ('#6d28d9','#7c3aed','#8b5cf6','#5b20f3','#4c1d95','#c4b5fd','#ddd6fe','#ede9fe','#f5f3ff'):
+            if token.lower() in newcss.lower() or token.lower() in fh.lower(): raise ValueError('purple token '+token)
         if b'NavaAndroidApp/12.1.43' not in fd: raise ValueError('UA missing')
-        if b.read('classes2.dex')!=a.read('classes2.dex'): raise ValueError('offline runtime changed unexpectedly')
+        if b.read('classes2.dex')!=a.read('classes2.dex'): raise ValueError('offline native runtime changed unexpectedly')
         if b.read('classes3.dex')!=a.read('classes3.dex'): raise ValueError('notification helper changed unexpectedly')
-        if b.read('assets/offline.html')!=a.read('assets/offline.html'): raise ValueError('offline library changed unexpectedly')
         for name in a.namelist():
             if oldsig(name) or name in allowed: continue
             if name not in b.namelist() or a.read(name)!=b.read(name): raise ValueError('unexpected changed entry '+name)
-    print('PATCH_OK versionCode=59 versionName=12.1.43 chrome=stable download=compact-fab legacy-menu=hidden scoped=ok')
-
+    print('PATCH_OK versionCode=59 versionName=12.1.43 ui=compact topbar=stable queue=persistent delete=single+volume+series scoped=ok')
 if __name__=='__main__': main()
