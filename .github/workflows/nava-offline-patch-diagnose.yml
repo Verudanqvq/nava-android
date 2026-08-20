@@ -1,0 +1,44 @@
+name: Nava offline patch diagnose
+on:
+  push:
+    branches: [feat/offline-downloads-12-1-31]
+    paths: [".github/workflows/nava-offline-patch-diagnose.yml"]
+permissions:
+  contents: write
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/offline-downloads-12-1-31
+      - run: sudo apt-get update -qq && sudo apt-get install -y smali >/dev/null
+      - shell: bash
+        run: |
+          set +e
+          exec > >(tee native-patch-diagnose.txt) 2>&1
+          echo "smali=$(command -v smali)"; smali --version || true
+          echo "baksmali=$(command -v baksmali)"; baksmali --version || true
+          mkdir -p /tmp/current /tmp/decoded/smali
+          gh release download v12.1.30 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current
+          unzip -p /tmp/current/Nava.apk classes.dex > /tmp/base.dex
+          echo '=== disassemble ==='
+          baksmali disassemble /tmp/base.dex -o /tmp/decoded/smali; echo "rc=$?"
+          echo '=== patch ==='
+          python android-patch/v12.1.31/patch-smali.py /tmp/decoded; echo "rc=$?"
+          echo '=== assemble ==='
+          smali assemble /tmp/decoded/smali -o /tmp/classes.dex; echo "rc=$?"
+          ls -lh /tmp/classes.dex 2>/dev/null || true
+          echo '=== relevant strings ==='
+          grep -R -n -E 'OfflineRuntime|nava_follower_releases|Takip edilen eserler' /tmp/decoded/smali/com/verudanava/nava /tmp/decoded/smali/gx.smali /tmp/decoded/smali/c00.smali 2>/dev/null | head -80 || true
+          exit 0
+      - name: Persist
+        run: |
+          git config user.name 'Nava Diagnose Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add native-patch-diagnose.txt
+          git commit -m 'Record native patch failure diagnosis [skip ci]' || true
+          git push origin HEAD:feat/offline-downloads-12-1-31
