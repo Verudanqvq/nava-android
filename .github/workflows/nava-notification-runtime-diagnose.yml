@@ -1,5 +1,5 @@
 name: Nava notification runtime diagnose
-# run: current-notification-test
+# run: current-notification-test-2
 
 on:
   push:
@@ -45,8 +45,8 @@ jobs:
           import { initializeApp, cert } from 'firebase-admin/app';
           import { getFirestore } from 'firebase-admin/firestore';
           const sa=JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT||'{}');
-          initializeApp({credential:cert(sa),projectId:'nava-01'},'diag');
-          const db=getFirestore();
+          const app=initializeApp({credential:cert(sa),projectId:'nava-01'},'diag');
+          const db=getFirestore(app);
           const ms=v=>{try{return v&&typeof v.toMillis==='function'?v.toMillis():0}catch{return 0}};
           console.log('=== TOKENS ===');
           const ts=await db.collection('devicePushTokens').get();
