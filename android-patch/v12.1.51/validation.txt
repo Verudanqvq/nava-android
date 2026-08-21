@@ -1,0 +1,7 @@
+Local static validation before merge:
+- volume-discovery-fix.js: node --check PASS
+- patch-apk.py: python -m py_compile PASS
+- Target versionName: 12.1.51
+- Target versionCode: 67
+- Native UA policy: preserve NavaAndroidApp/12.1.47
+- Discovery path: DOM fallback + Blogger Cilt feed + selected-volume Bölüm feed
