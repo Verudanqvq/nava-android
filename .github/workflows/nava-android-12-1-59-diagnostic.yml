@@ -1,0 +1,56 @@
+name: Nava Android 12.1.59 native diagnostics
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-android-12-1-59-diagnostic.yml"
+      - "android-patch/v12.1.59/diagnostic-trigger.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download 12.1.58 APK
+        run: |
+          mkdir -p /tmp/apk
+          gh release download v12.1.58 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/apk
+      - name: Install JADX
+        run: |
+          curl -fsSL -o /tmp/jadx.zip https://github.com/skylot/jadx/releases/download/v1.5.3/jadx-1.5.3.zip
+          mkdir -p /tmp/jadx-bin
+          unzip -q /tmp/jadx.zip -d /tmp/jadx-bin
+      - name: Decompile and inspect
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/jadx-bin/bin/jadx --show-bad-code -d /tmp/jadx-out /tmp/apk/Nava.apk >/tmp/jadx.log 2>&1 || true
+          mkdir -p android-patch/v12.1.59
+          OUT=android-patch/v12.1.59/native-diagnostic.txt
+          : > "$OUT"
+          printf '=== MATCHED FILES ===\n' >> "$OUT"
+          grep -RIl -E 'downloadBatch|JavascriptInterface|NavaOffline|WebViewClient|onReceivedError|onPageFinished|loadUrl\(|offline|ConnectivityManager|DownloadManager' /tmp/jadx-out/sources 2>/dev/null | head -80 | tee -a "$OUT"
+          printf '\n=== RELEVANT SOURCES ===\n' >> "$OUT"
+          while IFS= read -r f; do
+            [ -f "$f" ] || continue
+            printf '\n----- %s -----\n' "$f" >> "$OUT"
+            sed -n '1,700p' "$f" >> "$OUT"
+          done < <(grep -RIl -E 'downloadBatch|JavascriptInterface|NavaOffline|WebViewClient|onReceivedError|ConnectivityManager' /tmp/jadx-out/sources 2>/dev/null | head -20)
+          printf '\n=== DEX STRINGS ===\n' >> "$OUT"
+          unzip -p /tmp/apk/Nava.apk classes.dex | strings | grep -E 'NavaOffline|downloadBatch|cancel|WebView|offline|verudanava|onReceivedError|Connectivity' | head -300 >> "$OUT" || true
+      - name: Persist diagnostics
+        run: |
+          git config user.name 'Nava Android Diagnostic Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add android-patch/v12.1.59/native-diagnostic.txt
+          git commit -m 'Record 12.1.59 native diagnostics [skip ci]' || true
+          git push || true
