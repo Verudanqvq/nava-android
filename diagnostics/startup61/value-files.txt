@@ -1,0 +1,10 @@
+/tmp/apktool-out/res/values-hdpi/styles.xml
+/tmp/apktool-out/res/values-land/styles.xml
+/tmp/apktool-out/res/values-night/styles.xml
+/tmp/apktool-out/res/values-sw600dp/styles.xml
+/tmp/apktool-out/res/values-v28/styles.xml
+/tmp/apktool-out/res/values-v31/colors.xml
+/tmp/apktool-out/res/values-v31/styles.xml
+/tmp/apktool-out/res/values-watch/styles.xml
+/tmp/apktool-out/res/values/colors.xml
+/tmp/apktool-out/res/values/styles.xml

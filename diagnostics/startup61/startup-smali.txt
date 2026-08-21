@@ -1,0 +1,54 @@
+MAIN_SMALI=/tmp/apktool-out/smali/com/verudanava/nava/MainActivity.smali
+
+11:.field public A:Landroid/webkit/WebView;
+945:    invoke-virtual {p0, v0}, Lz2;->setContentView(I)V
+1070:    check-cast v0, Landroid/webkit/WebView;
+1074:    iput-object v0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1107:    invoke-static {v0}, Landroid/webkit/WebView;->setWebContentsDebuggingEnabled(Z)V
+1112:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1139:    invoke-virtual {v1, v4}, Landroid/webkit/WebView;->setBackgroundColor(I)V
+1144:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1152:    invoke-virtual {v1}, Landroid/webkit/WebView;->getSettings()Landroid/webkit/WebSettings;
+1287:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1295:    invoke-virtual {v1}, Landroid/webkit/WebView;->getSettings()Landroid/webkit/WebSettings;
+1346:    const-string v5, "This method is not supported by the current version of the framework and the current WebView APK"
+1355:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1363:    invoke-virtual {v1}, Landroid/webkit/WebView;->getSettings()Landroid/webkit/WebSettings;
+1430:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1441:    invoke-virtual {v1, v6, v4}, Landroid/webkit/WebView;->setRendererPriorityPolicy(IZ)V
+1446:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1463:    invoke-virtual {v1, v6}, Landroid/webkit/WebView;->setWebChromeClient(Landroid/webkit/WebChromeClient;)V
+1468:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1485:    invoke-virtual {v1, v6}, Landroid/webkit/WebView;->setWebViewClient(Landroid/webkit/WebViewClient;)V
+1487:    invoke-static {p0, v1}, Lcom/verudanava/nava/OfflineRuntime;->attach(Landroid/content/Context;Landroid/webkit/WebView;)V
+1498:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1515:    invoke-virtual {v1, v6}, Landroid/webkit/WebView;->setDownloadListener(Landroid/webkit/DownloadListener;)V
+1536:    const-string v1, "Android System WebView g\u00fcncellemesi gerekli."
+1557:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1594:    invoke-static {v1}, Lfh0;->b(Landroid/webkit/WebView;)Llh0;
+1622:    iget-object v1, v1, Llh0;->a:Lorg/chromium/support_lib_boundary/WebViewProviderBoundaryInterface;
+1648:    invoke-interface {v1, v8, v5, v6}, Lorg/chromium/support_lib_boundary/WebViewProviderBoundaryInterface;->addWebMessageListener(Ljava/lang/String;[Ljava/lang/String;Ljava/lang/reflect/InvocationHandler;)V
+1681:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1705:    invoke-static {v1, v5, v7}, Lfh0;->a(Landroid/webkit/WebView;Ljava/lang/String;Ljava/util/Set;)V
+1710:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1722:    invoke-static {v1, v5, v7}, Lfh0;->a(Landroid/webkit/WebView;Ljava/lang/String;Ljava/util/Set;)V
+1727:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1751:    invoke-static {v1, v5, v7}, Lfh0;->a(Landroid/webkit/WebView;Ljava/lang/String;Ljava/util/Set;)V
+1905:    iget-object v0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+1973:    invoke-virtual {v0, p1}, Landroid/webkit/WebView;->loadUrl(Ljava/lang/String;)V
+1995:    invoke-virtual {v0, p1}, Landroid/webkit/WebView;->restoreState(Landroid/os/Bundle;)Landroid/webkit/WebBackForwardList;
+2205:    iget-object v0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2217:    invoke-virtual {v0}, Landroid/webkit/WebView;->stopLoading()V
+2222:    iget-object v0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2230:    invoke-virtual {v0}, Landroid/webkit/WebView;->destroy()V
+2576:    iget-object v0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2584:    invoke-virtual {v0, p1}, Landroid/webkit/WebView;->saveState(Landroid/os/Bundle;)Landroid/webkit/WebBackForwardList;
+2683:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2698:    invoke-virtual {v1}, Landroid/webkit/WebView;->copyBackForwardList()Landroid/webkit/WebBackForwardList;
+2836:    iget-object v1, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2856:    invoke-virtual {v1, p0}, Landroid/webkit/WebView;->goBackOrForward(I)V
+2878:    invoke-virtual {v1}, Landroid/webkit/WebView;->getSettings()Landroid/webkit/WebSettings;
+2918:    iget-object p0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+2934:    invoke-virtual {p0, p1}, Landroid/webkit/WebView;->loadUrl(Ljava/lang/String;)V
+3449:    iget-object p0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
+3503:    invoke-virtual {p0, p1, v0}, Landroid/webkit/WebView;->evaluateJavascript(Ljava/lang/String;Landroid/webkit/ValueCallback;)V
