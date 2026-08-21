@@ -19,5 +19,3 @@ release=v12.1.49
 asset=Nava.apk
 status=success
 finished=2026-08-21T19:43:16Z
-status=failed
-finished=2026-08-21T19:43:16Z
