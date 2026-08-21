@@ -1,1 +1,1 @@
-Run native diagnostics after workflow exists on main.
+Run full native diagnostics after source-persist workflow update.
