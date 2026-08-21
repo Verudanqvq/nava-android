@@ -1,5 +1,5 @@
 status=running
-started=2026-08-21T23:17:23Z
+started=2026-08-21T23:19:41Z
 source_validation=ok
 base=12.1.59
 updater=direct-https
@@ -27,6 +27,6 @@ pre_final_semantic=ok
 final_semantic_check=ok
 release=v12.1.60
 asset=Nava.apk
-release_existing=no
+release_existing=yes
 status=success
-finished=2026-08-21T23:18:26Z
+finished=2026-08-21T23:20:56Z
