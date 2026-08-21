@@ -44,7 +44,7 @@ jobs:
           from pathlib import Path
           t=Path('android-patch/v12.1.42/offline.html').read_text()
           assert '<h1>İndirilenler</h1>' in t
-          assert 'data-delete-series' in t and 'data-delete-volume' in t
+          assert 'data-series-delete' in t and 'data-volume-delete' in t
           assert 'Tekrar bağlan' not in t
           start=t.index('<script>')+len('<script>');end=t.rindex('</script>')
           Path('/tmp/offline-page.js').write_text(t[start:end])
@@ -130,8 +130,8 @@ jobs:
           grep -q 'nava-download-launcher-v12142' /tmp/final.js
           grep -q 'Tümünü temizle' /tmp/final.js
           grep -q 'compact download/offline UI' /tmp/final.css
-          grep -q 'data-delete-series' /tmp/final-offline.html
-          grep -q 'data-delete-volume' /tmp/final-offline.html
+          grep -q 'data-series-delete' /tmp/final-offline.html
+          grep -q 'data-volume-delete' /tmp/final-offline.html
           printf 'pack=ok\njs=ok\ncss=ok\ncilt_ui=ok\ndownload_launcher=ok\nnotification_clear=ok\noffline_bulk_delete=ok\nscoped=ok\n' >> /tmp/status.txt
 
       - name: Align and sign
