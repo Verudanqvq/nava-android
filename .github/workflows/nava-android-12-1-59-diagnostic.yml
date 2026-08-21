@@ -33,24 +33,21 @@ jobs:
         run: |
           set -euo pipefail
           /tmp/jadx-bin/bin/jadx --show-bad-code -d /tmp/jadx-out /tmp/apk/Nava.apk >/tmp/jadx.log 2>&1 || true
-          mkdir -p android-patch/v12.1.59
+          mkdir -p android-patch/v12.1.59/native-source
+          cp /tmp/jadx-out/sources/com/verudanava/nava/MainActivity.java android-patch/v12.1.59/native-source/MainActivity.java.txt
+          cp /tmp/jadx-out/sources/com/verudanava/nava/OfflineRuntime.java android-patch/v12.1.59/native-source/OfflineRuntime.java.txt
+          cp /tmp/jadx-out/sources/defpackage/gx.java android-patch/v12.1.59/native-source/gx.java.txt
           OUT=android-patch/v12.1.59/native-diagnostic.txt
           : > "$OUT"
           printf '=== MATCHED FILES ===\n' >> "$OUT"
           grep -RIl -E 'downloadBatch|JavascriptInterface|NavaOffline|WebViewClient|onReceivedError|onPageFinished|loadUrl\(|offline|ConnectivityManager|DownloadManager' /tmp/jadx-out/sources 2>/dev/null | head -80 | tee -a "$OUT"
-          printf '\n=== RELEVANT SOURCES ===\n' >> "$OUT"
-          while IFS= read -r f; do
-            [ -f "$f" ] || continue
-            printf '\n----- %s -----\n' "$f" >> "$OUT"
-            sed -n '1,700p' "$f" >> "$OUT"
-          done < <(grep -RIl -E 'downloadBatch|JavascriptInterface|NavaOffline|WebViewClient|onReceivedError|ConnectivityManager' /tmp/jadx-out/sources 2>/dev/null | head -20)
           printf '\n=== DEX STRINGS ===\n' >> "$OUT"
-          unzip -p /tmp/apk/Nava.apk classes.dex | strings | grep -E 'NavaOffline|downloadBatch|cancel|WebView|offline|verudanava|onReceivedError|Connectivity' | head -300 >> "$OUT" || true
+          unzip -p /tmp/apk/Nava.apk classes.dex classes2.dex 2>/dev/null | strings | grep -E 'NavaOffline|downloadBatch|cancel|WebView|offline|verudanava|onReceivedError|Connectivity' | head -500 >> "$OUT" || true
       - name: Persist diagnostics
         run: |
           git config user.name 'Nava Android Diagnostic Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git pull --rebase || true
-          git add android-patch/v12.1.59/native-diagnostic.txt
-          git commit -m 'Record 12.1.59 native diagnostics [skip ci]' || true
+          git add android-patch/v12.1.59/native-diagnostic.txt android-patch/v12.1.59/native-source
+          git commit -m 'Record full 12.1.59 native diagnostics [skip ci]' || true
           git push || true
