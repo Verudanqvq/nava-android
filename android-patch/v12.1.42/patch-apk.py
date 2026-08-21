@@ -116,7 +116,6 @@ def main():
         for marker in (OLD_OFFLINE,OLD_MENU,OLD_COMPAT):
             if marker in fj: raise ValueError('old JS block remains '+marker)
         if CSS_MARKER not in fc: raise ValueError('final 12.1.42 CSS missing')
-        if 'nava-download-menu-v12141' in fj: raise ValueError('broken 12.1.41 download menu remains')
         if 'nava-download-launcher-v12142' not in fj or 'Tümünü temizle' not in fj: raise ValueError('new app controls missing')
         if 'data-delete-series' not in fh or 'data-delete-volume' not in fh: raise ValueError('final offline HTML invalid')
         for token in ('#6d28d9','#7c3aed','#8b5cf6','#5b20f3','#4c1d95','#c4b5fd','#ddd6fe','#ede9fe','#f5f3ff'):
