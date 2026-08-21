@@ -10,12 +10,11 @@ EXPECTED_CERT_SHA256=acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51
 SOURCE_TAG=v12.1.60
 TARGET_TAG=v12.1.61
 
-python -m py_compile android-patch/v12.1.61/patch-decoded.py
+python -m py_compile android-patch/v12.1.61/patch-smali.py android-patch/v12.1.61/patch-apk.py
 node --check android-patch/v12.1.61/notification-v12161.js
-grep -q 'Nava Android 12.1.61 — startup and v9 notification UI' android-patch/v12.1.61/ui-v12161.css
+grep -q 'native startup overlay without resource-table changes' android-patch/v12.1.61/StartupOverlay61.java
 grep -q 'setInterval(probe,2500)' android-patch/v12.1.61/offline.html
-grep -q 'android:visibility="invisible"' android-patch/v12.1.61/activity_main.xml
-printf 'source_validation=ok\nbase=12.1.60\nstartup=nava-splash-until-page-finished\noffline_retry=manual-online-probe\nnotifications=v9-clear-delete\nupdater=direct-https-preserved\n' >> "$STATUS"
+printf 'source_validation=ok\nbase=12.1.60\nstartup=native-overlay-until-page-finished\noffline_retry=manual-online-probe\nnotifications=v9-clear-delete\nupdater=direct-https-preserved\nresources=byte-preserved\n' >> "$STATUS"
 
 # Recover production signing material.
 set +x
@@ -34,51 +33,75 @@ unzip -q /tmp/signing.zip -d /tmp/nava-signing
 rm -f /tmp/nava-private.pem /tmp/key-material.bin /tmp/aes-key /tmp/aes-iv /tmp/signing.zip
 printf 'signing_material=ok\n' >> "$STATUS"
 
-# Download exact signed 12.1.60 base.
-mkdir -p /tmp/current
+# Download exact signed 12.1.60 base and capture immutable payload hashes.
+rm -rf /tmp/current /tmp/base61-dec /tmp/helperclasses /tmp/helperdex /tmp/helper-mini /tmp/helper-dec /tmp/final61-dec
+mkdir -p /tmp/current /tmp/helperclasses /tmp/helperdex /tmp/helper-mini
+
 gh release download "$SOURCE_TAG" --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current
 GOT="$(sha256sum /tmp/current/Nava.apk | cut -d' ' -f1)"
 test "$GOT" = "$EXPECTED_SOURCE_SHA256"
+unzip -p /tmp/current/Nava.apk resources.arsc > /tmp/resources-base.arsc
 unzip -p /tmp/current/Nava.apk classes2.dex > /tmp/classes2-base.dex
 if unzip -l /tmp/current/Nava.apk | grep -q ' classes3.dex$'; then unzip -p /tmp/current/Nava.apk classes3.dex > /tmp/classes3-base.dex; fi
-printf 'source_apk=ok\nsource_sha256=%s\n' "$GOT" >> "$STATUS"
+printf 'source_apk=ok\nsource_sha256=%s\nresources_sha256=%s\n' "$GOT" "$(sha256sum /tmp/resources-base.arsc | cut -d' ' -f1)" >> "$STATUS"
 
+ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
 BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
 curl -fsSL -o /tmp/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar
-rm -rf /tmp/base61-dec /tmp/final61-dec
-java -jar /tmp/apktool.jar d -f /tmp/current/Nava.apk -o /tmp/base61-dec >/tmp/apktool61-decode.log
 
-python android-patch/v12.1.61/patch-decoded.py \
-  /tmp/base61-dec \
+# Compile only the native startup overlay helper.
+javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/helperclasses android-patch/v12.1.61/StartupOverlay61.java
+mapfile -t HELPER_CLASSES < <(find /tmp/helperclasses/com/verudanava/nava -name 'StartupOverlay61*.class' -type f | sort)
+test "${#HELPER_CLASSES[@]}" -ge 1
+"$BUILD_TOOLS/d8" --lib "$ANDROID_JAR" --min-api 26 --output /tmp/helperdex "${HELPER_CLASSES[@]}"
+
+# Turn the helper dex into smali using a tiny APK shell; do not decode resources.
+unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/helper-mini/AndroidManifest.xml
+cp /tmp/helperdex/classes.dex /tmp/helper-mini/classes.dex
+(cd /tmp/helper-mini && zip -q /tmp/helper-mini.apk AndroidManifest.xml classes.dex)
+java -jar /tmp/apktool.jar d -f -r /tmp/helper-mini.apk -o /tmp/helper-dec >/tmp/apktool61-helper.log
+HELPER_SMALI="$(find /tmp/helper-dec -type f -path '*/com/verudanava/nava/StartupOverlay61.smali' | head -1)"
+test -n "$HELPER_SMALI" && test -f "$HELPER_SMALI"
+grep -q 'nava-startup-v12161' "$HELPER_SMALI"
+printf 'startup_helper_compile=ok\n' >> "$STATUS"
+
+# Decode 12.1.60 smali-only: resource table/layout/theme stay raw and are never linked.
+java -jar /tmp/apktool.jar d -f -r /tmp/current/Nava.apk -o /tmp/base61-dec >/tmp/apktool61-decode.log
+MAIN_SMALI="$(find /tmp/base61-dec -type f -path '*/com/verudanava/nava/MainActivity.smali' | head -1)"
+GX_SMALI="$(find /tmp/base61-dec -type f -name 'gx.smali' | head -1)"
+E00_SMALI="$(find /tmp/base61-dec -type f -name 'e00.smali' | head -1)"
+test -n "$MAIN_SMALI" && test -n "$GX_SMALI" && test -n "$E00_SMALI"
+grep -q 'Ljava/net/HttpURLConnection;' "$E00_SMALI"
+! grep -q 'Landroid/app/DownloadManager$Request;' "$E00_SMALI"
+python android-patch/v12.1.61/patch-smali.py /tmp/base61-dec | tee /tmp/patch61-smali.txt
+grep -q 'SMALI_PATCH_OK startup=StartupOverlay61 install+hide resources=untouched' /tmp/patch61-smali.txt
+HELPER_DEST="$(dirname "$MAIN_SMALI")/StartupOverlay61.smali"
+cp "$HELPER_SMALI" "$HELPER_DEST"
+grep -q 'StartupOverlay61;->install' "$MAIN_SMALI"
+grep -q 'StartupOverlay61;->hide' "$GX_SMALI"
+grep -q 'nava-startup-v12161' "$HELPER_DEST"
+printf 'smali_patch=ok\nresource_rebuild=disabled\n' >> "$STATUS"
+
+# Smali-only rebuild. With -r decoded base, apktool does not relink Material resources.
+java -jar /tmp/apktool.jar b /tmp/base61-dec -o /tmp/rebuilt61.apk >/tmp/apktool61-build.log
+unzip -p /tmp/rebuilt61.apk classes.dex > /tmp/classes1-61.dex
+grep -aq 'StartupOverlay61' /tmp/classes1-61.dex
+grep -aq 'NavaAndroidApp/12.1.47' /tmp/classes1-61.dex
+grep -aq 'Nava-Android/12.1.60' /tmp/classes1-61.dex
+printf 'classes1_rebuild=ok\n' >> "$STATUS"
+
+# Assemble final APK from the signed 12.1.60 container, changing only manifest/classes1/assets.
+python android-patch/v12.1.61/patch-apk.py \
+  /tmp/current/Nava.apk /tmp/classes1-61.dex \
   android-patch/v12.1.61/notification-v12161.js \
   android-patch/v12.1.61/ui-v12161.css \
   android-patch/v12.1.61/offline.html \
-  android-patch/v12.1.61/activity_main.xml | tee /tmp/patch61.txt
-grep -q 'DECODED_PATCH_OK versionName=12.1.61 versionCode=77 startup=splash-until-page-finished offline=probe notification=v9-clear-delete' /tmp/patch61.txt
-node --check /tmp/base61-dec/assets/nava_app_v11.js
-printf 'decoded_patch=ok\n' >> "$STATUS"
+  /tmp/Nava-unsigned.apk | tee /tmp/patch61.txt
+grep -q 'PATCH_OK versionName=12.1.61 versionCode=77 base=12.1.60 resources=byte-preserved startup=native-overlay notifications=v9 offline=probe updater=60-preserved' /tmp/patch61.txt
 
-java -jar /tmp/apktool.jar b /tmp/base61-dec -o /tmp/rebuilt61.apk >/tmp/apktool61-build.log
-
-# Keep cancellation/offline runtime dexes from the exact 12.1.60 base byte-for-byte.
-python - <<'PY'
-import zipfile
-from pathlib import Path
-base=Path('/tmp/current/Nava.apk'); rebuilt=Path('/tmp/rebuilt61.apk'); out=Path('/tmp/Nava-unsigned.apk')
-def oldsig(name):
-    u=name.upper(); leaf=u.rsplit('/',1)[-1]
-    return u.startswith('META-INF/') and (leaf=='MANIFEST.MF' or leaf.endswith(('.SF','.RSA','.DSA','.EC')))
-with zipfile.ZipFile(base) as b, zipfile.ZipFile(rebuilt) as r, zipfile.ZipFile(out,'w') as z:
-    bnames=set(b.namelist())
-    for info in r.infolist():
-        if oldsig(info.filename): continue
-        data=r.read(info.filename)
-        if info.filename in ('classes2.dex','classes3.dex') and info.filename in bnames:
-            data=b.read(info.filename)
-        z.writestr(info,data)
-PY
-
+unzip -p /tmp/Nava-unsigned.apk resources.arsc > /tmp/resources-final.arsc
 unzip -p /tmp/Nava-unsigned.apk classes2.dex > /tmp/classes2-final.dex
+cmp -s /tmp/resources-base.arsc /tmp/resources-final.arsc
 cmp -s /tmp/classes2-base.dex /tmp/classes2-final.dex
 if [ -f /tmp/classes3-base.dex ]; then unzip -p /tmp/Nava-unsigned.apk classes3.dex > /tmp/classes3-final.dex; cmp -s /tmp/classes3-base.dex /tmp/classes3-final.dex; fi
 unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/final61.js
@@ -90,7 +113,7 @@ grep -q 'nava-notification-delete-v12161' /tmp/final61.js
 grep -q 'Nava Android 12.1.61 — startup and v9 notification UI' /tmp/final61.css
 grep -q 'setInterval(probe,2500)' /tmp/final61-offline.html
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='77'.*versionName='12.1.61'"
-printf 'assemble=ok\nversionName=12.1.61\nversionCode=77\nclasses2_preserved=ok\nclasses3_preserved=ok\n' >> "$STATUS"
+printf 'assemble=ok\nversionName=12.1.61\nversionCode=77\nresources_preserved=ok\nclasses2_preserved=ok\nclasses3_preserved=ok\n' >> "$STATUS"
 
 # Align and sign with the existing production certificate.
 "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk
@@ -105,28 +128,31 @@ test "$CERT" = "$EXPECTED_CERT_SHA256"
 APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
 printf 'zipalign=ok\nsigning=ok\ncert_sha256=%s\napk_sha256=%s\n' "$CERT" "$APK_SHA" >> "$STATUS"
 
-# Final semantic proof from the signed APK.
-java -jar /tmp/apktool.jar d -f /tmp/Nava.apk -o /tmp/final61-dec >/tmp/apktool61-final.log
-GX="$(find /tmp/final61-dec -type f -name 'gx.smali' | head -1)"
-E00="$(find /tmp/final61-dec -type f -name 'e00.smali' | head -1)"
-test -n "$GX" && test -n "$E00"
-grep -q 'Landroid/webkit/WebView;->setVisibility(I)V' "$GX"
-grep -q 'Ljava/net/HttpURLConnection;' "$E00"
-! grep -q 'Landroid/app/DownloadManager$Request;' "$E00"
-grep -q 'android:visibility="invisible"' /tmp/final61-dec/res/layout/activity_main.xml
-grep -q 'Yükleniyor…' /tmp/final61-dec/res/layout/activity_main.xml
-grep -q 'android:windowBackground">#ffc6dafc' /tmp/final61-dec/res/values/styles.xml
+# Final semantic proof from signed APK, again smali-only to avoid resource relinking.
+java -jar /tmp/apktool.jar d -f -r /tmp/Nava.apk -o /tmp/final61-dec >/tmp/apktool61-final.log
+FINAL_MAIN="$(find /tmp/final61-dec -type f -path '*/com/verudanava/nava/MainActivity.smali' | head -1)"
+FINAL_GX="$(find /tmp/final61-dec -type f -name 'gx.smali' | head -1)"
+FINAL_E00="$(find /tmp/final61-dec -type f -name 'e00.smali' | head -1)"
+FINAL_START="$(find /tmp/final61-dec -type f -path '*/com/verudanava/nava/StartupOverlay61.smali' | head -1)"
+test -n "$FINAL_MAIN" && test -n "$FINAL_GX" && test -n "$FINAL_E00" && test -n "$FINAL_START"
+grep -q 'StartupOverlay61;->install' "$FINAL_MAIN"
+grep -q 'StartupOverlay61;->hide' "$FINAL_GX"
+grep -q 'nava-startup-v12161' "$FINAL_START"
+grep -q 'Ljava/net/HttpURLConnection;' "$FINAL_E00"
+! grep -q 'Landroid/app/DownloadManager$Request;' "$FINAL_E00"
 unzip -p /tmp/Nava.apk classes.dex > /tmp/classes1-final61.dex
 grep -aq 'NavaAndroidApp/12.1.47' /tmp/classes1-final61.dex
 grep -aq 'Nava-Android/12.1.60' /tmp/classes1-final61.dex
-printf 'final_semantic_check=ok\nwebview_ua=12.1.47-preserved\nupdater_60_direct_https=preserved\n' >> "$STATUS"
+unzip -p /tmp/Nava.apk resources.arsc > /tmp/resources-signed.arsc
+cmp -s /tmp/resources-base.arsc /tmp/resources-signed.arsc
+printf 'final_semantic_check=ok\nwebview_ua=12.1.47-preserved\nupdater_60_direct_https=preserved\nresources_byte_preserved=ok\n' >> "$STATUS"
 
 if gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
   gh release upload "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --clobber
   gh release edit "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.61' --latest
   printf 'release=v12.1.61\nasset=Nava.apk\nrelease_existing=yes\n' >> "$STATUS"
 else
-  NOTES='12.1.61 açılış, çevrimdışı kurtarma ve bildirim deneyimi. Uygulama ilk açılışta beyaz ekran yerine Nava mavisi üzerinde launcher logosu ve Yükleniyor ekranı gösterir; ilk sayfa tamamlandığında WebView görünür olur ve sonraki sayfa geçişlerinde splash tekrar gösterilmez. Çevrimdışı ekranında Tekrar dene, Android online olayı ve 2.5 saniyelik gerçek ağ kontrolü birlikte çalışır. Gerçek v9 bildirim paneline Tümünü temizle ve tek bildirim silme kontrolleri eklenmiştir. 12.1.60 doğrudan HTTPS updater, 12.1.59 cilt bazlı indirme sırası ve gerçek iptal sistemi korunmuştur.'
+  NOTES='12.1.61 açılış, çevrimdışı kurtarma ve bildirim deneyimi. Açılışta sistem splash sonrası beyaz flaş yerine native Nava mavi yükleme katmanı gösterilir; launcher logosu, Nava ve Yükleniyor göstergesi ilk sayfa tamamlandığında kapanır. Çevrimdışı ekranında Tekrar dene, Android online olayı ve 2.5 saniyelik ağ kontrolü birlikte çalışır. Gerçek v9 bildirim paneline Tümünü temizle ve tek bildirim silme kontrolleri eklenmiştir. Android resource tablosu 12.1.60 ile byte-byte aynıdır; 12.1.60 doğrudan HTTPS updater ve 12.1.59 cilt bazlı indirme/iptal sistemi korunur.'
   gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.61' --notes "$NOTES" --latest
   printf 'release=v12.1.61\nasset=Nava.apk\nrelease_existing=no\n' >> "$STATUS"
 fi
