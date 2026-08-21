@@ -1,0 +1,2 @@
+trigger=2026-08-22T01:15+03:00
+purpose=run signed 12.1.58 release workflow after workflow landed on main
