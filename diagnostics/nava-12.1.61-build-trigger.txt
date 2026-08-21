@@ -1,0 +1,1 @@
+Trigger isolated apktool build diagnostic after workflow exists on main.
