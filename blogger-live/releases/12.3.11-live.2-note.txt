@@ -1,0 +1,4 @@
+Nava Blogger live 12.3.11-live.2
+- Keeps 12.3.11-live.1 language variants and notification deletion.
+- Caps legacy chapter-list SVG/font icons at 18px on desktop to prevent oversized icons below chapter rows.
+- Manifest version bump busts loader cache.
