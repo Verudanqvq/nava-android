@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:id="@id/root" android:background="#ffc6dafc" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:layout_gravity="center" android:orientation="vertical" android:gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingBottom="44.0dip">
+        <ImageView android:layout_width="86.0dip" android:layout_height="86.0dip" android:src="@mipmap/ic_launcher" android:scaleType="centerInside" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="14.0dip" android:text="Nava" android:textColor="#ff20334f" android:textSize="22.0sp" android:textStyle="bold" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5.0dip" android:text="Yükleniyor…" android:textColor="#ff5c7394" android:textSize="12.0sp" />
+    </LinearLayout>
+    <WebView android:id="@id/webView" android:visibility="invisible" android:background="#fffafafa" android:layout_width="fill_parent" android:layout_height="fill_parent" />
+    <ProgressBar android:layout_gravity="top" android:id="@id/pageProgress" android:visibility="gone" android:layout_width="fill_parent" android:layout_height="3.0dip" android:max="100" android:progress="0" android:progressTint="#ff4f78b5" android:progressBackgroundTint="@android:color/transparent" style="?android:progressBarStyleHorizontal" />
+</FrameLayout>
