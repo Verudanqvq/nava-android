@@ -252,914 +252,6 @@ public final class h00 {
 
 === RELATED SOURCES ===
 
------ /tmp/jadx-out/sources/defpackage/g00.java -----
-package defpackage;
-
-/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
-/* loaded from: classes.dex */
-public final class g00 {
-    public final String a;
-    public final String b;
-    public final String c;
-    public final String d;
-
-    public g00(String str, String str2, String str3, String str4) {
-        str2.getClass();
-        this.a = str;
-        this.b = str2;
-        this.c = str3;
-        this.d = str4;
-    }
-
-    public final boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof g00)) {
-            return false;
-        }
-        g00 g00Var = (g00) obj;
-        return this.a.equals(g00Var.a) && rt.b(this.b, g00Var.b) && this.c.equals(g00Var.c) && this.d.equals(g00Var.d);
-    }
-
-    public final int hashCode() {
-        return this.d.hashCode() + ((this.c.hashCode() + ((this.b.hashCode() + (this.a.hashCode() * 31)) * 31)) * 31);
-    }
-
-    public final String toString() {
-        return "ReleaseInfo(version=" + this.a + ", notes=" + this.b + ", downloadUrl=" + this.c + ", digest=" + this.d + ")";
-    }
-}
-
------ /tmp/jadx-out/sources/defpackage/xr.java -----
-package defpackage;
-
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageInstaller;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import com.google.android.gms.common.GooglePlayServicesIncorrectManifestValueException;
-import com.google.android.gms.common.GooglePlayServicesMissingManifestValueException;
-import com.verudanava.nava.R;
-import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
-/* loaded from: classes.dex */
-public abstract class xr {
-    public static final int a;
-
-    static {
-        AtomicBoolean atomicBoolean = ds.a;
-        a = 12451000;
-    }
-
-    public Intent a(int i, Context context, String str) {
-        if (i != 1 && i != 2) {
-            if (i != 3) {
-                return null;
-            }
-            Uri uriFromParts = Uri.fromParts("package", "com.google.android.gms", null);
-            Intent intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS");
-            intent.setData(uriFromParts);
-            return intent;
-        }
-        if (context != null && qh.q(context)) {
-            Intent intent2 = new Intent("com.google.android.clockwork.home.UPDATE_ANDROID_WEAR_ACTION");
-            intent2.setPackage("com.google.android.wearable.app");
-            return intent2;
-        }
-        StringBuilder sb = new StringBuilder("gcore_");
-        sb.append(a);
-        sb.append("-");
-        if (!TextUtils.isEmpty(str)) {
-            sb.append(str);
-        }
-        sb.append("-");
-        if (context != null) {
-            sb.append(context.getPackageName());
-        }
-        sb.append("-");
-        if (context != null) {
-            try {
-                qf qfVarA = qi0.a(context);
-                sb.append(qfVarA.a.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode);
-            } catch (PackageManager.NameNotFoundException unused) {
-            }
-        }
-        String string = sb.toString();
-        Intent intent3 = new Intent("android.intent.action.VIEW");
-        Uri.Builder builderAppendQueryParameter = Uri.parse("market://details").buildUpon().appendQueryParameter("id", "com.google.android.gms");
-        if (!TextUtils.isEmpty(string)) {
-            builderAppendQueryParameter.appendQueryParameter("pcampaignid", string);
-        }
-        intent3.setData(builderAppendQueryParameter.build());
-        intent3.setPackage("com.android.vending");
-        intent3.addFlags(524288);
-        return intent3;
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:103:0x020f  */
-    /* JADX WARN: Removed duplicated region for block: B:115:0x024b A[RETURN] */
-    /* JADX WARN: Removed duplicated region for block: B:116:0x024c A[RETURN] */
-    /* JADX WARN: Removed duplicated region for block: B:48:0x00dc  */
-    /* JADX WARN: Removed duplicated region for block: B:74:0x015c  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-    */
-    public int b(Context context, int i) throws PackageManager.NameNotFoundException {
-        boolean z;
-        PackageInfo packageInfo;
-        Bundle bundle;
-        AtomicBoolean atomicBoolean = ds.a;
-        try {
-            context.getResources().getString(R.string.common_google_play_services_unknown_issue);
-        } catch (Throwable unused) {
-            Log.e("GooglePlayServicesUtil", "The Google Play services resources were not found. Check your project configuration to ensure that the resources are included.");
-        }
-        boolean z2 = true;
-        if (!"com.google.android.gms".equals(context.getPackageName()) && !ds.d.get()) {
-            synchronized (ht.g) {
-                try {
-                    if (!ht.h) {
-                        ht.h = true;
-                        try {
-                            bundle = qi0.a(context).a.getPackageManager().getApplicationInfo(context.getPackageName(), 128).metaData;
-                        } catch (PackageManager.NameNotFoundException e) {
-                            Log.wtf("MetadataValueReader", "This should never happen.", e);
-                        }
-                        if (bundle != null) {
-                            bundle.getString("com.google.app.id");
-                            ht.i = bundle.getInt("com.google.android.gms.version");
-                        }
-                    }
-                } finally {
-                }
-            }
-            int i2 = ht.i;
-            if (i2 == 0) {
-                throw new GooglePlayServicesMissingManifestValueException("A required meta-data tag in your app's AndroidManifest.xml does not exist.  You must have the following declaration within the <application> element:     <meta-data android:name=\"com.google.android.gms.version\" android:value=\"@integer/google_play_services_version\" />");
-            }
-            if (i2 != 12451000) {
-                int i3 = a;
-                StringBuilder sb = new StringBuilder(String.valueOf(i3).length() + 104 + String.valueOf(i2).length() + 194);
-                sb.append("The meta-data tag in your app's AndroidManifest.xml does not have the right value.  Expected ");
-                sb.append(i3);
-                sb.append(" but found ");
-                sb.append(i2);
-                sb.append(".  You must have the following declaration within the <application> element:     <meta-data android:name=\"com.google.android.gms.version\" android:value=\"@integer/google_play_services_version\" />");
-                throw new GooglePlayServicesIncorrectManifestValueException(sb.toString());
-            }
-        }
-        if (qh.q(context)) {
-            z = false;
-        } else {
-            Boolean boolValueOf = qh.k;
-            if (boolValueOf == null) {
-                boolValueOf = Boolean.valueOf(context.getPackageManager().hasSystemFeature("android.hardware.type.embedded"));
-                qh.k = boolValueOf;
-            }
-            if (!boolValueOf.booleanValue()) {
-                z = true;
-            }
-        }
-        l9.d(i >= 0);
-        String packageName = context.getPackageName();
-        PackageManager packageManager = context.getPackageManager();
-        int i4 = 9;
-        if (z) {
-            try {
-                packageInfo = packageManager.getPackageInfo("com.android.vending", Build.VERSION.SDK_INT >= 28 ? 134225984 : 8256);
-            } catch (PackageManager.NameNotFoundException unused2) {
-                Log.w("GooglePlayServicesUtil", String.valueOf(packageName).concat(" requires the Google Play Store, but it is missing."));
-            }
-        } else {
-            packageInfo = null;
-        }
-        try {
-            PackageInfo packageInfo2 = packageManager.getPackageInfo("com.google.android.gms", Build.VERSION.SDK_INT >= 28 ? 134217792 : 64);
-            gs.c(context);
-            if (!gs.d(packageInfo2, true)) {
-                Log.w("GooglePlayServicesUtil", String.valueOf(packageName).concat(" requires Google Play services, but their signature is invalid."));
-            } else if (z) {
-                l9.h(packageInfo);
-                if (!gs.d(packageInfo, true)) {
-                    Log.w("GooglePlayServicesUtil", String.valueOf(packageName).concat(" requires Google Play Store, but its signature is invalid."));
-                } else if (!z || packageInfo == null || packageInfo.signatures[0].equals(packageInfo2.signatures[0])) {
-                    int i5 = packageInfo2.versionCode;
-                    if ((i5 == -1 ? -1 : i5 / 1000) < (i != -1 ? i / 1000 : -1)) {
-                        StringBuilder sb2 = new StringBuilder(String.valueOf(packageName).length() + 49 + String.valueOf(i).length() + 11 + String.valueOf(i5).length());
-                        sb2.append("Google Play services out of date for ");
-                        sb2.append(packageName);
-                        sb2.append(".  Requires ");
-                        sb2.append(i);
-                        sb2.append(" but found ");
-                        sb2.append(i5);
-                        Log.w("GooglePlayServicesUtil", sb2.toString());
-                        i4 = 2;
-                    } else {
-                        ApplicationInfo applicationInfo = packageInfo2.applicationInfo;
-                        if (applicationInfo == null) {
-                            try {
-                                applicationInfo = packageManager.getApplicationInfo("com.google.android.gms", 0);
-                            } catch (PackageManager.NameNotFoundException e2) {
-                                Log.wtf("GooglePlayServicesUtil", String.valueOf(packageName).concat(" requires Google Play services, but they're missing when getting application info."), e2);
-                                i4 = 1;
-                                if (i4 != 18) {
-                                }
-                                if (z2) {
-                                }
-                            }
-                        }
-                        i4 = !applicationInfo.enabled ? 3 : 0;
-                    }
-                } else {
-                    Log.w("GooglePlayServicesUtil", String.valueOf(packageName).concat(" requires Google Play Store, but its signature doesn't match that of Google Play services."));
-                }
-            }
-        } catch (PackageManager.NameNotFoundException unused3) {
-            Log.w("GooglePlayServicesUtil", String.valueOf(packageName).concat(" requires Google Play services, but they are missing."));
-        }
-        if (i4 != 18) {
-            if (i4 == 1) {
-                try {
-                    Iterator<PackageInstaller.SessionInfo> it = context.getPackageManager().getPackageInstaller().getAllSessions().iterator();
-                    while (true) {
-                        if (!it.hasNext()) {
-                            z2 = context.getPackageManager().getApplicationInfo("com.google.android.gms", 8192).enabled;
-                            break;
-                        }
-                        if ("com.google.android.gms".equals(it.next().getAppPackageName())) {
-                            break;
-                        }
-                    }
-                } catch (PackageManager.NameNotFoundException | Exception unused4) {
-                }
-            } else {
-                z2 = false;
-            }
-        }
-        if (z2) {
-            return i4;
-        }
-        return 18;
-    }
-}
-
------ /tmp/jadx-out/sources/defpackage/an.java -----
-package defpackage;
-
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.text.TextUtils;
-import android.util.JsonReader;
-import android.util.Log;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Pattern;
-import java.util.zip.GZIPOutputStream;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
-/* loaded from: classes.dex */
-public final class an {
-    public static final Pattern d = Pattern.compile("[0-9]+s");
-    public static final Charset e = Charset.forName("UTF-8");
-    public final Context a;
-    public final i40 b;
-    public final x50 c;
-
-    public an(Context context, i40 i40Var) {
-        this.a = context;
-        this.b = i40Var;
-        x50 x50Var = new x50();
-        ks ksVar = ks.k;
-        if (ksVar == null) {
-            Pattern pattern = ff0.a;
-            ksVar = new ks(23);
-            ks.k = ksVar;
-        }
-        if (ff0.b == null) {
-            ff0.b = new ff0(ksVar);
-        }
-        this.c = x50Var;
-    }
-
-    public static URL a(String str) {
-        try {
-            return new URL("https://firebaseinstallations.googleapis.com/v1/".concat(str));
-        } catch (MalformedURLException e2) {
-            throw new en(e2.getMessage());
-        }
-    }
-
-    public static void b(HttpURLConnection httpURLConnection, String str, String str2, String str3) throws IOException {
-        String str4;
-        InputStream errorStream = httpURLConnection.getErrorStream();
-        String str5 = null;
-        if (errorStream != null) {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(errorStream, e));
-            try {
-                StringBuilder sb = new StringBuilder();
-                while (true) {
-                    String line = bufferedReader.readLine();
-                    if (line == null) {
-                        break;
-                    }
-                    sb.append(line);
-                    sb.append('\n');
-                }
-                str5 = String.format("Error when communicating with the Firebase Installations server API. HTTP response: [%d %s: %s]", Integer.valueOf(httpURLConnection.getResponseCode()), httpURLConnection.getResponseMessage(), sb);
-            } catch (IOException unused) {
-            } catch (Throwable th) {
-                try {
-                    bufferedReader.close();
-                } catch (IOException unused2) {
-                }
-                throw th;
-            }
-            try {
-                bufferedReader.close();
-            } catch (IOException unused3) {
-            }
-        }
-        if (TextUtils.isEmpty(str5)) {
-            return;
-        }
-        Log.w("Firebase-Installations", str5);
-        if (TextUtils.isEmpty(str)) {
-            str4 = "";
-        } else {
-            str4 = ", " + str;
-        }
-        Log.w("Firebase-Installations", "Firebase options used while communicating with Firebase server APIs: " + str2 + ", " + str3 + str4);
-    }
-
-    public static long d(String str) {
-        l9.c("Invalid Expiration Timestamp.", d.matcher(str).matches());
-        if (str == null || str.length() == 0) {
-            return 0L;
-        }
-        return Long.parseLong(str.substring(0, str.length() - 1));
-    }
-
-    public static y7 e(HttpURLConnection httpURLConnection) throws IOException {
-        InputStream inputStream = httpURLConnection.getInputStream();
-        JsonReader jsonReader = new JsonReader(new InputStreamReader(inputStream, e));
-        byte b = (byte) (0 | 1);
-        jsonReader.beginObject();
-        long jD = 0;
-        String strNextString = null;
-        String strNextString2 = null;
-        String strNextString3 = null;
-        String strNextString4 = null;
-        m8 m8Var = null;
-        while (jsonReader.hasNext()) {
-            String strNextName = jsonReader.nextName();
-            if (strNextName.equals("name")) {
-                strNextString2 = jsonReader.nextString();
-            } else if (strNextName.equals("fid")) {
-                strNextString3 = jsonReader.nextString();
-            } else if (strNextName.equals("refreshToken")) {
-                strNextString4 = jsonReader.nextString();
-            } else if (strNextName.equals("authToken")) {
-                jsonReader.beginObject();
-                while (jsonReader.hasNext()) {
-                    String strNextName2 = jsonReader.nextName();
-                    if (strNextName2.equals("token")) {
-                        strNextString = jsonReader.nextString();
-                    } else if (strNextName2.equals("expiresIn")) {
-                        jD = d(jsonReader.nextString());
-                        b = (byte) (b | 1);
-                    } else {
-                        jsonReader.skipValue();
-                    }
-                }
-                if (b != 1) {
-                    mi.k("Missing required properties: tokenExpirationTimestamp");
-                    return null;
-                }
-                m8Var = new m8(strNextString, jD, 0);
-                jsonReader.endObject();
-            } else {
-                jsonReader.skipValue();
-            }
-        }
-        jsonReader.endObject();
-        jsonReader.close();
-        inputStream.close();
-        return new y7(strNextString2, strNextString3, strNextString4, m8Var, 1);
-    }
-
-    public static m8 f(HttpURLConnection httpURLConnection) throws IOException {
-        InputStream inputStream = httpURLConnection.getInputStream();
-        JsonReader jsonReader = new JsonReader(new InputStreamReader(inputStream, e));
-        byte b = (byte) (0 | 1);
-        jsonReader.beginObject();
-        long jD = 0;
-        String strNextString = null;
-        while (jsonReader.hasNext()) {
-            String strNextName = jsonReader.nextName();
-            if (strNextName.equals("token")) {
-                strNextString = jsonReader.nextString();
-            } else if (strNextName.equals("expiresIn")) {
-                jD = d(jsonReader.nextString());
-                b = (byte) (b | 1);
-            } else {
-                jsonReader.skipValue();
-            }
-        }
-        jsonReader.endObject();
-        jsonReader.close();
-        inputStream.close();
-        if (b == 1) {
-            return new m8(strNextString, jD, 1);
-        }
-        mi.k("Missing required properties: tokenExpirationTimestamp");
-        return null;
-    }
-
-    public static void g(HttpURLConnection httpURLConnection, String str, String str2) throws JSONException, IOException {
-        try {
-            JSONObject jSONObject = new JSONObject();
-            jSONObject.put("fid", str);
-            jSONObject.put("appId", str2);
-            jSONObject.put("authVersion", "FIS_v2");
-            jSONObject.put("sdkVersion", "a:19.1.2");
-            i(httpURLConnection, jSONObject.toString().getBytes("UTF-8"));
-        } catch (JSONException e2) {
-            throw new IllegalStateException(e2);
-        }
-    }
-
-    public static void h(HttpURLConnection httpURLConnection) throws JSONException, IOException {
-        try {
-            JSONObject jSONObject = new JSONObject();
-            jSONObject.put("sdkVersion", "a:19.1.2");
-            JSONObject jSONObject2 = new JSONObject();
-            jSONObject2.put("installation", jSONObject);
-            i(httpURLConnection, jSONObject2.toString().getBytes("UTF-8"));
-        } catch (JSONException e2) {
-            throw new IllegalStateException(e2);
-        }
-    }
-
-    public static void i(HttpURLConnection httpURLConnection, byte[] bArr) throws IOException {
-        OutputStream outputStream = httpURLConnection.getOutputStream();
-        if (outputStream == null) {
-            throw new IOException("Cannot send request to FIS servers. No OutputStream available.");
-        }
-        GZIPOutputStream gZIPOutputStream = new GZIPOutputStream(outputStream);
-        try {
-            gZIPOutputStream.write(bArr);
-        } finally {
-            try {
-                gZIPOutputStream.close();
-                outputStream.close();
-            } catch (IOException unused) {
-            }
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:30:0x00a6  */
-    /* JADX WARN: Removed duplicated region for block: B:32:0x00a9 A[Catch: NameNotFoundException -> 0x00c2, TryCatch #2 {NameNotFoundException -> 0x00c2, blocks: (B:15:0x006a, B:17:0x0082, B:23:0x008c, B:29:0x0099, B:32:0x00a9, B:35:0x00c4, B:37:0x00ce, B:38:0x00e7), top: B:48:0x006a }] */
-    /* JADX WARN: Removed duplicated region for block: B:35:0x00c4 A[Catch: NameNotFoundException -> 0x00c2, TryCatch #2 {NameNotFoundException -> 0x00c2, blocks: (B:15:0x006a, B:17:0x0082, B:23:0x008c, B:29:0x0099, B:32:0x00a9, B:35:0x00c4, B:37:0x00ce, B:38:0x00e7), top: B:48:0x006a }] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-    */
-    public final HttpURLConnection c(URL url, String str) {
-        byte[] bArrDigest;
-        MessageDigest messageDigest;
-        try {
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setConnectTimeout(10000);
-            httpURLConnection.setUseCaches(false);
-            httpURLConnection.setReadTimeout(10000);
-            httpURLConnection.addRequestProperty("Content-Type", "application/json");
-            httpURLConnection.addRequestProperty("Accept", "application/json");
-            httpURLConnection.addRequestProperty("Content-Encoding", "gzip");
-            httpURLConnection.addRequestProperty("Cache-Control", "no-cache");
-            Context context = this.a;
-            httpURLConnection.addRequestProperty("X-Android-Package", context.getPackageName());
-            ls lsVar = (ls) this.b.get();
-            if (lsVar != null) {
-                try {
-                    httpURLConnection.addRequestProperty("x-firebase-client", (String) yd0.a(((yh) lsVar).a()));
-                } catch (InterruptedException e2) {
-                    Thread.currentThread().interrupt();
-                    Log.w("ContentValues", "Failed to get heartbeats header", e2);
-                } catch (ExecutionException e3) {
-                    Log.w("ContentValues", "Failed to get heartbeats header", e3);
-                }
-            }
-            String string = null;
-            try {
-                PackageInfo packageInfo = qi0.a(context).a.getPackageManager().getPackageInfo(context.getPackageName(), 64);
-                Signature[] signatureArr = packageInfo.signatures;
-                if (signatureArr == null || signatureArr.length != 1) {
-                    bArrDigest = null;
-                    if (bArrDigest != null) {
-                        Log.e("ContentValues", "Could not get fingerprint hash for package: " + context.getPackageName());
-                    } else {
-                        int length = bArrDigest.length;
-                        StringBuilder sb = new StringBuilder(length + length);
-                        for (int i = 0; i < length; i++) {
-                            char[] cArr = rt.b;
-                            sb.append(cArr[(bArrDigest[i] & 240) >>> 4]);
-                            sb.append(cArr[bArrDigest[i] & 15]);
-                        }
-                        string = sb.toString();
-                    }
-                } else {
-                    int i2 = 0;
-                    while (true) {
-                        if (i2 >= 2) {
-                            messageDigest = null;
-                            break;
-                        }
-                        try {
-                            messageDigest = MessageDigest.getInstance("SHA1");
-                        } catch (NoSuchAlgorithmException unused) {
-                        }
-                        if (messageDigest != null) {
-                            break;
-                        }
-                        i2++;
-                    }
-                    if (messageDigest != null) {
-                        bArrDigest = messageDigest.digest(packageInfo.signatures[0].toByteArray());
-                    }
-                    if (bArrDigest != null) {
-                    }
-                }
-            } catch (PackageManager.NameNotFoundException e4) {
-                Log.e("ContentValues", "No such package: " + context.getPackageName(), e4);
-            }
-            httpURLConnection.addRequestProperty("X-Android-Cert", string);
-            httpURLConnection.addRequestProperty("x-goog-api-key", str);
-            return httpURLConnection;
-        } catch (IOException unused2) {
-            throw new en("Firebase Installations Service is unavailable. Please try again later.");
-        }
-    }
-}
-
------ /tmp/jadx-out/sources/defpackage/y3.java -----
-package defpackage;
-
-import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.os.Build;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Base64;
-import android.util.Log;
-import com.verudanava.nava.R;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-
-/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
-/* loaded from: classes.dex */
-public final class y3 {
-    public Object a;
-    public Object b;
-    public Object c;
-    public Object d;
-    public Object e;
-    public Object f;
-
-    public y3(String str, String str2, Set set) {
-        Set setUnmodifiableSet = set == null ? Collections.EMPTY_SET : Collections.unmodifiableSet(set);
-        this.a = setUnmodifiableSet;
-        Map map = Collections.EMPTY_MAP;
-        this.c = str;
-        this.d = str2;
-        this.e = x90.c;
-        HashSet hashSet = new HashSet(setUnmodifiableSet);
-        Iterator it = map.values().iterator();
-        if (!it.hasNext()) {
-            this.b = Collections.unmodifiableSet(hashSet);
-        } else {
-            it.next().getClass();
-            w60.a();
-            throw null;
-        }
-    }
-
-    public static boolean b(int[] iArr, int i) {
-        for (int i2 : iArr) {
-            if (i2 == i) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static ColorStateList d(Context context, int i) {
-        int iC = pc0.c(context, R.attr.colorControlHighlight);
-        int iB = pc0.b(context, R.attr.colorButtonNormal);
-        int[] iArr = pc0.b;
-        int[] iArr2 = pc0.d;
-        int iB2 = jc.b(iC, i);
-        return new ColorStateList(new int[][]{iArr, iArr2, pc0.c, pc0.f}, new int[]{iB, iB2, jc.b(iC, i), i});
-    }
-
-    public static LayerDrawable e(c60 c60Var, Context context, int i) throws Resources.NotFoundException {
-        BitmapDrawable bitmapDrawable;
-        BitmapDrawable bitmapDrawable2;
-        BitmapDrawable bitmapDrawable3;
-        int dimensionPixelSize = context.getResources().getDimensionPixelSize(i);
-        Drawable drawableD = c60Var.d(context, R.drawable.abc_star_black_48dp);
-        Drawable drawableD2 = c60Var.d(context, R.drawable.abc_star_half_black_48dp);
-        if ((drawableD instanceof BitmapDrawable) && drawableD.getIntrinsicWidth() == dimensionPixelSize && drawableD.getIntrinsicHeight() == dimensionPixelSize) {
-            bitmapDrawable = (BitmapDrawable) drawableD;
-            bitmapDrawable2 = new BitmapDrawable(bitmapDrawable.getBitmap());
-        } else {
-            Bitmap bitmapCreateBitmap = Bitmap.createBitmap(dimensionPixelSize, dimensionPixelSize, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmapCreateBitmap);
-            drawableD.setBounds(0, 0, dimensionPixelSize, dimensionPixelSize);
-            drawableD.draw(canvas);
-            bitmapDrawable = new BitmapDrawable(bitmapCreateBitmap);
-            bitmapDrawable2 = new BitmapDrawable(bitmapCreateBitmap);
-        }
-        bitmapDrawable2.setTileModeX(Shader.TileMode.REPEAT);
-        if ((drawableD2 instanceof BitmapDrawable) && drawableD2.getIntrinsicWidth() == dimensionPixelSize && drawableD2.getIntrinsicHeight() == dimensionPixelSize) {
-            bitmapDrawable3 = (BitmapDrawable) drawableD2;
-        } else {
-            Bitmap bitmapCreateBitmap2 = Bitmap.createBitmap(dimensionPixelSize, dimensionPixelSize, Bitmap.Config.ARGB_8888);
-            Canvas canvas2 = new Canvas(bitmapCreateBitmap2);
-            drawableD2.setBounds(0, 0, dimensionPixelSize, dimensionPixelSize);
-            drawableD2.draw(canvas2);
-            bitmapDrawable3 = new BitmapDrawable(bitmapCreateBitmap2);
-        }
-        LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{bitmapDrawable, bitmapDrawable3, bitmapDrawable2});
-        layerDrawable.setId(0, android.R.id.background);
-        layerDrawable.setId(1, android.R.id.secondaryProgress);
-        layerDrawable.setId(2, android.R.id.progress);
-        return layerDrawable;
-    }
-
-    public static void h(Drawable drawable, int i, PorterDuff.Mode mode) {
-        PorterDuffColorFilter porterDuffColorFilterF;
-        int[] iArr = sj.a;
-        Drawable drawableMutate = drawable.mutate();
-        if (mode == null) {
-            mode = z3.b;
-        }
-        PorterDuff.Mode mode2 = z3.b;
-        synchronized (z3.class) {
-            porterDuffColorFilterF = c60.f(i, mode);
-        }
-        drawableMutate.setColorFilter(porterDuffColorFilterF);
-    }
-
-    public void a(String str, String str2) {
-        HashMap map = (HashMap) this.f;
-        if (map != null) {
-            map.put(str, str2);
-        } else {
-            mi.k("Property \"autoMetadata\" has not been set");
-        }
-    }
-
-    public v7 c() {
-        String strConcat = ((String) this.a) == null ? " transportName" : "";
-        if (((el) this.c) == null) {
-            strConcat = strConcat.concat(" encodedPayload");
-        }
-        if (((Long) this.d) == null) {
-            strConcat = strConcat.concat(" eventMillis");
-        }
-        if (((Long) this.e) == null) {
-            strConcat = strConcat.concat(" uptimeMillis");
-        }
-        if (((HashMap) this.f) == null) {
-            strConcat = strConcat.concat(" autoMetadata");
-        }
-        if (strConcat.isEmpty()) {
-            return new v7((String) this.a, (Integer) this.b, (el) this.c, ((Long) this.d).longValue(), ((Long) this.e).longValue(), (HashMap) this.f);
-        }
-        mi.k("Missing required properties:".concat(strConcat));
-        return null;
-    }
-
-    public ColorStateList f(Context context, int i) {
-        if (i == R.drawable.abc_edit_text_material) {
-            return ht.h(context, R.color.abc_tint_edittext);
-        }
-        if (i == R.drawable.abc_switch_track_mtrl_alpha) {
-            return ht.h(context, R.color.abc_tint_switch_track);
-        }
-        if (i != R.drawable.abc_switch_thumb_material) {
-            if (i == R.drawable.abc_btn_default_mtrl_shape) {
-                return d(context, pc0.c(context, R.attr.colorButtonNormal));
-            }
-            if (i == R.drawable.abc_btn_borderless_material) {
-                return d(context, 0);
-            }
-            if (i == R.drawable.abc_btn_colored_material) {
-                return d(context, pc0.c(context, R.attr.colorAccent));
-            }
-            if (i == R.drawable.abc_spinner_mtrl_am_alpha || i == R.drawable.abc_spinner_textfield_background_material) {
-                return ht.h(context, R.color.abc_tint_spinner);
-            }
-            if (b((int[]) this.b, i)) {
-                return pc0.d(context, R.attr.colorControlNormal);
-            }
-            if (b((int[]) this.e, i)) {
-                return ht.h(context, R.color.abc_tint_default);
-            }
-            if (b((int[]) this.f, i)) {
-                return ht.h(context, R.color.abc_tint_btn_checkable);
-            }
-            if (i == R.drawable.abc_seekbar_thumb_material) {
-                return ht.h(context, R.color.abc_tint_seek_thumb);
-            }
-            return null;
-        }
-        int[][] iArr = new int[3][];
-        int[] iArr2 = new int[3];
-        ColorStateList colorStateListD = pc0.d(context, R.attr.colorSwitchThumbNormal);
-        if (colorStateListD == null || !colorStateListD.isStateful()) {
-            iArr[0] = pc0.b;
-            iArr2[0] = pc0.b(context, R.attr.colorSwitchThumbNormal);
-            iArr[1] = pc0.e;
-            iArr2[1] = pc0.c(context, R.attr.colorControlActivated);
-            iArr[2] = pc0.f;
-            iArr2[2] = pc0.c(context, R.attr.colorSwitchThumbNormal);
-        } else {
-            int[] iArr3 = pc0.b;
-            iArr[0] = iArr3;
-            iArr2[0] = colorStateListD.getColorForState(iArr3, 0);
-            iArr[1] = pc0.e;
-            iArr2[1] = pc0.c(context, R.attr.colorControlActivated);
-            iArr[2] = pc0.f;
-            iArr2[2] = colorStateListD.getDefaultColor();
-        }
-        return new ColorStateList(iArr, iArr2);
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:30:0x0100 A[ADDED_TO_REGION] */
-    /* JADX WARN: Removed duplicated region for block: B:57:0x0157 A[ADDED_TO_REGION, ORIG_RETURN, RETURN] */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-    */
-    public void g(String str, Bundle bundle, boolean z) {
-        String str2;
-        String strEncodeToString;
-        ms msVar;
-        boolean zE;
-        int i;
-        bundle.putString("scope", "*");
-        bundle.putString("sender", str);
-        bundle.putString("subtype", str);
-        zm zmVar = (zm) this.a;
-        zmVar.a();
-        bundle.putString("gmp_app_id", zmVar.c.b);
-        bundle.putString("gmsv", Integer.toString(((ud) this.b).d()));
-        bundle.putString("osv", Integer.toString(Build.VERSION.SDK_INT));
-        bundle.putString("app_ver", ((ud) this.b).a());
-        ud udVar = (ud) this.b;
-        synchronized (udVar) {
-            try {
-                if (((String) udVar.h) == null) {
-                    udVar.l();
-                }
-                str2 = (String) udVar.h;
-            } finally {
-            }
-        }
-        bundle.putString("app_ver_name", str2);
-        zm zmVar2 = (zm) this.a;
-        zmVar2.a();
-        try {
-            strEncodeToString = Base64.encodeToString(MessageDigest.getInstance("SHA-1").digest(zmVar2.b.getBytes()), 11);
-        } catch (NoSuchAlgorithmException unused) {
-            strEncodeToString = "[HASH-ERROR]";
-        }
-        bundle.putString("firebase-app-name-hash", strEncodeToString);
-        if (z) {
-            zm zmVar3 = (zm) this.a;
-            zmVar3.a();
-            bundle.putString("Goog-Api-Key", zmVar3.c.a);
-        }
-        try {
-            String str3 = ((z7) yd0.a(((cn) ((dn) this.f)).d())).a;
-            if (TextUtils.isEmpty(str3)) {
-                Log.w("FirebaseMessaging", "FIS auth token is empty");
-            } else {
-                bundle.putString("Goog-Firebase-Installations-Auth", str3);
-            }
-        } catch (InterruptedException e) {
-            e = e;
-            Log.e("FirebaseMessaging", "Failed to get FIS auth token", e);
-            bundle.putString("appid", (String) yd0.a(((cn) ((dn) this.f)).c()));
-            bundle.putString("cliv", "fcm-25.1.1");
-            msVar = (ms) ((i40) this.e).get();
-            ni niVar = (ni) ((i40) this.d).get();
-            if (msVar == null) {
-                return;
-            } else {
-                return;
-            }
-        } catch (ExecutionException e2) {
-            e = e2;
-            Log.e("FirebaseMessaging", "Failed to get FIS auth token", e);
-            bundle.putString("appid", (String) yd0.a(((cn) ((dn) this.f)).c()));
-            bundle.putString("cliv", "fcm-25.1.1");
-            msVar = (ms) ((i40) this.e).get();
-            ni niVar2 = (ni) ((i40) this.d).get();
-            if (msVar == null) {
-            }
-        }
-        bundle.putString("appid", (String) yd0.a(((cn) ((dn) this.f)).c()));
-        bundle.putString("cliv", "fcm-25.1.1");
-        msVar = (ms) ((i40) this.e).get();
-        ni niVar22 = (ni) ((i40) this.d).get();
-        if (msVar == null || niVar22 == null) {
-            return;
-        }
-        yh yhVar = (yh) msVar;
-        synchronized (yhVar) {
-            long jCurrentTimeMillis = System.currentTimeMillis();
-            ps psVar = (ps) yhVar.a.get();
-            synchronized (psVar) {
-                zE = psVar.e(ps.b, jCurrentTimeMillis);
-            }
-            if (zE) {
-                synchronized (psVar) {
-                    psVar.a.a(new lf(psVar, ps.b(System.currentTimeMillis())));
-                }
-                i = 3;
-            } else {
-                i = 1;
-            }
-        }
-        if (i != 1) {
-            bundle.putString("Firebase-Client-Log-Type", Integer.toString(f30.i(i)));
-            bundle.putString("Firebase-Client", niVar22.a());
-        }
-    }
-
-    public vo0 i(String str, Bundle bundle, boolean z) {
-        int i;
-        try {
-            g(str, bundle, z);
-            s60 s60Var = (s60) this.c;
-            b6 b6Var = b6.d;
-            wo0 wo0Var = s60Var.c;
-            if (wo0Var.b() < 12000000) {
-                return wo0Var.a() != 0 ? s60Var.b(bundle).e(b6Var, new qo0(s60Var, bundle)) : yd0.q(new IOException("MISSING_INSTANCEID_SERVICE"));
-            }
-            uo0 uo0VarA = uo0.a(s60Var.b);
-            synchronized (uo0VarA) {
-                i = uo0VarA.d;
-                uo0VarA.d = i + 1;
-            }
-            return uo0VarA.b(new so0(i, 1, bundle, 1)).d(b6Var, ks.m);
-        } catch (InterruptedException | ExecutionException e) {
-            return yd0.q(e);
-        }
-    }
-}
-
 ----- /tmp/jadx-out/sources/defpackage/d00.java -----
 package defpackage;
 
@@ -1299,1748 +391,337 @@ public final /* synthetic */ class d00 implements Runnable {
     }
 }
 
------ /tmp/jadx-out/sources/defpackage/z5.java -----
+----- /tmp/jadx-out/sources/defpackage/s3.java -----
 package defpackage;
 
-import android.app.AlertDialog;
-import android.app.DownloadManager;
-import android.app.job.JobParameters;
-import android.content.DialogInterface;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Environment;
-import android.os.Process;
-import android.os.StrictMode;
-import android.widget.Toast;
-import androidx.credentials.playservices.CredentialProviderPlayServicesImpl;
-import com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService;
-import com.verudanava.nava.MainActivity;
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.Callable;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 
 /* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
 /* loaded from: classes.dex */
-public final /* synthetic */ class z5 implements Runnable {
-    public final /* synthetic */ int c;
-    public final /* synthetic */ Object d;
-    public final /* synthetic */ Object e;
+public final class s3 extends BroadcastReceiver {
+    public final /* synthetic */ int a;
+    public final /* synthetic */ Object b;
 
-    public /* synthetic */ z5(Object obj, int i, Object obj2) {
-        this.c = i;
-        this.d = obj;
-        this.e = obj2;
+    public /* synthetic */ s3(int i, Object obj) {
+        this.a = i;
+        this.b = obj;
     }
 
+    @Override // android.content.BroadcastReceiver
+    public final void onReceive(Context context, Intent intent) {
+        int i = this.a;
+        Object obj = this.b;
+        switch (i) {
+            case 0:
+                ((t3) obj).g();
+                break;
+            default:
+                h00 h00Var = (h00) obj;
+                if (rt.b(intent != null ? intent.getAction() : null, "android.intent.action.DOWNLOAD_COMPLETE")) {
+                    long longExtra = intent.getLongExtra("extra_download_id", -1L);
+                    if (longExtra > 0 && longExtra == h00Var.c.getLong("download_id", -1L)) {
+                        h00Var.c(longExtra);
+                        break;
+                    }
+                }
+                break;
+        }
+    }
+}
+
+----- /tmp/jadx-out/sources/defpackage/l1.java -----
+package defpackage;
+
+import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Trace;
+import android.util.Log;
+import androidx.lifecycle.a;
+import com.google.android.material.sidesheet.SideSheetBehavior;
+import java.lang.reflect.Method;
+import java.nio.MappedByteBuffer;
+import java.util.ArrayDeque;
+import java.util.Iterator;
+
+/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* loaded from: classes.dex */
+public final /* synthetic */ class l1 implements Runnable {
+    public final /* synthetic */ int c;
+    public final /* synthetic */ Object d;
+
+    public /* synthetic */ l1(int i, Object obj) {
+        this.c = i;
+        this.d = obj;
+    }
+
+    private final void a() {
+        w5 w5Var = (w5) this.d;
+        synchronized (((ArrayDeque) w5Var.e)) {
+            SharedPreferences.Editor editorEdit = ((SharedPreferences) w5Var.d).edit();
+            StringBuilder sb = new StringBuilder();
+            Iterator it = ((ArrayDeque) w5Var.e).iterator();
+            while (it.hasNext()) {
+                sb.append((String) it.next());
+                sb.append(",");
+            }
+            editorEdit.putString("topic_operation_queue", sb.toString()).apply();
+        }
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r3v0 */
+    /* JADX WARN: Type inference failed for: r3v1 */
+    /* JADX WARN: Type inference failed for: r3v2 */
+    /* JADX WARN: Type inference failed for: r3v21 */
+    /* JADX WARN: Type inference failed for: r3v5 */
+    /* JADX WARN: Type inference failed for: r3v6, types: [java.lang.Object] */
+    /* JADX WARN: Type inference failed for: r3v7 */
+    /* JADX WARN: Type inference failed for: r3v8 */
+    /* JADX WARN: Type inference failed for: r6v0, types: [int] */
+    /* JADX WARN: Type inference failed for: r6v1 */
+    /* JADX WARN: Type inference failed for: r6v4 */
+    /* JADX WARN: Type inference failed for: r6v5, types: [java.lang.Object] */
+    /* JADX WARN: Type inference failed for: r6v6 */
     @Override // java.lang.Runnable
-    public final void run() throws Exception {
-        mi miVar;
+    public final void run() {
+        Object obj;
         Object k60Var;
+        ?? r3 = 1;
+        r3 = 1;
+        int i = 2;
+        boolean z = false;
         switch (this.c) {
             case 0:
-                a6 a6Var = (a6) this.d;
-                try {
-                    ((Runnable) this.e).run();
+                Activity activity = (Activity) this.d;
+                if (activity.isFinishing()) {
                     return;
-                } finally {
-                    a6Var.a();
                 }
+                Handler handler = n1.g;
+                Method method = n1.f;
+                ?? r6 = Build.VERSION.SDK_INT;
+                if (r6 >= 28) {
+                    activity.recreate();
+                    return;
+                }
+                if (((r6 != 26 && r6 != 27) || method != null) && (n1.e != null || n1.d != null)) {
+                    try {
+                        Object obj2 = n1.c.get(activity);
+                        if (obj2 != null && (obj = n1.b.get(activity)) != null) {
+                            Application application = activity.getApplication();
+                            m1 m1Var = new m1(activity);
+                            application.registerActivityLifecycleCallbacks(m1Var);
+                            handler.post(new d1(m1Var, obj2, 1 == true ? 1 : 0, z));
+                            if (r6 != 26 && r6 != 27) {
+                                r3 = 0;
+                            }
+                            try {
+                                if (r3 != 0) {
+                                    try {
+                                        Boolean bool = Boolean.FALSE;
+                                        r3 = application;
+                                        r6 = m1Var;
+                                        method.invoke(obj, obj2, null, null, 0, bool, null, null, bool, bool);
+                                    } catch (Throwable th) {
+                                        th = th;
+                                        Application application2 = application;
+                                        m1 m1Var2 = m1Var;
+                                        handler.post(new d1(application2, m1Var2, i, z));
+                                        throw th;
+                                    }
+                                } else {
+                                    r3 = application;
+                                    r6 = m1Var;
+                                    activity.recreate();
+                                }
+                                handler.post(new d1(r3, r6, i, z));
+                                return;
+                            } catch (Throwable th2) {
+                                th = th2;
+                            }
+                        }
+                    } catch (Throwable unused) {
+                    }
+                }
+                activity.recreate();
+                return;
             case 1:
-                f20 f20Var = (f20) this.d;
-                i40 i40Var = (i40) this.e;
-                if (f20Var.b != f20.d) {
-                    mi.k("provide() can be called only once.");
-                    return;
-                }
-                synchronized (f20Var) {
-                    miVar = f20Var.a;
-                    f20Var.a = null;
-                    f20Var.b = i40Var;
-                }
-                miVar.getClass();
+                ((yo) this.d).invalidateOptionsMenu();
                 return;
             case 2:
-                xu xuVar = (xu) this.d;
-                i40 i40Var2 = (i40) this.e;
-                synchronized (xuVar) {
-                    try {
-                        if (xuVar.b == null) {
-                            xuVar.a.add(i40Var2);
-                        } else {
-                            xuVar.b.add(i40Var2.get());
-                        }
-                    } catch (Throwable th) {
-                        throw th;
-                    }
+                bd bdVar = (bd) this.d;
+                Runnable runnable = bdVar.d;
+                if (runnable != null) {
+                    runnable.run();
+                    bdVar.d = null;
+                    return;
                 }
                 return;
             case 3:
-                ((rr) ((nf) this.d).c()).h((mr) this.e);
+                dd.c((dd) this.d);
                 return;
             case 4:
-                ((rr) ((nf) this.d).c()).g(((e50) this.e).c);
+                ((rr) ((nf) this.d).c()).g(new ir("Failed to launch the selector UI. Hint: ensure the `context` parameter is an Activity-based context.", 2));
                 return;
             case g30.STRING_FIELD_NUMBER /* 5 */:
-                ((rr) ((nf) this.d).c()).g((ir) this.e);
-                return;
-            case g30.STRING_SET_FIELD_NUMBER /* 6 */:
-                ((rr) ((ff) this.d)).g(this.e);
-                return;
-            case g30.DOUBLE_FIELD_NUMBER /* 7 */:
-                CredentialProviderPlayServicesImpl.onClearCredential$lambda$3$0$0((ff) this.d, (e50) this.e);
-                return;
-            case g30.BYTES_FIELD_NUMBER /* 8 */:
-                CredentialProviderPlayServicesImpl.runFallbackClearCredFlow$lambda$2$0$0$0((ff) this.d, (Exception) this.e);
-                return;
-            case 9:
-                fg fgVar = (fg) this.d;
-                Runnable runnable = (Runnable) this.e;
-                Process.setThreadPriority(fgVar.c);
-                StrictMode.ThreadPolicy threadPolicy = fgVar.d;
-                if (threadPolicy != null) {
-                    StrictMode.setThreadPolicy(threadPolicy);
-                }
-                runnable.run();
-                return;
-            case 10:
-                Callable callable = (Callable) this.d;
-                p60 p60Var = (p60) this.e;
-                try {
-                    Object objCall = callable.call();
-                    wi wiVar = (wi) p60Var.d;
-                    if (objCall == null) {
-                        objCall = t.i;
-                    }
-                    if (t.h.f(wiVar, null, objCall)) {
-                        t.c(wiVar);
-                        return;
-                    }
-                    return;
-                } catch (Exception e) {
-                    p60Var.o(e);
-                    return;
-                }
-            case 11:
-                zs zsVar = (zs) this.d;
-                hc0 hc0Var = (hc0) this.e;
-                try {
-                    hc0Var.b(zsVar.a());
-                    return;
-                } catch (Exception e2) {
-                    hc0Var.a(e2);
-                    return;
-                }
-            case 12:
-                JobInfoSchedulerService jobInfoSchedulerService = (JobInfoSchedulerService) this.d;
-                JobParameters jobParameters = (JobParameters) this.e;
-                int i = JobInfoSchedulerService.c;
-                jobInfoSchedulerService.jobFinished(jobParameters, false);
-                return;
-            case 13:
-                final h00 h00Var = (h00) this.d;
-                Object obj = this.e;
-                CharSequence charSequenceSubSequence = "";
-                h00Var.i = false;
-                if (obj instanceof k60) {
-                    obj = null;
-                }
-                final g00 g00Var = (g00) obj;
-                if (g00Var == null) {
-                    return;
-                }
-                String str = g00Var.a;
-                MainActivity mainActivity = h00Var.a;
-                try {
-                    k60Var = mainActivity.getPackageManager().getPackageInfo(mainActivity.getPackageName(), 0).versionName;
-                    if (k60Var == null) {
-                        k60Var = "";
-                    }
-                } catch (Throwable th2) {
-                    k60Var = new k60(th2);
-                }
-                if (k60Var instanceof k60) {
-                    k60Var = "12.1.23";
-                }
-                List listD = h00.d(str);
-                List listD2 = h00.d((String) k60Var);
-                int iMax = Math.max(listD.size(), listD2.size());
-                int i2 = 0;
-                while (i2 < iMax) {
-                    int iIntValue = ((Number) ((i2 < 0 || i2 >= listD.size()) ? 0 : listD.get(i2))).intValue();
-                    int iIntValue2 = ((Number) ((i2 < 0 || i2 >= listD2.size()) ? 0 : listD2.get(i2))).intValue();
-                    if (iIntValue != iIntValue2) {
-                        if (iIntValue > iIntValue2) {
-                            MainActivity mainActivity2 = h00Var.a;
-                            if (mainActivity2.isFinishing() || mainActivity2.isDestroyed()) {
-                                return;
-                            }
-                            AlertDialog alertDialog = h00Var.e;
-                            if (alertDialog == null || !alertDialog.isShowing()) {
-                                String string = jb0.k0(jb0.h0(g00Var.b, "\r", "")).toString();
-                                if (string.length() > 420) {
-                                    int length = string.length();
-                                    String strSubstring = string.substring(0, 420 > length ? length : 420);
-                                    int length2 = strSubstring.length() - 1;
-                                    if (length2 >= 0) {
-                                        while (true) {
-                                            int i3 = length2 - 1;
-                                            if (!yd0.z(strSubstring.charAt(length2))) {
-                                                charSequenceSubSequence = strSubstring.subSequence(0, length2 + 1);
-                                            } else if (i3 >= 0) {
-                                                length2 = i3;
-                                            }
-                                        }
-                                    }
-                                    string = charSequenceSubSequence.toString() + "…";
-                                }
-                                StringBuilder sb = new StringBuilder("Nava ");
-                                sb.append(g00Var.a);
-                                sb.append(" hazır.");
-                                if (!jb0.f0(string)) {
-                                    sb.append("\n\n");
-                                    sb.append(string);
-                                }
-                                AlertDialog alertDialogCreate = new AlertDialog.Builder(mainActivity2).setTitle("Güncelleme hazır").setMessage(sb.toString()).setNegativeButton("Daha sonra", (DialogInterface.OnClickListener) null).setPositiveButton("Güncelle", new DialogInterface.OnClickListener() { // from class: e00
-                                    @Override // android.content.DialogInterface.OnClickListener
-                                    public final void onClick(DialogInterface dialogInterface, int i4) {
-                                        Object k60Var2;
-                                        h00 h00Var2 = h00Var;
-                                        MainActivity mainActivity3 = h00Var2.a;
-                                        File fileF = h00Var2.f();
-                                        if (fileF.exists()) {
-                                            fileF.delete();
-                                        }
-                                        g00 g00Var2 = g00Var;
-                                        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(g00Var2.c));
-                                        request.setTitle("Nava ".concat(g00Var2.a));
-                                        request.setDescription("Güncelleme indiriliyor…");
-                                        request.setMimeType("application/vnd.android.package-archive");
-                                        request.setNotificationVisibility(1);
-                                        request.setAllowedOverMetered(true);
-                                        request.setAllowedOverRoaming(false);
-                                        request.setDestinationInExternalFilesDir(mainActivity3, Environment.DIRECTORY_DOWNLOADS, "Nava-update.apk");
-                                        Object systemService = mainActivity3.getSystemService("download");
-                                        systemService.getClass();
-                                        try {
-                                            k60Var2 = Long.valueOf(((DownloadManager) systemService).enqueue(request));
-                                        } catch (Throwable th3) {
-                                            k60Var2 = new k60(th3);
-                                        }
-                                        if (l60.a(k60Var2) != null) {
-                                            Toast.makeText(mainActivity3, "Güncelleme indirilemedi.", 1).show();
-                                            return;
-                                        }
-                                        h00Var2.c.edit().putLong("download_id", ((Number) k60Var2).longValue()).putString("digest", g00Var2.d).putBoolean("pending_install", false).apply();
-                                        Toast.makeText(mainActivity3, "Nava güncellemesi indiriliyor.", 0).show();
-                                    }
-                                }).create();
-                                h00Var.e = alertDialogCreate;
-                                if (alertDialogCreate != null) {
-                                    alertDialogCreate.setOnDismissListener(new DialogInterface.OnDismissListener() { // from class: f00
-                                        @Override // android.content.DialogInterface.OnDismissListener
-                                        public final void onDismiss(DialogInterface dialogInterface) {
-                                            h00Var.e = null;
-                                        }
-                                    });
-                                }
-                                AlertDialog alertDialog2 = h00Var.e;
-                                if (alertDialog2 != null) {
-                                    alertDialog2.show();
-                                    return;
-                                }
-                                return;
-                            }
+                go goVar = (go) this.d;
+                synchronized (goVar.c) {
+                    try {
+                        if (goVar.g == null) {
                             return;
                         }
-                        return;
+                        try {
+                            qo qoVarC = goVar.c();
+                            int i2 = qoVarC.e;
+                            if (i2 == 2) {
+                                synchronized (goVar.c) {
+                                }
+                            }
+                            if (i2 != 0) {
+                                throw new RuntimeException("fetchFonts result is not OK. (" + i2 + ")");
+                            }
+                            try {
+                                int i3 = pd0.a;
+                                Trace.beginSection("EmojiCompat.FontRequestEmojiCompatConfig.buildTypeface");
+                                Context context = goVar.a;
+                                qo[] qoVarArr = {qoVarC};
+                                rt rtVar = zd0.a;
+                                qh.d("TypefaceCompat.createFromFontInfo");
+                                try {
+                                    Typeface typefaceF = zd0.a.f(context, qoVarArr, 0);
+                                    Trace.endSection();
+                                    MappedByteBuffer mappedByteBufferA = yd0.A(goVar.a, qoVarC.a);
+                                    if (mappedByteBufferA == null || typefaceF == null) {
+                                        throw new RuntimeException("Unable to open file.");
+                                    }
+                                    try {
+                                        Trace.beginSection("EmojiCompat.MetadataRepo.create");
+                                        y80 y80Var = new y80(typefaceF, mg.G(mappedByteBufferA));
+                                        Trace.endSection();
+                                        synchronized (goVar.c) {
+                                            try {
+                                                l9 l9Var = goVar.g;
+                                                if (l9Var != null) {
+                                                    l9Var.z(y80Var);
+                                                }
+                                            } finally {
+                                            }
+                                        }
+                                        goVar.b();
+                                        return;
+                                    } finally {
+                                        int i4 = pd0.a;
+                                    }
+                                } finally {
+                                    Trace.endSection();
+                                }
+                            } finally {
+                            }
+                        } catch (Throwable th3) {
+                            synchronized (goVar.c) {
+                                try {
+                                    l9 l9Var2 = goVar.g;
+                                    if (l9Var2 != null) {
+                                        l9Var2.y(th3);
+                                    }
+                                    goVar.b();
+                                    return;
+                                } finally {
+                                }
+                            }
+                        }
+                    } finally {
                     }
-                    i2++;
+                }
+            case g30.STRING_SET_FIELD_NUMBER /* 6 */:
+                h00 h00Var = (h00) this.d;
+                try {
+                    h00Var.getClass();
+                    k60Var = h00.b();
+                } catch (Throwable th4) {
+                    k60Var = new k60(th4);
+                }
+                h00Var.a.runOnUiThread(new z5(h00Var, 13, k60Var));
+                return;
+            case g30.DOUBLE_FIELD_NUMBER /* 7 */:
+                m30 m30Var = (m30) this.d;
+                a aVar = m30Var.h;
+                if (m30Var.d == 0) {
+                    m30Var.e = true;
+                    aVar.d(dv.ON_PAUSE);
+                }
+                if (m30Var.c == 0 && m30Var.e) {
+                    aVar.d(dv.ON_STOP);
+                    m30Var.f = true;
+                    return;
                 }
                 return;
-            case 14:
-                ((c5) this.d).b((Typeface) this.e);
+            case g30.BYTES_FIELD_NUMBER /* 8 */:
+                a();
+                return;
+            case 9:
+                SideSheetBehavior sideSheetBehavior = (SideSheetBehavior) ((ch0) this.d).d;
+                int i5 = sideSheetBehavior.v;
+                if (i5 != 2 || i5 == 0) {
+                    return;
+                }
+                sideSheetBehavior.v = 0;
+                return;
+            case 10:
+                mi0 mi0Var = (mi0) this.d;
+                Log.w("FirebaseMessaging", "Service took too long to process intent: " + mi0Var.a.getAction() + " finishing.");
+                mi0Var.b.d(null);
                 return;
             default:
-                ((rr) ((ff) this.d)).h((mr) this.e);
+                y80 y80Var2 = (y80) this.d;
+                ((b70) y80Var2.f).f(new ma(11, y80Var2));
                 return;
         }
     }
 }
 
------ /tmp/jadx-out/sources/defpackage/cn.java -----
+----- /tmp/jadx-out/sources/defpackage/g00.java -----
 package defpackage;
 
-import android.net.TrafficStats;
-import android.text.TextUtils;
-import android.util.Base64;
-import android.util.Log;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.KeyFactory;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Pattern;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
 /* loaded from: classes.dex */
-public final class cn implements dn {
-    public static final Object l = new Object();
-    public final zm a;
-    public final an b;
-    public final i4 c;
-    public final ff0 d;
-    public final wu e;
-    public final Object f;
-    public final ExecutorService g;
-    public final x80 h;
-    public String i;
-    public final HashSet j;
-    public final ArrayList k;
+public final class g00 {
+    public final String a;
+    public final String b;
+    public final String c;
+    public final String d;
 
-    static {
-        new AtomicInteger(1);
+    public g00(String str, String str2, String str3, String str4) {
+        str2.getClass();
+        this.a = str;
+        this.b = str2;
+        this.c = str3;
+        this.d = str4;
     }
 
-    public cn(zm zmVar, i40 i40Var, ExecutorService executorService, x80 x80Var) {
-        zmVar.a();
-        an anVar = new an(zmVar.a, i40Var);
-        i4 i4Var = new i4(zmVar);
-        ks ksVar = ks.k;
-        if (ksVar == null) {
-            ksVar = new ks(23);
-            ks.k = ksVar;
+    public final boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
         }
-        ff0 ff0Var = ff0.b;
-        if (ff0Var == null) {
-            ff0Var = new ff0(ksVar);
-            ff0.b = ff0Var;
-        }
-        wu wuVar = new wu(new ed(2, zmVar));
-        this.f = new Object();
-        this.j = new HashSet();
-        this.k = new ArrayList();
-        this.a = zmVar;
-        this.b = anVar;
-        this.c = i4Var;
-        this.d = ff0Var;
-        this.e = wuVar;
-        this.g = executorService;
-        this.h = x80Var;
-    }
-
-    /* JADX WARN: Finally extract failed */
-    public final void a() {
-        h8 h8VarJ;
-        int i;
-        synchronized (l) {
-            try {
-                zm zmVar = this.a;
-                zmVar.a();
-                i4 i4VarA = i4.a(zmVar.a);
-                try {
-                    h8VarJ = this.c.J();
-                    int i2 = h8VarJ.b;
-                    i = 1;
-                    if (i2 == 2 || i2 == 1) {
-                        String strF = f(h8VarJ);
-                        i4 i4Var = this.c;
-                        g8 g8VarA = h8VarJ.a();
-                        g8VarA.a = strF;
-                        g8VarA.b = 3;
-                        h8VarJ = g8VarA.a();
-                        i4Var.C(h8VarJ);
-                    }
-                    if (i4VarA != null) {
-                        i4VarA.K();
-                    }
-                } catch (Throwable th) {
-                    if (i4VarA != null) {
-                        i4VarA.K();
-                    }
-                    throw th;
-                }
-            } catch (Throwable th2) {
-                throw th2;
-            }
-        }
-        i(h8VarJ);
-        this.h.execute(new bn(this, i));
-    }
-
-    public final h8 b(h8 h8Var) throws en {
-        int i;
-        int responseCode;
-        m8 m8Var;
-        m8 m8VarF;
-        an anVar = this.b;
-        zm zmVar = this.a;
-        zmVar.a();
-        String str = zmVar.c.a;
-        String str2 = h8Var.a;
-        zm zmVar2 = this.a;
-        zmVar2.a();
-        String str3 = zmVar2.c.h;
-        String str4 = h8Var.d;
-        x50 x50Var = anVar.c;
-        if (!x50Var.a()) {
-            throw new en("Firebase Installations Service is unavailable. Please try again later.");
-        }
-        URL urlA = an.a("projects/" + str3 + "/installations/" + str2 + "/authTokens:generate");
-        for (int i2 = 0; i2 <= 1; i2 = i + 1) {
-            TrafficStats.setThreadStatsTag(32771);
-            HttpURLConnection httpURLConnectionC = anVar.c(urlA, str);
-            try {
-                try {
-                    httpURLConnectionC.setRequestMethod("POST");
-                    httpURLConnectionC.addRequestProperty("Authorization", "FIS_v2 " + str4);
-                    httpURLConnectionC.setDoOutput(true);
-                    an.h(httpURLConnectionC);
-                    responseCode = httpURLConnectionC.getResponseCode();
-                    x50Var.b(responseCode);
-                } finally {
-                    httpURLConnectionC.disconnect();
-                    TrafficStats.clearThreadStatsTag();
-                }
-            } catch (IOException | AssertionError unused) {
-                i = i2;
-            }
-            if (responseCode >= 200 && responseCode < 300) {
-                m8VarF = an.f(httpURLConnectionC);
-            } else {
-                an.b(httpURLConnectionC, null, str, str3);
-                i = i2;
-                if (responseCode == 401 || responseCode == 404) {
-                    if (((byte) (0 | 1)) != 1) {
-                        throw new IllegalStateException("Missing required properties: tokenExpirationTimestamp");
-                    }
-                    m8Var = new m8(null, 0L, 3);
-                    httpURLConnectionC.disconnect();
-                    TrafficStats.clearThreadStatsTag();
-                    m8VarF = m8Var;
-                } else {
-                    if (responseCode == 429) {
-                        throw new en("Firebase servers have received too many requests from this client in a short period of time. Please try again later.");
-                    }
-                    if (responseCode < 500 || responseCode >= 600) {
-                        Log.e("Firebase-Installations", "Firebase Installations can not communicate with Firebase server APIs due to invalid configuration. Please update your Firebase initialization process and set valid Firebase options (API key, Project ID, Application ID) when initializing Firebase.");
-                        if (((byte) (0 | 1)) != 1) {
-                            throw new IllegalStateException("Missing required properties: tokenExpirationTimestamp");
-                        }
-                        m8Var = new m8(null, 0L, 2);
-                        httpURLConnectionC.disconnect();
-                        TrafficStats.clearThreadStatsTag();
-                        m8VarF = m8Var;
-                    }
-                }
-            }
-            int i3 = f30.i(m8VarF.c);
-            if (i3 == 0) {
-                String str5 = m8VarF.a;
-                long j = m8VarF.b;
-                long jCurrentTimeMillis = System.currentTimeMillis() / 1000;
-                g8 g8VarA = h8Var.a();
-                g8VarA.c = str5;
-                g8VarA.e = j;
-                byte b = (byte) (g8VarA.h | 1);
-                g8VarA.f = jCurrentTimeMillis;
-                g8VarA.h = (byte) (b | 2);
-                return g8VarA.a();
-            }
-            if (i3 == 1) {
-                g8 g8VarA2 = h8Var.a();
-                g8VarA2.g = "BAD CONFIG";
-                g8VarA2.b = 5;
-                return g8VarA2.a();
-            }
-            if (i3 != 2) {
-                throw new en("Firebase Installations Service is unavailable. Please try again later.");
-            }
-            synchronized (this) {
-                this.i = null;
-            }
-            g8 g8VarA3 = h8Var.a();
-            g8VarA3.b = 2;
-            return g8VarA3.a();
-        }
-        throw new en("Firebase Installations Service is unavailable. Please try again later.");
-    }
-
-    public final vo0 c() {
-        String str;
-        e();
-        synchronized (this) {
-            str = this.i;
-        }
-        if (str != null) {
-            return yd0.r(str);
-        }
-        hc0 hc0Var = new hc0();
-        or orVar = new or(hc0Var);
-        synchronized (this.f) {
-            this.k.add(orVar);
-        }
-        vo0 vo0Var = hc0Var.a;
-        this.g.execute(new bn(this, 0));
-        return vo0Var;
-    }
-
-    public final vo0 d() {
-        e();
-        hc0 hc0Var = new hc0();
-        dr drVar = new dr(this.d, hc0Var);
-        synchronized (this.f) {
-            this.k.add(drVar);
-        }
-        vo0 vo0Var = hc0Var.a;
-        this.g.execute(new bn(this, 2));
-        return vo0Var;
-    }
-
-    public final void e() {
-        zm zmVar = this.a;
-        zmVar.a();
-        l9.g(zmVar.c.b, "Please set your Application ID. A valid Firebase App ID is required to communicate with Firebase server APIs: It identifies your application with Firebase.Please refer to https://firebase.google.com/support/privacy/init-options.");
-        zmVar.a();
-        l9.g(zmVar.c.h, "Please set your Project ID. A valid Firebase Project ID is required to communicate with Firebase server APIs: It identifies your application with Firebase.Please refer to https://firebase.google.com/support/privacy/init-options.");
-        zmVar.a();
-        l9.g(zmVar.c.a, "Please set a valid API key. A Firebase API key is required to communicate with Firebase server APIs: It authenticates your project with Google.Please refer to https://firebase.google.com/support/privacy/init-options.");
-        zmVar.a();
-        String str = zmVar.c.b;
-        Pattern pattern = ff0.a;
-        l9.c("Please set your Application ID. A valid Firebase App ID is required to communicate with Firebase server APIs: It identifies your application with Firebase.Please refer to https://firebase.google.com/support/privacy/init-options.", str.contains(":"));
-        zmVar.a();
-        l9.c("Please set a valid API key. A Firebase API key is required to communicate with Firebase server APIs: It authenticates your project with Google.Please refer to https://firebase.google.com/support/privacy/init-options.", ff0.a.matcher(zmVar.c.a).matches());
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:6:0x001a  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-    */
-    public final String f(h8 h8Var) throws InvalidKeySpecException {
-        PublicKey publicKeyGeneratePublic;
-        zm zmVar = this.a;
-        zmVar.a();
-        String str = zmVar.b;
-        if (!str.equals("CHIME_ANDROID_SDK")) {
-            zmVar.a();
-            if ("[DEFAULT]".equals(str)) {
-                if (h8Var.b == 1) {
-                    bu buVar = ((ys) this.e.get()).a;
-                    String strEncodeToString = null;
-                    String str2 = (String) buVar.b(ys.d, null);
-                    if (str2 != null) {
-                        strEncodeToString = str2;
-                    } else {
-                        String str3 = (String) buVar.b(ys.c, null);
-                        if (str3 != null) {
-                            try {
-                                publicKeyGeneratePublic = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.decode(str3, 8)));
-                            } catch (IllegalArgumentException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-                                Log.w("ContentValues", "Invalid key stored " + e);
-                                publicKeyGeneratePublic = null;
-                            }
-                            if (publicKeyGeneratePublic != null) {
-                                try {
-                                    byte[] bArrDigest = MessageDigest.getInstance("SHA1").digest(publicKeyGeneratePublic.getEncoded());
-                                    bArrDigest[0] = (byte) (((bArrDigest[0] & 15) + 112) & 255);
-                                    strEncodeToString = Base64.encodeToString(bArrDigest, 0, 8, 11);
-                                } catch (NoSuchAlgorithmException unused) {
-                                    Log.w("ContentValues", "Unexpected error, device missing required algorithms");
-                                }
-                            }
-                        }
-                    }
-                    return TextUtils.isEmpty(strEncodeToString) ? y40.a() : strEncodeToString;
-                }
-            }
-        }
-        return y40.a();
-    }
-
-    public final h8 g(h8 h8Var) throws JSONException, en {
-        int responseCode;
-        y7 y7VarE;
-        String str = h8Var.a;
-        String string = null;
-        if (str != null && str.length() == 11) {
-            ys ysVar = (ys) this.e.get();
-            ysVar.getClass();
-            String[] strArr = ys.e;
-            int length = strArr.length;
-            int i = 0;
-            while (true) {
-                if (i >= length) {
-                    break;
-                }
-                String str2 = strArr[i];
-                String str3 = (String) ysVar.a.b(new w20("|T|" + ysVar.b + "|" + str2), null);
-                if (str3 == null || str3.isEmpty()) {
-                    i++;
-                } else if (str3.startsWith("{")) {
-                    try {
-                        string = new JSONObject(str3).getString("token");
-                    } catch (JSONException unused) {
-                    }
-                } else {
-                    string = str3;
-                }
-            }
-        }
-        zm zmVar = this.a;
-        zmVar.a();
-        String str4 = zmVar.c.a;
-        zmVar.a();
-        String str5 = zmVar.c.h;
-        zmVar.a();
-        String str6 = zmVar.c.b;
-        an anVar = this.b;
-        x50 x50Var = anVar.c;
-        if (!x50Var.a()) {
-            throw new en("Firebase Installations Service is unavailable. Please try again later.");
-        }
-        URL urlA = an.a("projects/" + str5 + "/installations");
-        for (int i2 = 0; i2 <= 1; i2++) {
-            TrafficStats.setThreadStatsTag(32769);
-            HttpURLConnection httpURLConnectionC = anVar.c(urlA, str4);
-            try {
-                try {
-                    httpURLConnectionC.setRequestMethod("POST");
-                    httpURLConnectionC.setDoOutput(true);
-                    if (string != null) {
-                        httpURLConnectionC.addRequestProperty("x-goog-fis-android-iid-migration-auth", string);
-                    }
-                    an.g(httpURLConnectionC, str, str6);
-                    responseCode = httpURLConnectionC.getResponseCode();
-                    x50Var.b(responseCode);
-                } catch (Throwable th) {
-                    httpURLConnectionC.disconnect();
-                    TrafficStats.clearThreadStatsTag();
-                    throw th;
-                }
-            } catch (IOException | AssertionError unused2) {
-            }
-            if (responseCode >= 200 && responseCode < 300) {
-                y7VarE = an.e(httpURLConnectionC);
-                httpURLConnectionC.disconnect();
-                TrafficStats.clearThreadStatsTag();
-            } else {
-                an.b(httpURLConnectionC, str6, str4, str5);
-                if (responseCode == 429) {
-                    throw new en("Firebase servers have received too many requests from this client in a short period of time. Please try again later.");
-                }
-                if (responseCode < 500 || responseCode >= 600) {
-                    Log.e("Firebase-Installations", "Firebase Installations can not communicate with Firebase server APIs due to invalid configuration. Please update your Firebase initialization process and set valid Firebase options (API key, Project ID, Application ID) when initializing Firebase.");
-                    y7 y7Var = new y7(null, null, null, null, 2);
-                    httpURLConnectionC.disconnect();
-                    TrafficStats.clearThreadStatsTag();
-                    y7VarE = y7Var;
-                }
-                httpURLConnectionC.disconnect();
-                TrafficStats.clearThreadStatsTag();
-            }
-            int i3 = f30.i(y7VarE.e);
-            if (i3 != 0) {
-                if (i3 != 1) {
-                    throw new en("Firebase Installations Service is unavailable. Please try again later.");
-                }
-                g8 g8VarA = h8Var.a();
-                g8VarA.g = "BAD CONFIG";
-                g8VarA.b = 5;
-                return g8VarA.a();
-            }
-            String str7 = y7VarE.b;
-            String str8 = y7VarE.c;
-            long jCurrentTimeMillis = System.currentTimeMillis() / 1000;
-            m8 m8Var = y7VarE.d;
-            String str9 = m8Var.a;
-            long j = m8Var.b;
-            g8 g8VarA2 = h8Var.a();
-            g8VarA2.a = str7;
-            g8VarA2.b = 4;
-            g8VarA2.c = str9;
-            g8VarA2.d = str8;
-            g8VarA2.e = j;
-            byte b = (byte) (g8VarA2.h | 1);
-            g8VarA2.f = jCurrentTimeMillis;
-            g8VarA2.h = (byte) (b | 2);
-            return g8VarA2.a();
-        }
-        throw new en("Firebase Installations Service is unavailable. Please try again later.");
-    }
-
-    public final void h(Exception exc) {
-        synchronized (this.f) {
-            try {
-                Iterator it = this.k.iterator();
-                while (it.hasNext()) {
-                    if (((xa0) it.next()).a(exc)) {
-                        it.remove();
-                    }
-                }
-            } catch (Throwable th) {
-                throw th;
-            }
-        }
-    }
-
-    public final void i(h8 h8Var) {
-        synchronized (this.f) {
-            try {
-                Iterator it = this.k.iterator();
-                while (it.hasNext()) {
-                    if (((xa0) it.next()).b(h8Var)) {
-                        it.remove();
-                    }
-                }
-            } catch (Throwable th) {
-                throw th;
-            }
-        }
-    }
-}
-
------ /tmp/jadx-out/sources/com/verudanava/nava/MainActivity.java -----
-package com.verudanava.nava;
-
-import android.app.AlertDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.Signature;
-import android.content.pm.SigningInfo;
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.webkit.DownloadListener;
-import android.webkit.ValueCallback;
-import android.webkit.WebBackForwardList;
-import android.webkit.WebHistoryItem;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-import com.verudanava.nava.MainActivity;
-import defpackage.bc;
-import defpackage.bx;
-import defpackage.c00;
-import defpackage.cc0;
-import defpackage.ch0;
-import defpackage.cp;
-import defpackage.cx;
-import defpackage.dh0;
-import defpackage.dx;
-import defpackage.fg0;
-import defpackage.fh0;
-import defpackage.fx;
-import defpackage.g3;
-import defpackage.gx;
-import defpackage.h00;
-import defpackage.ht;
-import defpackage.ih0;
-import defpackage.jb0;
-import defpackage.k9;
-import defpackage.ke;
-import defpackage.ks;
-import defpackage.l1;
-import defpackage.lh0;
-import defpackage.m6;
-import defpackage.mg0;
-import defpackage.mi;
-import defpackage.q1;
-import defpackage.r1;
-import defpackage.rt;
-import defpackage.si0;
-import defpackage.x2;
-import defpackage.y2;
-import defpackage.z2;
-import java.io.File;
-import java.security.MessageDigest;
-import java.util.LinkedHashSet;
-import java.util.Locale;
-import java.util.Set;
-import java.util.WeakHashMap;
-import org.json.JSONObject;
-
-/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
-/* loaded from: classes.dex */
-public final class MainActivity extends z2 {
-    public static final /* synthetic */ int P = 0;
-    public WebView A;
-    public ProgressBar B;
-    public ks C;
-    public h00 D;
-    public boolean E;
-    public ValueCallback F;
-    public final LinkedHashSet G;
-    public final String H;
-    public final Set I;
-    public final cc0 J;
-    public final cc0 K;
-    public final cc0 L;
-    public final String M;
-    public final r1 N;
-    public final r1 O;
-
-    public MainActivity() {
-        ((g3) this.g.c).e("androidx:appcompat", new x2(this));
-        h(new y2(this));
-        this.G = new LinkedHashSet();
-        this.H = "https://www.verudanava.com";
-        this.I = si0.p("https://www.verudanava.com", "https://verudanava.com", "https://verudanava.blogspot.com");
-        this.J = new cc0(new cx());
-        this.K = new cc0(new dx(this, 0));
-        int i = 1;
-        this.L = new cc0(new dx(this, i));
-        this.M = "(function () {\n  if (window.__navaAndroidBridgeInstalled) return;\n  window.__navaAndroidBridgeInstalled = true;\n  window.__NAVA_ANDROID_APP__ = true;\n\n  function msgBox(){ return document.querySelector('[data-auth-message=\"1\"]'); }\n  function setMessage(text,state){\n    var b=msgBox(); if(!b)return;\n    b.textContent=text||''; b.classList.toggle('is-visible',Boolean(text));\n    if(state)b.setAttribute('data-state',state);else b.removeAttribute('data-state');\n  }\n  function busy(on){ var b=document.querySelector('[data-auth-google=\"1\"]');if(b)b.disabled=Boolean(on); }\n\n  document.addEventListener('click',function(event){\n    var t=event.target;if(!t||!t.closest)return;\n    var b=t.closest('[data-auth-google=\"1\"]');if(!b)return;\n    if(!window.NavaNative||typeof window.NavaNative.postMessage!=='function')return;\n    event.preventDefault();event.stopPropagation();if(event.stopImmediatePropagation)event.stopImmediatePropagation();\n    busy(true);setMessage('Google hesabını seç...','info');window.NavaNative.postMessage('googleSignIn');\n  },true);\n\n  window.navaAndroidGoogleResult=function(idToken){\n    try{\n      if(!window.firebase||!firebase.auth||!firebase.auth.GoogleAuthProvider)throw new Error('Firebase giriş sistemi hazır değil.');\n      setMessage('Google hesabınla giriş yapılıyor...','info');\n      var credential=firebase.auth.GoogleAuthProvider.credential(idToken);\n      firebase.auth().signInWithCredential(credential).then(function(result){\n        if(window.navaEnsureUserProfile&&result&&result.user)return window.navaEnsureUserProfile(result.user);\n        return null;\n      }).then(function(){\n        setMessage('Giriş başarılı.','success');busy(false);\n        var close=document.querySelector('.nava-modal-close');if(close)setTimeout(function(){close.click();},160);\n      }).catch(function(error){busy(false);setMessage(error&&error.message?error.message:'Google ile giriş tamamlanamadı.','error');});\n    }catch(error){busy(false);setMessage(error&&error.message?error.message:'Google ile giriş tamamlanamadı.','error');}\n  };\n  window.navaAndroidGoogleError=function(message){busy(false);setMessage(message||'Google ile giriş tamamlanamadı.','error');};\n})();";
-        q1 q1Var = new q1(i);
-        mi miVar = new mi(24);
-        this.N = this.m.c("activity_rq#" + this.l.getAndIncrement(), this, q1Var, miVar);
-        q1 q1Var2 = new q1(2);
-        bx bxVar = new bx(this);
-        this.O = this.m.c("activity_rq#" + this.l.getAndIncrement(), this, q1Var2, bxVar);
-    }
-
-    public static Uri p(Uri uri) {
-        if (!r(uri)) {
-            return uri;
-        }
-        Uri uriBuild = uri.buildUpon().scheme("https").authority("www.verudanava.com").build();
-        uriBuild.getClass();
-        return uriBuild;
-    }
-
-    public static final boolean q(String str, String str2) {
-        return str.equals(str2) || str.endsWith(".".concat(str2));
-    }
-
-    public static boolean r(Uri uri) {
-        String lowerCase;
-        String scheme = uri.getScheme();
-        String lowerCase2 = null;
-        if (scheme != null) {
-            lowerCase = scheme.toLowerCase(Locale.ROOT);
-            lowerCase.getClass();
-        } else {
-            lowerCase = null;
-        }
-        String host = uri.getHost();
-        if (host != null) {
-            lowerCase2 = host.toLowerCase(Locale.ROOT);
-            lowerCase2.getClass();
-        }
-        return bc.d0(si0.p("https", "http"), lowerCase) && bc.d0(si0.p("www.verudanava.com", "verudanava.com", "verudanava.blogspot.com"), lowerCase2);
-    }
-
-    public static String t(String str) {
-        try {
-            String string = Uri.parse(str).buildUpon().fragment(null).build().toString();
-            string.getClass();
-            return jb0.l0(string, '/');
-        } catch (Exception unused) {
-            int iE0 = jb0.e0(str, '#');
-            if (iE0 != -1) {
-                str = str.substring(0, iE0);
-            }
-            return jb0.l0(str, '/');
-        }
-    }
-
-    public static String u(Intent intent) {
-        String stringExtra;
-        String string = (intent == null || (stringExtra = intent.getStringExtra("com.verudanava.nava.OPEN_URL")) == null) ? null : jb0.k0(stringExtra).toString();
-        if (string == null) {
-            string = "";
-        }
-        if (!jb0.f0(string)) {
-            try {
-                Uri uri = Uri.parse(string);
-                uri.getClass();
-                if (r(uri)) {
-                    return p(uri).toString();
-                }
-            } catch (Exception unused) {
-            }
-        }
-        return null;
-    }
-
-    @Override // defpackage.yo, androidx.activity.a, android.app.Activity
-    public final void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
-        setContentView(R.layout.activity_main);
-        getWindow().setStatusBarColor(Color.parseColor("#C6DAFC"));
-        getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
-        View viewFindViewById = findViewById(R.id.root);
-        mi miVar = new mi(25);
-        WeakHashMap weakHashMap = mg0.a;
-        fg0.i(viewFindViewById, miVar);
-        this.C = new ks(11);
-        View viewFindViewById2 = findViewById(R.id.webView);
-        viewFindViewById2.getClass();
-        this.A = (WebView) viewFindViewById2;
-        View viewFindViewById3 = findViewById(R.id.pageProgress);
-        viewFindViewById3.getClass();
-        this.B = (ProgressBar) viewFindViewById3;
-        int i = 0;
-        WebView.setWebContentsDebuggingEnabled(false);
-        WebView webView = this.A;
-        if (webView == null) {
-            rt.w("webView");
-            throw null;
-        }
-        webView.setBackgroundColor(Color.parseColor("#FAFAFA"));
-        WebView webView2 = this.A;
-        if (webView2 == null) {
-            rt.w("webView");
-            throw null;
-        }
-        WebSettings settings = webView2.getSettings();
-        settings.setJavaScriptEnabled(true);
-        settings.setJavaScriptCanOpenWindowsAutomatically(false);
-        settings.setSupportMultipleWindows(false);
-        settings.setDomStorageEnabled(true);
-        settings.setAllowFileAccess(false);
-        settings.setAllowContentAccess(true);
-        settings.setMixedContentMode(1);
-        settings.setBuiltInZoomControls(false);
-        settings.setDisplayZoomControls(false);
-        settings.setSupportZoom(false);
-        settings.setCacheMode(-1);
-        settings.setMediaPlaybackRequiresUserGesture(true);
-        settings.setUserAgentString(settings.getUserAgentString() + " NavaAndroidApp/12.1.47");
-        if (ih0.a("SAFE_BROWSING_ENABLE")) {
-            try {
-                WebView webView3 = this.A;
-                if (webView3 == null) {
-                    rt.w("webView");
-                    throw null;
-                }
-                WebSettings settings2 = webView3.getSettings();
-                ih0.a.getClass();
-                settings2.setSafeBrowsingEnabled(true);
-            } catch (Exception unused) {
-            }
-        }
-        if (ih0.a("BACK_FORWARD_CACHE")) {
-            try {
-                WebView webView4 = this.A;
-                if (webView4 == null) {
-                    rt.w("webView");
-                    throw null;
-                }
-                WebSettings settings3 = webView4.getSettings();
-                if (!ih0.f.b()) {
-                    throw new UnsupportedOperationException("This method is not supported by the current version of the framework and the current WebView APK");
-                }
-                dh0.a(settings3).n();
-            } catch (Exception unused2) {
-            }
-        }
-        WebView webView5 = this.A;
-        if (webView5 == null) {
-            rt.w("webView");
-            throw null;
-        }
-        webView5.setRendererPriorityPolicy(2, true);
-        WebView webView6 = this.A;
-        if (webView6 == null) {
-            rt.w("webView");
-            throw null;
-        }
-        webView6.setWebChromeClient(new fx(this));
-        WebView webView7 = this.A;
-        if (webView7 == null) {
-            rt.w("webView");
-            throw null;
-        }
-        webView7.setWebViewClient(new gx(this));
-        OfflineRuntime.attach(this, webView7);
-        c00.a(this);
-        NavaNotificationRepair.ensure(this);
-        NavaDirectNotification.ensure(this);
-        WebView webView8 = this.A;
-        if (webView8 == null) {
-            rt.w("webView");
-            throw null;
-        }
-        webView8.setDownloadListener(new DownloadListener() { // from class: ex
-            @Override // android.webkit.DownloadListener
-            public final void onDownloadStart(String str, String str2, String str3, String str4, long j) {
-                int i2 = MainActivity.P;
-                if (str == null || jb0.f0(str)) {
-                    return;
-                }
-                Uri uri = Uri.parse(str);
-                uri.getClass();
-                this.a.v(uri);
-            }
-        });
-        if (ih0.a("WEB_MESSAGE_LISTENER")) {
-            WebView webView9 = this.A;
-            if (webView9 == null) {
-                rt.w("webView");
-                throw null;
-            }
-            bx bxVar = new bx(this);
-            WeakHashMap weakHashMap2 = fh0.a;
-            if (!ih0.d.b()) {
-                throw new UnsupportedOperationException("This method is not supported by the current version of the framework and the current WebView APK");
-            }
-            lh0 lh0VarB = fh0.b(webView9);
-            Set set = this.I;
-            lh0VarB.a.addWebMessageListener("NavaNative", (String[]) set.toArray(new String[0]), new k9(new ch0(i, bxVar)));
-            if (((Boolean) this.J.a()).booleanValue()) {
-                WebView webView10 = this.A;
-                if (webView10 == null) {
-                    rt.w("webView");
-                    throw null;
-                }
-                fh0.a(webView10, (String) this.L.a(), set);
-                WebView webView11 = this.A;
-                if (webView11 == null) {
-                    rt.w("webView");
-                    throw null;
-                }
-                fh0.a(webView11, this.M, set);
-                WebView webView12 = this.A;
-                if (webView12 == null) {
-                    rt.w("webView");
-                    throw null;
-                }
-                fh0.a(webView12, (String) this.K.a(), set);
-            }
-        } else {
-            Toast.makeText(this, "Android System WebView güncellemesi gerekli.", 1).show();
-        }
-        this.D = new h00(this);
-        c00.a(this);
-        if (Build.VERSION.SDK_INT >= 33 && ht.c(this, "android.permission.POST_NOTIFICATIONS") != 0) {
-            SharedPreferences sharedPreferences = getSharedPreferences("nava_notif_permission_v12136", 0);
-            if (!sharedPreferences.getBoolean("asked", false)) {
-                sharedPreferences.edit().putBoolean("asked", true).apply();
-                this.N.E("android.permission.POST_NOTIFICATIONS");
-            }
-        }
-        WebView webView13 = this.A;
-        if (bundle == null) {
-            if (webView13 == null) {
-                rt.w("webView");
-                throw null;
-            }
-            String strU = u(getIntent());
-            if (strU == null) {
-                strU = this.H + "/";
-            }
-            webView13.loadUrl(strU);
-        } else {
-            if (webView13 == null) {
-                rt.w("webView");
-                throw null;
-            }
-            webView13.restoreState(bundle);
-        }
-        i().a(this, new cp(this));
-    }
-
-    @Override // defpackage.z2, defpackage.yo, android.app.Activity
-    public final void onDestroy() {
-        h00 h00Var = this.D;
-        if (h00Var != null) {
-            AlertDialog alertDialog = h00Var.e;
-            if (alertDialog != null) {
-                alertDialog.dismiss();
-            }
-            h00Var.e = null;
-            if (h00Var.d) {
-                try {
-                    h00Var.a.unregisterReceiver(h00Var.l);
-                } catch (Throwable unused) {
-                }
-                h00Var.d = false;
-            }
-            h00Var.b.shutdownNow();
-        }
-        ValueCallback valueCallback = this.F;
-        if (valueCallback != null) {
-            valueCallback.onReceiveValue(null);
-        }
-        this.F = null;
-        WebView webView = this.A;
-        if (webView == null) {
-            rt.w("webView");
-            throw null;
-        }
-        webView.stopLoading();
-        WebView webView2 = this.A;
-        if (webView2 == null) {
-            rt.w("webView");
-            throw null;
-        }
-        webView2.destroy();
-        super.onDestroy();
-    }
-
-    @Override // androidx.activity.a, android.app.Activity
-    public final void onNewIntent(Intent intent) {
-        intent.getClass();
-        super.onNewIntent(intent);
-        setIntent(intent);
-        String strU = u(intent);
-        if (strU != null) {
-            s(strU);
-        }
-    }
-
-    @Override // defpackage.yo, android.app.Activity
-    public final void onPause() {
-        h00 h00Var = this.D;
-        if (h00Var != null) {
-            if (h00Var == null) {
-                rt.w("updateManager");
-                throw null;
-            }
-            h00Var.f = false;
-        }
-        super.onPause();
-    }
-
-    @Override // defpackage.yo, android.app.Activity
-    public final void onResume() {
-        super.onResume();
-        h00 h00Var = this.D;
-        if (h00Var != null) {
-            h00Var.f = true;
-            if (h00Var.g && h00Var.a.getPackageManager().canRequestPackageInstalls()) {
-                h00Var.g = false;
-                File fileF = h00Var.f();
-                if (fileF.exists()) {
-                    String string = h00Var.c.getString("digest", "");
-                    h00Var.g(fileF, string != null ? string : "");
-                }
-            } else {
-                h00Var.e();
-            }
-            long jCurrentTimeMillis = System.currentTimeMillis();
-            if (jCurrentTimeMillis - h00Var.h < 30000) {
-                h00Var.e();
-            } else {
-                if (h00Var.i) {
-                    return;
-                }
-                h00Var.h = jCurrentTimeMillis;
-                h00Var.i = true;
-                h00Var.b.execute(new l1(6, h00Var));
-            }
-        }
-    }
-
-    @Override // androidx.activity.a, android.app.Activity
-    public final void onSaveInstanceState(Bundle bundle) {
-        bundle.getClass();
-        WebView webView = this.A;
-        if (webView == null) {
-            rt.w("webView");
-            throw null;
-        }
-        webView.saveState(bundle);
-        super.onSaveInstanceState(bundle);
-    }
-
-    public final void s(String str) {
-        String url;
-        try {
-            Uri uri = Uri.parse(str);
-            uri.getClass();
-            if (!r(uri)) {
-                v(uri);
-                return;
-            }
-            Uri uriP = p(uri);
-            String string = uriP.toString();
-            string.getClass();
-            String strT = t(string);
-            WebView webView = this.A;
-            if (webView == null) {
-                rt.w("webView");
-                throw null;
-            }
-            WebBackForwardList webBackForwardListCopyBackForwardList = webView.copyBackForwardList();
-            webBackForwardListCopyBackForwardList.getClass();
-            int currentIndex = webBackForwardListCopyBackForwardList.getCurrentIndex();
-            int size = webBackForwardListCopyBackForwardList.getSize();
-            int i = Integer.MAX_VALUE;
-            Integer numValueOf = null;
-            for (int i2 = 0; i2 < size; i2++) {
-                WebHistoryItem itemAtIndex = webBackForwardListCopyBackForwardList.getItemAtIndex(i2);
-                if (itemAtIndex != null && (url = itemAtIndex.getUrl()) != null && rt.b(t(url), strT)) {
-                    int i3 = i2 - currentIndex;
-                    if (i3 == 0) {
-                        return;
-                    }
-                    int iAbs = Math.abs(i3);
-                    if (iAbs < i) {
-                        numValueOf = Integer.valueOf(i3);
-                        i = iAbs;
-                    }
-                }
-            }
-            WebView webView2 = this.A;
-            if (numValueOf != null) {
-                if (webView2 != null) {
-                    webView2.goBackOrForward(numValueOf.intValue());
-                    return;
-                } else {
-                    rt.w("webView");
-                    throw null;
-                }
-            }
-            if (webView2 == null) {
-                rt.w("webView");
-                throw null;
-
------ /tmp/jadx-out/sources/com/verudanava/nava/OfflineRuntime.java -----
-package com.verudanava.nava;
-
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.net.Uri;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebView;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Locale;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-/* loaded from: classes2.dex */
-public final class OfflineRuntime {
-    private static final String CHANNEL = "nava_follower_releases_v2";
-    private static final String DIR = "nava_offline_v1";
-    private static final String INDEX = "items.json";
-    private static final long MAX_HTML = 16777216;
-    private static final long MAX_PAGE_RESOURCES = 293601280;
-    private static final long MAX_RESOURCE = 41943040;
-    private static final int MAX_RESOURCES = 700;
-    private static final String PREF = "nava_offline_prefs_v1";
-    private static volatile Context app;
-    private static final Object LOCK = new Object();
-    private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
-    private static final Pattern SCRIPT = Pattern.compile("(?is)<script\\b[^>]*>.*?</script\\s*>");
-    private static final Pattern IFRAME = Pattern.compile("(?is)<iframe\\b[^>]*>.*?</iframe\\s*>");
-    private static final Pattern SRC = Pattern.compile("(?is)(?:src|data-src|data-original|data-lazy-src)\\s*=\\s*[\"']([^\"'#]+)[\"']");
-    private static final Pattern SRCSET = Pattern.compile("(?is)srcset\\s*=\\s*[\"']([^\"']+)[\"']");
-    private static final Pattern LINK = Pattern.compile("(?is)<link\\b[^>]*(?:rel\\s*=\\s*[\"'][^\"']*(?:stylesheet|icon)[^\"']*[\"'][^>]*href\\s*=\\s*[\"']([^\"']+)[\"']|href\\s*=\\s*[\"']([^\"']+)[\"'][^>]*rel\\s*=\\s*[\"'][^\"']*(?:stylesheet|icon)[^\"']*[\"'])[^>]*>");
-    private static final Pattern CSS_URL = Pattern.compile("(?is)url\\(\\s*['\"]?([^'\")]+)['\"]?\\s*\\)");
-    private static volatile WeakReference<WebView> web = new WeakReference<>(null);
-    private static volatile String forcedUrl = "";
-    private static volatile String activeOfflineUrl = "";
-    private static final Set<String> CANCELLED = Collections.synchronizedSet(new HashSet());
-    private static volatile HttpURLConnection activeConnection = null;
-    private static volatile String activeDownloadUrl = "";
-
-    private OfflineRuntime() {
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public static boolean isCancelled(String str) {
-        String strCanonicalNava = canonicalNava(str);
-        return strCanonicalNava != null && CANCELLED.contains(strCanonicalNava);
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public static void resetCancelled(String str) {
-        String strCanonicalNava = canonicalNava(str);
-        if (strCanonicalNava != null) {
-            CANCELLED.remove(strCanonicalNava);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public static void cancelUrl(String str) {
-        String strCanonicalNava = canonicalNava(str);
-        if (strCanonicalNava == null) {
-            return;
-        }
-        CANCELLED.add(strCanonicalNava);
-        HttpURLConnection httpURLConnection = activeConnection;
-        if (strCanonicalNava.equals(activeDownloadUrl) && httpURLConnection != null) {
-            try {
-                httpURLConnection.disconnect();
-            } catch (Throwable th) {
-            }
-        }
-    }
-
-    private static void checkCancelled(String str) throws Exception {
-        if (isCancelled(str)) {
-            throw new Exception("İndirme iptal edildi.");
-        }
-    }
-
-    public static void attach(Context context, WebView webView) {
-        if (context == null || webView == null) {
-            return;
-        }
-        app = context.getApplicationContext();
-        web = new WeakReference<>(webView);
-        try {
-            webView.addJavascriptInterface(new Bridge(app), "NavaOffline");
-        } catch (Throwable th) {
-        }
-        ensureNotificationChannel(app);
-    }
-
-    private static void ensureNotificationChannel(Context context) {
-        if (context == null) {
-            return;
-        }
-        try {
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService("notification");
-            if (notificationManager == null) {
-                return;
-            }
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL, "Takip edilen eserler", 4);
-            notificationChannel.setDescription("Takip ettiğin eserlerde yeni cilt ve bölüm bildirimleri");
-            notificationChannel.enableVibration(true);
-            notificationManager.createNotificationChannel(notificationChannel);
-        } catch (Throwable th) {
-        }
-    }
-
-    /* JADX WARN: Removed duplicated region for block: B:31:0x0064  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-    */
-    public static WebResourceResponse intercept(Context context, WebResourceRequest webResourceRequest) {
-        String strStripFragment;
-        String strCanonicalNava;
-        String str;
-        String str2 = null;
-        if (context == null || webResourceRequest == null || webResourceRequest.getUrl() == null) {
-            return null;
-        }
-        try {
-            strStripFragment = stripFragment(webResourceRequest.getUrl().toString());
-            try {
-                strCanonicalNava = canonicalNava(strStripFragment);
-                str = "utf-8";
-            } catch (Throwable th) {
-                strCanonicalNava = null;
-                str = null;
-                if (!webResourceRequest.isForMainFrame()) {
-                }
-                if (!activeOfflineUrl.isEmpty()) {
-                }
-                return null;
-            }
-        } catch (Throwable th2) {
-            strStripFragment = "";
-        }
-        if (!webResourceRequest.isForMainFrame() && strCanonicalNava != null) {
-            boolean zEquals = strCanonicalNava.equals(forcedUrl);
-            boolean zHasNetwork = hasNetwork(context);
-            File filePageFile = pageFile(context, strCanonicalNava);
-            if ((zEquals || !zHasNetwork) && filePageFile.isFile()) {
-                forcedUrl = "";
-                activeOfflineUrl = strCanonicalNava;
-                return fileResponse(filePageFile, "text/html", "utf-8");
-            }
-            if (!zEquals) {
-                activeOfflineUrl = "";
-            }
-            return null;
-        }
-        if (!activeOfflineUrl.isEmpty()) {
-            File fileResourceFile = resourceFile(context, strStripFragment);
-            if (fileResourceFile.isFile()) {
-                String small = readSmall(resourceMimeFile(context, strStripFragment), "application/octet-stream");
-                if (isTextMime(small)) {
-                    str2 = str;
-                }
-                return fileResponse(fileResourceFile, small, str2);
-            }
-        }
-        return null;
-    }
-
-    private static WebResourceResponse fileResponse(File file, String str, String str2) {
-        try {
-            return new WebResourceResponse(str, str2, new FileInputStream(file));
-        } catch (Throwable th) {
-            return null;
-        }
-    }
-
-    private static boolean hasNetwork(Context context) {
-        Network activeNetwork;
-        NetworkCapabilities networkCapabilities;
-        try {
-            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService("connectivity");
-            if (connectivityManager != null && (activeNetwork = connectivityManager.getActiveNetwork()) != null && (networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)) != null) {
-                return networkCapabilities.hasCapability(12);
-            }
-            return false;
-        } catch (Throwable th) {
+        if (!(obj instanceof g00)) {
             return false;
         }
+        g00 g00Var = (g00) obj;
+        return this.a.equals(g00Var.a) && rt.b(this.b, g00Var.b) && this.c.equals(g00Var.c) && this.d.equals(g00Var.d);
     }
 
-    private static boolean onWifi(Context context) {
-        Network activeNetwork;
-        NetworkCapabilities networkCapabilities;
-        try {
-            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService("connectivity");
-            if (connectivityManager != null && (activeNetwork = connectivityManager.getActiveNetwork()) != null && (networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)) != null) {
-                if (!networkCapabilities.hasTransport(1)) {
-                    if (!networkCapabilities.hasTransport(3)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            return false;
-        } catch (Throwable th) {
-            return false;
-        }
+    public final int hashCode() {
+        return this.d.hashCode() + ((this.c.hashCode() + ((this.b.hashCode() + (this.a.hashCode() * 31)) * 31)) * 31);
     }
 
-    private static File root(Context context) {
-        File file = new File(context.getFilesDir(), DIR);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        return file;
-    }
-
-    private static File pages(Context context) {
-        File file = new File(root(context), "pages");
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        return file;
-    }
-
-    private static File resources(Context context) {
-        File file = new File(root(context), "resources");
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        return file;
-    }
-
-    private static File index(Context context) {
-        return new File(root(context), INDEX);
-    }
-
-    public static File pageFile(Context context, String str) {
-        return new File(pages(context), sha(str) + ".html");
-    }
-
-    private static File resourceFile(Context context, String str) {
-        return new File(resources(context), sha(stripFragment(str)) + ".bin");
-    }
-
-    private static File resourceMimeFile(Context context, String str) {
-        return new File(resources(context), sha(stripFragment(str)) + ".mime");
-    }
-
-    private static String sha(String str) {
-        try {
-            byte[] bArrDigest = MessageDigest.getInstance("SHA-256").digest(String.valueOf(str).getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : bArrDigest) {
-                sb.append(String.format(Locale.ROOT, "%02x", Integer.valueOf(b & 255)));
-            }
-            return sb.toString();
-        } catch (Throwable th) {
-            return Integer.toHexString(String.valueOf(str).hashCode());
-        }
-    }
-
-    private static String stripFragment(String str) {
-        if (str == null) {
-            return "";
-        }
-        int iIndexOf = str.indexOf(35);
-        return iIndexOf >= 0 ? str.substring(0, iIndexOf) : str;
-    }
-
-    public static String canonicalNava(String str) {
-        try {
-            Uri uri = Uri.parse(str);
-            String scheme = uri.getScheme();
-            String host = uri.getHost();
-            if (scheme == null || host == null) {
-                return null;
-            }
-            String lowerCase = host.toLowerCase(Locale.ROOT);
-            if (!lowerCase.equals("verudanava.com") && !lowerCase.equals("www.verudanava.com") && !lowerCase.equals("verudanava.blogspot.com")) {
-                return null;
-            }
-            if (!scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https")) {
-                return null;
-            }
-            return uri.buildUpon().scheme("https").authority("www.verudanava.com").fragment(null).build().toString();
-        } catch (Throwable th) {
-            return null;
-        }
-    }
-
-    public static JSONObject loadIndex(Context context) {
-        synchronized (LOCK) {
-            try {
-                File fileIndex = index(context);
-                if (!fileIndex.isFile()) {
-                    return freshIndex();
-                }
-                JSONObject jSONObject = new JSONObject(readAllText(fileIndex, 6291456L));
-                if (!jSONObject.has("items")) {
-                    jSONObject.put("items", new JSONArray());
-                }
-                return jSONObject;
-            } catch (Throwable th) {
-                return freshIndex();
-            }
-        }
-    }
-
-    private static JSONObject freshIndex() {
-        JSONObject jSONObject = new JSONObject();
-        try {
-            jSONObject.put("version", 1);
-            jSONObject.put("items", new JSONArray());
-        } catch (Throwable th) {
-        }
-        return jSONObject;
-    }
-
-    private static void saveIndex(Context context, JSONObject jSONObject) throws Exception {
-        synchronized (LOCK) {
-            File fileIndex = index(context);
-            File file = new File(root(context), "items.json.tmp");
-            writeBytes(file, jSONObject.toString().getBytes(StandardCharsets.UTF_8));
-            if (fileIndex.exists() && !fileIndex.delete()) {
-                throw new Exception("Eski offline indeks silinemedi.");
-            }
-            if (!file.renameTo(fileIndex)) {
-                throw new Exception("Offline indeks kaydedilemedi.");
-            }
-        }
-    }
-
-    public static JSONObject itemFor(JSONObject jSONObject, String str) {
-        JSONArray jSONArrayOptJSONArray;
-        try {
-            jSONArrayOptJSONArray = jSONObject.optJSONArray("items");
-        } catch (Throwable th) {
-            jSONArrayOptJSONArray = null;
-        }
-        if (jSONArrayOptJSONArray == null) {
-            return null;
-        }
-        for (int i = 0; i < jSONArrayOptJSONArray.length(); i++) {
-            JSONObject jSONObjectOptJSONObject = jSONArrayOptJSONArray.optJSONObject(i);
-            if (jSONObjectOptJSONObject != null && str.equals(jSONObjectOptJSONObject.optString("url"))) {
-                return jSONObjectOptJSONObject;
-            }
-        }
-        return null;
-    }
-
-    public static JSONObject publicIndex(Context context) {
-        JSONObject jSONObjectLoadIndex = loadIndex(context);
-        try {
-            jSONObjectLoadIndex.put("storageBytes", folderSize(root(context)));
-            jSONObjectLoadIndex.put("wifiOnly", prefs(context).getBoolean("wifiOnly", true));
-        } catch (Throwable th) {
-        }
-        return jSONObjectLoadIndex;
-    }
-
-    public static SharedPreferences prefs(Context context) {
-        return context.getSharedPreferences(PREF, 0);
-    }
-
-    public static void downloadOne(Context context, String str, String str2, String str3, String str4) throws Exception {
-        long j;
-        int i;
-        Fetch fetch;
-        String strCanonicalNava = canonicalNava(str);
-        if (strCanonicalNava == null) {
-            throw new Exception("Geçersiz Nava bağlantısı.");
-        }
-        if (prefs(context).getBoolean("wifiOnly", true) && !onWifi(context)) {
-            throw new Exception("Yalnız Wi‑Fi indirmesi açık.");
-        }
-        checkCancelled(strCanonicalNava);
-        emit(event("start", strCanonicalNava, str2, ""));
-        Fetch fetch2 = fetch(strCanonicalNava, MAX_HTML);
-        String strDecodeHtml = decodeHtml(fetch2.bytes, fetch2.contentType);
-        LinkedHashSet<String> linkedHashSetCollectResources = collectResources(strCanonicalNava, strDecodeHtml);
-        LinkedHashSet linkedHashSet = new LinkedHashSet();
-        ArrayList arrayList = new ArrayList(linkedHashSetCollectResources);
-        long length = 0;
-        int i2 = 0;
-        Fetch fetch3 = null;
-        int i3 = 0;
-        while (i2 < arrayList.size() && i3 < MAX_RESOURCES) {
-            checkCancelled(strCanonicalNava);
-            String str5 = (String) arrayList.get(i2);
-            if (str5 == null || str5.isEmpty() || linkedHashSet.contains(str5)) {
-                Fetch fetch4 = fetch3;
-                long j2 = length;
-                i = i2;
-                fetch3 = fetch4;
-                length = j2;
-                i2 = i + 1;
-            } else {
-                int i4 = i3 + 1;
-                File fileResourceFile = resourceFile(context, str5);
-                Fetch fetch5 = fetch3;
-                File fileResourceMimeFile = resourceMimeFile(context, str5);
-                if (fileResourceFile.isFile() && fileResourceMimeFile.isFile()) {
-                    linkedHashSet.add(str5);
-                    length += fileResourceFile.length();
-                    i = i2;
-                    i3 = i4;
-                    fetch3 = fetch5;
-                } else {
-                    j = length;
-                    try {
-                        fetch = fetch(str5, MAX_RESOURCE);
-                    } catch (Throwable th) {
-                        fetch = fetch5;
-                    }
-                    if (fetch == null || !allowedResource(fetch.contentType, str5)) {
-                        fetch3 = fetch;
-                        i = i2;
-                        i3 = i4;
-                        length = j;
-                    } else {
-                        i = i2;
-                        if (j + fetch.bytes.length > MAX_PAGE_RESOURCES) {
-                            break;
-                        }
-                        writeBytes(fileResourceFile, fetch.bytes);
-                        writeBytes(fileResourceMimeFile, normalizeMime(fetch.contentType).getBytes(StandardCharsets.UTF_8));
-                        linkedHashSet.add(str5);
-                        long length2 = j + fetch.bytes.length;
-                        try {
-                            if (normalizeMime(fetch.contentType).equals("text/css")) {
-                                Iterator<String> it = collectCssResources(str5, new String(fetch.bytes, StandardCharsets.UTF_8)).iterator();
-                                while (it.hasNext()) {
-                                    String next = it.next();
-                                    if (!linkedHashSetCollectResources.contains(next)) {
-                                        linkedHashSetCollectResources.add(next);
-                                        arrayList.add(next);
-                                    }
-                                }
-                            }
-                        } catch (Throwable th2) {
-                        }
-                        if (i4 % 12 == 0) {
-                            emit(progressEvent(strCanonicalNava, str2, i4, Math.max(i4, arrayList.size())));
-                        }
-                        fetch3 = fetch;
-                        length = length2;
-                        i3 = i4;
-                    }
-                }
-                i2 = i + 1;
-            }
-        }
-        j = length;
-        checkCancelled(strCanonicalNava);
-        String strPrepareOfflineHtml = prepareOfflineHtml(strCanonicalNava, strDecodeHtml);
-        File filePageFile = pageFile(context, strCanonicalNava);
-        writeBytes(filePageFile, strPrepareOfflineHtml.getBytes(StandardCharsets.UTF_8));
-        JSONObject jSONObjectLoadIndex = loadIndex(context);
-        JSONArray jSONArrayOptJSONArray = jSONObjectLoadIndex.optJSONArray("items");
-        JSONArray jSONArray = new JSONArray();
-        JSONObject jSONObject = new JSONObject();
-        jSONObject.put("url", strCanonicalNava);
-        jSONObject.put("title", safe(str2, 300, pageTitle(strDecodeHtml)));
-        jSONObject.put("seriesTitle", safe(str3, 300, "Nava"));
-        jSONObject.put("kind", safe(str4, 40, "chapter"));
-        jSONObject.put("downloadedAt", System.currentTimeMillis());
-        jSONObject.put("bytes", filePageFile.length() + j);
-        JSONArray jSONArray2 = new JSONArray();
-        Iterator it2 = linkedHashSet.iterator();
-        while (it2.hasNext()) {
-            jSONArray2.put((String) it2.next());
-        }
-        jSONObject.put("resources", jSONArray2);
-        jSONArray.put(jSONObject);
-        if (jSONArrayOptJSONArray != null) {
-            for (int i5 = 0; i5 < jSONArrayOptJSONArray.length(); i5++) {
-
------ /tmp/jadx-out/sources/kotlin/coroutines/jvm/internal/DebugProbesKt.java -----
-package kotlin.coroutines.jvm.internal;
-
-import kotlin.Metadata;
-import kotlin.coroutines.Continuation;
-import kotlin.jvm.internal.Intrinsics;
-import kotlinx.coroutines.debug.internal.DebugProbesImpl;
-import org.jetbrains.annotations.NotNull;
-
-/* compiled from: DebugProbes.kt */
-@Metadata(mv = {2, 0, 0}, k = 2, xi = 48, d1 = {"��\u0012\n��\n\u0002\u0018\u0002\n\u0002\b\u0003\n\u0002\u0010\u0002\n\u0002\b\u0003\u001a\"\u0010��\u001a\b\u0012\u0004\u0012\u0002H\u00020\u0001\"\u0004\b��\u0010\u00022\f\u0010\u0003\u001a\b\u0012\u0004\u0012\u0002H\u00020\u0001H��\u001a\u0014\u0010\u0004\u001a\u00020\u00052\n\u0010\u0006\u001a\u0006\u0012\u0002\b\u00030\u0001H��\u001a\u0014\u0010\u0007\u001a\u00020\u00052\n\u0010\u0006\u001a\u0006\u0012\u0002\b\u00030\u0001H��¨\u0006\b"}, d2 = {"probeCoroutineCreated", "Lkotlin/coroutines/Continuation;", "T", "completion", "probeCoroutineResumed", "", "frame", "probeCoroutineSuspended", "kotlinx-coroutines-integration-testing_debugAgentTest"})
-/* loaded from: Nava.apk:DebugProbesKt.bin */
-public final class DebugProbesKt {
-    @NotNull
-    public static final <T> Continuation<T> probeCoroutineCreated(@NotNull Continuation<? super T> continuation) {
-        Intrinsics.checkNotNullParameter(continuation, "completion");
-        return DebugProbesImpl.INSTANCE.probeCoroutineCreated$kotlinx_coroutines_core(continuation);
-    }
-
-    public static final void probeCoroutineResumed(@NotNull Continuation<?> continuation) {
-        Intrinsics.checkNotNullParameter(continuation, "frame");
-        DebugProbesImpl.INSTANCE.probeCoroutineResumed$kotlinx_coroutines_core(continuation);
-    }
-
-    public static final void probeCoroutineSuspended(@NotNull Continuation<?> continuation) {
-        Intrinsics.checkNotNullParameter(continuation, "frame");
-        DebugProbesImpl.INSTANCE.probeCoroutineSuspended$kotlinx_coroutines_core(continuation);
+    public final String toString() {
+        return "ReleaseInfo(version=" + this.a + ", notes=" + this.b + ", downloadUrl=" + this.c + ", digest=" + this.d + ")";
     }
 }
 

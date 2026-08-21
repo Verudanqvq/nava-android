@@ -1,0 +1,253 @@
+package defpackage;
+
+import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Trace;
+import android.util.Log;
+import androidx.lifecycle.a;
+import com.google.android.material.sidesheet.SideSheetBehavior;
+import java.lang.reflect.Method;
+import java.nio.MappedByteBuffer;
+import java.util.ArrayDeque;
+import java.util.Iterator;
+
+/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* loaded from: classes.dex */
+public final /* synthetic */ class l1 implements Runnable {
+    public final /* synthetic */ int c;
+    public final /* synthetic */ Object d;
+
+    public /* synthetic */ l1(int i, Object obj) {
+        this.c = i;
+        this.d = obj;
+    }
+
+    private final void a() {
+        w5 w5Var = (w5) this.d;
+        synchronized (((ArrayDeque) w5Var.e)) {
+            SharedPreferences.Editor editorEdit = ((SharedPreferences) w5Var.d).edit();
+            StringBuilder sb = new StringBuilder();
+            Iterator it = ((ArrayDeque) w5Var.e).iterator();
+            while (it.hasNext()) {
+                sb.append((String) it.next());
+                sb.append(",");
+            }
+            editorEdit.putString("topic_operation_queue", sb.toString()).apply();
+        }
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    /* JADX WARN: Type inference failed for: r3v0 */
+    /* JADX WARN: Type inference failed for: r3v1 */
+    /* JADX WARN: Type inference failed for: r3v2 */
+    /* JADX WARN: Type inference failed for: r3v21 */
+    /* JADX WARN: Type inference failed for: r3v5 */
+    /* JADX WARN: Type inference failed for: r3v6, types: [java.lang.Object] */
+    /* JADX WARN: Type inference failed for: r3v7 */
+    /* JADX WARN: Type inference failed for: r3v8 */
+    /* JADX WARN: Type inference failed for: r6v0, types: [int] */
+    /* JADX WARN: Type inference failed for: r6v1 */
+    /* JADX WARN: Type inference failed for: r6v4 */
+    /* JADX WARN: Type inference failed for: r6v5, types: [java.lang.Object] */
+    /* JADX WARN: Type inference failed for: r6v6 */
+    @Override // java.lang.Runnable
+    public final void run() {
+        Object obj;
+        Object k60Var;
+        ?? r3 = 1;
+        r3 = 1;
+        int i = 2;
+        boolean z = false;
+        switch (this.c) {
+            case 0:
+                Activity activity = (Activity) this.d;
+                if (activity.isFinishing()) {
+                    return;
+                }
+                Handler handler = n1.g;
+                Method method = n1.f;
+                ?? r6 = Build.VERSION.SDK_INT;
+                if (r6 >= 28) {
+                    activity.recreate();
+                    return;
+                }
+                if (((r6 != 26 && r6 != 27) || method != null) && (n1.e != null || n1.d != null)) {
+                    try {
+                        Object obj2 = n1.c.get(activity);
+                        if (obj2 != null && (obj = n1.b.get(activity)) != null) {
+                            Application application = activity.getApplication();
+                            m1 m1Var = new m1(activity);
+                            application.registerActivityLifecycleCallbacks(m1Var);
+                            handler.post(new d1(m1Var, obj2, 1 == true ? 1 : 0, z));
+                            if (r6 != 26 && r6 != 27) {
+                                r3 = 0;
+                            }
+                            try {
+                                if (r3 != 0) {
+                                    try {
+                                        Boolean bool = Boolean.FALSE;
+                                        r3 = application;
+                                        r6 = m1Var;
+                                        method.invoke(obj, obj2, null, null, 0, bool, null, null, bool, bool);
+                                    } catch (Throwable th) {
+                                        th = th;
+                                        Application application2 = application;
+                                        m1 m1Var2 = m1Var;
+                                        handler.post(new d1(application2, m1Var2, i, z));
+                                        throw th;
+                                    }
+                                } else {
+                                    r3 = application;
+                                    r6 = m1Var;
+                                    activity.recreate();
+                                }
+                                handler.post(new d1(r3, r6, i, z));
+                                return;
+                            } catch (Throwable th2) {
+                                th = th2;
+                            }
+                        }
+                    } catch (Throwable unused) {
+                    }
+                }
+                activity.recreate();
+                return;
+            case 1:
+                ((yo) this.d).invalidateOptionsMenu();
+                return;
+            case 2:
+                bd bdVar = (bd) this.d;
+                Runnable runnable = bdVar.d;
+                if (runnable != null) {
+                    runnable.run();
+                    bdVar.d = null;
+                    return;
+                }
+                return;
+            case 3:
+                dd.c((dd) this.d);
+                return;
+            case 4:
+                ((rr) ((nf) this.d).c()).g(new ir("Failed to launch the selector UI. Hint: ensure the `context` parameter is an Activity-based context.", 2));
+                return;
+            case g30.STRING_FIELD_NUMBER /* 5 */:
+                go goVar = (go) this.d;
+                synchronized (goVar.c) {
+                    try {
+                        if (goVar.g == null) {
+                            return;
+                        }
+                        try {
+                            qo qoVarC = goVar.c();
+                            int i2 = qoVarC.e;
+                            if (i2 == 2) {
+                                synchronized (goVar.c) {
+                                }
+                            }
+                            if (i2 != 0) {
+                                throw new RuntimeException("fetchFonts result is not OK. (" + i2 + ")");
+                            }
+                            try {
+                                int i3 = pd0.a;
+                                Trace.beginSection("EmojiCompat.FontRequestEmojiCompatConfig.buildTypeface");
+                                Context context = goVar.a;
+                                qo[] qoVarArr = {qoVarC};
+                                rt rtVar = zd0.a;
+                                qh.d("TypefaceCompat.createFromFontInfo");
+                                try {
+                                    Typeface typefaceF = zd0.a.f(context, qoVarArr, 0);
+                                    Trace.endSection();
+                                    MappedByteBuffer mappedByteBufferA = yd0.A(goVar.a, qoVarC.a);
+                                    if (mappedByteBufferA == null || typefaceF == null) {
+                                        throw new RuntimeException("Unable to open file.");
+                                    }
+                                    try {
+                                        Trace.beginSection("EmojiCompat.MetadataRepo.create");
+                                        y80 y80Var = new y80(typefaceF, mg.G(mappedByteBufferA));
+                                        Trace.endSection();
+                                        synchronized (goVar.c) {
+                                            try {
+                                                l9 l9Var = goVar.g;
+                                                if (l9Var != null) {
+                                                    l9Var.z(y80Var);
+                                                }
+                                            } finally {
+                                            }
+                                        }
+                                        goVar.b();
+                                        return;
+                                    } finally {
+                                        int i4 = pd0.a;
+                                    }
+                                } finally {
+                                    Trace.endSection();
+                                }
+                            } finally {
+                            }
+                        } catch (Throwable th3) {
+                            synchronized (goVar.c) {
+                                try {
+                                    l9 l9Var2 = goVar.g;
+                                    if (l9Var2 != null) {
+                                        l9Var2.y(th3);
+                                    }
+                                    goVar.b();
+                                    return;
+                                } finally {
+                                }
+                            }
+                        }
+                    } finally {
+                    }
+                }
+            case g30.STRING_SET_FIELD_NUMBER /* 6 */:
+                h00 h00Var = (h00) this.d;
+                try {
+                    h00Var.getClass();
+                    k60Var = h00.b();
+                } catch (Throwable th4) {
+                    k60Var = new k60(th4);
+                }
+                h00Var.a.runOnUiThread(new z5(h00Var, 13, k60Var));
+                return;
+            case g30.DOUBLE_FIELD_NUMBER /* 7 */:
+                m30 m30Var = (m30) this.d;
+                a aVar = m30Var.h;
+                if (m30Var.d == 0) {
+                    m30Var.e = true;
+                    aVar.d(dv.ON_PAUSE);
+                }
+                if (m30Var.c == 0 && m30Var.e) {
+                    aVar.d(dv.ON_STOP);
+                    m30Var.f = true;
+                    return;
+                }
+                return;
+            case g30.BYTES_FIELD_NUMBER /* 8 */:
+                a();
+                return;
+            case 9:
+                SideSheetBehavior sideSheetBehavior = (SideSheetBehavior) ((ch0) this.d).d;
+                int i5 = sideSheetBehavior.v;
+                if (i5 != 2 || i5 == 0) {
+                    return;
+                }
+                sideSheetBehavior.v = 0;
+                return;
+            case 10:
+                mi0 mi0Var = (mi0) this.d;
+                Log.w("FirebaseMessaging", "Service took too long to process intent: " + mi0Var.a.getAction() + " finishing.");
+                mi0Var.b.d(null);
+                return;
+            default:
+                y80 y80Var2 = (y80) this.d;
+                ((b70) y80Var2.f).f(new ma(11, y80Var2));
+                return;
+        }
+    }
+}

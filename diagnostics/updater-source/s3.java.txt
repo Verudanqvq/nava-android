@@ -1,0 +1,38 @@
+package defpackage;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+
+/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* loaded from: classes.dex */
+public final class s3 extends BroadcastReceiver {
+    public final /* synthetic */ int a;
+    public final /* synthetic */ Object b;
+
+    public /* synthetic */ s3(int i, Object obj) {
+        this.a = i;
+        this.b = obj;
+    }
+
+    @Override // android.content.BroadcastReceiver
+    public final void onReceive(Context context, Intent intent) {
+        int i = this.a;
+        Object obj = this.b;
+        switch (i) {
+            case 0:
+                ((t3) obj).g();
+                break;
+            default:
+                h00 h00Var = (h00) obj;
+                if (rt.b(intent != null ? intent.getAction() : null, "android.intent.action.DOWNLOAD_COMPLETE")) {
+                    long longExtra = intent.getLongExtra("extra_download_id", -1L);
+                    if (longExtra > 0 && longExtra == h00Var.c.getLong("download_id", -1L)) {
+                        h00Var.c(longExtra);
+                        break;
+                    }
+                }
+                break;
+        }
+    }
+}

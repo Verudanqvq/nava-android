@@ -1,0 +1,137 @@
+package defpackage;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.widget.Toast;
+import androidx.core.content.FileProvider;
+import com.verudanava.nava.MainActivity;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
+
+/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* loaded from: classes.dex */
+public final /* synthetic */ class d00 implements Runnable {
+    public final /* synthetic */ int c = 0;
+    public final /* synthetic */ h00 d;
+    public final /* synthetic */ String e;
+    public final /* synthetic */ File f;
+
+    public /* synthetic */ d00(h00 h00Var, File file, String str) {
+        this.d = h00Var;
+        this.f = file;
+        this.e = str;
+    }
+
+    @Override // java.lang.Runnable
+    public final void run() throws NoSuchAlgorithmException, IOException {
+        String str = null;
+        switch (this.c) {
+            case 0:
+                h00 h00Var = this.d;
+                File file = this.f;
+                String str2 = this.e;
+                if (!file.exists() || file.length() <= 0) {
+                    str = "Güncelleme dosyası boş veya bulunamadı.";
+                } else if (str2.regionMatches(true, 0, "sha256:", 0, 7)) {
+                    String lowerCase = jb0.k0(jb0.i0(str2, ':')).toString().toLowerCase(Locale.ROOT);
+                    lowerCase.getClass();
+                    MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+                    BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file), 8192);
+                    try {
+                        byte[] bArr = new byte[65536];
+                        while (true) {
+                            int i = bufferedInputStream.read(bArr);
+                            if (i > 0) {
+                                messageDigest.update(bArr, 0, i);
+                            } else {
+                                bufferedInputStream.close();
+                                byte[] bArrDigest = messageDigest.digest();
+                                bArrDigest.getClass();
+                                String strC = m6.C(bArrDigest, "", new ke(3), 30);
+                                if (!jb0.f0(lowerCase) && !lowerCase.equalsIgnoreCase(strC)) {
+                                    str = "Güncelleme doğrulanamadı; indirilen APK bozulmuş olabilir.";
+                                }
+                            }
+                        }
+                    } catch (Throwable th) {
+                        try {
+                            throw th;
+                        } catch (Throwable th2) {
+                            l9.m(bufferedInputStream, th);
+                            throw th2;
+                        }
+                    }
+                }
+                h00Var.a.runOnUiThread(new d00(h00Var, str, file));
+                return;
+            default:
+                h00 h00Var2 = this.d;
+                String str3 = this.e;
+                File file2 = this.f;
+                Object k60Var = me0.a;
+                h00Var2.j = false;
+                if (str3 != null) {
+                    h00Var2.a();
+                    Toast.makeText(h00Var2.a, str3, 1).show();
+                    return;
+                }
+                if (h00Var2.f) {
+                    if (!h00Var2.a.getPackageManager().canRequestPackageInstalls()) {
+                        h00Var2.g = true;
+                        Toast.makeText(h00Var2.a, "Nava'yı güncellemek için 'Bu kaynaktan izin ver' seçeneğini aç.", 1).show();
+                        try {
+                            h00Var2.a.startActivity(new Intent("android.settings.MANAGE_UNKNOWN_APP_SOURCES", Uri.parse("package:" + h00Var2.a.getPackageName())));
+                        } catch (Throwable th3) {
+                            k60Var = new k60(th3);
+                        }
+                        if (l60.a(k60Var) != null) {
+                            h00Var2.g = false;
+                            Toast.makeText(h00Var2.a, "Yükleme izni ekranı açılamadı.", 1).show();
+                            return;
+                        }
+                        return;
+                    }
+                    if (h00Var2.k) {
+                        return;
+                    }
+                    h00Var2.k = true;
+                    try {
+                        MainActivity mainActivity = h00Var2.a;
+                        Uri uriC = FileProvider.c(mainActivity, mainActivity.getPackageName() + ".fileprovider", file2);
+                        Intent intent = new Intent("android.intent.action.VIEW");
+                        intent.setDataAndType(uriC, "application/vnd.android.package-archive");
+                        intent.addFlags(1);
+                        intent.addFlags(268435456);
+                        h00Var2.c.edit().remove("download_id").remove("digest").remove("pending_install").apply();
+                        h00Var2.a.startActivity(intent);
+                        h00Var2.k = false;
+                    } catch (Throwable th4) {
+                        k60Var = new k60(th4);
+                    }
+                    Throwable thA = l60.a(k60Var);
+                    if (thA != null) {
+                        h00Var2.k = false;
+                        String message = thA.getMessage();
+                        if (message != null && !jb0.f0(message)) {
+                            str = message;
+                        }
+                        Toast.makeText(h00Var2.a, str != null ? "Android güncelleme ekranı açılamadı.\n".concat(str) : "Android güncelleme ekranı açılamadı.", 1).show();
+                        return;
+                    }
+                    return;
+                }
+                return;
+        }
+    }
+
+    public /* synthetic */ d00(h00 h00Var, String str, File file) {
+        this.d = h00Var;
+        this.e = str;
+        this.f = file;
+    }
+}

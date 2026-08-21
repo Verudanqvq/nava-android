@@ -1,0 +1,216 @@
+package defpackage;
+
+import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.widget.Toast;
+import com.verudanava.nava.MainActivity;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* loaded from: classes.dex */
+public final class h00 {
+    public final MainActivity a;
+    public final ExecutorService b = Executors.newSingleThreadExecutor();
+    public final SharedPreferences c;
+    public boolean d;
+    public AlertDialog e;
+    public boolean f;
+    public boolean g;
+    public long h;
+    public volatile boolean i;
+    public volatile boolean j;
+    public volatile boolean k;
+    public final s3 l;
+
+    public h00(MainActivity mainActivity) {
+        this.a = mainActivity;
+        this.c = mainActivity.getSharedPreferences("nava_update", 0);
+        s3 s3Var = new s3(1, this);
+        this.l = s3Var;
+        IntentFilter intentFilter = new IntentFilter("android.intent.action.DOWNLOAD_COMPLETE");
+        if (Build.VERSION.SDK_INT >= 33) {
+            mainActivity.registerReceiver(s3Var, intentFilter, 2);
+        } else {
+            mainActivity.registerReceiver(s3Var, intentFilter);
+        }
+        this.d = true;
+    }
+
+    public static g00 b() throws IOException {
+        String strOptString;
+        String strOptString2;
+        URLConnection uRLConnectionOpenConnection = new URL("https://api.github.com/repos/Verudanqvq/nava-android/releases/latest").openConnection();
+        uRLConnectionOpenConnection.getClass();
+        HttpURLConnection httpURLConnection = (HttpURLConnection) uRLConnectionOpenConnection;
+        httpURLConnection.setConnectTimeout(8000);
+        httpURLConnection.setReadTimeout(8000);
+        httpURLConnection.setRequestMethod("GET");
+        httpURLConnection.setUseCaches(false);
+        httpURLConnection.setDefaultUseCaches(false);
+        httpURLConnection.setRequestProperty("Accept", "application/vnd.github+json");
+        httpURLConnection.setRequestProperty("User-Agent", "Nava-Android/12.1.23");
+        httpURLConnection.setRequestProperty("X-GitHub-Api-Version", "2022-11-28");
+        httpURLConnection.setRequestProperty("Cache-Control", "no-cache, no-store, max-age=0");
+        httpURLConnection.setRequestProperty("Pragma", "no-cache");
+        try {
+            int responseCode = httpURLConnection.getResponseCode();
+            if (200 > responseCode || responseCode >= 300) {
+                throw new IllegalStateException("GitHub " + httpURLConnection.getResponseCode());
+            }
+            InputStream inputStream = httpURLConnection.getInputStream();
+            inputStream.getClass();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, xa.a), 8192);
+            try {
+                String strD = l9.D(bufferedReader);
+                bufferedReader.close();
+                JSONObject jSONObject = new JSONObject(strD);
+                String strOptString3 = jSONObject.optString("tag_name");
+                strOptString3.getClass();
+                String strG0 = jb0.g0(jb0.g0(jb0.k0(strOptString3).toString(), "v"), "V");
+                if (jb0.f0(strG0)) {
+                    throw new IllegalStateException("Sürüm etiketi yok");
+                }
+                JSONArray jSONArrayOptJSONArray = jSONObject.optJSONArray("assets");
+                if (jSONArrayOptJSONArray != null) {
+                    int length = jSONArrayOptJSONArray.length();
+                    for (int i = 0; i < length; i++) {
+                        JSONObject jSONObjectOptJSONObject = jSONArrayOptJSONArray.optJSONObject(i);
+                        if (jSONObjectOptJSONObject != null) {
+                            String strOptString4 = jSONObjectOptJSONObject.optString("name");
+                            if (strOptString4 == null ? false : strOptString4.equalsIgnoreCase("Nava.apk")) {
+                                strOptString = jSONObjectOptJSONObject.optString("browser_download_url");
+                                strOptString.getClass();
+                                strOptString2 = jSONObjectOptJSONObject.optString("digest");
+                                strOptString2.getClass();
+                                break;
+                            }
+                        }
+                    }
+                    strOptString = "";
+                    strOptString2 = "";
+                } else {
+                    strOptString = "";
+                    strOptString2 = "";
+                }
+                if (jb0.f0(strOptString)) {
+                    throw new IllegalStateException("Nava.apk bulunamadı");
+                }
+                Uri uri = Uri.parse(strOptString);
+                if (!rt.b(uri.getScheme(), "https") || !rt.b(uri.getHost(), "github.com")) {
+                    throw new IllegalStateException("Güncelleme bağlantısı güvenilir değil");
+                }
+                String strOptString5 = jSONObject.optString("body");
+                strOptString5.getClass();
+                return new g00(strG0, jb0.k0(strOptString5).toString(), strOptString, strOptString2);
+            } finally {
+            }
+        } finally {
+            httpURLConnection.disconnect();
+        }
+    }
+
+    public static List d(String str) {
+        i50 i50Var = new i50();
+        if (str.length() >= 0) {
+            of ofVar = new of(i50Var, 1, str);
+            h50 h50Var = h50.k;
+            List listR = v80.R(new um(new um(new cr(ofVar), new ke(4), 1), new ke(5), 0));
+            return listR.isEmpty() ? mg.A(0) : listR;
+        }
+        throw new IndexOutOfBoundsException("Start index out of bounds: 0, input length: " + str.length());
+    }
+
+    public final void a() {
+        this.c.edit().remove("download_id").remove("digest").remove("pending_install").apply();
+        try {
+            f().delete();
+        } catch (Throwable unused) {
+        }
+    }
+
+    public final void c(long j) {
+        SharedPreferences sharedPreferences = this.c;
+        if (j != sharedPreferences.getLong("download_id", -1L)) {
+            return;
+        }
+        File fileF = f();
+        if (!fileF.exists() || fileF.length() <= 0) {
+            a();
+            Toast.makeText(this.a, "Güncelleme dosyası bulunamadı.", 1).show();
+        } else {
+            sharedPreferences.edit().putBoolean("pending_install", true).apply();
+            String string = sharedPreferences.getString("digest", "");
+            g(fileF, string != null ? string : "");
+        }
+    }
+
+    public final void e() {
+        SharedPreferences sharedPreferences = this.c;
+        long j = sharedPreferences.getLong("download_id", -1L);
+        File fileF = f();
+        if (j <= 0) {
+            if (sharedPreferences.getBoolean("pending_install", false) && fileF.exists() && fileF.length() > 0) {
+                String string = sharedPreferences.getString("digest", "");
+                g(fileF, string != null ? string : "");
+                return;
+            }
+            return;
+        }
+        Object systemService = this.a.getSystemService("download");
+        systemService.getClass();
+        try {
+            Cursor cursorQuery = ((DownloadManager) systemService).query(new DownloadManager.Query().setFilterById(j));
+            try {
+                if (cursorQuery.moveToFirst()) {
+                    int i = cursorQuery.getInt(cursorQuery.getColumnIndexOrThrow("status"));
+                    if (i == 8) {
+                        c(j);
+                    } else if (i == 16) {
+                        a();
+                    }
+                } else if (fileF.exists() && fileF.length() > 0) {
+                    c(j);
+                }
+                cursorQuery.close();
+            } finally {
+            }
+        } catch (Throwable unused) {
+        }
+    }
+
+    public final File f() {
+        String str = Environment.DIRECTORY_DOWNLOADS;
+        MainActivity mainActivity = this.a;
+        File externalFilesDir = mainActivity.getExternalFilesDir(str);
+        if (externalFilesDir == null) {
+            externalFilesDir = mainActivity.getFilesDir();
+        }
+        return new File(externalFilesDir, "Nava-update.apk");
+    }
+
+    public final void g(File file, String str) {
+        if (this.j || this.k) {
+            return;
+        }
+        this.j = true;
+        this.b.execute(new d00(this, file, str));
+    }
+}

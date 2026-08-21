@@ -1,0 +1,37 @@
+package defpackage;
+
+/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* loaded from: classes.dex */
+public final class g00 {
+    public final String a;
+    public final String b;
+    public final String c;
+    public final String d;
+
+    public g00(String str, String str2, String str3, String str4) {
+        str2.getClass();
+        this.a = str;
+        this.b = str2;
+        this.c = str3;
+        this.d = str4;
+    }
+
+    public final boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof g00)) {
+            return false;
+        }
+        g00 g00Var = (g00) obj;
+        return this.a.equals(g00Var.a) && rt.b(this.b, g00Var.b) && this.c.equals(g00Var.c) && this.d.equals(g00Var.d);
+    }
+
+    public final int hashCode() {
+        return this.d.hashCode() + ((this.c.hashCode() + ((this.b.hashCode() + (this.a.hashCode() * 31)) * 31)) * 31);
+    }
+
+    public final String toString() {
+        return "ReleaseInfo(version=" + this.a + ", notes=" + this.b + ", downloadUrl=" + this.c + ", digest=" + this.d + ")";
+    }
+}
