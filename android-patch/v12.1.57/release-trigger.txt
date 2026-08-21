@@ -1,0 +1,2 @@
+trigger=2026-08-22T00:46+03:00
+purpose=run Android 12.1.57 signed release workflow
