@@ -1,0 +1,59 @@
+name: Nava Android updater diagnostics
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-android-updater-diagnostic.yml"
+      - "diagnostics/updater-diagnostic-trigger.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download current APK
+        run: |
+          mkdir -p /tmp/apk
+          gh release download v12.1.59 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/apk
+      - name: Install JADX
+        run: |
+          curl -fsSL -o /tmp/jadx.zip https://github.com/skylot/jadx/releases/download/v1.5.3/jadx-1.5.3.zip
+          mkdir -p /tmp/jadx-bin
+          unzip -q /tmp/jadx.zip -d /tmp/jadx-bin
+      - name: Inspect updater
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/jadx-bin/bin/jadx --show-bad-code -d /tmp/jadx-out /tmp/apk/Nava.apk >/tmp/jadx.log 2>&1 || true
+          mkdir -p diagnostics
+          OUT=diagnostics/nava-updater-diagnostic.txt
+          : > "$OUT"
+          printf '=== MATCHED UPDATER FILES ===\n' >> "$OUT"
+          grep -RIl -E 'releases/latest|Nava\.apk|DownloadManager|canRequestPackageInstalls|REQUEST_INSTALL_PACKAGES|PackageInstaller|digest|update|güncelle|Güncelle' /tmp/jadx-out/sources 2>/dev/null | head -80 | tee -a "$OUT"
+          printf '\n=== h00.java ===\n' >> "$OUT"
+          if [ -f /tmp/jadx-out/sources/defpackage/h00.java ]; then cat /tmp/jadx-out/sources/defpackage/h00.java >> "$OUT"; fi
+          printf '\n=== RELATED SOURCES ===\n' >> "$OUT"
+          while IFS= read -r f; do
+            [ -f "$f" ] || continue
+            [ "$f" = /tmp/jadx-out/sources/defpackage/h00.java ] && continue
+            printf '\n----- %s -----\n' "$f" >> "$OUT"
+            sed -n '1,500p' "$f" >> "$OUT"
+          done < <(grep -RIl -E 'releases/latest|Nava\.apk|DownloadManager|canRequestPackageInstalls|REQUEST_INSTALL_PACKAGES|PackageInstaller|digest' /tmp/jadx-out/sources 2>/dev/null | head -25)
+          printf '\n=== DEX STRINGS ===\n' >> "$OUT"
+          unzip -p /tmp/apk/Nava.apk classes.dex | strings | grep -Ei 'release|Nava\.apk|download|update|digest|install|github|güncelle' | head -500 >> "$OUT" || true
+      - name: Persist updater diagnostic
+        run: |
+          git config user.name 'Nava Android Diagnostic Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add diagnostics/nava-updater-diagnostic.txt
+          git commit -m 'Record updater diagnostics [skip ci]' || true
+          git push || true
