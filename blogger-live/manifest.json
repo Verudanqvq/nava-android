@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "version": "12.3.11-live.2",
-  "css": "releases/12.3.11-live.1.css",
+  "version": "12.3.11-live.3",
+  "css": "releases/12.3.11-live.3.css",
   "js": "releases/12.3.11-live.1.js",
-  "notes": "Web-only shared layer: per-work TR/EN/JP/KR/CN chapter variants, Firestore notification deletion, plus desktop chapter icon size guard. Android blocks /blogger-live/ and is unaffected."
+  "notes": "Web-only shared layer: per-work TR/EN/JP/KR/CN chapter variants, Firestore notification deletion, chapter icon guard, and hard clamp for the comment drawer SVG icon. Android blocks /blogger-live/ and is unaffected."
 }
