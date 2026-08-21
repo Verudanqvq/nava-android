@@ -1,0 +1,1 @@
+Run updater diagnostic after workflow exists on main.
