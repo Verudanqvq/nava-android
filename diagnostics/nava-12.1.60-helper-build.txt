@@ -1,0 +1,333 @@
+DOWNLOAD_RC=0
+I: Using Apktool 2.11.1 on Nava.apk with 4 threads
+I: Baksmaling classes.dex...
+I: Baksmaling classes2.dex...
+I: Copying raw resources...
+I: Baksmaling classes3.dex...
+I: Copying raw manifest...
+I: Copying original files...
+I: Copying assets...
+I: Copying lib...
+I: Copying unknown files...
+APKTOOL_BASE_RC=0
+=== e00 candidates ===
+/tmp/base-dec/smali/e00.smali
+=== z5 candidates ===
+/tmp/base-dec/smali/z5.smali
+E00=/tmp/base-dec/smali/e00.smali
+Z5=/tmp/base-dec/smali/z5.smali
+=== e00 header ===
+.class public final synthetic Le00;
+.super Ljava/lang/Object;
+.source "r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056"
+
+# interfaces
+.implements Landroid/content/DialogInterface$OnClickListener;
+
+
+# instance fields
+.field public final synthetic c:Lh00;
+
+.field public final synthetic d:Lg00;
+
+
+# direct methods
+.method public synthetic constructor <init>(Lh00;Lg00;)V
+    .locals 0
+
+    .line 1
+    invoke-direct {p0}, Ljava/lang/Object;-><init>()V
+
+    .line 2
+    .line 3
+    .line 4
+    iput-object p1, p0, Le00;->c:Lh00;
+
+    .line 5
+    .line 6
+    iput-object p2, p0, Le00;->d:Lg00;
+
+    .line 7
+    .line 8
+    return-void
+.end method
+
+
+# virtual methods
+.method public final onClick(Landroid/content/DialogInterface;I)V
+    .locals 5
+
+    .line 1
+    iget-object p1, p0, Le00;->c:Lh00;
+
+    .line 2
+    .line 3
+    iget-object p2, p1, Lh00;->a:Lcom/verudanava/nava/MainActivity;
+
+    .line 4
+    .line 5
+    invoke-virtual {p1}, Lh00;->f()Ljava/io/File;
+
+    .line 6
+    .line 7
+    .line 8
+    move-result-object v0
+
+    .line 9
+    invoke-virtual {v0}, Ljava/io/File;->exists()Z
+
+    .line 10
+    .line 11
+    .line 12
+    move-result v1
+
+    .line 13
+    if-eqz v1, :cond_0
+
+    .line 14
+    .line 15
+    invoke-virtual {v0}, Ljava/io/File;->delete()Z
+
+    .line 16
+    .line 17
+    .line 18
+    :cond_0
+    new-instance v0, Landroid/app/DownloadManager$Request;
+
+    .line 19
+    .line 20
+    iget-object p0, p0, Le00;->d:Lg00;
+
+    .line 21
+    .line 22
+    iget-object v1, p0, Lg00;->c:Ljava/lang/String;
+
+    .line 23
+    .line 24
+    invoke-static {v1}, Landroid/net/Uri;->parse(Ljava/lang/String;)Landroid/net/Uri;
+
+    .line 25
+    .line 26
+    .line 27
+    move-result-object v1
+
+    .line 28
+    invoke-direct {v0, v1}, Landroid/app/DownloadManager$Request;-><init>(Landroid/net/Uri;)V
+
+    .line 29
+    .line 30
+    .line 31
+    iget-object v1, p0, Lg00;->a:Ljava/lang/String;
+
+    .line 32
+    .line 33
+    const-string v2, "Nava "
+
+    .line 34
+    .line 35
+    invoke-virtual {v2, v1}, Ljava/lang/String;->concat(Ljava/lang/String;)Ljava/lang/String;
+
+    .line 36
+    .line 37
+    .line 38
+    move-result-object v1
+
+    .line 39
+    invoke-virtual {v0, v1}, Landroid/app/DownloadManager$Request;->setTitle(Ljava/lang/CharSequence;)Landroid/app/DownloadManager$Request;
+
+    .line 40
+    .line 41
+76:    new-instance v0, Landroid/app/DownloadManager$Request;
+96:    invoke-direct {v0, v1}, Landroid/app/DownloadManager$Request;-><init>(Landroid/net/Uri;)V
+117:    invoke-virtual {v0, v1}, Landroid/app/DownloadManager$Request;->setTitle(Ljava/lang/CharSequence;)Landroid/app/DownloadManager$Request;
+126:    invoke-virtual {v0, v1}, Landroid/app/DownloadManager$Request;->setDescription(Ljava/lang/CharSequence;)Landroid/app/DownloadManager$Request;
+135:    invoke-virtual {v0, v1}, Landroid/app/DownloadManager$Request;->setMimeType(Ljava/lang/String;)Landroid/app/DownloadManager$Request;
+143:    invoke-virtual {v0, v1}, Landroid/app/DownloadManager$Request;->setNotificationVisibility(I)Landroid/app/DownloadManager$Request;
+148:    invoke-virtual {v0, v1}, Landroid/app/DownloadManager$Request;->setAllowedOverMetered(Z)Landroid/app/DownloadManager$Request;
+156:    invoke-virtual {v0, v2}, Landroid/app/DownloadManager$Request;->setAllowedOverRoaming(Z)Landroid/app/DownloadManager$Request;
+169:    invoke-virtual {v0, p2, v3, v4}, Landroid/app/DownloadManager$Request;->setDestinationInExternalFilesDir(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;)Landroid/app/DownloadManager$Request;
+191:    check-cast v3, Landroid/app/DownloadManager;
+196:    invoke-virtual {v3, v0}, Landroid/app/DownloadManager;->enqueue(Landroid/app/DownloadManager$Request;)J
+warning: [options] bootstrap class path not set in conjunction with -source 8
+1 warning
+STUB_JAVAC_RC=0
+warning: [options] bootstrap class path not set in conjunction with -source 8
+1 warning
+HELPER_JAVAC_RC=0
+/tmp/helperclasses/e00$1.class
+/tmp/helperclasses/e00$3.class
+/tmp/helperclasses/e00$2.class
+/tmp/helperclasses/e00.class
+HELPER_CLASS_COUNT=4
+D8_RC=0
+I: Using Apktool 2.11.1 on helper-mini.apk with 4 threads
+I: Copying raw manifest...
+I: Baksmaling classes.dex...
+I: Copying original files...
+I: Copying unknown files...
+APKTOOL_HELPER_RC=0
+=== helper smali files ===
+/tmp/helper-dec/smali/e00$3.smali
+/tmp/helper-dec/smali/e00$1.smali
+/tmp/helper-dec/smali/e00.smali
+/tmp/helper-dec/smali/e00$2.smali
+.class public final Le00;
+.super Ljava/lang/Object;
+.source "e00.java"
+
+# interfaces
+.implements Landroid/content/DialogInterface$OnClickListener;
+
+
+# static fields
+.field private static final MAX_APK_BYTES:J = 0x20000000L
+
+
+# instance fields
+.field private final manager:Lh00;
+
+.field private final release:Lg00;
+
+
+# direct methods
+.method public constructor <init>(Lh00;Lg00;)V
+    .locals 0
+
+    .line 17
+    invoke-direct {p0}, Ljava/lang/Object;-><init>()V
+
+    .line 18
+    iput-object p1, p0, Le00;->manager:Lh00;
+
+    .line 19
+    iput-object p2, p0, Le00;->release:Lg00;
+
+    .line 20
+    return-void
+.end method
+
+.method static synthetic access$000(Le00;Lcom/verudanava/nava/MainActivity;)V
+    .locals 0
+
+    .line 12
+    invoke-direct {p0, p1}, Le00;->download(Lcom/verudanava/nava/MainActivity;)V
+
+    return-void
+.end method
+
+.method private download(Lcom/verudanava/nava/MainActivity;)V
+    .locals 19
+
+    .line 42
+    move-object/from16 v1, p0
+
+    move-object/from16 v2, p1
+
+    iget-object v0, v1, Le00;->manager:Lh00;
+
+    invoke-virtual {v0}, Lh00;->f()Ljava/io/File;
+
+    move-result-object v3
+
+    .line 43
+    nop
+
+    .line 44
+    nop
+
+    .line 45
+    nop
+
+    .line 47
+    const/4 v4, 0x0
+
+    :try_start_0
+    new-instance v0, Ljava/net/URL;
+
+    iget-object v5, v1, Le00;->release:Lg00;
+
+    iget-object v5, v5, Lg00;->c:Ljava/lang/String;
+
+    invoke-direct {v0, v5}, Ljava/net/URL;-><init>(Ljava/lang/String;)V
+
+    .line 48
+    const-string v5, "https"
+
+    invoke-virtual {v0}, Ljava/net/URL;->getProtocol()Ljava/lang/String;
+
+    move-result-object v6
+
+    invoke-virtual {v5, v6}, Ljava/lang/String;->equalsIgnoreCase(Ljava/lang/String;)Z
+
+    move-result v5
+
+    if-eqz v5, :cond_e
+
+    const-string v5, "github.com"
+
+    invoke-virtual {v0}, Ljava/net/URL;->getHost()Ljava/lang/String;
+
+    move-result-object v6
+
+    invoke-virtual {v5, v6}, Ljava/lang/String;->equalsIgnoreCase(Ljava/lang/String;)Z
+
+    move-result v5
+
+    if-eqz v5, :cond_e
+
+    .line 51
+    invoke-virtual {v3}, Ljava/io/File;->getParentFile()Ljava/io/File;
+
+    move-result-object v5
+
+    .line 52
+    if-eqz v5, :cond_1
+
+    invoke-virtual {v5}, Ljava/io/File;->exists()Z
+
+    move-result v6
+
+    if-nez v6, :cond_1
+
+    invoke-virtual {v5}, Ljava/io/File;->mkdirs()Z
+
+    move-result v6
+
+    if-nez v6, :cond_1
+
+    invoke-virtual {v5}, Ljava/io/File;->isDirectory()Z
+
+    move-result v5
+
+    if-eqz v5, :cond_0
+
+    goto :goto_0
+
+    .line 53
+    :cond_0
+    new-instance v0, Ljava/io/IOException;
+
+    const-string v5, "G\u00fcncelleme klas\u00f6r\u00fc olu\u015fturulamad\u0131."
+
+    invoke-direct {v0, v5}, Ljava/io/IOException;-><init>(Ljava/lang/String;)V
+
+    throw v0
+
+    .line 55
+    :cond_1
+    :goto_0
+    invoke-virtual {v3}, Ljava/io/File;->exists()Z
+
+    move-result v5
+
+    if-eqz v5, :cond_3
+
+    invoke-virtual {v3}, Ljava/io/File;->delete()Z
+
+    move-result v5
+
+    if-eqz v5, :cond_2
+
+    goto :goto_1
+
+    .line 56
