@@ -1,0 +1,52 @@
+/* Nava Android 12.1.56 — keep picker actions visible on mobile/WebView. */
+#nava-series-download-picker-v12155 .nava-series-download-sheet-v12149{
+  height:88vh!important;
+  max-height:680px!important;
+  display:grid!important;
+  grid-template-rows:auto auto minmax(0,1fr) auto auto!important;
+  overflow:hidden!important;
+}
+#nava-series-download-picker-v12155 .nava-series-download-volumes-v12149{
+  min-height:0!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+#nava-series-download-picker-v12155 .nava-series-download-picker-status-v12149{
+  flex:0 0 auto!important;
+  max-height:54px!important;
+  overflow:auto!important;
+  padding:7px 11px!important;
+  background:#fff!important;
+}
+#nava-series-download-picker-v12155 footer[data-nava56-footer],
+#nava-series-download-picker-v12155 .nava-series-download-sheet-v12149>footer{
+  position:relative!important;
+  z-index:20!important;
+  display:grid!important;
+  visibility:visible!important;
+  opacity:1!important;
+  flex:0 0 auto!important;
+  grid-template-columns:1fr 1.5fr!important;
+  gap:8px!important;
+  min-height:60px!important;
+  padding:9px 10px max(12px,env(safe-area-inset-bottom,0px))!important;
+  border-top:1px solid #e4eaf1!important;
+  background:#fff!important;
+}
+#nava-series-download-picker-v12155 footer button{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:42px!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+html.dark.nava-app-v9 #nava-series-download-picker-v12155 .nava-series-download-picker-status-v12149,
+html.dark.nava-app-v9 #nava-series-download-picker-v12155 footer{
+  background:#172033!important;
+  border-color:#334155!important;
+}
+@media(max-width:360px){
+  #nava-series-download-picker-v12155 .nava-series-download-sheet-v12149>footer{grid-template-columns:1fr 1fr!important}
+}
