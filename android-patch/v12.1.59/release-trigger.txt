@@ -1,1 +1,1 @@
-Trigger signed 12.1.59 build after workflow exists on main.
+Trigger fixed signed 12.1.59 build after JADX compile repair.
