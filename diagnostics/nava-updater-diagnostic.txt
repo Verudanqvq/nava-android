@@ -725,6 +725,274 @@ public final class g00 {
     }
 }
 
+----- /tmp/jadx-out/sources/defpackage/z5.java -----
+package defpackage;
+
+import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.app.job.JobParameters;
+import android.content.DialogInterface;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Environment;
+import android.os.Process;
+import android.os.StrictMode;
+import android.widget.Toast;
+import androidx.credentials.playservices.CredentialProviderPlayServicesImpl;
+import com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService;
+import com.verudanava.nava.MainActivity;
+import java.io.File;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* loaded from: classes.dex */
+public final /* synthetic */ class z5 implements Runnable {
+    public final /* synthetic */ int c;
+    public final /* synthetic */ Object d;
+    public final /* synthetic */ Object e;
+
+    public /* synthetic */ z5(Object obj, int i, Object obj2) {
+        this.c = i;
+        this.d = obj;
+        this.e = obj2;
+    }
+
+    @Override // java.lang.Runnable
+    public final void run() throws Exception {
+        mi miVar;
+        Object k60Var;
+        switch (this.c) {
+            case 0:
+                a6 a6Var = (a6) this.d;
+                try {
+                    ((Runnable) this.e).run();
+                    return;
+                } finally {
+                    a6Var.a();
+                }
+            case 1:
+                f20 f20Var = (f20) this.d;
+                i40 i40Var = (i40) this.e;
+                if (f20Var.b != f20.d) {
+                    mi.k("provide() can be called only once.");
+                    return;
+                }
+                synchronized (f20Var) {
+                    miVar = f20Var.a;
+                    f20Var.a = null;
+                    f20Var.b = i40Var;
+                }
+                miVar.getClass();
+                return;
+            case 2:
+                xu xuVar = (xu) this.d;
+                i40 i40Var2 = (i40) this.e;
+                synchronized (xuVar) {
+                    try {
+                        if (xuVar.b == null) {
+                            xuVar.a.add(i40Var2);
+                        } else {
+                            xuVar.b.add(i40Var2.get());
+                        }
+                    } catch (Throwable th) {
+                        throw th;
+                    }
+                }
+                return;
+            case 3:
+                ((rr) ((nf) this.d).c()).h((mr) this.e);
+                return;
+            case 4:
+                ((rr) ((nf) this.d).c()).g(((e50) this.e).c);
+                return;
+            case g30.STRING_FIELD_NUMBER /* 5 */:
+                ((rr) ((nf) this.d).c()).g((ir) this.e);
+                return;
+            case g30.STRING_SET_FIELD_NUMBER /* 6 */:
+                ((rr) ((ff) this.d)).g(this.e);
+                return;
+            case g30.DOUBLE_FIELD_NUMBER /* 7 */:
+                CredentialProviderPlayServicesImpl.onClearCredential$lambda$3$0$0((ff) this.d, (e50) this.e);
+                return;
+            case g30.BYTES_FIELD_NUMBER /* 8 */:
+                CredentialProviderPlayServicesImpl.runFallbackClearCredFlow$lambda$2$0$0$0((ff) this.d, (Exception) this.e);
+                return;
+            case 9:
+                fg fgVar = (fg) this.d;
+                Runnable runnable = (Runnable) this.e;
+                Process.setThreadPriority(fgVar.c);
+                StrictMode.ThreadPolicy threadPolicy = fgVar.d;
+                if (threadPolicy != null) {
+                    StrictMode.setThreadPolicy(threadPolicy);
+                }
+                runnable.run();
+                return;
+            case 10:
+                Callable callable = (Callable) this.d;
+                p60 p60Var = (p60) this.e;
+                try {
+                    Object objCall = callable.call();
+                    wi wiVar = (wi) p60Var.d;
+                    if (objCall == null) {
+                        objCall = t.i;
+                    }
+                    if (t.h.f(wiVar, null, objCall)) {
+                        t.c(wiVar);
+                        return;
+                    }
+                    return;
+                } catch (Exception e) {
+                    p60Var.o(e);
+                    return;
+                }
+            case 11:
+                zs zsVar = (zs) this.d;
+                hc0 hc0Var = (hc0) this.e;
+                try {
+                    hc0Var.b(zsVar.a());
+                    return;
+                } catch (Exception e2) {
+                    hc0Var.a(e2);
+                    return;
+                }
+            case 12:
+                JobInfoSchedulerService jobInfoSchedulerService = (JobInfoSchedulerService) this.d;
+                JobParameters jobParameters = (JobParameters) this.e;
+                int i = JobInfoSchedulerService.c;
+                jobInfoSchedulerService.jobFinished(jobParameters, false);
+                return;
+            case 13:
+                final h00 h00Var = (h00) this.d;
+                Object obj = this.e;
+                CharSequence charSequenceSubSequence = "";
+                h00Var.i = false;
+                if (obj instanceof k60) {
+                    obj = null;
+                }
+                final g00 g00Var = (g00) obj;
+                if (g00Var == null) {
+                    return;
+                }
+                String str = g00Var.a;
+                MainActivity mainActivity = h00Var.a;
+                try {
+                    k60Var = mainActivity.getPackageManager().getPackageInfo(mainActivity.getPackageName(), 0).versionName;
+                    if (k60Var == null) {
+                        k60Var = "";
+                    }
+                } catch (Throwable th2) {
+                    k60Var = new k60(th2);
+                }
+                if (k60Var instanceof k60) {
+                    k60Var = "12.1.23";
+                }
+                List listD = h00.d(str);
+                List listD2 = h00.d((String) k60Var);
+                int iMax = Math.max(listD.size(), listD2.size());
+                int i2 = 0;
+                while (i2 < iMax) {
+                    int iIntValue = ((Number) ((i2 < 0 || i2 >= listD.size()) ? 0 : listD.get(i2))).intValue();
+                    int iIntValue2 = ((Number) ((i2 < 0 || i2 >= listD2.size()) ? 0 : listD2.get(i2))).intValue();
+                    if (iIntValue != iIntValue2) {
+                        if (iIntValue > iIntValue2) {
+                            MainActivity mainActivity2 = h00Var.a;
+                            if (mainActivity2.isFinishing() || mainActivity2.isDestroyed()) {
+                                return;
+                            }
+                            AlertDialog alertDialog = h00Var.e;
+                            if (alertDialog == null || !alertDialog.isShowing()) {
+                                String string = jb0.k0(jb0.h0(g00Var.b, "\r", "")).toString();
+                                if (string.length() > 420) {
+                                    int length = string.length();
+                                    String strSubstring = string.substring(0, 420 > length ? length : 420);
+                                    int length2 = strSubstring.length() - 1;
+                                    if (length2 >= 0) {
+                                        while (true) {
+                                            int i3 = length2 - 1;
+                                            if (!yd0.z(strSubstring.charAt(length2))) {
+                                                charSequenceSubSequence = strSubstring.subSequence(0, length2 + 1);
+                                            } else if (i3 >= 0) {
+                                                length2 = i3;
+                                            }
+                                        }
+                                    }
+                                    string = charSequenceSubSequence.toString() + "…";
+                                }
+                                StringBuilder sb = new StringBuilder("Nava ");
+                                sb.append(g00Var.a);
+                                sb.append(" hazır.");
+                                if (!jb0.f0(string)) {
+                                    sb.append("\n\n");
+                                    sb.append(string);
+                                }
+                                AlertDialog alertDialogCreate = new AlertDialog.Builder(mainActivity2).setTitle("Güncelleme hazır").setMessage(sb.toString()).setNegativeButton("Daha sonra", (DialogInterface.OnClickListener) null).setPositiveButton("Güncelle", new DialogInterface.OnClickListener() { // from class: e00
+                                    @Override // android.content.DialogInterface.OnClickListener
+                                    public final void onClick(DialogInterface dialogInterface, int i4) {
+                                        Object k60Var2;
+                                        h00 h00Var2 = h00Var;
+                                        MainActivity mainActivity3 = h00Var2.a;
+                                        File fileF = h00Var2.f();
+                                        if (fileF.exists()) {
+                                            fileF.delete();
+                                        }
+                                        g00 g00Var2 = g00Var;
+                                        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(g00Var2.c));
+                                        request.setTitle("Nava ".concat(g00Var2.a));
+                                        request.setDescription("Güncelleme indiriliyor…");
+                                        request.setMimeType("application/vnd.android.package-archive");
+                                        request.setNotificationVisibility(1);
+                                        request.setAllowedOverMetered(true);
+                                        request.setAllowedOverRoaming(false);
+                                        request.setDestinationInExternalFilesDir(mainActivity3, Environment.DIRECTORY_DOWNLOADS, "Nava-update.apk");
+                                        Object systemService = mainActivity3.getSystemService("download");
+                                        systemService.getClass();
+                                        try {
+                                            k60Var2 = Long.valueOf(((DownloadManager) systemService).enqueue(request));
+                                        } catch (Throwable th3) {
+                                            k60Var2 = new k60(th3);
+                                        }
+                                        if (l60.a(k60Var2) != null) {
+                                            Toast.makeText(mainActivity3, "Güncelleme indirilemedi.", 1).show();
+                                            return;
+                                        }
+                                        h00Var2.c.edit().putLong("download_id", ((Number) k60Var2).longValue()).putString("digest", g00Var2.d).putBoolean("pending_install", false).apply();
+                                        Toast.makeText(mainActivity3, "Nava güncellemesi indiriliyor.", 0).show();
+                                    }
+                                }).create();
+                                h00Var.e = alertDialogCreate;
+                                if (alertDialogCreate != null) {
+                                    alertDialogCreate.setOnDismissListener(new DialogInterface.OnDismissListener() { // from class: f00
+                                        @Override // android.content.DialogInterface.OnDismissListener
+                                        public final void onDismiss(DialogInterface dialogInterface) {
+                                            h00Var.e = null;
+                                        }
+                                    });
+                                }
+                                AlertDialog alertDialog2 = h00Var.e;
+                                if (alertDialog2 != null) {
+                                    alertDialog2.show();
+                                    return;
+                                }
+                                return;
+                            }
+                            return;
+                        }
+                        return;
+                    }
+                    i2++;
+                }
+                return;
+            case 14:
+                ((c5) this.d).b((Typeface) this.e);
+                return;
+            default:
+                ((rr) ((ff) this.d)).h((mr) this.e);
+                return;
+        }
+    }
+}
+
 === DEX STRINGS ===
 # ** IS FORCE-RELEASED ON TIMEOUT **
  failed to release!
