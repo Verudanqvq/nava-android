@@ -1,0 +1,104 @@
+name: Nava 12.1.60 updater helper diagnostic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-12-1-60-helper-diagnostic.yml"
+      - "diagnostics/nava-12.1.60-helper-diag-trigger.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run helper diagnostic
+        shell: bash
+        run: |
+          set +e
+          LOG=diagnostics/nava-12.1.60-helper-build.txt
+          : > "$LOG"
+          mkdir -p /tmp/current
+          gh release download v12.1.59 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current >>"$LOG" 2>&1
+          echo "DOWNLOAD_RC=$?" >> "$LOG"
+          ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          curl -fsSL -o /tmp/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar >>"$LOG" 2>&1
+          java -jar /tmp/apktool.jar d -f -r /tmp/current/Nava.apk -o /tmp/base-dec >>"$LOG" 2>&1
+          echo "APKTOOL_BASE_RC=$?" >> "$LOG"
+          echo '=== e00 candidates ===' >> "$LOG"
+          find /tmp/base-dec -type f -name 'e00*.smali' -print >> "$LOG" 2>&1
+          echo '=== z5 candidates ===' >> "$LOG"
+          find /tmp/base-dec -type f -name 'z5.smali' -print >> "$LOG" 2>&1
+          E00="$(find /tmp/base-dec -type f -name 'e00.smali' | head -1)"
+          Z5="$(find /tmp/base-dec -type f -name 'z5.smali' | head -1)"
+          echo "E00=$E00" >> "$LOG"
+          echo "Z5=$Z5" >> "$LOG"
+          if [ -n "$E00" ]; then
+            echo '=== e00 header ===' >> "$LOG"
+            sed -n '1,120p' "$E00" >> "$LOG" 2>&1
+            grep -n 'DownloadManager' "$E00" >> "$LOG" 2>&1
+          fi
+          mkdir -p /tmp/stubsrc/com/verudanava/nava /tmp/stubclasses /tmp/helperclasses /tmp/helperdex
+          cat >/tmp/stubsrc/com/verudanava/nava/MainActivity.java <<'JAVA'
+          package com.verudanava.nava;
+          public class MainActivity extends android.app.Activity {}
+          JAVA
+          cat >/tmp/stubsrc/h00.java <<'JAVA'
+          import com.verudanava.nava.MainActivity;
+          import java.io.File;
+          import java.util.concurrent.ExecutorService;
+          public class h00 {
+            public MainActivity a;
+            public ExecutorService b;
+            public volatile boolean j;
+            public volatile boolean k;
+            public void a() {}
+            public File f() { return null; }
+            public void g(File file, String digest) {}
+          }
+          JAVA
+          cat >/tmp/stubsrc/g00.java <<'JAVA'
+          public class g00 { public String a; public String b; public String c; public String d; }
+          JAVA
+          javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/stubclasses /tmp/stubsrc/com/verudanava/nava/MainActivity.java /tmp/stubsrc/h00.java /tmp/stubsrc/g00.java >>"$LOG" 2>&1
+          echo "STUB_JAVAC_RC=$?" >> "$LOG"
+          jar cf /tmp/stubs.jar -C /tmp/stubclasses . >>"$LOG" 2>&1
+          javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR:/tmp/stubs.jar" -d /tmp/helperclasses android-patch/v12.1.60/e00.java >>"$LOG" 2>&1
+          echo "HELPER_JAVAC_RC=$?" >> "$LOG"
+          find /tmp/helperclasses -type f -print >> "$LOG" 2>&1
+          mapfile -t HELPER_CLASSES < <(find /tmp/helperclasses -type f -name 'e00*.class' | sort)
+          echo "HELPER_CLASS_COUNT=${#HELPER_CLASSES[@]}" >> "$LOG"
+          if [ "${#HELPER_CLASSES[@]}" -gt 0 ]; then
+            "$BUILD_TOOLS/d8" --lib "$ANDROID_JAR" --classpath /tmp/stubs.jar --min-api 26 --output /tmp/helperdex "${HELPER_CLASSES[@]}" >>"$LOG" 2>&1
+            echo "D8_RC=$?" >> "$LOG"
+          fi
+          if [ -f /tmp/helperdex/classes.dex ]; then
+            mkdir -p /tmp/helper-mini
+            unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/helper-mini/AndroidManifest.xml
+            cp /tmp/helperdex/classes.dex /tmp/helper-mini/classes.dex
+            (cd /tmp/helper-mini && zip -q /tmp/helper-mini.apk AndroidManifest.xml classes.dex)
+            java -jar /tmp/apktool.jar d -f -r /tmp/helper-mini.apk -o /tmp/helper-dec >>"$LOG" 2>&1
+            echo "APKTOOL_HELPER_RC=$?" >> "$LOG"
+            echo '=== helper smali files ===' >> "$LOG"
+            find /tmp/helper-dec -type f -name 'e00*.smali' -print >> "$LOG" 2>&1
+            HELP="$(find /tmp/helper-dec -type f -name 'e00.smali' | head -1)"
+            if [ -n "$HELP" ]; then sed -n '1,160p' "$HELP" >> "$LOG" 2>&1; fi
+          fi
+          cat "$LOG"
+          exit 0
+      - name: Persist diagnostic
+        run: |
+          git config user.name 'Nava Android Diagnostic Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add diagnostics/nava-12.1.60-helper-build.txt
+          git commit -m 'Record 12.1.60 helper diagnostic [skip ci]' || true
+          git push || true
