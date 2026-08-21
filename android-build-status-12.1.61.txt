@@ -1,0 +1,14 @@
+status=running
+started=2026-08-21T23:42:13Z
+source_validation=ok
+base=12.1.60
+startup=nava-splash-until-page-finished
+offline_retry=manual-online-probe
+notifications=v9-clear-delete
+updater=direct-https-preserved
+signing_material=ok
+source_apk=ok
+source_sha256=cfde38c53d89b3215baa9fbeb49944bfdc114a487747910e47bfd0e13e66cae8
+decoded_patch=ok
+status=failed
+finished=2026-08-21T23:42:23Z
