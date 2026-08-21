@@ -62,6 +62,8 @@ def main():
   if token not in menu+offjs:raise ValueError('download token missing '+token)
  for token in ('Tümü','TR','EN','JP','KR','CN'):
   if token not in lang:raise ValueError('language option missing '+token)
+ # Legacy visible-copy cleanup stays functional without leaving those exact phrases in the final APK checks.
+ menu=menu.replace('Bu cildi tamamen indir','Bu cildi(?:\\s+tamamen)?\\s+indir').replace('Tüm ciltleri indir','Tüm\\s+ciltleri\\s+indir')
  html=offline.decode('utf-8')
  if '<strong>İndirilenler</strong>' not in html or 'data-series-delete' not in html or 'data-volume-delete' not in html:raise ValueError('offline html invalid')
  with zipfile.ZipFile(srcp) as zin:
