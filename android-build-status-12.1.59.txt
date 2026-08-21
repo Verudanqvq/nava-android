@@ -1,5 +1,5 @@
 status=running
-started=2026-08-21T22:44:38Z
+started=2026-08-21T22:46:39Z
 source_validation=ok
 base=12.1.58
 native_ua=12.1.47-preserved
@@ -14,4 +14,4 @@ source_apk=ok
 source_sha256=31d319c1af95e822931881d672a3dd1177a9467561f6c62c5125f61d5c68ec59
 classes1_sha256=29a3dbb9b86276e120c4243363f70b9a6b34bbbe0387160ad1368d19d0491eb1
 status=failed
-finished=2026-08-21T22:44:55Z
+finished=2026-08-21T22:47:43Z
