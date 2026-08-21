@@ -1,0 +1,209 @@
+name: Nava Android 12.1.49 release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "android-patch/v12.1.49/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nava-android-12-1-49
+  cancel-in-progress: false
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+      EXPECTED_CERT_SHA256: acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51d09fe
+      EXPECTED_SOURCE_SHA256: 8b4650833446f30eafa6e0fc1ed28dc19564eeee304421b02c7ce05f5433964c
+      SOURCE_TAG: v12.1.47
+      TARGET_TAG: v12.1.49
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare status
+        run: printf 'status=running\nstarted=%s\n' "$(date -u +%FT%TZ)" > /tmp/status.txt
+
+      - name: Validate 12.1.49 sources
+        run: |
+          set -euo pipefail
+          python -m py_compile android-patch/v12.1.49/patch-apk.py
+          node --check android-patch/v12.1.49/download-menu.js
+          node --check android-patch/v12.1.49/offline-ui.js
+          node --check android-patch/v12.1.49/language-variants.js
+          node --check android-patch/v12.1.49/notification-delete.js
+          grep -q "NEW_VERSION='12.1.49';NEW_CODE=65" android-patch/v12.1.49/patch-apk.py
+          grep -q '12.1.47-based download queue + series volume picker' android-patch/v12.1.49/download-menu.js
+          grep -q 'nava-series-download-inline-v12149' android-patch/v12.1.49/download-menu.js
+          grep -q 'nava_download_queue_v12149' android-patch/v12.1.49/download-menu.js
+          grep -q 'reliable downloaded library and deletion' android-patch/v12.1.49/offline-ui.js
+          grep -q 'per-series chapter language variants' android-patch/v12.1.49/language-variants.js
+          grep -q 'nava-reader-settings-v2' android-patch/v12.1.49/language-variants.js
+          grep -q 'reliable mobile notification deletion' android-patch/v12.1.49/notification-delete.js
+          grep -q 'Tümünü temizle' android-patch/v12.1.49/notification-delete.js
+          grep -q '12.1.47-based queue, volume picker, language variants, notification deletion' android-patch/v12.1.49/ui-fix.css
+          printf 'source_validation=ok\nbase=12.1.47\ndownload=series-picker+queue\nlanguage=reader-settings-per-work\nnotifications=reliable-delete\n' >> /tmp/status.txt
+
+      - name: Recover signing material
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +x
+          export NAVA_KDF_SECRET="$(printf '%s' "$FIREBASE_SERVICE_ACCOUNT" | sha256sum | cut -d' ' -f1)"
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 250000 -in .github/nava-signing/private.pem.enc -out /tmp/nava-private.pem -pass env:NAVA_KDF_SECRET
+          unset NAVA_KDF_SECRET
+          openssl pkeyutl -decrypt -inkey /tmp/nava-private.pem -in android-signing/key-material.enc -out /tmp/key-material.bin -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
+          python - <<'PY'
+          from pathlib import Path
+          d=Path('/tmp/key-material.bin').read_bytes(); assert len(d)==48
+          Path('/tmp/aes-key').write_text(d[:32].hex()); Path('/tmp/aes-iv').write_text(d[32:].hex())
+          PY
+          openssl enc -d -aes-256-cbc -K "$(cat /tmp/aes-key)" -iv "$(cat /tmp/aes-iv)" -in android-signing/signing-payload.enc -out /tmp/signing.zip
+          mkdir -p /tmp/nava-signing
+          unzip -q /tmp/signing.zip -d /tmp/nava-signing
+          rm -f /tmp/nava-private.pem /tmp/key-material.bin /tmp/aes-key /tmp/aes-iv /tmp/signing.zip
+          printf 'signing_material=ok\n' >> /tmp/status.txt
+
+      - name: Download signed 12.1.47 base
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/current
+          gh release download "$SOURCE_TAG" --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current
+          GOT="$(sha256sum /tmp/current/Nava.apk | cut -d' ' -f1)"
+          test "$GOT" = "$EXPECTED_SOURCE_SHA256"
+          unzip -l /tmp/current/Nava.apk | grep -q 'assets/nava_app_v11.js'
+          unzip -l /tmp/current/Nava.apk | grep -q 'assets/nava_app_v11.css'
+          unzip -l /tmp/current/Nava.apk | grep -q 'classes.dex'
+          printf 'source_apk=ok\nsource_sha256=%s\n' "$GOT" >> /tmp/status.txt
+
+      - name: Patch and validate APK
+        run: |
+          set -euo pipefail
+          python android-patch/v12.1.49/patch-apk.py \
+            /tmp/current/Nava.apk \
+            android-patch/v12.1.49/download-menu.js \
+            android-patch/v12.1.49/offline-ui.js \
+            android-patch/v12.1.49/language-variants.js \
+            android-patch/v12.1.49/notification-delete.js \
+            android-patch/v12.1.49/ui-fix.css \
+            /tmp/Nava-unsigned.apk | tee /tmp/patch.txt
+          grep -q 'PATCH_OK versionName=12.1.49 versionCode=65 base=12.1.47' /tmp/patch.txt
+          unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/final.js
+          unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.css > /tmp/final.css
+          node --check /tmp/final.js
+          grep -q '12.1.47-based download queue + series volume picker' /tmp/final.js
+          grep -q 'nava-series-download-inline-v12149' /tmp/final.js
+          grep -q 'nava-download-hub-v12149' /tmp/final.js
+          grep -q 'reliable downloaded library and deletion' /tmp/final.js
+          grep -q 'per-series chapter language variants' /tmp/final.js
+          grep -q 'nava-reader-settings-v2' /tmp/final.js
+          grep -q 'reliable mobile notification deletion' /tmp/final.js
+          grep -q 'nava-notification-clear-all-v12149' /tmp/final.js
+          grep -q '12.1.47-based queue, volume picker, language variants, notification deletion' /tmp/final.css
+          printf 'patch=ok\nversionName=12.1.49\nversionCode=65\n' >> /tmp/status.txt
+
+      - name: Align and sign
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +x
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk
+          PROP=/tmp/nava-signing/keystore.properties
+          export NAVA_STORE_PASS="$(sed -n 's/^storePassword=//p' "$PROP" | tr -d '\r' | head -1)"
+          export NAVA_KEY_PASS="$(sed -n 's/^keyPassword=//p' "$PROP" | tr -d '\r' | head -1)"
+          KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROP" | tr -d '\r' | head -1)"
+          "$BUILD_TOOLS/apksigner" sign --ks /tmp/nava-signing/signing/nava-release.jks --ks-key-alias "$KEY_ALIAS" --ks-pass env:NAVA_STORE_PASS --key-pass env:NAVA_KEY_PASS --out /tmp/Nava.apk /tmp/Nava-aligned.apk
+          "$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/verify.txt
+          CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/verify.txt | sed 's/.*digest:[[:space:]]*//' | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
+          test "$CERT" = "$EXPECTED_CERT_SHA256"
+          APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
+          printf 'zipalign=ok\nsigning=ok\ncert_sha256=%s\napk_sha256=%s\n' "$CERT" "$APK_SHA" >> /tmp/status.txt
+
+      - name: Publish 12.1.49
+        run: |
+          set -euo pipefail
+          if gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $TARGET_TAG already exists; refusing to overwrite." >&2
+            exit 1
+          fi
+          NOTES='12.1.49, çalışan 12.1.47 APK tabanından yeniden kurulmuştur. Üstteki indirme ikonu yalnızca İndirilenler ve İndirme sırasını açar. Eser sayfasında Özeti Oku altında Eseri indir bulunur; kullanıcı indireceği ciltleri seçer ve seçilen içerikler sıraya alınır. İndirilenler Eser → Cilt → Bölüm yapısını ve Eseri sil / Cildi sil / Sil işlemlerini korur. Mobil bildirimlerde tek tek silme ve Tümünü temizle Firestore belgelerini gerçekten siler. TR / EN / JP / KR / CN etiketli aynı cilt+bölüm çevirileri tek mantıksal bölüm olarak gruplanır; dil tercihi eser bazında saklanır ve Dil seçimi mevcut Yazı/Manga okuma ayarlarının içine yerleştirilmiştir.'
+          gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.49' --notes "$NOTES" --latest
+          printf 'release=v12.1.49\nasset=Nava.apk\nstatus=success\nfinished=%s\n' "$(date -u +%FT%TZ)" >> /tmp/status.txt
+
+      - name: Record release and remove temporary workflow
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
+          cat > README.md <<EOF
+          # Nava Android
+
+          Current stable Android release: **12.1.49** (\`versionCode 65\`).
+
+          ## Distribution
+
+          - GitHub Latest asset name is always \`Nava.apk\`.
+          - Website Android button resolves to \`/releases/latest/download/Nava.apk\`.
+          - The Android updater reads GitHub's \`releases/latest\` API, finds the exact \`Nava.apk\` asset, disables HTTP caching, and uses Android's package installer.
+          - Stable signing certificate SHA-256: \`AC:DE:7C:F2:16:85:24:48:A8:A8:27:7F:E4:BF:11:EA:C1:83:39:4E:6B:34:A8:62:B1:24:E6:93:D5:1D:09:FE\`.
+          - Android 12.1.49 release APK SHA-256: \`$APK_SHA\`.
+
+          ## Android 12.1.49
+
+          12.1.49 is built directly from the signed **12.1.47 APK**. It does not use 12.1.48 as its base.
+
+          - The existing top-bar download icon keeps its location and is only an **İndirilenler / İndirme sırası** entry point.
+          - **Eseri indir** is placed after **Özeti Oku** on work pages.
+          - Work download opens a volume picker; selected volumes are prepared and sent to the native batch queue.
+          - Offline library remains **Eser → Cilt → Bölüm** with **Eseri sil / Cildi sil / Sil**.
+          - Android in-app notifications support individual delete and **Tümünü temizle**, backed by Firestore documents.
+          - Blogger labels \`TR / EN / JP / KR / CN\` are alternate language variants of the same logical chapter.
+          - Language choice is stored per work and is embedded in the existing reader settings panel alongside text/manga reading controls.
+          - The selected language is also respected when preparing offline downloads.
+
+          ## Publishing language variants
+
+          Publish separate Blogger URLs when needed, keep the same logical volume/chapter identity, and apply the corresponding language label. Android groups matching volume + chapter numbers and selects the URL for the reader's chosen work language.
+
+          ## Follower notifications
+
+          Automatic follower-release scanning remains paused. Existing direct-native FCM rendering, application notification icon and device registration remain preserved from the 12.1.47 base.
+
+          ## Firestore rules
+
+          - Firestore rules remain stored in \`firestore.rules\`.
+          - Backend-only automation state remains unavailable to client SDKs.
+
+          ## Blogger loader
+
+          The Android WebView continues to block requests containing \`/blogger-live/\`, so the old Blogger live loader cannot inject or flash inside the app.
+          EOF
+          cp /tmp/status.txt android-build-status-12.1.49.txt
+          rm -f .github/workflows/nava-android-12-1-49.yml
+          git config user.name 'Nava Android Build Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase
+          git add README.md android-build-status-12.1.49.txt .github/workflows/nava-android-12-1-49.yml
+          git commit -m 'Record Android 12.1.49 release [skip ci]'
+          git push
+
+      - name: Persist failed status
+        if: failure()
+        run: |
+          printf 'status=failed\nfinished=%s\n' "$(date -u +%FT%TZ)" >> /tmp/status.txt
+          cp /tmp/status.txt android-build-status-12.1.49.txt
+          git config user.name 'Nava Android Build Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add android-build-status-12.1.49.txt
+          git commit -m 'Record failed Android 12.1.49 build [skip ci]' || true
+          git push || true
