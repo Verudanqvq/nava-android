@@ -1,6 +1,6 @@
 # Nava Android
 
-Current stable Android release: **12.1.45** (`versionCode 61`).
+Current stable Android release: **12.1.46** (`versionCode 62`).
 
 ## Distribution
 
@@ -8,7 +8,7 @@ Current stable Android release: **12.1.45** (`versionCode 61`).
 - Website Android button resolves to `/releases/latest/download/Nava.apk`.
 - The Android updater reads GitHub's `releases/latest` API, finds the exact `Nava.apk` asset, disables HTTP caching, and uses Android's package installer.
 - Stable signing certificate SHA-256: `AC:DE:7C:F2:16:85:24:48:A8:A8:27:7F:E4:BF:11:EA:C1:83:39:4E:6B:34:A8:62:B1:24:E6:93:D5:1D:09:FE`.
-- Android 12.1.45 release APK SHA-256: `15df46b7be607bbb133f3ad253337276b8686c1313dc3ca46cab1324437a4581`.
+- Android 12.1.46 release APK SHA-256: `50dd1fd6f92b666a1cd9d58efb5ccd02a748547128b4f28a2f420da05b63d764`.
 
 ## Follower notifications
 
@@ -16,7 +16,7 @@ Automatic follower-release scanning is currently **paused**. The GitHub workflow
 
 The scanner code is preserved for later use. Notification copy remains explicit by release type: `Yeni cilt geldi` and `Yeni bölüm geldi`.
 
-Android 12.1.45 preserves the direct-native FCM renderer, Nava application notification icon, device registration, and the high-importance `nava_follower_releases_v4` channel. The mobile notification center keeps individual deletion and **Tümünü sil**, backed by the signed-in user's Firestore notification documents.
+Android 12.1.46 preserves the direct-native FCM renderer, Nava application notification icon, device registration, and the high-importance `nava_follower_releases_v4` channel. The mobile notification center keeps individual deletion and **Tümünü sil**, backed by the signed-in user's Firestore notification documents.
 
 ## Firestore rules
 
@@ -28,18 +28,19 @@ Android 12.1.45 preserves the direct-native FCM renderer, Nava application notif
 
 The native app-private offline storage/interceptor engine is preserved: chapter download, volume batch download, offline open after restart, delete/redownload, Wi-Fi-only mode, and locally served HTML/static resources.
 
-Android 12.1.45 rebuilds the download UI from the known-good 12.1.41 APK base instead of stacking the failed 12.1.42–12.1.44 experiments:
-- the download feature no longer inserts or rearranges controls inside the existing top bar;
-- legacy top-bar download controls are removed;
-- download access is one small fixed Nava download button;
-- tapping it opens a compact bottom sheet;
-- the sheet shows only the action relevant to the current page: **Bölümü indir**, **Cildi indir**, or **Eseri indir**, plus **İndirilenler**;
-- the old oversized volume-page download block and the old **Bu cildi tamamen indir / Tüm ciltleri indir** copy are removed;
-- downloaded content is organized as collapsed **Eser → Cilt → Bölüm**;
-- **Eseri sil**, **Cildi sil**, and single-item **Sil** are hidden behind three-dot menus instead of occupying the content rows;
-- Wi-Fi-only control lives inside the downloads settings rather than being repeated around the app;
-- Cilt-card navigation is explicitly preserved;
-- mobile notification deletion and **Tümünü sil** are preserved.
+Android **12.1.46** is rebuilt from the known-good **12.1.41 APK base**, not from the broken 12.1.42–12.1.45 UI chain:
+- the download system does **not** insert, reorder, or replace anything inside the existing top bar;
+- legacy top-bar download buttons are continuously removed if an older runtime tries to recreate them;
+- legacy download menus and page-flow download blocks are removed/hidden;
+- download access is one small fixed Nava download button at the lower-right edge of the app;
+- tapping the fixed button opens a matching compact bottom sheet;
+- the sheet shows only the page-relevant action: **Bölümü indir**, **Cildi indir**, or **Eseri indir**, plus **İndirilenler**;
+- the old oversized **Bu cildi tamamen indir / Tüm ciltleri indir** page UI is not present;
+- downloaded content remains organized as collapsed **Eser → Cilt → Bölüm**;
+- **Eseri sil**, **Cildi sil**, and single-item **Sil** remain available through compact menus;
+- Wi-Fi-only control remains inside downloads settings instead of being repeated around the app;
+- Cilt-card navigation is preserved;
+- the UI uses Nava blue/gray rather than purple accents.
 
 The hierarchy is content-type neutral and can be reused for Light Novel, Web Novel, Manga, Manhwa and similar content when they follow the same work → volume/container → chapter structure.
 
