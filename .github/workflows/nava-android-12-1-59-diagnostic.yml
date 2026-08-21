@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/nava-android-12-1-59-diagnostic.yml"
-      - "android-patch/v12.1.59/diagnostic-trigger.txt"
+      - "diagnostics/nava-12.1.59-trigger.txt"
   workflow_dispatch:
 
 permissions:
@@ -14,61 +14,71 @@ permissions:
 jobs:
   inspect:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 18
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
-      - name: Download 12.1.58 APK
-        run: |
-          mkdir -p /tmp/apk
-          gh release download v12.1.58 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/apk
-      - name: Install JADX
-        run: |
-          curl -fsSL -o /tmp/jadx.zip https://github.com/skylot/jadx/releases/download/v1.5.3/jadx-1.5.3.zip
-          mkdir -p /tmp/jadx-bin
-          unzip -q /tmp/jadx.zip -d /tmp/jadx-bin
-      - name: Decompile and inspect
-        shell: bash
-        run: |
-          set -euo pipefail
-          /tmp/jadx-bin/bin/jadx --show-bad-code -d /tmp/jadx-out /tmp/apk/Nava.apk >/tmp/jadx.log 2>&1 || true
-          mkdir -p android-patch/v12.1.59/native-source
-          cp /tmp/jadx-out/sources/com/verudanava/nava/MainActivity.java android-patch/v12.1.59/native-source/MainActivity.java.txt
-          cp /tmp/jadx-out/sources/com/verudanava/nava/OfflineRuntime.java android-patch/v12.1.59/native-source/OfflineRuntime.java.txt
-          cp /tmp/jadx-out/sources/defpackage/gx.java android-patch/v12.1.59/native-source/gx.java.txt
-          OUT=android-patch/v12.1.59/native-diagnostic.txt
-          : > "$OUT"
-          printf '=== MATCHED FILES ===\n' >> "$OUT"
-          grep -RIl -E 'downloadBatch|JavascriptInterface|NavaOffline|WebViewClient|onReceivedError|onPageFinished|loadUrl\(|offline|ConnectivityManager|DownloadManager' /tmp/jadx-out/sources 2>/dev/null | head -80 | tee -a "$OUT"
-          printf '\n=== DEX STRINGS ===\n' >> "$OUT"
-          unzip -p /tmp/apk/Nava.apk classes.dex classes2.dex 2>/dev/null | strings | grep -E 'NavaOffline|downloadBatch|cancel|WebView|offline|verudanava|onReceivedError|Connectivity' | head -500 >> "$OUT" || true
-      - name: Compile patched OfflineRuntime and capture log
+      - name: Run full native build step and capture log
         shell: bash
         run: |
           set +e
-          LOG=android-patch/v12.1.59/native-compile-log.txt
+          mkdir -p diagnostics /tmp/current /tmp/javac /tmp/newdex /tmp/mini
+          LOG=diagnostics/nava-12.1.59-native-build.txt
           : > "$LOG"
-          python android-patch/v12.1.59/patch-offline-runtime.py \
-            android-patch/v12.1.59/native-source/OfflineRuntime.java.txt \
-            /tmp/OfflineRuntime.java >>"$LOG" 2>&1
-          RC1=$?
-          ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
-          mkdir -p /tmp/javac
-          if [ "$RC1" -eq 0 ]; then
-            javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac /tmp/OfflineRuntime.java >>"$LOG" 2>&1
-            RC2=$?
-          else
-            RC2=99
+          gh release download v12.1.58 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current >>"$LOG" 2>&1
+          RC=$?
+          if [ "$RC" -eq 0 ]; then
+            python android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/native-source/OfflineRuntime.java.txt /tmp/OfflineRuntime.java >>"$LOG" 2>&1
+            RC=$?
           fi
-          printf '\nPATCH_RC=%s JAVAC_RC=%s\n' "$RC1" "$RC2" >> "$LOG"
+          if [ "$RC" -eq 0 ]; then python android-patch/v12.1.59/fix-jadx-compile.py /tmp/OfflineRuntime.java >>"$LOG" 2>&1; RC=$?; fi
+          ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          if [ "$RC" -eq 0 ]; then javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac /tmp/OfflineRuntime.java >>"$LOG" 2>&1; RC=$?; fi
+          if [ "$RC" -eq 0 ]; then
+            mapfile -t CLASSES < <(find /tmp/javac/com/verudanava/nava -name 'OfflineRuntime*.class' -type f | sort)
+            echo "CLASS_COUNT=${#CLASSES[@]}" >>"$LOG"
+            "$BUILD_TOOLS/d8" --lib "$ANDROID_JAR" --min-api 26 --output /tmp/newdex "${CLASSES[@]}" >>"$LOG" 2>&1
+            RC=$?
+          fi
+          if [ "$RC" -eq 0 ]; then
+            unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/mini/AndroidManifest.xml
+            cp /tmp/newdex/classes.dex /tmp/mini/classes.dex
+            (cd /tmp/mini && zip -q /tmp/mini.apk AndroidManifest.xml classes.dex)
+            curl -fsSL -o /tmp/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar >>"$LOG" 2>&1
+            RC=$?
+          fi
+          if [ "$RC" -eq 0 ]; then java -jar /tmp/apktool.jar d -f -r /tmp/mini.apk -o /tmp/mini-dec >>"$LOG" 2>&1; RC=$?; fi
+          if [ "$RC" -eq 0 ]; then java -jar /tmp/apktool.jar d -f -r /tmp/current/Nava.apk -o /tmp/base-dec >>"$LOG" 2>&1; RC=$?; fi
+          if [ "$RC" -eq 0 ]; then
+            echo '=== BASE SMALI DIRS ===' >>"$LOG"
+            find /tmp/base-dec -maxdepth 2 -type d -name 'smali*' -print >>"$LOG" 2>&1
+            echo '=== MINI SMALI DIRS ===' >>"$LOG"
+            find /tmp/mini-dec -maxdepth 2 -type d -name 'smali*' -print >>"$LOG" 2>&1
+            test -d /tmp/base-dec/smali_classes2/com/verudanava/nava
+            RC=$?
+          fi
+          if [ "$RC" -eq 0 ]; then
+            rm -f /tmp/base-dec/smali_classes2/com/verudanava/nava/OfflineRuntime*.smali
+            cp /tmp/mini-dec/smali/com/verudanava/nava/OfflineRuntime*.smali /tmp/base-dec/smali_classes2/com/verudanava/nava/ >>"$LOG" 2>&1
+            RC=$?
+          fi
+          if [ "$RC" -eq 0 ]; then java -jar /tmp/apktool.jar b /tmp/base-dec -o /tmp/rebuilt.apk >>"$LOG" 2>&1; RC=$?; fi
+          if [ "$RC" -eq 0 ]; then unzip -p /tmp/rebuilt.apk classes2.dex > /tmp/classes2-59.dex; RC=$?; fi
+          if [ "$RC" -eq 0 ]; then
+            echo '=== CANCEL STRINGS ===' >>"$LOG"
+            strings /tmp/classes2-59.dex | grep -E '^(cancel|cancelled)$|İndirme iptal edildi' >>"$LOG" 2>&1
+            RC=$?
+          fi
+          printf '\nFINAL_RC=%s\n' "$RC" >> "$LOG"
           cat "$LOG"
           exit 0
-      - name: Persist diagnostics
+      - name: Persist diagnostic log outside release trigger paths
         run: |
           git config user.name 'Nava Android Diagnostic Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git pull --rebase || true
-          git add android-patch/v12.1.59/native-diagnostic.txt android-patch/v12.1.59/native-source android-patch/v12.1.59/native-compile-log.txt
-          git commit -m 'Record 12.1.59 native compile diagnostics [skip ci]' || true
+          git add diagnostics/nava-12.1.59-native-build.txt
+          git commit -m 'Record isolated 12.1.59 native build log [skip ci]' || true
           git push || true
