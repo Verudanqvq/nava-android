@@ -1,1 +1,1 @@
-Trigger startup diagnostics after workflow exists on main.
+Retrigger startup diagnostics with gx/fx/layout capture enabled.
