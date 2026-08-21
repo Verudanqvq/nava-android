@@ -1,1 +1,1 @@
-Trigger signed 12.1.60 direct-updater build after workflow exists on main.
+Trigger signed 12.1.60 direct-updater build after helper diagnostic PASS.
