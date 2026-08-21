@@ -1,0 +1,115 @@
+name: Nava Android 12.1.50 PR smoke
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-android-12-1-50-pr-smoke.yml"
+      - ".github/workflows/nava-android-12-1-50.yml"
+      - "android-patch/v12.1.50/**"
+      - "android-patch/v12.1.49/**"
+
+permissions:
+  contents: read
+
+jobs:
+  startup-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      EXPECTED_SOURCE_SHA256: 8b4650833446f30eafa6e0fc1ed28dc19564eeee304421b02c7ce05f5433964c
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate and build 12.1.50 test APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile android-patch/v12.1.50/patch-apk.py
+          node --check android-patch/v12.1.49/download-menu.js
+          node --check android-patch/v12.1.49/offline-ui.js
+          node --check android-patch/v12.1.49/language-variants.js
+          node --check android-patch/v12.1.49/notification-delete.js
+          mkdir -p /tmp/current
+          gh release download v12.1.47 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current
+          GOT="$(sha256sum /tmp/current/Nava.apk | cut -d' ' -f1)"
+          test "$GOT" = "$EXPECTED_SOURCE_SHA256"
+          python android-patch/v12.1.50/patch-apk.py \
+            /tmp/current/Nava.apk \
+            android-patch/v12.1.49/download-menu.js \
+            android-patch/v12.1.49/offline-ui.js \
+            android-patch/v12.1.49/language-variants.js \
+            android-patch/v12.1.49/notification-delete.js \
+            android-patch/v12.1.49/ui-fix.css \
+            /tmp/Nava-unsigned.apk | tee /tmp/patch.txt
+          grep -q 'PATCH_OK versionName=12.1.50 versionCode=66 base=12.1.47 nativeUA=12.1.47' /tmp/patch.txt
+          unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/final.js
+          unzip -p /tmp/Nava-unsigned.apk classes.dex > /tmp/final.dex
+          node --check /tmp/final.js
+          grep -aq 'NavaAndroidApp/12.1.47' /tmp/final.dex
+          ! grep -aq 'NavaAndroidApp/12.1.50' /tmp/final.dex
+
+      - name: Test-sign APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          keytool -genkeypair -noprompt -keystore /tmp/test.jks -storepass android -keypass android \
+            -alias nava-test -keyalg RSA -keysize 2048 -validity 2 -dname 'CN=Nava CI Test'
+          "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk
+          "$BUILD_TOOLS/apksigner" sign --ks /tmp/test.jks --ks-key-alias nava-test \
+            --ks-pass pass:android --key-pass pass:android --out /tmp/Nava-test.apk /tmp/Nava-aligned.apk
+          "$BUILD_TOOLS/apksigner" verify /tmp/Nava-test.apk
+
+      - name: Prepare Android emulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install \
+            "platform-tools" "emulator" "platforms;android-35" "system-images;android-35;google_apis;x86_64"
+          echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd --force \
+            --name nava_ci --package "system-images;android-35;google_apis;x86_64" --device "pixel_6"
+          python -m pip install --quiet pillow
+
+      - name: Launch and reject white screen
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+          nohup "$ANDROID_HOME/emulator/emulator" -avd nava_ci -no-window -noaudio -no-boot-anim \
+            -no-snapshot -gpu swiftshader_indirect -accel off >/tmp/emulator.log 2>&1 &
+          EMU_PID=$!
+          cleanup(){ adb emu kill >/dev/null 2>&1 || true; kill "$EMU_PID" >/dev/null 2>&1 || true; }
+          trap cleanup EXIT
+          adb wait-for-device
+          for i in $(seq 1 180); do
+            [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ] && break
+            sleep 2
+          done
+          test "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1"
+          adb install -r /tmp/Nava-test.apk
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          PKG="$("$BUILD_TOOLS/aapt" dump badging /tmp/Nava-test.apk | sed -n "s/package: name='\([^']*\)'.*/\1/p" | head -1)"
+          test -n "$PKG"
+          adb logcat -c || true
+          adb shell am force-stop "$PKG"
+          adb shell monkey -p "$PKG" -c android.intent.category.LAUNCHER 1 >/tmp/monkey.txt
+          sleep 18
+          adb shell dumpsys window windows > /tmp/windows.txt
+          grep -q "$PKG" /tmp/windows.txt
+          adb exec-out screencap -p > /tmp/screen.png
+          python - <<'PY'
+          from PIL import Image,ImageStat
+          im=Image.open('/tmp/screen.png').convert('L')
+          w,h=im.size
+          crop=im.crop((int(w*.06),int(h*.13),int(w*.94),int(h*.90)))
+          stat=ImageStat.Stat(crop)
+          mean=float(stat.mean[0]); var=float(stat.var[0])
+          print(f'NAVA_SCREEN mean={mean:.2f} var={var:.2f} size={w}x{h}')
+          if mean>247.5 and var<45:
+              raise SystemExit('WHITE_SCREEN_DETECTED')
+          PY
+          adb logcat -d -t 1600 > /tmp/logcat.txt || true
+          ! grep -E 'FATAL EXCEPTION|AndroidRuntime.*Process: .*verudanava' /tmp/logcat.txt
+          echo STARTUP_SMOKE_OK
