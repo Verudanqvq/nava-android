@@ -1,1 +1,1 @@
-Run updater diagnostic after workflow exists on main.
+Run updater source+smali diagnostic after workflow update.
