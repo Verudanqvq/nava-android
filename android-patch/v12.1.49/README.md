@@ -11,6 +11,8 @@ This draft is intentionally rebuilt from the signed Android 12.1.47 APK, not fro
 - The offline library keeps the **Eser → Cilt → Bölüm** hierarchy and the destructive actions **Eseri sil**, **Cildi sil**, and **Sil**. Deletion is verified against the native download index instead of trusting a single UI event.
 - Android's in-app notification center supports individual notification deletion and **Tümünü temizle**, backed by the signed-in user's Firestore notification documents.
 - Chapter language labels `TR`, `EN`, `JP`, `KR`, `CN` are treated as alternate language variants, not independent visible chapter rows. The selected language is stored per work/series.
+- The language selector is not shown as a separate bar on work/volume pages. It is embedded inside the existing reader settings panel (`#nava-reader-settings-v2`) alongside the normal text/manga reading controls.
+- Changing language in reader settings keeps the choice for that work and, when the same logical chapter has that language variant, switches directly to that chapter URL.
 - Variant grouping is scoped by volume + chapter number to avoid collisions between similarly numbered chapters in different volumes.
 - The selected work language is also used when preparing offline chapter downloads.
 
@@ -20,4 +22,4 @@ For two translations of the same logical chapter, publish separate Blogger posts
 
 ## Status
 
-Draft only. Not merged, not released, and not marked as latest. Exact placement relative to any existing chapter-list label named `Yazı` still needs real-page/device verification; the current implementation places the **Dil** control at the chapter list boundary.
+Draft only. Not merged, not released, and not marked as latest. The language control now targets the existing reader settings panel rather than a chapter-list `Yazı` label or a standalone language strip.
