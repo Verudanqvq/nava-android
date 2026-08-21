@@ -1,0 +1,1 @@
+Run native diagnostics after workflow exists on main.
