@@ -1,0 +1,1 @@
+Discovery rule: query Blogger with the exact series-name label first; derive Cilt N and Bölüm N from entries in that same feed. Do not fall back to global Cilt/Bölüm feeds.
