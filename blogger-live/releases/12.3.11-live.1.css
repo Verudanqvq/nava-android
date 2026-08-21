@@ -1,4 +1,4 @@
-/* Nava Web 12.3.11-live.1 — reader language + notification controls. */
+/* Nava Web 12.3.11-live.2 — reader language + notification controls + desktop chapter icon guard. */
 #nava-loader-v2-test,#nava-live-connection-test{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
 #nava-notification-clear-read{display:none!important}
 #nava-notification-clear-all-web-v1{display:flex!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important}
@@ -6,5 +6,8 @@
 .nava-web-reader-language-copy{min-width:0;display:grid;gap:2px}.nava-web-reader-language-copy strong{font-size:12px;font-weight:850}.nava-web-reader-language-copy small{font-size:9.5px;opacity:.62}
 .nava-web-reader-language-options{min-width:0;display:flex;justify-content:flex-end;gap:5px;overflow-x:auto;scrollbar-width:none}.nava-web-reader-language-options::-webkit-scrollbar{display:none}.nava-web-reader-language-options button{flex:0 0 auto;min-width:38px;min-height:32px;padding:0 9px;border:1px solid #d2dce8;border-radius:8px;background:#f8fafc;color:#5e7087;font:800 10px/1 system-ui,-apple-system,"Segoe UI",sans-serif}.nava-web-reader-language-options button.is-active{border-color:#7898ba;background:#eaf2fb;color:#466184}
 html.dark .nava-web-reader-language-v1{border-color:#334155}html.dark .nava-web-reader-language-options button{background:#182334;border-color:#35475d;color:#cbd5e1}html.dark .nava-web-reader-language-options button.is-active{background:#213047;border-color:#58789d;color:#c6dafc}
+/* Desktop safeguard: legacy Blogger/theme SVG icons inside chapter lists must never expand to card/page width. */
+#clwd svg,#chapters svg,[data-nava-chapter-list] svg,.eplister svg,#nava-reader-chapters-v9 svg,.nava-reader-chapter-row svg,.nava-chapter-item svg,.chapter-item svg{box-sizing:border-box!important;width:18px!important;height:18px!important;min-width:0!important;min-height:0!important;max-width:18px!important;max-height:18px!important;display:inline-block!important;object-fit:contain!important;vertical-align:middle!important}
+#clwd i[class*=fa],#chapters i[class*=fa],[data-nava-chapter-list] i[class*=fa],.eplister i[class*=fa]{font-size:18px!important;line-height:1!important;width:auto!important;height:auto!important}
 @media(max-width:767px){#nava-notification-panel .nava-notification-head-actions{display:grid!important;grid-template-columns:1fr!important;gap:.45rem!important;width:100%!important}#nava-notification-panel .nava-notification-head-button{display:flex!important;min-height:40px!important;align-items:center!important;justify-content:center!important;text-align:center!important;white-space:normal!important}}
 @media(max-width:360px){.nava-web-reader-language-v1{grid-template-columns:1fr;gap:7px}.nava-web-reader-language-options{justify-content:flex-start}}
