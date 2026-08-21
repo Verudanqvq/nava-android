@@ -1,0 +1,66 @@
+name: Nava Blogger feed diagnostic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-blogger-feed-diagnostic.yml"
+      - "diagnostics/blogger-feed-trigger.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Inspect live Blogger feeds
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const bases = [
+            ['SERIES','https://verudanava.blogspot.com/feeds/posts/summary/-/Series?alt=json&max-results=150&orderby=published'],
+            ['VOLUMES','https://verudanava.blogspot.com/feeds/posts/summary/-/Cilt?alt=json&max-results=150&orderby=published'],
+            ['CHAPTERS','https://verudanava.blogspot.com/feeds/posts/summary/-/B%C3%B6l%C3%BCm?alt=json&max-results=150&orderby=published'],
+            ['VOLUMES_CUSTOM','https://www.verudanava.com/feeds/posts/summary/-/Cilt?alt=json&max-results=150&orderby=published'],
+            ['CHAPTERS_CUSTOM','https://www.verudanava.com/feeds/posts/summary/-/B%C3%B6l%C3%BCm?alt=json&max-results=150&orderby=published']
+          ];
+          const clean = v => String(v ?? '').trim();
+          const labels = e => (e.category || []).map(x => clean(x.term)).filter(Boolean);
+          const link = e => clean((e.link || []).find(x => x.rel === 'alternate')?.href);
+          const id = e => clean(e.id?.$t).match(/post-(\d+)/i)?.[1] || clean(e.id?.$t);
+          const lines = [`generated=${new Date().toISOString()}`];
+          for (const [name,url] of bases) {
+            try {
+              const r = await fetch(url, {headers:{'User-Agent':'NavaFeedDiagnostic/1.0','Cache-Control':'no-cache'}});
+              lines.push(`\n## ${name} HTTP ${r.status}`);
+              if (!r.ok) continue;
+              const j = await r.json();
+              const entries = j?.feed?.entry || [];
+              lines.push(`count=${entries.length}`);
+              const slice = name.startsWith('CHAPTERS') ? entries.slice(0,40) : entries;
+              for (const e of slice) {
+                lines.push(JSON.stringify({id:id(e),title:clean(e.title?.$t),url:link(e),labels:labels(e)}));
+              }
+            } catch (err) {
+              lines.push(`ERROR ${name}: ${err?.message || err}`);
+            }
+          }
+          fs.mkdirSync('diagnostics',{recursive:true});
+          fs.writeFileSync('diagnostics/blogger-feed-live.txt', lines.join('\n')+'\n');
+          NODE
+      - name: Persist diagnostic
+        run: |
+          git config user.name 'Nava Diagnostic Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add diagnostics/blogger-feed-live.txt
+          git commit -m 'Record live Blogger feed diagnostic [skip ci]' || true
+          git pull --rebase || true
+          git push || true
