@@ -38,14 +38,22 @@ jobs:
           /tmp/jadx-bin/bin/jadx --show-bad-code -d /tmp/jadx-out /tmp/apk/Nava.apk >/tmp/jadx61.log 2>&1 || true
           java -jar /tmp/apktool.jar d -f /tmp/apk/Nava.apk -o /tmp/apktool-out >/tmp/apktool61.log 2>&1
           cp /tmp/jadx-out/sources/com/verudanava/nava/MainActivity.java diagnostics/startup61/MainActivity.java.txt
+          cp /tmp/jadx-out/sources/defpackage/gx.java diagnostics/startup61/gx.java.txt
+          cp /tmp/jadx-out/sources/defpackage/fx.java diagnostics/startup61/fx.java.txt
           cp /tmp/apktool-out/AndroidManifest.xml diagnostics/startup61/AndroidManifest.xml.txt
+          cp /tmp/apktool-out/res/layout/activity_main.xml diagnostics/startup61/activity_main.xml.txt
           find /tmp/apktool-out/res/values* -maxdepth 1 -type f \( -name 'styles.xml' -o -name 'themes.xml' -o -name 'colors.xml' \) -print | sort > diagnostics/startup61/value-files.txt
           : > diagnostics/startup61/theme-values.txt
           while IFS= read -r f; do printf '\n===== %s =====\n' "$f" >> diagnostics/startup61/theme-values.txt; cat "$f" >> diagnostics/startup61/theme-values.txt; done < diagnostics/startup61/value-files.txt
           : > diagnostics/startup61/startup-smali.txt
           MAIN_SMALI="$(find /tmp/apktool-out -type f -path '*/com/verudanava/nava/MainActivity.smali' | head -1)"
-          printf 'MAIN_SMALI=%s\n\n' "$MAIN_SMALI" >> diagnostics/startup61/startup-smali.txt
-          grep -n -E 'setContentView|setBackgroundColor|loadUrl|setWebViewClient|onPageStarted|onPageFinished|onReceivedError|offline.html|WebView' "$MAIN_SMALI" >> diagnostics/startup61/startup-smali.txt || true
+          GX_SMALI="$(find /tmp/apktool-out -type f -name 'gx.smali' | head -1)"
+          FX_SMALI="$(find /tmp/apktool-out -type f -name 'fx.smali' | head -1)"
+          printf 'MAIN_SMALI=%s\nGX_SMALI=%s\nFX_SMALI=%s\n\n' "$MAIN_SMALI" "$GX_SMALI" "$FX_SMALI" >> diagnostics/startup61/startup-smali.txt
+          for f in "$MAIN_SMALI" "$GX_SMALI" "$FX_SMALI"; do
+            printf '\n===== %s =====\n' "$f" >> diagnostics/startup61/startup-smali.txt
+            grep -n -E 'setContentView|setBackgroundColor|loadUrl|setWebViewClient|onPageStarted|onPageFinished|onReceivedError|offline.html|WebView|pageProgress|setVisibility|setProgress' "$f" >> diagnostics/startup61/startup-smali.txt || true
+          done
           cp /tmp/apktool-out/assets/nava_app_v11.js diagnostics/startup61/nava_app_v11.js.txt
           cp /tmp/apktool-out/assets/nava_app_v11.css diagnostics/startup61/nava_app_v11.css.txt
           cp /tmp/apktool-out/assets/offline.html diagnostics/startup61/offline.html.txt
