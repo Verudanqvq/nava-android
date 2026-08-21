@@ -1,4 +1,5 @@
-/* Nava Android 12.1.49 — per-series chapter language variants inside reader settings. */
+/* Nava Android 12.1.49 — per-series chapter language variants. */
+/* UI: language selection is embedded in #nava-reader-settings-v2. */
 ;(function(d,w){
 'use strict';if(w.__navaSeriesLanguageV12149)return;w.__navaSeriesLanguageV12149=true;if(!w.__NAVA_ANDROID_APP__)return;
 var LANGS=['TR','EN','JP','KR','CN'],PREFIX='nava_series_language_v12149:',map=Object.create(null),loaded=false,loading=null,observer=null,queued=false;
