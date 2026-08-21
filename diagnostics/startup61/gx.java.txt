@@ -1,0 +1,123 @@
+package defpackage;
+
+import android.net.Uri;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import com.verudanava.nava.MainActivity;
+import com.verudanava.nava.OfflineRuntime;
+import java.io.ByteArrayInputStream;
+import java.util.LinkedHashSet;
+import java.util.Locale;
+
+/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* loaded from: classes.dex */
+public final class gx extends WebViewClient {
+    public final /* synthetic */ MainActivity a;
+
+    public gx(MainActivity mainActivity) {
+        this.a = mainActivity;
+    }
+
+    @Override // android.webkit.WebViewClient
+    public final void onPageFinished(WebView webView, String str) {
+        Uri uri;
+        String str2;
+        WebSettings settings;
+        MainActivity mainActivity = this.a;
+        LinkedHashSet linkedHashSet = mainActivity.G;
+        super.onPageFinished(webView, str);
+        if (webView != null && (settings = webView.getSettings()) != null) {
+            settings.setCacheMode(-1);
+        }
+        if (str != null) {
+            try {
+                uri = Uri.parse(str);
+            } catch (Exception unused) {
+                uri = null;
+            }
+            if (uri != null && MainActivity.r(uri)) {
+                linkedHashSet.add(MainActivity.t(str));
+                while (linkedHashSet.size() > 80 && (str2 = (String) bc.e0(linkedHashSet)) != null) {
+                    linkedHashSet.remove(str2);
+                }
+            }
+        }
+        int i = MainActivity.P;
+        if (((Boolean) mainActivity.J.a()).booleanValue() || str == null) {
+            return;
+        }
+        Uri uri2 = Uri.parse(str);
+        uri2.getClass();
+        if (MainActivity.r(uri2)) {
+            if (webView != null) {
+                webView.evaluateJavascript((String) mainActivity.L.a(), null);
+            }
+            if (webView != null) {
+                webView.evaluateJavascript(mainActivity.M, null);
+            }
+            if (webView != null) {
+                webView.evaluateJavascript((String) mainActivity.K.a(), null);
+            }
+        }
+    }
+
+    @Override // android.webkit.WebViewClient
+    public final void onReceivedError(WebView webView, WebResourceRequest webResourceRequest, WebResourceError webResourceError) {
+        super.onReceivedError(webView, webResourceRequest, webResourceError);
+        if (webResourceRequest == null || !webResourceRequest.isForMainFrame() || !rt.b(webResourceRequest.getUrl().getScheme(), "https") || webView == null) {
+            return;
+        }
+        webView.loadUrl("file:///android_asset/offline.html");
+    }
+
+    @Override // android.webkit.WebViewClient
+    public final WebResourceResponse shouldInterceptRequest(WebView webView, WebResourceRequest webResourceRequest) {
+        Uri url;
+        Uri url2;
+        WebResourceResponse webResourceResponseIntercept = OfflineRuntime.intercept(this.a, webResourceRequest);
+        if (webResourceResponseIntercept != null) {
+            return webResourceResponseIntercept;
+        }
+        if (webResourceRequest == null || (url2 = webResourceRequest.getUrl()) == null || !url2.toString().contains("/blogger-live/")) {
+            String host = (webResourceRequest == null || (url = webResourceRequest.getUrl()) == null) ? null : url.getHost();
+            if (host == null) {
+                host = "";
+            }
+            String lowerCase = host.toLowerCase(Locale.ROOT);
+            lowerCase.getClass();
+            if (!MainActivity.q(lowerCase, "googlesyndication.com") && !MainActivity.q(lowerCase, "doubleclick.net") && !MainActivity.q(lowerCase, "googleadservices.com")) {
+                return super.shouldInterceptRequest(webView, webResourceRequest);
+            }
+        }
+        return new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream(new byte[0]));
+    }
+
+    @Override // android.webkit.WebViewClient
+    public final boolean shouldOverrideUrlLoading(WebView webView, WebResourceRequest webResourceRequest) {
+        Uri url;
+        if (webResourceRequest == null || (url = webResourceRequest.getUrl()) == null || !webResourceRequest.isForMainFrame()) {
+            return false;
+        }
+        boolean zR = MainActivity.r(url);
+        MainActivity mainActivity = this.a;
+        if (!zR) {
+            if (webResourceRequest.hasGesture()) {
+                mainActivity.v(url);
+            }
+            return true;
+        }
+        Uri uriP = MainActivity.p(url);
+        boolean zB = rt.b(uriP.toString(), url.toString());
+        if (!webResourceRequest.hasGesture() && zB) {
+            return false;
+        }
+        String string = uriP.toString();
+        string.getClass();
+        mainActivity.s(string);
+        return true;
+    }
+}

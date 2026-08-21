@@ -1,5 +1,9 @@
 MAIN_SMALI=/tmp/apktool-out/smali/com/verudanava/nava/MainActivity.smali
+GX_SMALI=/tmp/apktool-out/smali/gx.smali
+FX_SMALI=/tmp/apktool-out/smali/fx.smali
 
+
+===== /tmp/apktool-out/smali/com/verudanava/nava/MainActivity.smali =====
 11:.field public A:Landroid/webkit/WebView;
 945:    invoke-virtual {p0, v0}, Lz2;->setContentView(I)V
 1070:    check-cast v0, Landroid/webkit/WebView;
@@ -52,3 +56,28 @@ MAIN_SMALI=/tmp/apktool-out/smali/com/verudanava/nava/MainActivity.smali
 2934:    invoke-virtual {p0, p1}, Landroid/webkit/WebView;->loadUrl(Ljava/lang/String;)V
 3449:    iget-object p0, p0, Lcom/verudanava/nava/MainActivity;->A:Landroid/webkit/WebView;
 3503:    invoke-virtual {p0, p1, v0}, Landroid/webkit/WebView;->evaluateJavascript(Ljava/lang/String;Landroid/webkit/ValueCallback;)V
+
+===== /tmp/apktool-out/smali/gx.smali =====
+2:.super Landroid/webkit/WebViewClient;
+19:    invoke-direct {p0}, Landroid/webkit/WebViewClient;-><init>()V
+29:.method public final onPageFinished(Landroid/webkit/WebView;Ljava/lang/String;)V
+41:    invoke-super {p0, p1, p2}, Landroid/webkit/WebViewClient;->onPageFinished(Landroid/webkit/WebView;Ljava/lang/String;)V
+50:    invoke-virtual {p1}, Landroid/webkit/WebView;->getSettings()Landroid/webkit/WebSettings;
+254:    invoke-virtual {p1, p2, p0}, Landroid/webkit/WebView;->evaluateJavascript(Ljava/lang/String;Landroid/webkit/ValueCallback;)V
+268:    invoke-virtual {p1, p2, p0}, Landroid/webkit/WebView;->evaluateJavascript(Ljava/lang/String;Landroid/webkit/ValueCallback;)V
+294:    invoke-virtual {p1, p2, p0}, Landroid/webkit/WebView;->evaluateJavascript(Ljava/lang/String;Landroid/webkit/ValueCallback;)V
+303:.method public final onReceivedError(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;Landroid/webkit/WebResourceError;)V
+307:    invoke-super {p0, p1, p2, p3}, Landroid/webkit/WebViewClient;->onReceivedError(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;Landroid/webkit/WebResourceError;)V
+367:    const-string p0, "file:///android_asset/offline.html"
+371:    invoke-virtual {p1, p0}, Landroid/webkit/WebView;->loadUrl(Ljava/lang/String;)V
+380:.method public final shouldInterceptRequest(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;)Landroid/webkit/WebResourceResponse;
+526:    invoke-super {p0, p1, p2}, Landroid/webkit/WebViewClient;->shouldInterceptRequest(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;)Landroid/webkit/WebResourceResponse;
+575:.method public final shouldOverrideUrlLoading(Landroid/webkit/WebView;Landroid/webkit/WebResourceRequest;)Z
+
+===== /tmp/apktool-out/smali/fx.smali =====
+29:.method public final onProgressChanged(Landroid/webkit/WebView;I)V
+33:    invoke-super {p0, p1, p2}, Landroid/webkit/WebChromeClient;->onProgressChanged(Landroid/webkit/WebView;I)V
+49:    const-string v1, "pageProgress"
+90:    invoke-virtual {p1, v4}, Landroid/widget/ProgressBar;->setProgress(I)V
+123:    invoke-virtual {p0, v3}, Landroid/view/View;->setVisibility(I)V
+149:.method public final onShowFileChooser(Landroid/webkit/WebView;Landroid/webkit/ValueCallback;Landroid/webkit/WebChromeClient$FileChooserParams;)Z
