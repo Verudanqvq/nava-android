@@ -1,0 +1,19 @@
+/* Nava Android 12.1.58 — grouped queue, clear-notification, offline refresh UI. */
+.nava-download-queue-group-v12158{display:grid;gap:7px;padding:9px 7px;border-top:1px solid #edf1f5}
+.nava-download-queue-group-head-v12158{display:flex;align-items:center;min-width:0}
+.nava-download-queue-group-head-v12158>span{min-width:0;display:grid;gap:2px;width:100%}
+.nava-download-queue-group-head-v12158 strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.2px;color:#34465b}
+.nava-download-queue-group-head-v12158 small{font-size:9.4px;color:#8795a6}
+.nava-download-progress-v12158{height:6px;overflow:hidden;border-radius:999px;background:#e8eef5}
+.nava-download-progress-v12158>i{display:block;height:100%;width:0;border-radius:inherit;background:currentColor;color:#58789d;transition:width .18s ease}
+.nava-offline-refresh-v12158{width:34px;height:34px;border:0;border-radius:8px;background:transparent;color:#708095;font-size:22px;line-height:1;display:grid;place-items:center}
+.nava-offline-refresh-v12158.is-refreshing{animation:nava58spin .35s linear}
+@keyframes nava58spin{to{transform:rotate(360deg)}}
+.nava-notification-head-actions-v12158{display:flex!important;gap:6px!important;align-items:center!important}
+#nava-notification-clear-all-v12158,#nava-notification-clear-all-v12149{display:flex!important;visibility:visible!important;opacity:1!important;align-items:center!important;justify-content:center!important}
+html.dark.nava-app-v9 .nava-download-queue-group-v12158{border-color:#2a384a}
+html.dark.nava-app-v9 .nava-download-queue-group-head-v12158 strong{color:#dbe5f0}
+html.dark.nava-app-v9 .nava-download-queue-group-head-v12158 small{color:#91a0b3}
+html.dark.nava-app-v9 .nava-download-progress-v12158{background:#26364a}
+html.dark.nava-app-v9 .nava-offline-refresh-v12158{color:#cbd5e1}
+@media(max-width:767px){.nava-notification-head-actions-v12158{width:100%!important}.nava-notification-head-actions-v12158 .nava-notification-head-button{width:100%!important;min-height:40px!important}}
