@@ -1,0 +1,2 @@
+trigger=2026-08-21T20:08Z
+reason=run emulator-gated 12.1.50 release after workflow landed on main
