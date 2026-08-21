@@ -1,1 +1,1 @@
-Run full native diagnostics after source-persist workflow update.
+Run 12.1.59 patched OfflineRuntime compile diagnostics.
