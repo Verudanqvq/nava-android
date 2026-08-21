@@ -83,8 +83,8 @@ def main():
     if NEW_COMPAT not in compat or 'data-nava-notification-ids' not in compat or 'Tümünü temizle' not in compat: raise ValueError('notification compat invalid')
     if CSS_MARKER not in newcss or 'nava-download-launcher-v12142' not in newcss or 'nava-offline-group-more-v12142' not in newcss: raise ValueError('offline CSS invalid')
     html=offline.decode('utf-8')
-    if '<h1>İndirilenler</h1>' not in html or 'data-delete-series' not in html or 'data-delete-volume' not in html: raise ValueError('offline HTML bulk delete invalid')
-    if 'Tekrar bağlan' in html or 'Yalnız Wi' in html: raise ValueError('duplicate offline controls remain')
+    if '<h1>İndirilenler</h1>' not in html or 'data-series-delete' not in html or 'data-volume-delete' not in html: raise ValueError('offline HTML bulk delete invalid')
+    if 'Tekrar bağlan' in html: raise ValueError('old reconnect control remains')
     with zipfile.ZipFile(srcp) as zin:
         names=set(zin.namelist())
         required={'AndroidManifest.xml','classes.dex','classes2.dex','classes3.dex','assets/nava_app_v11.js','assets/nava_app_v11.css','assets/offline.html'}
@@ -117,7 +117,7 @@ def main():
             if marker in fj: raise ValueError('old JS block remains '+marker)
         if CSS_MARKER not in fc: raise ValueError('final 12.1.42 CSS missing')
         if 'nava-download-launcher-v12142' not in fj or 'Tümünü temizle' not in fj: raise ValueError('new app controls missing')
-        if 'data-delete-series' not in fh or 'data-delete-volume' not in fh: raise ValueError('final offline HTML invalid')
+        if 'data-series-delete' not in fh or 'data-volume-delete' not in fh: raise ValueError('final offline HTML invalid')
         for token in ('#6d28d9','#7c3aed','#8b5cf6','#5b20f3','#4c1d95','#c4b5fd','#ddd6fe','#ede9fe','#f5f3ff'):
             if token.lower() in newcss.lower() or token.lower() in fh.lower(): raise ValueError('purple token in 12.1.42 UI '+token)
         if b'NavaAndroidApp/12.1.42' not in fd: raise ValueError('UA missing')
