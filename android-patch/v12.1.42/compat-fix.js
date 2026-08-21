@@ -1,31 +1,46 @@
-/* Nava Android 12.1.42 — stable volume navigation + notification deletion. */
+/* Nava Android 12.1.42 — volume navigation + reliable mobile notification deletion. */
 ;(function(d,w){
   'use strict';
   if(w.__navaCompatFixV12142)return;
   w.__navaCompatFixV12142=true;
   if(!w.__NAVA_ANDROID_APP__)return;
+
   function clean(v,n){return String(v==null?'':v).replace(/\s+/g,' ').trim().slice(0,n||240)}
   function isSeries(){return !!(d.body&&d.body.classList.contains('nava-app-series'))}
   function volumeAnchor(a){if(!a||!isSeries())return false;try{var href=a.getAttribute('href')||'';if(!href||href.charAt(0)==='#'||/^javascript:/i.test(href))return false;var u=new URL(href,location.href);if(!/^https?:$/.test(u.protocol)||u.hostname.indexOf('verudanava')<0)return false;var text=clean(a.textContent,220),box=clean((a.closest('li,article,.bs,.bsx,.eplister,.listupd,div')||a).textContent,360);return /(?:^|\s)(?:cilt|volume|vol\.?)\s*\d+/i.test(text+' '+box)}catch(_){return false}}
-  d.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!volumeAnchor(a))return;e.preventDefault();e.stopImmediatePropagation();location.assign(a.href)},true);
+  d.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!volumeAnchor(a))return;if(e.target&&e.target.closest&&e.target.closest('button,[role="button"],input,select,textarea'))return;e.preventDefault();e.stopImmediatePropagation();location.assign(a.href)},true);
 
-  var db=null,auth=null,unsub=null,docs=[];
+  var db=null,auth=null,unsub=null,docs=[],observer=null,lastUid='';
   function ready(){db=w.db||db;auth=w.auth||auth;return !!(db&&auth&&w.firebase)}
   function user(){try{return auth&&auth.currentUser}catch(_){return null}}
   function col(){var u=user();return u&&db?db.collection('users').doc(u.uid).collection('notifications'):null}
   function ms(v){try{if(v&&typeof v.toMillis==='function')return v.toMillis();if(v&&typeof v.toDate==='function')return v.toDate().getTime();return new Date(v||0).getTime()||0}catch(_){return 0}}
   function groups(items){var out=[],likes=new Map();(items||[]).forEach(function(i){if(i.type!=='like'){out.push({items:[i],latest:i});return}var k='like:'+clean(i.postId,200)+':'+clean(i.commentId,200);if(!likes.has(k)){var g={items:[],latest:i};likes.set(k,g);out.push(g)}var c=likes.get(k);c.items.push(i);if(ms(i.createdAt)>ms(c.latest.createdAt))c.latest=i});out.sort(function(a,b){return ms(b.latest.createdAt)-ms(a.latest.createdAt)});return out}
   function mapIds(){var list=d.getElementById('nava-notification-list');if(!list)return;var cards=[].slice.call(list.querySelectorAll('.nava-notification-item')),g=groups(docs);cards.forEach(function(card,i){if(g[i])card.dataset.navaNotificationIds=g[i].items.map(function(x){return x.id}).filter(Boolean).join(',');else delete card.dataset.navaNotificationIds})}
-  async function deleteIds(ids){var c=col();if(!c)throw new Error('Oturum yok');var u=Array.from(new Set((ids||[]).filter(Boolean)));for(var i=0;i<u.length;i+=400){var batch=db.batch();u.slice(i,i+400).forEach(function(id){batch.delete(c.doc(id))});await batch.commit()}return u.length}
+  async function deleteIds(ids){var c=col();if(!c)throw new Error('Oturum yok');var u=Array.from(new Set((ids||[]).map(function(x){return clean(x,240)}).filter(Boolean)));for(var i=0;i<u.length;i+=400){var batch=db.batch();u.slice(i,i+400).forEach(function(id){batch.delete(c.doc(id))});await batch.commit()}return u.length}
   async function clearAll(){var c=col();if(!c)throw new Error('Oturum yok');var removed=0;for(var pass=0;pass<30;pass++){var snap=await c.limit(400).get();if(snap.empty)break;var batch=db.batch();snap.docs.forEach(function(x){batch.delete(x.ref)});await batch.commit();removed+=snap.size;if(snap.size<400)break}return removed}
+
   function wirePanel(){
     var panel=d.getElementById('nava-notification-panel'),actions=panel&&panel.querySelector('.nava-notification-head-actions'),list=d.getElementById('nava-notification-list');if(!panel||!actions||!list)return false;
-    var old=d.getElementById('nava-notification-clear-all-v1241');if(old)old.remove();
-    var btn=d.getElementById('nava-notification-clear-all-v12142');if(!btn){btn=d.createElement('button');btn.type='button';btn.id='nava-notification-clear-all-v12142';btn.className='nava-notification-head-button';btn.textContent='Tümünü sil';btn.onclick=function(e){e.preventDefault();e.stopPropagation();if(btn.disabled)return;btn.disabled=true;btn.textContent='Siliniyor…';clearAll().then(function(n){btn.textContent=n?'Temizlendi':'Bildirim yok'}).catch(function(){btn.textContent='Tekrar dene'}).finally(function(){setTimeout(function(){btn.disabled=false;btn.textContent='Tümünü sil'},1200)})};actions.append(btn)}
-    if(panel.dataset.navaDeleteFix12142!=='1'){panel.dataset.navaDeleteFix12142='1';panel.addEventListener('click',function(e){var del=e.target&&e.target.closest?e.target.closest('.nava-notification-delete'):null;if(!del)return;var card=del.closest('.nava-notification-item'),raw=card&&card.dataset.navaNotificationIds;if(!raw)return;var ids=raw.split(',').map(function(x){return clean(x,240)}).filter(Boolean);if(!ids.length)return;e.preventDefault();e.stopImmediatePropagation();del.disabled=true;deleteIds(ids).catch(function(){del.disabled=false})},true)}
+    var oldTheme=d.getElementById('nava-notification-clear-all-v1241');if(oldTheme)try{oldTheme.remove()}catch(_){}
+    var clearRead=d.getElementById('nava-notification-clear-read');if(clearRead){clearRead.hidden=true;clearRead.style.display='none'}
+    var btn=d.getElementById('nava-notification-clear-all-v12142');
+    if(!btn){btn=d.createElement('button');btn.type='button';btn.id='nava-notification-clear-all-v12142';btn.className='nava-notification-head-button';btn.textContent='Tümünü temizle';btn.setAttribute('aria-label','Tüm bildirimleri temizle');btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();if(btn.disabled)return;btn.disabled=true;btn.textContent='Temizleniyor…';clearAll().then(function(n){btn.textContent=n?'Temizlendi':'Bildirim yok'}).catch(function(err){console.error('Bildirimler temizlenemedi:',err);btn.textContent='Tekrar dene'}).finally(function(){setTimeout(function(){btn.disabled=false;btn.textContent='Tümünü temizle'},1200)})});actions.append(btn)}
+    if(panel.dataset.navaDeleteFix12142!=='1'){
+      panel.dataset.navaDeleteFix12142='1';
+      panel.addEventListener('click',function(e){var del=e.target&&e.target.closest?e.target.closest('.nava-notification-delete'):null;if(!del)return;var card=del.closest('.nava-notification-item'),raw=card&&card.dataset.navaNotificationIds;if(!raw)return;var ids=raw.split(',').map(function(x){return clean(x,240)}).filter(Boolean);if(!ids.length)return;e.preventDefault();e.stopImmediatePropagation();del.disabled=true;deleteIds(ids).catch(function(err){console.error('Bildirim silinemedi:',err);del.disabled=false})},true)
+    }
     if(list.dataset.navaDeleteMap12142!=='1'){list.dataset.navaDeleteMap12142='1';new MutationObserver(function(){setTimeout(mapIds,0)}).observe(list,{childList:true,subtree:true})}
     mapIds();return true
   }
-  function watch(){if(!ready()){setTimeout(watch,300);return}auth.onAuthStateChanged(function(u){if(unsub){try{unsub()}catch(_){}unsub=null}docs=[];mapIds();if(!u)return;unsub=db.collection('users').doc(u.uid).collection('notifications').orderBy('createdAt','desc').limit(50).onSnapshot(function(s){docs=s.docs.map(function(x){return Object.assign({id:x.id},x.data()||{})});setTimeout(mapIds,0)},function(){})});for(var i=0;i<8;i++)setTimeout(wirePanel,200+i*350)}
+
+  function subscribe(u){if(unsub){try{unsub()}catch(_){}unsub=null}docs=[];lastUid=u&&u.uid||'';mapIds();if(!u)return;unsub=db.collection('users').doc(u.uid).collection('notifications').orderBy('createdAt','desc').limit(50).onSnapshot(function(s){docs=s.docs.map(function(x){return Object.assign({id:x.id},x.data()||{})});setTimeout(function(){wirePanel();mapIds()},0)},function(err){console.error('Bildirim eşleme dinleyicisi:',err)})}
+  function watch(){
+    if(!ready()){setTimeout(watch,250);return}
+    auth.onAuthStateChanged(subscribe);
+    wirePanel();
+    if(!observer&&d.body){observer=new MutationObserver(function(){wirePanel();var u=user(),uid=u&&u.uid||'';if(uid!==lastUid)subscribe(u)});observer.observe(d.body,{childList:true,subtree:true})}
+    var tries=0,t=setInterval(function(){wirePanel();tries++;if(tries>40)clearInterval(t)},250);
+  }
   if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',watch,{once:true});else watch();
 })(document,window);
