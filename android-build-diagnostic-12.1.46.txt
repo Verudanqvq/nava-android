@@ -1,0 +1,4 @@
+8b73d9066df2dfe16cb41a4048001a3a5bd0d66748d822c45b867ffa2c48e752  /tmp/current/Nava.apk
+SMALI_PATCH_OK ua=12.1.46 replacements=1 hooks=preserved
+PATCH_OK versionCode=58 versionName=12.1.46 ui=compact-hub topbar=untouched offline=hierarchy-kebab notifications=delete-fix scoped=ok
+pack_rc=0
