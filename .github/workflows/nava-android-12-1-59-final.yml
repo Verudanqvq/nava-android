@@ -1,0 +1,41 @@
+name: Nava Android 12.1.59 final release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-android-12-1-59-final.yml"
+      - ".github/scripts/nava-12.1.59-final.sh"
+      - "diagnostics/nava-12.1.59-final-trigger.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nava-android-12-1-59-final
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and publish 12.1.59
+        shell: bash
+        run: bash .github/scripts/nava-12.1.59-final.sh
+      - name: Persist final status
+        if: always()
+        run: |
+          if [ ! -f /tmp/status59.txt ]; then printf 'status=failed\nfinished=%s\n' "$(date -u +%FT%TZ)" > /tmp/status59.txt; fi
+          cp /tmp/status59.txt android-build-status-12.1.59-final.txt
+          git config user.name 'Nava Android Build Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add android-build-status-12.1.59-final.txt
+          git commit -m 'Record final Android 12.1.59 build [skip ci]' || true
+          git push || true
