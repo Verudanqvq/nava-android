@@ -1,0 +1,52 @@
+name: Nava Android 12.1.61 build diagnostic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-android-12-1-61-build-diagnostic.yml"
+      - "diagnostics/nava-12.1.61-build-trigger.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reproduce decoded build
+        shell: bash
+        run: |
+          set +e
+          rm -rf /tmp/base61-dec /tmp/current /tmp/apktool.jar
+          mkdir -p /tmp/current diagnostics
+          gh release download v12.1.60 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current
+          echo "SOURCE_RC=$?" > diagnostics/nava-12.1.61-build-log.txt
+          curl -fsSL -o /tmp/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar
+          java -jar /tmp/apktool.jar d -f /tmp/current/Nava.apk -o /tmp/base61-dec >/tmp/decode61.log 2>&1
+          echo "DECODE_RC=$?" >> diagnostics/nava-12.1.61-build-log.txt
+          python android-patch/v12.1.61/patch-decoded.py /tmp/base61-dec android-patch/v12.1.61/notification-v12161.js android-patch/v12.1.61/ui-v12161.css android-patch/v12.1.61/offline.html android-patch/v12.1.61/activity_main.xml >/tmp/patch61-diag.log 2>&1
+          echo "PATCH_RC=$?" >> diagnostics/nava-12.1.61-build-log.txt
+          cat /tmp/patch61-diag.log >> diagnostics/nava-12.1.61-build-log.txt
+          java -jar /tmp/apktool.jar b /tmp/base61-dec -o /tmp/rebuilt61-diag.apk >/tmp/build61.log 2>&1
+          RC=$?
+          echo "BUILD_RC=$RC" >> diagnostics/nava-12.1.61-build-log.txt
+          echo "=== BUILD LOG ===" >> diagnostics/nava-12.1.61-build-log.txt
+          tail -160 /tmp/build61.log >> diagnostics/nava-12.1.61-build-log.txt
+          echo "=== PATCHED GX ===" >> diagnostics/nava-12.1.61-build-log.txt
+          GX="$(find /tmp/base61-dec -type f -name gx.smali | head -1)"
+          grep -n -A18 -B8 'nava61_reveal_done' "$GX" >> diagnostics/nava-12.1.61-build-log.txt 2>&1
+          exit 0
+      - name: Persist diagnostic
+        run: |
+          git config user.name 'Nava Android Diagnostic Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add diagnostics/nava-12.1.61-build-log.txt
+          git commit -m 'Record Android 12.1.61 build diagnostic [skip ci]' || true
+          git push || true
