@@ -35,10 +35,10 @@ jobs:
       - name: Validate sources
         run: |
           set -euo pipefail
-          python -m py_compile android-patch/v12.1.58/patch-apk.py
+          python -m py_compile android-patch/v12.1.58/patch-apk.py android-patch/v12.1.58/patch-apk-run.py
           node --check android-patch/v12.1.58/ux-v12158.js
           grep -q "NEW_VERSION='12.1.58';NEW_CODE=74" android-patch/v12.1.58/patch-apk.py
-          grep -q 'logicalKey' android-patch/v12.1.58/patch-apk.py
+          grep -q 'logicalKey' android-patch/v12.1.58/patch-apk-run.py
           grep -q 'renderGroups' android-patch/v12.1.58/ux-v12158.js
           grep -q 'ensureNotificationClear' android-patch/v12.1.58/ux-v12158.js
           grep -q 'ensureOfflineRefresh' android-patch/v12.1.58/ux-v12158.js
@@ -96,7 +96,7 @@ jobs:
       - name: Patch and validate APK
         run: |
           set -euo pipefail
-          python android-patch/v12.1.58/patch-apk.py \
+          python android-patch/v12.1.58/patch-apk-run.py \
             /tmp/current/Nava.apk \
             android-patch/v12.1.58/ux-v12158.js \
             android-patch/v12.1.58/ui-v12158.css \
