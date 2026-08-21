@@ -1,1 +1,1 @@
-Run updater source+smali diagnostic after workflow update.
+Run updater z5/e00 callsite diagnostic.
