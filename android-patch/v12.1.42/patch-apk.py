@@ -80,7 +80,7 @@ def main():
     if NEW_PUSH not in push or "appVersion:'12.1.42'" not in push: raise ValueError('push source invalid')
     if NEW_OFFLINE not in offlinejs or 'Eseri sil' not in offlinejs or 'Cildi sil' not in offlinejs or 'beginBulk' not in offlinejs: raise ValueError('offline JS invalid')
     if NEW_MENU not in menu or 'nava-download-launcher-v12142' not in menu or 'nava-download-menu-v12142' not in menu: raise ValueError('download menu invalid')
-    if NEW_COMPAT not in compat or 'data-nava-notification-ids' not in compat or 'Tümünü temizle' not in compat: raise ValueError('notification compat invalid')
+    if NEW_COMPAT not in compat or 'navaNotificationIds' not in compat or 'Tümünü temizle' not in compat: raise ValueError('notification compat invalid')
     if CSS_MARKER not in newcss or 'nava-download-launcher-v12142' not in newcss or 'nava-offline-group-more-v12142' not in newcss: raise ValueError('offline CSS invalid')
     html=offline.decode('utf-8')
     if '<h1>İndirilenler</h1>' not in html or 'data-series-delete' not in html or 'data-volume-delete' not in html: raise ValueError('offline HTML bulk delete invalid')
