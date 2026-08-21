@@ -1,1 +1,1 @@
-Trigger signed 12.1.60 direct-updater build after helper diagnostic PASS.
+Trigger signed 12.1.60 direct-updater build with hardened v2 final gate.
