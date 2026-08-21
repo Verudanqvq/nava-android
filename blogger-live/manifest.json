@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "version": "shutdown-1",
-  "css": "releases/shutdown.css",
-  "js": "releases/shutdown.js",
-  "notes": "Live visual layer disabled. Only suppresses the legacy pinned bootstrap test badge; no site styles or UI patches are loaded."
+  "version": "12.3.11-live.1",
+  "css": "releases/12.3.11-live.1.css",
+  "js": "releases/12.3.11-live.1.js",
+  "notes": "Web-only shared layer: per-work TR/EN/JP/KR/CN chapter variants inside reader settings, logical chapter grouping, and reliable Firestore notification deletion. Android blocks /blogger-live/ and is unaffected."
 }
