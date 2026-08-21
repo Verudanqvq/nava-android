@@ -1,0 +1,10 @@
+status=running
+started=2026-08-21T23:10:35Z
+source_validation=ok
+base=12.1.59
+updater=direct-https
+listener=e00
+native_ua=12.1.47-preserved
+signing_material=ok
+source_apk=ok
+source_sha256=e3d1c78bab4face9f0d479169560b8e9bf0d099bcc4f076eec6e1bcbea47241f
