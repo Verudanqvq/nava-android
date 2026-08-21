@@ -1,0 +1,62 @@
+/* Nava Android 12.1.48 — stable chrome, isolated download UI, notification controls. */
+/* 12.1.47 okuyucu barı indirme düğmesi için 4 kolona zorlanmıştı. İndirme artık bardan bağımsız. */
+html.nava-app-v9 #nava-reader-top-v2{grid-template-columns:36px minmax(0,1fr) 36px!important;gap:6px!important;overflow:visible!important}
+html.nava-app-v9 #nava-app-topbar{overflow:visible!important}
+html.nava-app-v9 #nava-app-topbar .nava-app-top-actions{display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:6px!important}
+
+/* Eski/tema kaynaklı indirme arayüzleri sayfa akışına asla giremez. */
+html.nava-app-v9 #nava-download-top-v12147,
+html.nava-app-v9 #nava-download-pop-v12147,
+html.nava-app-v9 #nava-download-launcher-v12142,
+html.nava-app-v9 #nava-download-launcher-v12143,
+html.nava-app-v9 #nava-download-launcher-v12145,
+html.nava-app-v9 #nava-download-launcher-v12146,
+html.nava-app-v9 #nava-download-menu-v12138,
+html.nava-app-v9 #nava-download-menu-v12139,
+html.nava-app-v9 #nava-download-menu-v12141,
+html.nava-app-v9 #nava-download-menu-v12142,
+html.nava-app-v9 #nava-download-menu-v12143,
+html.nava-app-v9 #nava-download-menu-v12145,
+html.nava-app-v9 #nava-download-hub-v12146,
+html.nava-app-v9 #nava-download-center-v12143,
+html.nava-app-v9 [data-nava-download-inline],
+html.nava-app-v9 .nava-app-download-card,
+html.nava-app-v9 .nava-download-inline{display:none!important}
+
+.nava-download-launcher-v12148{box-sizing:border-box;position:fixed!important;right:max(13px,env(safe-area-inset-right,0px))!important;bottom:max(16px,env(safe-area-inset-bottom,0px))!important;z-index:2147482500!important;width:46px!important;height:46px!important;display:grid!important;place-items:center!important;margin:0!important;padding:0!important;border:1px solid #5e7fa6!important;border-radius:50%!important;background:#466184!important;color:#fff!important;box-shadow:0 10px 28px rgba(15,23,42,.28)!important;cursor:pointer!important}
+.nava-download-launcher-v12148 svg{width:21px!important;height:21px!important}
+.nava-download-launcher-v12148:active{transform:scale(.96)}
+body.nava-app-reader .nava-download-launcher-v12148{bottom:calc(74px + env(safe-area-inset-bottom,0px))!important}
+
+.nava-download-backdrop-v12148{box-sizing:border-box;position:fixed!important;inset:0!important;z-index:2147483300!important;display:grid!important;align-items:end!important;justify-items:center!important;padding:10px 10px max(10px,env(safe-area-inset-bottom,0px))!important;background:rgba(2,6,23,.56)!important;backdrop-filter:blur(2px)}
+.nava-download-backdrop-v12148[hidden]{display:none!important}
+.nava-download-sheet-v12148{box-sizing:border-box;width:min(620px,100%)!important;max-height:min(72dvh,620px)!important;overflow:auto!important;margin:0!important;padding:0!important;border:1px solid #334155!important;border-radius:16px!important;background:#0f172a!important;color:#e5e7eb!important;box-shadow:0 22px 64px rgba(2,6,23,.42)!important;font-family:system-ui,-apple-system,"Segoe UI",sans-serif!important}
+.nava-download-head-v12148{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;min-height:56px!important;padding:8px 10px 8px 14px!important;border-bottom:1px solid #26364a!important;background:#111827!important}
+.nava-download-head-v12148>div{min-width:0!important;display:grid!important;gap:2px!important}
+.nava-download-head-v12148 strong{font-size:15px!important;color:#f8fafc!important}
+.nava-download-head-v12148 span{font-size:10.5px!important;color:#8ea0b5!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.nava-download-close-v12148{width:38px!important;height:38px!important;border:1px solid #35475d!important;border-radius:10px!important;background:#182334!important;color:#cbd5e1!important;font-size:21px!important;line-height:1!important}
+.nava-download-actions-v12148{display:grid!important;gap:8px!important;padding:10px 12px!important}
+.nava-download-row-v12148{box-sizing:border-box;width:100%!important;min-height:58px!important;display:grid!important;grid-template-columns:38px minmax(0,1fr) 18px!important;align-items:center!important;gap:10px!important;padding:8px 10px!important;border:1px solid #2e4055!important;border-radius:11px!important;background:#121d2b!important;color:#e5edf6!important;text-align:left!important}
+.nava-download-row-v12148.is-primary{border-color:#58789d!important;background:#17283a!important}
+.nava-download-row-v12148:active{background:#1b2a3b!important}
+.nava-download-row-icon-v12148{width:36px!important;height:36px!important;display:grid!important;place-items:center!important;border-radius:9px!important;background:#1e3044!important;color:#a9c1dc!important}
+.nava-download-row-icon-v12148 svg{width:19px!important;height:19px!important}
+.nava-download-row-copy-v12148{min-width:0!important;display:grid!important;gap:2px!important}
+.nava-download-row-copy-v12148 strong{font-size:13px!important;color:#f3f6fa!important}
+.nava-download-row-copy-v12148 small{font-size:10.5px!important;color:#8395a9!important}
+.nava-download-row-arrow-v12148{font-size:22px!important;color:#71869d!important}
+.nava-download-status-v12148{min-height:0!important;padding:0 13px 11px!important;color:#98aabd!important;font-size:11px!important}
+.nava-download-status-v12148:empty{display:none!important}.nava-download-status-v12148.is-error{color:#f0aaaa!important}
+
+/* Android bildirim merkezinde iki net toplu işlem: okundu yap + temizle. */
+html.nava-app-v9 #nava-notification-clear-read{display:none!important}
+html.nava-app-v9 #nava-notification-clear-all-v12148{display:flex!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important}
+@media(max-width:767px){
+ html.nava-app-v9 #nava-notification-panel .nava-notification-head-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.45rem!important;width:100%!important}
+ html.nava-app-v9 #nava-notification-panel .nava-notification-head-button{display:flex!important;min-height:40px!important;align-items:center!important;justify-content:center!important;text-align:center!important;white-space:normal!important}
+ .nava-download-backdrop-v12148{padding:0!important;align-items:end!important}
+ .nava-download-sheet-v12148{width:100%!important;max-height:78dvh!important;border-left:0!important;border-right:0!important;border-bottom:0!important;border-radius:16px 16px 0 0!important}
+}
+@media(max-width:360px){html.nava-app-v9 #nava-notification-panel .nava-notification-head-actions{grid-template-columns:1fr!important}}
+@media(prefers-reduced-motion:reduce){.nava-download-launcher-v12148{transition:none!important}}
