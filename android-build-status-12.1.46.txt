@@ -1,0 +1,12 @@
+status=running
+started=2026-08-21T16:50:42Z
+source_validation=ok
+fix=stable-12.1.41-base+topbar-untouched+fixed-download-launcher+legacy-inline-purge
+smali_tools=ok
+signing_material=ok
+source_apk=ok
+source_sha256=8b73d9066df2dfe16cb41a4048001a3a5bd0d66748d822c45b867ffa2c48e752
+native_hooks=preserved
+ua=12.1.46
+status=failed
+finished=2026-08-21T16:51:02Z
