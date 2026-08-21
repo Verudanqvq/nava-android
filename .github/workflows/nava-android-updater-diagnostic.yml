@@ -43,7 +43,7 @@ jobs:
           printf '\n=== h00.java ===\n' >> "$OUT"
           if [ -f /tmp/jadx-out/sources/defpackage/h00.java ]; then cat /tmp/jadx-out/sources/defpackage/h00.java >> "$OUT"; fi
           printf '\n=== RELATED SOURCES ===\n' >> "$OUT"
-          for n in e00 d00 s3 l1 g00; do
+          for n in e00 d00 s3 l1 g00 z5; do
             f="/tmp/jadx-out/sources/defpackage/${n}.java"
             if [ -f "$f" ]; then
               cp "$f" "diagnostics/updater-source/${n}.java.txt"
@@ -52,10 +52,16 @@ jobs:
             fi
           done
           cp /tmp/jadx-out/sources/defpackage/h00.java diagnostics/updater-source/h00.java.txt
-          for n in e00 h00 d00 s3; do
+          for n in e00 h00 d00 s3 z5; do
             f="$(find /tmp/apktool-out -path "*/defpackage/${n}.smali" | head -1)"
             if [ -n "$f" ] && [ -f "$f" ]; then cp "$f" "diagnostics/updater-smali/${n}.smali.txt"; fi
           done
+          CALL=diagnostics/updater-e00-callsite.txt
+          : > "$CALL"
+          printf '=== e00 references in decoded smali ===\n' >> "$CALL"
+          grep -R -n -C 12 'Ldefpackage/e00;' /tmp/apktool-out 2>/dev/null >> "$CALL" || true
+          printf '\n=== Güncelle positive-button references ===\n' >> "$CALL"
+          grep -R -n -C 14 'Güncelle' /tmp/apktool-out 2>/dev/null | head -300 >> "$CALL" || true
           printf '\n=== DEX STRINGS ===\n' >> "$OUT"
           unzip -p /tmp/apk/Nava.apk classes.dex | strings | grep -Ei 'release|Nava\.apk|download|update|digest|install|github|güncelle' | head -500 >> "$OUT" || true
       - name: Persist updater diagnostic
@@ -63,6 +69,6 @@ jobs:
           git config user.name 'Nava Android Diagnostic Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git pull --rebase || true
-          git add diagnostics/nava-updater-diagnostic.txt diagnostics/updater-source diagnostics/updater-smali
-          git commit -m 'Record updater source and smali diagnostics [skip ci]' || true
+          git add diagnostics/nava-updater-diagnostic.txt diagnostics/updater-source diagnostics/updater-smali diagnostics/updater-e00-callsite.txt
+          git commit -m 'Record updater callsite diagnostics [skip ci]' || true
           git push || true
