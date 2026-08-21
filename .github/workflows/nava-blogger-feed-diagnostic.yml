@@ -28,8 +28,8 @@ jobs:
       - name: Inspect live Blogger feeds
         shell: bash
         run: |
-          node <<'NODE'
-          const fs = require('fs');
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
           const bases = [
             ['SERIES','https://verudanava.blogspot.com/feeds/posts/summary/-/Series?alt=json&max-results=150&orderby=published'],
             ['VOLUMES','https://verudanava.blogspot.com/feeds/posts/summary/-/Cilt?alt=json&max-results=150&orderby=published'],
@@ -44,13 +44,13 @@ jobs:
           const lines = [`generated=${new Date().toISOString()}`];
           for (const [name,url] of bases) {
             try {
-              const r = await fetch(url, {headers:{'User-Agent':'NavaFeedDiagnostic/1.1','Cache-Control':'no-cache'}});
+              const r = await fetch(url, {headers:{'User-Agent':'NavaFeedDiagnostic/1.2','Cache-Control':'no-cache'}});
               lines.push(`\n## ${name} HTTP ${r.status}`);
               if (!r.ok) continue;
               const j = await r.json();
               const entries = j?.feed?.entry || [];
               lines.push(`count=${entries.length}`);
-              const slice = name.startsWith('CHAPTERS') ? entries.slice(0,40) : entries;
+              const slice = name.startsWith('CHAPTERS') ? entries.slice(0,60) : entries;
               for (const e of slice) {
                 lines.push(JSON.stringify({id:id(e),title:clean(e.title?.$t),url:link(e),labels:labels(e)}));
               }
