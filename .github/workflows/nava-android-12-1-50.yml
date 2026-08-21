@@ -18,7 +18,7 @@ concurrency:
 jobs:
   build-test-release:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
     env:
       FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       GH_TOKEN: ${{ github.token }}
@@ -110,41 +110,76 @@ jobs:
           APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
           printf 'zipalign=ok\nsigning=ok\ncert_sha256=%s\napk_sha256=%s\n' "$CERT" "$APK_SHA" >> /tmp/status.txt
 
-      - name: Install Pillow for visual smoke test
-        run: python -m pip install --quiet pillow
+      - name: Prepare native Android emulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install \
+            "platform-tools" \
+            "emulator" \
+            "platforms;android-35" \
+            "system-images;android-35;google_apis;x86_64"
+          echo no | "$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager" create avd \
+            --force \
+            --name nava_api35 \
+            --package "system-images;android-35;google_apis;x86_64" \
+            --device "pixel_6"
+          python -m pip install --quiet pillow
+          printf 'emulator_tools=ok\n' >> /tmp/status.txt
 
       - name: Emulator startup smoke test
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 35
-          arch: x86_64
-          profile: pixel_6
-          disable-animations: true
-          script: |
-            set -euo pipefail
-            adb install -r /tmp/Nava.apk
-            PKG="$(aapt dump badging /tmp/Nava.apk | sed -n "s/package: name='\([^']*\)'.*/\1/p" | head -1)"
-            test -n "$PKG"
-            adb shell am force-stop "$PKG"
-            adb shell monkey -p "$PKG" -c android.intent.category.LAUNCHER 1 >/tmp/monkey.txt
-            sleep 14
-            adb shell dumpsys window windows > /tmp/windows.txt
-            grep -q "$PKG" /tmp/windows.txt
-            adb exec-out screencap -p > /tmp/screen.png
-            python - <<'PY'
-            from PIL import Image,ImageStat
-            im=Image.open('/tmp/screen.png').convert('L')
-            w,h=im.size
-            crop=im.crop((int(w*.06),int(h*.13),int(w*.94),int(h*.90)))
-            stat=ImageStat.Stat(crop)
-            mean=float(stat.mean[0]); var=float(stat.var[0])
-            print(f'SCREEN mean={mean:.2f} var={var:.2f} size={w}x{h}')
-            if mean>247.5 and var<45:
-                raise SystemExit('WHITE_SCREEN_DETECTED')
-            PY
-            adb logcat -d -t 1200 > /tmp/logcat.txt || true
-            ! grep -E 'FATAL EXCEPTION|AndroidRuntime.*Process: .*verudanava' /tmp/logcat.txt
-            printf 'emulator_smoke=ok\n' >> /tmp/status.txt
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+          nohup "$ANDROID_HOME/emulator/emulator" \
+            -avd nava_api35 \
+            -no-window \
+            -noaudio \
+            -no-boot-anim \
+            -no-snapshot \
+            -gpu swiftshader_indirect \
+            -accel off \
+            >/tmp/emulator.log 2>&1 &
+          EMU_PID=$!
+          cleanup(){ adb emu kill >/dev/null 2>&1 || true; kill "$EMU_PID" >/dev/null 2>&1 || true; }
+          trap cleanup EXIT
+          adb wait-for-device
+          for i in $(seq 1 180); do
+            BOOT="$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')"
+            if [ "$BOOT" = "1" ]; then break; fi
+            sleep 2
+          done
+          test "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1"
+          adb shell settings put global window_animation_scale 0
+          adb shell settings put global transition_animation_scale 0
+          adb shell settings put global animator_duration_scale 0
+          adb install -r /tmp/Nava.apk
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          PKG="$("$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | sed -n "s/package: name='\([^']*\)'.*/\1/p" | head -1)"
+          test -n "$PKG"
+          adb logcat -c || true
+          adb shell am force-stop "$PKG"
+          adb shell monkey -p "$PKG" -c android.intent.category.LAUNCHER 1 >/tmp/monkey.txt
+          sleep 18
+          adb shell dumpsys window windows > /tmp/windows.txt
+          grep -q "$PKG" /tmp/windows.txt
+          adb exec-out screencap -p > /tmp/screen.png
+          python - <<'PY'
+          from PIL import Image,ImageStat
+          im=Image.open('/tmp/screen.png').convert('L')
+          w,h=im.size
+          crop=im.crop((int(w*.06),int(h*.13),int(w*.94),int(h*.90)))
+          stat=ImageStat.Stat(crop)
+          mean=float(stat.mean[0]); var=float(stat.var[0])
+          print(f'SCREEN mean={mean:.2f} var={var:.2f} size={w}x{h}')
+          if mean>247.5 and var<45:
+              raise SystemExit('WHITE_SCREEN_DETECTED')
+          PY
+          adb logcat -d -t 1600 > /tmp/logcat.txt || true
+          ! grep -E 'FATAL EXCEPTION|AndroidRuntime.*Process: .*verudanava' /tmp/logcat.txt
+          printf 'emulator_smoke=ok\n' >> /tmp/status.txt
 
       - name: Publish 12.1.50
         run: |
