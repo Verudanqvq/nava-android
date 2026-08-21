@@ -11,11 +11,10 @@ NEW_PUSH='/* Nava v12.1.42 — direct native FCM registration. */'
 OLD_OFFLINE='/* Nava Android 12.1.41 — hierarchical offline library. */'
 NEW_OFFLINE='/* Nava Android 12.1.42 — simple hierarchical offline library. */'
 OLD_MENU='/* Nava Android 12.1.41 — download center metadata + content-type neutral hierarchy. */'
-NEW_MENU='/* Nava Android 12.1.42 — compact download hub. */'
+NEW_MENU='/* Nava Android 12.1.42 — compact reliable download center. */'
 OLD_COMPAT='/* Nava Android 12.1.39 — restore volume navigation + clear all notifications. */'
-NEW_COMPAT='/* Nava Android 12.1.42 — stable volume navigation + notification deletion. */'
-OLD_CSS='/* Nava Android 12.1.41 — hierarchical offline library styles. */'
-NEW_CSS='/* Nava Android 12.1.42 — compact download/offline UI. */'
+NEW_COMPAT='/* Nava Android 12.1.42 — volume navigation + reliable mobile notification deletion. */'
+CSS_MARKER='/* Nava Android 12.1.42 — compact download/offline UI. */'
 
 def u16(d,o): return struct.unpack_from('<H',d,o)[0]
 def u32(d,o): return struct.unpack_from('<I',d,o)[0]
@@ -79,13 +78,13 @@ def main():
     dex=Path(dexf).read_bytes();push=Path(pushf).read_text();offlinejs=Path(offlinejsf).read_text();menu=Path(menuf).read_text();compat=Path(compatf).read_text();newcss=Path(cssf).read_text();offline=Path(offlinef).read_bytes()
     if not dex.startswith(b'dex\n') or b'NavaAndroidApp/12.1.42' not in dex: raise ValueError('patched dex invalid')
     if NEW_PUSH not in push or "appVersion:'12.1.42'" not in push: raise ValueError('push source invalid')
-    if NEW_OFFLINE not in offlinejs or 'Eseri sil' not in offlinejs or 'Cildi sil' not in offlinejs or 'navaOpenDownloads' not in offlinejs: raise ValueError('offline JS invalid')
-    if NEW_MENU not in menu or 'nava-download-launcher-v12142' not in menu or 'Eseri indir' not in menu or 'Cildi indir' not in menu: raise ValueError('download hub invalid')
-    if NEW_COMPAT not in compat or 'Tümünü sil' not in compat: raise ValueError('notification compat invalid')
-    if NEW_CSS not in newcss or 'nava-download-launcher-v12142' not in newcss: raise ValueError('offline CSS invalid')
+    if NEW_OFFLINE not in offlinejs or 'Eseri sil' not in offlinejs or 'Cildi sil' not in offlinejs or 'beginBulk' not in offlinejs: raise ValueError('offline JS invalid')
+    if NEW_MENU not in menu or 'nava-download-launcher-v12142' not in menu or 'nava-download-menu-v12142' not in menu: raise ValueError('download menu invalid')
+    if NEW_COMPAT not in compat or 'data-nava-notification-ids' not in compat or 'Tümünü temizle' not in compat: raise ValueError('notification compat invalid')
+    if CSS_MARKER not in newcss or 'nava-download-launcher-v12142' not in newcss or 'nava-offline-group-more-v12142' not in newcss: raise ValueError('offline CSS invalid')
     html=offline.decode('utf-8')
-    if '<h1>İndirilenler</h1>' not in html or 'data-series-delete' not in html or 'data-volume-delete' not in html: raise ValueError('offline HTML hierarchy invalid')
-    if 'Tekrar bağlan' in html or 'Bu cildi tamamen indir' in html or 'Tüm ciltleri indir' in html: raise ValueError('old confusing copy remains')
+    if '<h1>İndirilenler</h1>' not in html or 'data-delete-series' not in html or 'data-delete-volume' not in html: raise ValueError('offline HTML bulk delete invalid')
+    if 'Tekrar bağlan' in html or 'Yalnız Wi' in html: raise ValueError('duplicate offline controls remain')
     with zipfile.ZipFile(srcp) as zin:
         names=set(zin.namelist())
         required={'AndroidManifest.xml','classes.dex','classes2.dex','classes3.dex','assets/nava_app_v11.js','assets/nava_app_v11.css','assets/offline.html'}
@@ -97,8 +96,7 @@ def main():
         js=replace_iife(js,OLD_MENU,menu)
         js=replace_iife(js,OLD_COMPAT,compat)
         css=zin.read('assets/nava_app_v11.css').decode('utf-8')
-        pos=css.find(OLD_CSS)
-        if pos>=0: css=css[:pos].rstrip()
+        if CSS_MARKER in css: raise ValueError('12.1.42 CSS already present')
         css=css.rstrip()+'\n\n'+newcss.strip()+'\n'
         with zipfile.ZipFile(out,'w') as zout:
             for info in zin.infolist():
@@ -117,17 +115,18 @@ def main():
             if marker not in fj: raise ValueError('final JS marker missing '+marker)
         for marker in (OLD_OFFLINE,OLD_MENU,OLD_COMPAT):
             if marker in fj: raise ValueError('old JS block remains '+marker)
-        if NEW_CSS not in fc: raise ValueError('final CSS missing')
-        if OLD_CSS in fc: raise ValueError('old offline CSS remains')
-        if 'nava-download-launcher-v12142' not in fj or 'nava-offline-sheet-v12142' not in fj: raise ValueError('new app UI missing')
-        if 'Bu cildi tamamen indir' in fj or 'Tüm ciltleri indir' in fj: raise ValueError('old confusing action copy remains')
-        if 'data-series-delete' not in fh or 'data-volume-delete' not in fh: raise ValueError('offline HTML delete menus missing')
+        if CSS_MARKER not in fc: raise ValueError('final 12.1.42 CSS missing')
+        if 'nava-download-menu-v12141' in fj: raise ValueError('broken 12.1.41 download menu remains')
+        if 'nava-download-launcher-v12142' not in fj or 'Tümünü temizle' not in fj: raise ValueError('new app controls missing')
+        if 'data-delete-series' not in fh or 'data-delete-volume' not in fh: raise ValueError('final offline HTML invalid')
+        for token in ('#6d28d9','#7c3aed','#8b5cf6','#5b20f3','#4c1d95','#c4b5fd','#ddd6fe','#ede9fe','#f5f3ff'):
+            if token.lower() in newcss.lower() or token.lower() in fh.lower(): raise ValueError('purple token in 12.1.42 UI '+token)
         if b'NavaAndroidApp/12.1.42' not in fd: raise ValueError('UA missing')
         if b.read('classes2.dex')!=a.read('classes2.dex'): raise ValueError('offline runtime changed unexpectedly')
         if b.read('classes3.dex')!=a.read('classes3.dex'): raise ValueError('notification helper changed unexpectedly')
         for name in a.namelist():
             if oldsig(name) or name in allowed: continue
             if name not in b.namelist() or a.read(name)!=b.read(name): raise ValueError('unexpected changed entry '+name)
-    print('PATCH_OK versionCode=58 versionName=12.1.42 ui=compact-hub topbar=untouched offline=hierarchy-kebab notifications=delete-fix scoped=ok')
+    print('PATCH_OK versionCode=58 versionName=12.1.42 cilt-ui=clean download=launcher notifications=clear-all offline=bulk-delete scoped=ok')
 
 if __name__=='__main__': main()
