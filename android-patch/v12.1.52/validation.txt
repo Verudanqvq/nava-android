@@ -1,0 +1,8 @@
+12.1.52 validation plan
+- exact series title is used as Blogger label candidate
+- no global Cilt/Bölüm feed dependency
+- volumes derived from Cilt N labels in series feed
+- chapters derived from same series feed and selected Cilt N
+- language filter preserved
+- native UA/classes.dex remains 12.1.47
+- versionName 12.1.52 / versionCode 68
