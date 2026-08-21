@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "version": "12.3.11-live.1",
+  "version": "12.3.11-live.2",
   "css": "releases/12.3.11-live.1.css",
   "js": "releases/12.3.11-live.1.js",
-  "notes": "Web-only shared layer: per-work TR/EN/JP/KR/CN chapter variants inside reader settings, logical chapter grouping, and reliable Firestore notification deletion. Android blocks /blogger-live/ and is unaffected."
+  "notes": "Web-only shared layer: per-work TR/EN/JP/KR/CN chapter variants, Firestore notification deletion, plus desktop chapter icon size guard. Android blocks /blogger-live/ and is unaffected."
 }
