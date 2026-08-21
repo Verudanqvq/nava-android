@@ -1,0 +1,153 @@
+name: Nava Android 12.1.58 grouped queue and controls
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-android-12-1-58.yml"
+      - "android-patch/v12.1.58/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nava-android-12-1-58
+  cancel-in-progress: false
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+      EXPECTED_CERT_SHA256: acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51d09fe
+      EXPECTED_SOURCE_SHA256: f99a7e9449fa7ac0875ab9b9bcd319d10a20108f7837e22f169708f5c059d4eb
+      SOURCE_TAG: v12.1.57
+      TARGET_TAG: v12.1.58
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare status
+        run: printf 'status=running\nstarted=%s\n' "$(date -u +%FT%TZ)" > /tmp/status.txt
+
+      - name: Validate sources
+        run: |
+          set -euo pipefail
+          python -m py_compile android-patch/v12.1.58/patch-apk.py
+          node --check android-patch/v12.1.58/ux-v12158.js
+          grep -q "NEW_VERSION='12.1.58';NEW_CODE=74" android-patch/v12.1.58/patch-apk.py
+          grep -q 'logicalKey' android-patch/v12.1.58/patch-apk.py
+          grep -q 'renderGroups' android-patch/v12.1.58/ux-v12158.js
+          grep -q 'ensureNotificationClear' android-patch/v12.1.58/ux-v12158.js
+          grep -q 'ensureOfflineRefresh' android-patch/v12.1.58/ux-v12158.js
+          printf 'source_validation=ok\nbase=12.1.57\nnative_ua=12.1.47-preserved\ndedupe=query-plus-logical\nqueue=grouped-volume-progress\nnotification=clear-all\noffline=refresh\n' >> /tmp/status.txt
+
+      - name: Verify live Blogger feed contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          const get=async label=>{const u='https://www.verudanava.com/feeds/posts/summary/-/'+encodeURIComponent(label)+'?alt=json&max-results=500&orderby=published';const r=await fetch(u,{headers:{'User-Agent':'NavaAndroid58Contract/1.0','Cache-Control':'no-cache'}});if(!r.ok)throw new Error(`${label} HTTP ${r.status}`);return (await r.json())?.feed?.entry||[]};
+          const labels=e=>(e.category||[]).map(x=>String(x.term||'').trim());
+          const title=e=>String(e?.title?.$t||'').trim();
+          const [vols,chapters]=await Promise.all([get('Cilt'),get('Bölüm')]);
+          const identity='Tensei Shitara Slime Datta Ken (Light Novel)';
+          const matched=vols.filter(e=>labels(e).includes(identity));
+          if(matched.length<23)throw new Error(`expected >=23 volumes, got ${matched.length}`);
+          const v11=matched.find(e=>title(e)==='Tensura Cilt 11');
+          if(!v11||!labels(v11).includes('Tensura Cilt 11'))throw new Error('Cilt 11 label missing');
+          const ch11=chapters.filter(e=>labels(e).includes('Tensura Cilt 11'));
+          if(ch11.length<9)throw new Error(`expected >=9 chapters, got ${ch11.length}`);
+          console.log(`LIVE_FEED_CONTRACT_OK volumes=${matched.length} cilt11chapters=${ch11.length}`);
+          NODE
+          printf 'live_feed_contract=ok\n' >> /tmp/status.txt
+
+      - name: Recover signing material
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +x
+          export NAVA_KDF_SECRET="$(printf '%s' "$FIREBASE_SERVICE_ACCOUNT" | sha256sum | cut -d' ' -f1)"
+          openssl enc -d -aes-256-cbc -pbkdf2 -iter 250000 -in .github/nava-signing/private.pem.enc -out /tmp/nava-private.pem -pass env:NAVA_KDF_SECRET
+          unset NAVA_KDF_SECRET
+          openssl pkeyutl -decrypt -inkey /tmp/nava-private.pem -in android-signing/key-material.enc -out /tmp/key-material.bin -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
+          python - <<'PY'
+          from pathlib import Path
+          d=Path('/tmp/key-material.bin').read_bytes(); assert len(d)==48
+          Path('/tmp/aes-key').write_text(d[:32].hex()); Path('/tmp/aes-iv').write_text(d[32:].hex())
+          PY
+          openssl enc -d -aes-256-cbc -K "$(cat /tmp/aes-key)" -iv "$(cat /tmp/aes-iv)" -in android-signing/signing-payload.enc -out /tmp/signing.zip
+          mkdir -p /tmp/nava-signing
+          unzip -q /tmp/signing.zip -d /tmp/nava-signing
+          rm -f /tmp/nava-private.pem /tmp/key-material.bin /tmp/aes-key /tmp/aes-iv /tmp/signing.zip
+          printf 'signing_material=ok\n' >> /tmp/status.txt
+
+      - name: Download signed 12.1.57 base
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/current
+          gh release download "$SOURCE_TAG" --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current
+          GOT="$(sha256sum /tmp/current/Nava.apk | cut -d' ' -f1)"
+          test "$GOT" = "$EXPECTED_SOURCE_SHA256"
+          printf 'source_apk=ok\nsource_sha256=%s\n' "$GOT" >> /tmp/status.txt
+
+      - name: Patch and validate APK
+        run: |
+          set -euo pipefail
+          python android-patch/v12.1.58/patch-apk.py \
+            /tmp/current/Nava.apk \
+            android-patch/v12.1.58/ux-v12158.js \
+            android-patch/v12.1.58/ui-v12158.css \
+            /tmp/Nava-unsigned.apk | tee /tmp/patch.txt
+          grep -q 'PATCH_OK versionName=12.1.58 versionCode=74 base=12.1.57 nativeUA=12.1.47 dedupe=query-plus-logical queue=grouped notification=clear-all offline=refresh' /tmp/patch.txt
+          unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/final.js
+          unzip -p /tmp/Nava-unsigned.apk classes.dex > /tmp/final.dex
+          node --check /tmp/final.js
+          grep -q '__navaPersistentDownloadV12158' /tmp/final.js
+          grep -q '__navaUxV12158' /tmp/final.js
+          grep -q 'logicalKey' /tmp/final.js
+          grep -q "u.search=''" /tmp/final.js
+          grep -q 'renderGroups' /tmp/final.js
+          grep -aq 'NavaAndroidApp/12.1.47' /tmp/final.dex
+          ! grep -aq 'NavaAndroidApp/12.1.58' /tmp/final.dex
+          printf 'patch=ok\nversionName=12.1.58\nversionCode=74\n' >> /tmp/status.txt
+
+      - name: Align and sign
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +x
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk
+          PROP=/tmp/nava-signing/keystore.properties
+          export NAVA_STORE_PASS="$(sed -n 's/^storePassword=//p' "$PROP" | tr -d '\r' | head -1)"
+          export NAVA_KEY_PASS="$(sed -n 's/^keyPassword=//p' "$PROP" | tr -d '\r' | head -1)"
+          KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROP" | tr -d '\r' | head -1)"
+          "$BUILD_TOOLS/apksigner" sign --ks /tmp/nava-signing/signing/nava-release.jks --ks-key-alias "$KEY_ALIAS" --ks-pass env:NAVA_STORE_PASS --key-pass env:NAVA_KEY_PASS --out /tmp/Nava.apk /tmp/Nava-aligned.apk
+          "$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/verify.txt
+          CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/verify.txt | sed 's/.*digest:[[:space:]]*//' | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
+          test "$CERT" = "$EXPECTED_CERT_SHA256"
+          APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
+          printf 'zipalign=ok\nsigning=ok\ncert_sha256=%s\napk_sha256=%s\n' "$CERT" "$APK_SHA" >> /tmp/status.txt
+
+      - name: Publish 12.1.58
+        run: |
+          set -euo pipefail
+          if gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then echo "Release $TARGET_TAG already exists" >&2; exit 1; fi
+          NOTES='12.1.58 indirme UX düzeltmesi. Aynı içerik ?m=1 gibi mobil query farklarıyla veya aynı eser+cilt/bölüm mantıksal kimliğiyle ikinci kez batch içine giremez. İndirme sırası bölüm bölüm değil cilt bazlı tek satır ve ilerleme çubuğu olarak gösterilir. Bildirim paneli başlık aksiyon alanı yoksa oluşturulur ve Tümünü temizle görünür hale gelir. Çevrimdışı İndirilenler ekranına yenile butonu eklenir. 12.1.47 native WebView UA/classes.dex korunur.'
+          gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.58' --notes "$NOTES" --latest
+          printf 'release=v12.1.58\nasset=Nava.apk\nstatus=success\nfinished=%s\n' "$(date -u +%FT%TZ)" >> /tmp/status.txt
+
+      - name: Persist status
+        if: always()
+        run: |
+          if ! grep -q '^status=success$' /tmp/status.txt 2>/dev/null; then printf 'status=failed\nfinished=%s\n' "$(date -u +%FT%TZ)" >> /tmp/status.txt; fi
+          cp /tmp/status.txt android-build-status-12.1.58.txt
+          git config user.name 'Nava Android Build Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add android-build-status-12.1.58.txt
+          git commit -m 'Record Android 12.1.58 build [skip ci]' || true
+          git push || true
