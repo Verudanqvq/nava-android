@@ -1,0 +1,14 @@
+/* Nava Android 12.1.61 — startup and v9 notification UI. */
+#nava-notification-clear-all-v12161{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center;justify-content:center;min-height:31px;padding:0 8px;border:1px solid rgba(73,103,145,.15);border-radius:6px;background:#fff;color:#425d80;font-size:9px;font-weight:800;white-space:nowrap}
+.nava-app-notification-row-v9{position:relative!important;padding-right:48px!important}
+.nava-notification-delete-v12161{position:absolute;right:9px;top:50%;transform:translateY(-50%);z-index:2;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:#f4f7fb;color:#71839a;font:800 18px/1 system-ui;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.nava-notification-delete-v12161:active{background:#e6edf6;transform:translateY(-50%) scale(.94)}
+html.dark.nava-app-v9 #nava-notification-clear-all-v12161{background:#1f2b3b;color:#dbe8f7;border-color:#35465c}
+html.dark.nava-app-v9 .nava-notification-delete-v12161{background:#253448;color:#b8c7da}
+@media(max-width:520px){
+  .nava-app-notification-head-v9{align-items:flex-start!important;gap:6px!important}
+  .nava-app-notification-head-actions-v9{display:flex!important;flex-wrap:wrap!important;justify-content:flex-end!important;gap:4px!important;max-width:215px}
+  .nava-app-notification-head-actions-v9 button{min-height:34px!important}
+  #nava-notification-clear-all-v12161{font-size:8.2px!important;padding:0 6px!important}
+  .nava-app-notification-head-actions-v9 [data-nava-mark-all]{font-size:8.2px!important;padding:0 6px!important}
+}
