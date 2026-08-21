@@ -1,5 +1,5 @@
 status=running
-started=2026-08-21T21:46:30Z
+started=2026-08-21T21:46:58Z
 source_validation=ok
 base=12.1.55
 native_ua=12.1.47-preserved
@@ -17,7 +17,5 @@ zipalign=ok
 signing=ok
 cert_sha256=acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51d09fe
 apk_sha256=f99a7e9449fa7ac0875ab9b9bcd319d10a20108f7837e22f169708f5c059d4eb
-release=v12.1.57
-asset=Nava.apk
-status=success
-finished=2026-08-21T21:46:38Z
+status=failed
+finished=2026-08-21T21:47:05Z
