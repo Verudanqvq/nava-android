@@ -1,0 +1,10 @@
+/* Nava Android 12.1.59 — cancellation controls and offline-refresh cleanup. */
+.nava-offline-refresh-v12158{display:none!important}
+.nava-download-queue-v12149>div:first-child{gap:8px!important;align-items:center!important}
+.nava-download-cancel-all-v12159{margin-left:auto!important;border:0!important;background:transparent!important;color:#dc2626!important;font:700 11px/1.2 inherit!important;padding:5px 7px!important;border-radius:8px!important;white-space:nowrap!important}
+.nava-download-queue-group-v12159 .nava-download-queue-group-head-v12158{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:9px!important;align-items:center!important}
+.nava-download-queue-group-v12159 .nava-download-queue-group-head-v12158>span{min-width:0!important}
+.nava-download-cancel-v12159{border:1px solid rgba(220,38,38,.22)!important;background:rgba(220,38,38,.08)!important;color:#dc2626!important;min-height:30px!important;padding:5px 9px!important;border-radius:9px!important;font-size:11px!important;font-weight:800!important}
+.nava-download-cancel-v12159:active,.nava-download-cancel-all-v12159:active{transform:scale(.97)!important}
+html.dark.nava-app-v9 .nava-download-cancel-v12159{background:rgba(248,113,113,.12)!important;border-color:rgba(248,113,113,.25)!important;color:#fca5a5!important}
+html.dark.nava-app-v9 .nava-download-cancel-all-v12159{color:#fca5a5!important}
