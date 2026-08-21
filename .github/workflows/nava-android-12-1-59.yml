@@ -32,12 +32,16 @@ jobs:
       - name: Prepare status
         run: printf 'status=running\nstarted=%s\n' "$(date -u +%FT%TZ)" > /tmp/status.txt
 
-      - name: Validate 12.1.59 sources
+      - name: Validate sources
         run: |
           set -euo pipefail
-          python -m py_compile android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/patch-apk.py
+          python -m py_compile \
+            android-patch/v12.1.59/patch-offline-runtime.py \
+            android-patch/v12.1.59/fix-jadx-compile.py \
+            android-patch/v12.1.59/patch-apk.py
           node --check android-patch/v12.1.59/queue-cancel-v12159.js
           grep -q 'public void cancel(String str)' android-patch/v12.1.59/patch-offline-runtime.py
+          grep -q 'failed resource fetch continue' android-patch/v12.1.59/fix-jadx-compile.py
           grep -q 'data-cancel-all-v12159' android-patch/v12.1.59/queue-cancel-v12159.js
           grep -q 'Tekrar dene' android-patch/v12.1.59/offline.html
           test -f android-patch/v12.1.59/native-source/OfflineRuntime.java.txt
@@ -100,6 +104,7 @@ jobs:
           python android-patch/v12.1.59/patch-offline-runtime.py \
             android-patch/v12.1.59/native-source/OfflineRuntime.java.txt \
             /tmp/OfflineRuntime.java
+          python android-patch/v12.1.59/fix-jadx-compile.py /tmp/OfflineRuntime.java
           ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
           BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
           mkdir -p /tmp/javac /tmp/newdex /tmp/mini
@@ -127,8 +132,7 @@ jobs:
         run: |
           set -euo pipefail
           python android-patch/v12.1.59/patch-apk.py \
-            /tmp/current/Nava.apk \
-            /tmp/classes2-59.dex \
+            /tmp/current/Nava.apk /tmp/classes2-59.dex \
             android-patch/v12.1.59/queue-cancel-v12159.js \
             android-patch/v12.1.59/ui-v12159.css \
             android-patch/v12.1.59/offline.html \
