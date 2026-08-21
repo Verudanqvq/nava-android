@@ -1,0 +1,900 @@
+package com.verudanava.nava;
+
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.Uri;
+import android.os.Build;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebView;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+/* loaded from: classes2.dex */
+public final class OfflineRuntime {
+    private static final String CHANNEL = "nava_follower_releases_v2";
+    private static final String DIR = "nava_offline_v1";
+    private static final String INDEX = "items.json";
+    private static final long MAX_HTML = 16777216;
+    private static final long MAX_PAGE_RESOURCES = 293601280;
+    private static final long MAX_RESOURCE = 41943040;
+    private static final int MAX_RESOURCES = 700;
+    private static final String PREF = "nava_offline_prefs_v1";
+    private static volatile Context app;
+    private static final Object LOCK = new Object();
+    private static final ExecutorService EXEC = Executors.newSingleThreadExecutor();
+    private static final Pattern SCRIPT = Pattern.compile("(?is)<script\\b[^>]*>.*?</script\\s*>");
+    private static final Pattern IFRAME = Pattern.compile("(?is)<iframe\\b[^>]*>.*?</iframe\\s*>");
+    private static final Pattern SRC = Pattern.compile("(?is)(?:src|data-src|data-original|data-lazy-src)\\s*=\\s*[\"']([^\"'#]+)[\"']");
+    private static final Pattern SRCSET = Pattern.compile("(?is)srcset\\s*=\\s*[\"']([^\"']+)[\"']");
+    private static final Pattern LINK = Pattern.compile("(?is)<link\\b[^>]*(?:rel\\s*=\\s*[\"'][^\"']*(?:stylesheet|icon)[^\"']*[\"'][^>]*href\\s*=\\s*[\"']([^\"']+)[\"']|href\\s*=\\s*[\"']([^\"']+)[\"'][^>]*rel\\s*=\\s*[\"'][^\"']*(?:stylesheet|icon)[^\"']*[\"'])[^>]*>");
+    private static final Pattern CSS_URL = Pattern.compile("(?is)url\\(\\s*['\"]?([^'\")]+)['\"]?\\s*\\)");
+    private static volatile WeakReference<WebView> web = new WeakReference<>(null);
+    private static volatile String forcedUrl = "";
+    private static volatile String activeOfflineUrl = "";
+
+    private OfflineRuntime() {
+    }
+
+    public static void attach(Context context, WebView webView) {
+        if (context == null || webView == null) {
+            return;
+        }
+        app = context.getApplicationContext();
+        web = new WeakReference<>(webView);
+        try {
+            webView.addJavascriptInterface(new Bridge(app), "NavaOffline");
+        } catch (Throwable th) {
+        }
+        ensureNotificationChannel(app);
+    }
+
+    private static void ensureNotificationChannel(Context context) {
+        if (context == null || Build.VERSION.SDK_INT < 26) {
+            return;
+        }
+        try {
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService("notification");
+            if (notificationManager == null) {
+                return;
+            }
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL, "Takip edilen eserler", 4);
+            notificationChannel.setDescription("Takip ettiğin eserlerde yeni cilt ve bölüm bildirimleri");
+            notificationChannel.enableVibration(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+        } catch (Throwable th) {
+        }
+    }
+
+    public static WebResourceResponse intercept(Context context, WebResourceRequest webResourceRequest) {
+        String strStripFragment;
+        String strCanonicalNava;
+        String str;
+        if (context == null || webResourceRequest == null || webResourceRequest.getUrl() == null) {
+            return null;
+        }
+        try {
+            strStripFragment = stripFragment(webResourceRequest.getUrl().toString());
+            strCanonicalNava = canonicalNava(strStripFragment);
+            str = "utf-8";
+        } catch (Throwable th) {
+        }
+        if (webResourceRequest.isForMainFrame() && strCanonicalNava != null) {
+            boolean zEquals = strCanonicalNava.equals(forcedUrl);
+            boolean z = !hasNetwork(context);
+            File filePageFile = pageFile(context, strCanonicalNava);
+            if ((zEquals || z) && filePageFile.isFile()) {
+                forcedUrl = "";
+                activeOfflineUrl = strCanonicalNava;
+                return fileResponse(filePageFile, "text/html", "utf-8");
+            }
+            if (!zEquals) {
+                activeOfflineUrl = "";
+            }
+            return null;
+        }
+        if (!activeOfflineUrl.isEmpty()) {
+            File fileResourceFile = resourceFile(context, strStripFragment);
+            if (fileResourceFile.isFile()) {
+                String small = readSmall(resourceMimeFile(context, strStripFragment), "application/octet-stream");
+                if (!isTextMime(small)) {
+                    str = null;
+                }
+                return fileResponse(fileResourceFile, small, str);
+            }
+        }
+        return null;
+    }
+
+    private static WebResourceResponse fileResponse(File file, String str, String str2) {
+        try {
+            return new WebResourceResponse(str, str2, new FileInputStream(file));
+        } catch (Throwable th) {
+            return null;
+        }
+    }
+
+    private static boolean hasNetwork(Context context) {
+        Network activeNetwork;
+        NetworkCapabilities networkCapabilities;
+        try {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService("connectivity");
+            if (connectivityManager == null || (activeNetwork = connectivityManager.getActiveNetwork()) == null || (networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)) == null) {
+                return false;
+            }
+            return networkCapabilities.hasCapability(12);
+        } catch (Throwable th) {
+            return false;
+        }
+    }
+
+    private static boolean onWifi(Context context) {
+        Network activeNetwork;
+        NetworkCapabilities networkCapabilities;
+        try {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService("connectivity");
+            if (connectivityManager == null || (activeNetwork = connectivityManager.getActiveNetwork()) == null || (networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)) == null) {
+                return false;
+            }
+            if (!networkCapabilities.hasTransport(1)) {
+                if (!networkCapabilities.hasTransport(3)) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (Throwable th) {
+            return false;
+        }
+    }
+
+    private static File root(Context context) {
+        File file = new File(context.getFilesDir(), DIR);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return file;
+    }
+
+    private static File pages(Context context) {
+        File file = new File(root(context), "pages");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return file;
+    }
+
+    private static File resources(Context context) {
+        File file = new File(root(context), "resources");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return file;
+    }
+
+    private static File index(Context context) {
+        return new File(root(context), INDEX);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static File pageFile(Context context, String str) {
+        return new File(pages(context), sha(str) + ".html");
+    }
+
+    private static File resourceFile(Context context, String str) {
+        return new File(resources(context), sha(stripFragment(str)) + ".bin");
+    }
+
+    private static File resourceMimeFile(Context context, String str) {
+        return new File(resources(context), sha(stripFragment(str)) + ".mime");
+    }
+
+    private static String sha(String str) {
+        try {
+            byte[] bArrDigest = MessageDigest.getInstance("SHA-256").digest(String.valueOf(str).getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : bArrDigest) {
+                sb.append(String.format(Locale.ROOT, "%02x", Integer.valueOf(b & 255)));
+            }
+            return sb.toString();
+        } catch (Throwable th) {
+            return Integer.toHexString(String.valueOf(str).hashCode());
+        }
+    }
+
+    private static String stripFragment(String str) {
+        if (str == null) {
+            return "";
+        }
+        int iIndexOf = str.indexOf(35);
+        return iIndexOf >= 0 ? str.substring(0, iIndexOf) : str;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static String canonicalNava(String str) {
+        try {
+            Uri uri = Uri.parse(str);
+            String scheme = uri.getScheme();
+            String host = uri.getHost();
+            if (scheme != null && host != null) {
+                String lowerCase = host.toLowerCase(Locale.ROOT);
+                if (!lowerCase.equals("verudanava.com") && !lowerCase.equals("www.verudanava.com") && !lowerCase.equals("verudanava.blogspot.com")) {
+                    return null;
+                }
+                if (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https")) {
+                    return uri.buildUpon().scheme("https").authority("www.verudanava.com").fragment(null).build().toString();
+                }
+                return null;
+            }
+            return null;
+        } catch (Throwable th) {
+            return null;
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static JSONObject loadIndex(Context context) {
+        synchronized (LOCK) {
+            try {
+                File fileIndex = index(context);
+                if (!fileIndex.isFile()) {
+                    return freshIndex();
+                }
+                JSONObject jSONObject = new JSONObject(readAllText(fileIndex, 6291456L));
+                if (!jSONObject.has("items")) {
+                    jSONObject.put("items", new JSONArray());
+                }
+                return jSONObject;
+            } catch (Throwable th) {
+                return freshIndex();
+            }
+        }
+    }
+
+    private static JSONObject freshIndex() {
+        JSONObject jSONObject = new JSONObject();
+        try {
+            jSONObject.put("version", 1);
+            jSONObject.put("items", new JSONArray());
+        } catch (Throwable th) {
+        }
+        return jSONObject;
+    }
+
+    private static void saveIndex(Context context, JSONObject jSONObject) throws Exception {
+        synchronized (LOCK) {
+            File fileIndex = index(context);
+            File file = new File(root(context), "items.json.tmp");
+            writeBytes(file, jSONObject.toString().getBytes(StandardCharsets.UTF_8));
+            if (fileIndex.exists() && !fileIndex.delete()) {
+                throw new Exception("Eski offline indeks silinemedi.");
+            }
+            if (!file.renameTo(fileIndex)) {
+                throw new Exception("Offline indeks kaydedilemedi.");
+            }
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static JSONObject itemFor(JSONObject jSONObject, String str) {
+        JSONArray jSONArrayOptJSONArray;
+        try {
+            jSONArrayOptJSONArray = jSONObject.optJSONArray("items");
+        } catch (Throwable th) {
+        }
+        if (jSONArrayOptJSONArray == null) {
+            return null;
+        }
+        for (int i = 0; i < jSONArrayOptJSONArray.length(); i++) {
+            JSONObject jSONObjectOptJSONObject = jSONArrayOptJSONArray.optJSONObject(i);
+            if (jSONObjectOptJSONObject != null && str.equals(jSONObjectOptJSONObject.optString("url"))) {
+                return jSONObjectOptJSONObject;
+            }
+        }
+        return null;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static JSONObject publicIndex(Context context) {
+        JSONObject jSONObjectLoadIndex = loadIndex(context);
+        try {
+            jSONObjectLoadIndex.put("storageBytes", folderSize(root(context)));
+            jSONObjectLoadIndex.put("wifiOnly", prefs(context).getBoolean("wifiOnly", true));
+        } catch (Throwable th) {
+        }
+        return jSONObjectLoadIndex;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static SharedPreferences prefs(Context context) {
+        return context.getSharedPreferences(PREF, 0);
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static void downloadOne(Context context, String str, String str2, String str3, String str4) throws Exception {
+        long j;
+        Fetch fetch;
+        String strCanonicalNava = canonicalNava(str);
+        if (strCanonicalNava == null) {
+            throw new Exception("Geçersiz Nava bağlantısı.");
+        }
+        if (prefs(context).getBoolean("wifiOnly", true) && !onWifi(context)) {
+            throw new Exception("Yalnız Wi‑Fi indirmesi açık.");
+        }
+        emit(event("start", strCanonicalNava, str2, ""));
+        Fetch fetch2 = fetch(strCanonicalNava, MAX_HTML);
+        String strDecodeHtml = decodeHtml(fetch2.bytes, fetch2.contentType);
+        LinkedHashSet<String> linkedHashSetCollectResources = collectResources(strCanonicalNava, strDecodeHtml);
+        LinkedHashSet linkedHashSet = new LinkedHashSet();
+        ArrayList arrayList = new ArrayList(linkedHashSetCollectResources);
+        long length = 0;
+        int i = 0;
+        for (int i2 = 0; i2 < arrayList.size() && i < MAX_RESOURCES; i2++) {
+            String str5 = (String) arrayList.get(i2);
+            if (str5 == null || str5.isEmpty() || linkedHashSet.contains(str5)) {
+                long j2 = length;
+                length = j2;
+            } else {
+                int i3 = i + 1;
+                File fileResourceFile = resourceFile(context, str5);
+                File fileResourceMimeFile = resourceMimeFile(context, str5);
+                if (fileResourceFile.isFile() && fileResourceMimeFile.isFile()) {
+                    linkedHashSet.add(str5);
+                    length += fileResourceFile.length();
+                    i = i3;
+                } else {
+                    j = length;
+                    try {
+                        fetch = fetch(str5, MAX_RESOURCE);
+                    } catch (Throwable th) {
+                        length = j;
+                    }
+                    if (!allowedResource(fetch.contentType, str5)) {
+                        i = i3;
+                        length = j;
+                    } else {
+                        if (j + fetch.bytes.length > MAX_PAGE_RESOURCES) {
+                            break;
+                        }
+                        writeBytes(fileResourceFile, fetch.bytes);
+                        writeBytes(fileResourceMimeFile, normalizeMime(fetch.contentType).getBytes(StandardCharsets.UTF_8));
+                        linkedHashSet.add(str5);
+                        length = j + fetch.bytes.length;
+                        try {
+                            if (normalizeMime(fetch.contentType).equals("text/css")) {
+                                Iterator<String> it = collectCssResources(str5, new String(fetch.bytes, StandardCharsets.UTF_8)).iterator();
+                                while (it.hasNext()) {
+                                    String next = it.next();
+                                    if (!linkedHashSetCollectResources.contains(next)) {
+                                        linkedHashSetCollectResources.add(next);
+                                        arrayList.add(next);
+                                    }
+                                }
+                            }
+                        } catch (Throwable th2) {
+                        }
+                        if (i3 % 12 == 0) {
+                            emit(progressEvent(strCanonicalNava, str2, i3, Math.max(i3, arrayList.size())));
+                        }
+                        i = i3;
+                    }
+                }
+            }
+        }
+        j = length;
+        String strPrepareOfflineHtml = prepareOfflineHtml(strCanonicalNava, strDecodeHtml);
+        File filePageFile = pageFile(context, strCanonicalNava);
+        writeBytes(filePageFile, strPrepareOfflineHtml.getBytes(StandardCharsets.UTF_8));
+        JSONObject jSONObjectLoadIndex = loadIndex(context);
+        JSONArray jSONArrayOptJSONArray = jSONObjectLoadIndex.optJSONArray("items");
+        JSONArray jSONArray = new JSONArray();
+        JSONObject jSONObject = new JSONObject();
+        jSONObject.put("url", strCanonicalNava);
+        jSONObject.put("title", safe(str2, 300, pageTitle(strDecodeHtml)));
+        jSONObject.put("seriesTitle", safe(str3, 300, "Nava"));
+        jSONObject.put("kind", safe(str4, 40, "chapter"));
+        jSONObject.put("downloadedAt", System.currentTimeMillis());
+        jSONObject.put("bytes", filePageFile.length() + j);
+        JSONArray jSONArray2 = new JSONArray();
+        Iterator it2 = linkedHashSet.iterator();
+        while (it2.hasNext()) {
+            jSONArray2.put((String) it2.next());
+        }
+        jSONObject.put("resources", jSONArray2);
+        jSONArray.put(jSONObject);
+        if (jSONArrayOptJSONArray != null) {
+            for (int i4 = 0; i4 < jSONArrayOptJSONArray.length(); i4++) {
+                JSONObject jSONObjectOptJSONObject = jSONArrayOptJSONArray.optJSONObject(i4);
+                if (jSONObjectOptJSONObject != null && !strCanonicalNava.equals(jSONObjectOptJSONObject.optString("url"))) {
+                    jSONArray.put(jSONObjectOptJSONObject);
+                }
+            }
+        }
+        jSONObjectLoadIndex.put("items", jSONArray);
+        saveIndex(context, jSONObjectLoadIndex);
+        pruneResources(context, jSONObjectLoadIndex);
+        emit(event("complete", strCanonicalNava, jSONObject.optString("title"), ""));
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static void deleteOne(Context context, String str) throws Exception {
+        String strCanonicalNava = canonicalNava(str);
+        if (strCanonicalNava == null) {
+            return;
+        }
+        JSONObject jSONObjectLoadIndex = loadIndex(context);
+        JSONArray jSONArrayOptJSONArray = jSONObjectLoadIndex.optJSONArray("items");
+        JSONArray jSONArray = new JSONArray();
+        if (jSONArrayOptJSONArray != null) {
+            for (int i = 0; i < jSONArrayOptJSONArray.length(); i++) {
+                JSONObject jSONObjectOptJSONObject = jSONArrayOptJSONArray.optJSONObject(i);
+                if (jSONObjectOptJSONObject != null && !strCanonicalNava.equals(jSONObjectOptJSONObject.optString("url"))) {
+                    jSONArray.put(jSONObjectOptJSONObject);
+                }
+            }
+        }
+        jSONObjectLoadIndex.put("items", jSONArray);
+        File filePageFile = pageFile(context, strCanonicalNava);
+        if (filePageFile.exists()) {
+            filePageFile.delete();
+        }
+        saveIndex(context, jSONObjectLoadIndex);
+        pruneResources(context, jSONObjectLoadIndex);
+        if (strCanonicalNava.equals(activeOfflineUrl)) {
+            activeOfflineUrl = "";
+        }
+        emit(event("deleted", strCanonicalNava, "", ""));
+    }
+
+    private static void pruneResources(Context context, JSONObject jSONObject) {
+        JSONArray jSONArrayOptJSONArray;
+        try {
+            HashSet hashSet = new HashSet();
+            JSONArray jSONArrayOptJSONArray2 = jSONObject.optJSONArray("items");
+            if (jSONArrayOptJSONArray2 != null) {
+                for (int i = 0; i < jSONArrayOptJSONArray2.length(); i++) {
+                    JSONObject jSONObjectOptJSONObject = jSONArrayOptJSONArray2.optJSONObject(i);
+                    if (jSONObjectOptJSONObject != null && (jSONArrayOptJSONArray = jSONObjectOptJSONObject.optJSONArray("resources")) != null) {
+                        for (int i2 = 0; i2 < jSONArrayOptJSONArray.length(); i2++) {
+                            String strOptString = jSONArrayOptJSONArray.optString(i2, "");
+                            if (!strOptString.isEmpty()) {
+                                hashSet.add(sha(stripFragment(strOptString)));
+                            }
+                        }
+                    }
+                }
+            }
+            File[] fileArrListFiles = resources(context).listFiles();
+            if (fileArrListFiles == null) {
+                return;
+            }
+            for (File file : fileArrListFiles) {
+                String name = file.getName();
+                int iIndexOf = name.indexOf(46);
+                if (iIndexOf > 0) {
+                    name = name.substring(0, iIndexOf);
+                }
+                if (!hashSet.contains(name)) {
+                    file.delete();
+                }
+            }
+        } catch (Throwable th) {
+        }
+    }
+
+    private static String prepareOfflineHtml(String str, String str2) {
+        StringBuilder sbAppend;
+        String strReplaceAll = IFRAME.matcher(SCRIPT.matcher(str2).replaceAll("")).replaceAll("");
+        String str3 = "<base href=\"" + escapeHtml(str) + "\"><meta name=\"nava-offline\" content=\"1\"><script>window.__NAVA_OFFLINE_PAGE__=true;</script><style>.adsbygoogle,ins.adsbygoogle,iframe{display:none!important}</style>";
+        Matcher matcher = Pattern.compile("(?i)<head[^>]*>").matcher(strReplaceAll);
+        if (matcher.find()) {
+            sbAppend = new StringBuilder().append(strReplaceAll.substring(0, matcher.end())).append(str3);
+            strReplaceAll = strReplaceAll.substring(matcher.end());
+        } else {
+            sbAppend = new StringBuilder().append(str3);
+        }
+        return sbAppend.append(strReplaceAll).toString();
+    }
+
+    private static LinkedHashSet<String> collectResources(String str, String str2) {
+        LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>();
+        Matcher matcher = SRC.matcher(str2);
+        while (matcher.find()) {
+            addResolved(linkedHashSet, str, matcher.group(1));
+        }
+        Matcher matcher2 = SRCSET.matcher(str2);
+        while (matcher2.find()) {
+            for (String str3 : matcher2.group(1).split(",")) {
+                String[] strArrSplit = str3.trim().split("\\s+");
+                if (strArrSplit.length > 0) {
+                    addResolved(linkedHashSet, str, strArrSplit[0]);
+                }
+            }
+        }
+        Matcher matcher3 = LINK.matcher(str2);
+        while (matcher3.find()) {
+            addResolved(linkedHashSet, str, matcher3.group(1) != null ? matcher3.group(1) : matcher3.group(2));
+        }
+        Matcher matcher4 = CSS_URL.matcher(str2);
+        while (matcher4.find()) {
+            addResolved(linkedHashSet, str, matcher4.group(1));
+        }
+        return linkedHashSet;
+    }
+
+    private static LinkedHashSet<String> collectCssResources(String str, String str2) {
+        LinkedHashSet<String> linkedHashSet = new LinkedHashSet<>();
+        Matcher matcher = CSS_URL.matcher(str2);
+        while (matcher.find()) {
+            addResolved(linkedHashSet, str, matcher.group(1));
+        }
+        return linkedHashSet;
+    }
+
+    private static void addResolved(Set<String> set, String str, String str2) {
+        if (str2 == null) {
+            return;
+        }
+        try {
+            String strTrim = str2.trim();
+            if (!strTrim.isEmpty() && !strTrim.startsWith("data:") && !strTrim.startsWith("javascript:") && !strTrim.startsWith("blob:")) {
+                String strStripFragment = stripFragment(new URL(new URL(str), strTrim).toString());
+                if (strStripFragment.startsWith("https://") || strStripFragment.startsWith("http://")) {
+                    set.add(strStripFragment);
+                }
+            }
+        } catch (Throwable th) {
+        }
+    }
+
+    private static boolean allowedResource(String str, String str2) {
+        String strNormalizeMime = normalizeMime(str);
+        if (strNormalizeMime.startsWith("image/") || strNormalizeMime.equals("text/css") || strNormalizeMime.startsWith("font/") || strNormalizeMime.contains("font-woff") || strNormalizeMime.contains("font-ttf")) {
+            return true;
+        }
+        return str2.toLowerCase(Locale.ROOT).matches(".*\\.(?:png|jpe?g|gif|webp|svg|avif|css|woff2?|ttf|otf)(?:\\?.*)?$");
+    }
+
+    private static String normalizeMime(String str) {
+        if (str == null || str.trim().isEmpty()) {
+            return "application/octet-stream";
+        }
+        int iIndexOf = str.indexOf(59);
+        if (iIndexOf >= 0) {
+            str = str.substring(0, iIndexOf);
+        }
+        return str.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private static boolean isTextMime(String str) {
+        return str != null && (str.startsWith("text/") || str.contains("json") || str.contains("xml") || str.contains("javascript"));
+    }
+
+    private static final class Fetch {
+        final byte[] bytes;
+        final String contentType;
+
+        Fetch(byte[] bArr, String str) {
+            this.bytes = bArr;
+            this.contentType = str == null ? "application/octet-stream" : str;
+        }
+    }
+
+    private static Fetch fetch(String str, long j) throws Exception {
+        HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(str).openConnection();
+        httpURLConnection.setConnectTimeout(15000);
+        httpURLConnection.setReadTimeout(35000);
+        httpURLConnection.setInstanceFollowRedirects(true);
+        httpURLConnection.setRequestProperty("User-Agent", "NavaAndroidApp/12.1.31 Offline");
+        httpURLConnection.setRequestProperty("Accept", "text/html,application/xhtml+xml,image/avif,image/webp,image/*,text/css,*/*;q=0.8");
+        httpURLConnection.setRequestProperty("Accept-Language", "tr-TR,tr;q=0.9,en;q=0.7");
+        int responseCode = httpURLConnection.getResponseCode();
+        if (responseCode < 200 || responseCode >= 300) {
+            httpURLConnection.disconnect();
+            throw new Exception("HTTP " + responseCode);
+        }
+        InputStream inputStream = httpURLConnection.getInputStream();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] bArr = new byte[16384];
+        long j2 = 0;
+        while (true) {
+            int i = inputStream.read(bArr);
+            if (i == -1) {
+                inputStream.close();
+                String contentType = httpURLConnection.getContentType();
+                httpURLConnection.disconnect();
+                return new Fetch(byteArrayOutputStream.toByteArray(), contentType);
+            }
+            j2 += i;
+            if (j2 > j) {
+                inputStream.close();
+                httpURLConnection.disconnect();
+                throw new Exception("Dosya çok büyük.");
+            }
+            byteArrayOutputStream.write(bArr, 0, i);
+        }
+    }
+
+    private static String decodeHtml(byte[] bArr, String str) {
+        if (str != null) {
+            try {
+                Matcher matcher = Pattern.compile("(?i)charset\\s*=\\s*([A-Za-z0-9._-]+)").matcher(str);
+                if (matcher.find()) {
+                    return new String(bArr, Charset.forName(matcher.group(1)));
+                }
+            } catch (Throwable th) {
+            }
+        }
+        return new String(bArr, StandardCharsets.UTF_8);
+    }
+
+    private static String pageTitle(String str) {
+        try {
+            Matcher matcher = Pattern.compile("(?is)<title[^>]*>(.*?)</title>").matcher(str);
+            return matcher.find() ? matcher.group(1).replaceAll("<[^>]+>", "").replace("&amp;", "&").trim() : "Nava";
+        } catch (Throwable th) {
+            return "Nava";
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static String safe(String str, int i, String str2) {
+        String strTrim = str == null ? "" : str.trim();
+        if (!strTrim.isEmpty()) {
+            str2 = strTrim;
+        }
+        return str2.length() > i ? str2.substring(0, i) : str2;
+    }
+
+    private static String escapeHtml(String str) {
+        return str.replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;");
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static JSONObject event(String str, String str2, String str3, String str4) {
+        JSONObject jSONObject = new JSONObject();
+        try {
+            jSONObject.put("type", str);
+            if (str2 == null) {
+                str2 = "";
+            }
+            jSONObject.put("url", str2);
+            if (str3 == null) {
+                str3 = "";
+            }
+            jSONObject.put("title", str3);
+            if (str4 == null) {
+                str4 = "";
+            }
+            jSONObject.put("message", str4);
+        } catch (Throwable th) {
+        }
+        return jSONObject;
+    }
+
+    private static JSONObject progressEvent(String str, String str2, int i, int i2) {
+        JSONObject jSONObjectEvent = event("progress", str, str2, "");
+        try {
+            jSONObjectEvent.put("done", i);
+            jSONObjectEvent.put("total", i2);
+        } catch (Throwable th) {
+        }
+        return jSONObjectEvent;
+    }
+
+    /* JADX INFO: Access modifiers changed from: private */
+    public static void emit(final JSONObject jSONObject) {
+        final WebView webView = web.get();
+        if (webView == null) {
+            return;
+        }
+        webView.post(new Runnable() { // from class: com.verudanava.nava.OfflineRuntime.1
+            @Override // java.lang.Runnable
+            public void run() {
+                try {
+                    webView.evaluateJavascript("window.navaOfflineNativeEvent&&window.navaOfflineNativeEvent(" + jSONObject.toString() + ");", null);
+                } catch (Throwable th) {
+                }
+            }
+        });
+    }
+
+    private static void writeBytes(File file, byte[] bArr) throws Exception {
+        File parentFile = file.getParentFile();
+        if (parentFile != null && !parentFile.exists()) {
+            parentFile.mkdirs();
+        }
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        fileOutputStream.write(bArr);
+        fileOutputStream.flush();
+        fileOutputStream.close();
+    }
+
+    private static String readAllText(File file, long j) throws Exception {
+        return new String(readBytes(file, j), StandardCharsets.UTF_8);
+    }
+
+    private static byte[] readBytes(File file, long j) throws Exception {
+        FileInputStream fileInputStream = new FileInputStream(file);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] bArr = new byte[8192];
+        long j2 = 0;
+        while (true) {
+            int i = fileInputStream.read(bArr);
+            if (i == -1) {
+                fileInputStream.close();
+                return byteArrayOutputStream.toByteArray();
+            }
+            j2 += i;
+            if (j2 > j) {
+                throw new Exception("Dosya çok büyük.");
+            }
+            byteArrayOutputStream.write(bArr, 0, i);
+        }
+    }
+
+    private static String readSmall(File file, String str) {
+        try {
+            return !file.isFile() ? str : readAllText(file, 4096L).trim();
+        } catch (Throwable th) {
+            return str;
+        }
+    }
+
+    private static long folderSize(File file) {
+        long jFolderSize = 0;
+        if (file != null && file.exists()) {
+            if (file.isFile()) {
+                return file.length();
+            }
+            File[] fileArrListFiles = file.listFiles();
+            if (fileArrListFiles != null) {
+                for (File file2 : fileArrListFiles) {
+                    jFolderSize += folderSize(file2);
+                }
+            }
+        }
+        return jFolderSize;
+    }
+
+    public static final class Bridge {
+        private final Context context;
+
+        Bridge(Context context) {
+            this.context = context.getApplicationContext();
+        }
+
+        @JavascriptInterface
+        public String listDownloads() {
+            return OfflineRuntime.publicIndex(this.context).toString();
+        }
+
+        @JavascriptInterface
+        public boolean isDownloaded(String str) {
+            String strCanonicalNava = OfflineRuntime.canonicalNava(str);
+            return (strCanonicalNava == null || !OfflineRuntime.pageFile(this.context, strCanonicalNava).isFile() || OfflineRuntime.itemFor(OfflineRuntime.loadIndex(this.context), strCanonicalNava) == null) ? false : true;
+        }
+
+        @JavascriptInterface
+        public boolean getWifiOnly() {
+            return OfflineRuntime.prefs(this.context).getBoolean("wifiOnly", true);
+        }
+
+        @JavascriptInterface
+        public void setWifiOnly(boolean z) {
+            OfflineRuntime.prefs(this.context).edit().putBoolean("wifiOnly", z).apply();
+            OfflineRuntime.emit(OfflineRuntime.event("settings", "", "", ""));
+        }
+
+        @JavascriptInterface
+        public void download(final String str, final String str2, final String str3, final String str4) {
+            OfflineRuntime.EXEC.execute(new Runnable() { // from class: com.verudanava.nava.OfflineRuntime.Bridge.1
+                @Override // java.lang.Runnable
+                public void run() {
+                    try {
+                        OfflineRuntime.downloadOne(Bridge.this.context, str, str2, str3, str4);
+                    } catch (Throwable th) {
+                        OfflineRuntime.emit(OfflineRuntime.event("error", OfflineRuntime.canonicalNava(str), str2, OfflineRuntime.safe(th.getMessage(), 300, "İndirme başarısız.")));
+                    }
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void downloadBatch(final String str) {
+            OfflineRuntime.EXEC.execute(new Runnable() { // from class: com.verudanava.nava.OfflineRuntime.Bridge.2
+                @Override // java.lang.Runnable
+                public void run() {
+                    try {
+                        JSONArray jSONArray = new JSONArray(str == null ? "[]" : str);
+                        JSONObject jSONObjectEvent = OfflineRuntime.event("batch-start", "", "", "");
+                        jSONObjectEvent.put("total", jSONArray.length());
+                        OfflineRuntime.emit(jSONObjectEvent);
+                        int i = 0;
+                        int i2 = 0;
+                        for (int i3 = 0; i3 < jSONArray.length(); i3++) {
+                            JSONObject jSONObjectOptJSONObject = jSONArray.optJSONObject(i3);
+                            if (jSONObjectOptJSONObject != null) {
+                                try {
+                                    OfflineRuntime.downloadOne(Bridge.this.context, jSONObjectOptJSONObject.optString("url"), jSONObjectOptJSONObject.optString("title"), jSONObjectOptJSONObject.optString("seriesTitle"), jSONObjectOptJSONObject.optString("kind", "chapter"));
+                                    i++;
+                                } catch (Throwable th) {
+                                    i2++;
+                                    OfflineRuntime.emit(OfflineRuntime.event("error", OfflineRuntime.canonicalNava(jSONObjectOptJSONObject.optString("url")), jSONObjectOptJSONObject.optString("title"), OfflineRuntime.safe(th.getMessage(), 300, "İndirme başarısız.")));
+                                }
+                            }
+                        }
+                        JSONObject jSONObjectEvent2 = OfflineRuntime.event("batch-complete", "", "", "");
+                        jSONObjectEvent2.put("ok", i);
+                        jSONObjectEvent2.put("failed", i2);
+                        OfflineRuntime.emit(jSONObjectEvent2);
+                    } catch (Throwable th2) {
+                        OfflineRuntime.emit(OfflineRuntime.event("error", "", "", "Toplu indirme verisi okunamadı."));
+                    }
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void delete(final String str) {
+            OfflineRuntime.EXEC.execute(new Runnable() { // from class: com.verudanava.nava.OfflineRuntime.Bridge.3
+                @Override // java.lang.Runnable
+                public void run() {
+                    try {
+                        OfflineRuntime.deleteOne(Bridge.this.context, str);
+                    } catch (Throwable th) {
+                        OfflineRuntime.emit(OfflineRuntime.event("error", OfflineRuntime.canonicalNava(str), "", "Silinemedi."));
+                    }
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void open(String str) {
+            final String strCanonicalNava = OfflineRuntime.canonicalNava(str);
+            if (strCanonicalNava != null && OfflineRuntime.pageFile(this.context, strCanonicalNava).isFile()) {
+                String unused = OfflineRuntime.forcedUrl = strCanonicalNava;
+                String unused2 = OfflineRuntime.activeOfflineUrl = strCanonicalNava;
+                final WebView webView = (WebView) OfflineRuntime.web.get();
+                if (webView == null) {
+                    return;
+                }
+                webView.post(new Runnable() { // from class: com.verudanava.nava.OfflineRuntime.Bridge.4
+                    @Override // java.lang.Runnable
+                    public void run() {
+                        try {
+                            webView.loadUrl(strCanonicalNava);
+                        } catch (Throwable th) {
+                        }
+                    }
+                });
+            }
+        }
+    }
+}

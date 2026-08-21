@@ -1,0 +1,581 @@
+package com.verudanava.nava;
+
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.Signature;
+import android.content.pm.SigningInfo;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.View;
+import android.webkit.DownloadListener;
+import android.webkit.ValueCallback;
+import android.webkit.WebBackForwardList;
+import android.webkit.WebHistoryItem;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+import com.verudanava.nava.MainActivity;
+import defpackage.bc;
+import defpackage.bx;
+import defpackage.c00;
+import defpackage.cc0;
+import defpackage.ch0;
+import defpackage.cp;
+import defpackage.cx;
+import defpackage.dh0;
+import defpackage.dx;
+import defpackage.fg0;
+import defpackage.fh0;
+import defpackage.fx;
+import defpackage.g3;
+import defpackage.gx;
+import defpackage.h00;
+import defpackage.ht;
+import defpackage.ih0;
+import defpackage.jb0;
+import defpackage.k9;
+import defpackage.ke;
+import defpackage.ks;
+import defpackage.l1;
+import defpackage.lh0;
+import defpackage.m6;
+import defpackage.mg0;
+import defpackage.mi;
+import defpackage.q1;
+import defpackage.r1;
+import defpackage.rt;
+import defpackage.si0;
+import defpackage.x2;
+import defpackage.y2;
+import defpackage.z2;
+import java.io.File;
+import java.security.MessageDigest;
+import java.util.LinkedHashSet;
+import java.util.Locale;
+import java.util.Set;
+import java.util.WeakHashMap;
+import org.json.JSONObject;
+
+/* compiled from: r8-map-id-fbda957f2fd1290a308c2c722ad4a160fe646d4e0bc6df1f60ccc29733fdd056 */
+/* loaded from: classes.dex */
+public final class MainActivity extends z2 {
+    public static final /* synthetic */ int P = 0;
+    public WebView A;
+    public ProgressBar B;
+    public ks C;
+    public h00 D;
+    public boolean E;
+    public ValueCallback F;
+    public final LinkedHashSet G;
+    public final String H;
+    public final Set I;
+    public final cc0 J;
+    public final cc0 K;
+    public final cc0 L;
+    public final String M;
+    public final r1 N;
+    public final r1 O;
+
+    public MainActivity() {
+        ((g3) this.g.c).e("androidx:appcompat", new x2(this));
+        h(new y2(this));
+        this.G = new LinkedHashSet();
+        this.H = "https://www.verudanava.com";
+        this.I = si0.p("https://www.verudanava.com", "https://verudanava.com", "https://verudanava.blogspot.com");
+        this.J = new cc0(new cx());
+        this.K = new cc0(new dx(this, 0));
+        int i = 1;
+        this.L = new cc0(new dx(this, i));
+        this.M = "(function () {\n  if (window.__navaAndroidBridgeInstalled) return;\n  window.__navaAndroidBridgeInstalled = true;\n  window.__NAVA_ANDROID_APP__ = true;\n\n  function msgBox(){ return document.querySelector('[data-auth-message=\"1\"]'); }\n  function setMessage(text,state){\n    var b=msgBox(); if(!b)return;\n    b.textContent=text||''; b.classList.toggle('is-visible',Boolean(text));\n    if(state)b.setAttribute('data-state',state);else b.removeAttribute('data-state');\n  }\n  function busy(on){ var b=document.querySelector('[data-auth-google=\"1\"]');if(b)b.disabled=Boolean(on); }\n\n  document.addEventListener('click',function(event){\n    var t=event.target;if(!t||!t.closest)return;\n    var b=t.closest('[data-auth-google=\"1\"]');if(!b)return;\n    if(!window.NavaNative||typeof window.NavaNative.postMessage!=='function')return;\n    event.preventDefault();event.stopPropagation();if(event.stopImmediatePropagation)event.stopImmediatePropagation();\n    busy(true);setMessage('Google hesabını seç...','info');window.NavaNative.postMessage('googleSignIn');\n  },true);\n\n  window.navaAndroidGoogleResult=function(idToken){\n    try{\n      if(!window.firebase||!firebase.auth||!firebase.auth.GoogleAuthProvider)throw new Error('Firebase giriş sistemi hazır değil.');\n      setMessage('Google hesabınla giriş yapılıyor...','info');\n      var credential=firebase.auth.GoogleAuthProvider.credential(idToken);\n      firebase.auth().signInWithCredential(credential).then(function(result){\n        if(window.navaEnsureUserProfile&&result&&result.user)return window.navaEnsureUserProfile(result.user);\n        return null;\n      }).then(function(){\n        setMessage('Giriş başarılı.','success');busy(false);\n        var close=document.querySelector('.nava-modal-close');if(close)setTimeout(function(){close.click();},160);\n      }).catch(function(error){busy(false);setMessage(error&&error.message?error.message:'Google ile giriş tamamlanamadı.','error');});\n    }catch(error){busy(false);setMessage(error&&error.message?error.message:'Google ile giriş tamamlanamadı.','error');}\n  };\n  window.navaAndroidGoogleError=function(message){busy(false);setMessage(message||'Google ile giriş tamamlanamadı.','error');};\n})();";
+        q1 q1Var = new q1(i);
+        mi miVar = new mi(24);
+        this.N = this.m.c("activity_rq#" + this.l.getAndIncrement(), this, q1Var, miVar);
+        q1 q1Var2 = new q1(2);
+        bx bxVar = new bx(this);
+        this.O = this.m.c("activity_rq#" + this.l.getAndIncrement(), this, q1Var2, bxVar);
+    }
+
+    public static Uri p(Uri uri) {
+        if (!r(uri)) {
+            return uri;
+        }
+        Uri uriBuild = uri.buildUpon().scheme("https").authority("www.verudanava.com").build();
+        uriBuild.getClass();
+        return uriBuild;
+    }
+
+    public static final boolean q(String str, String str2) {
+        return str.equals(str2) || str.endsWith(".".concat(str2));
+    }
+
+    public static boolean r(Uri uri) {
+        String lowerCase;
+        String scheme = uri.getScheme();
+        String lowerCase2 = null;
+        if (scheme != null) {
+            lowerCase = scheme.toLowerCase(Locale.ROOT);
+            lowerCase.getClass();
+        } else {
+            lowerCase = null;
+        }
+        String host = uri.getHost();
+        if (host != null) {
+            lowerCase2 = host.toLowerCase(Locale.ROOT);
+            lowerCase2.getClass();
+        }
+        return bc.d0(si0.p("https", "http"), lowerCase) && bc.d0(si0.p("www.verudanava.com", "verudanava.com", "verudanava.blogspot.com"), lowerCase2);
+    }
+
+    public static String t(String str) {
+        try {
+            String string = Uri.parse(str).buildUpon().fragment(null).build().toString();
+            string.getClass();
+            return jb0.l0(string, '/');
+        } catch (Exception unused) {
+            int iE0 = jb0.e0(str, '#');
+            if (iE0 != -1) {
+                str = str.substring(0, iE0);
+            }
+            return jb0.l0(str, '/');
+        }
+    }
+
+    public static String u(Intent intent) {
+        String stringExtra;
+        String string = (intent == null || (stringExtra = intent.getStringExtra("com.verudanava.nava.OPEN_URL")) == null) ? null : jb0.k0(stringExtra).toString();
+        if (string == null) {
+            string = "";
+        }
+        if (!jb0.f0(string)) {
+            try {
+                Uri uri = Uri.parse(string);
+                uri.getClass();
+                if (r(uri)) {
+                    return p(uri).toString();
+                }
+            } catch (Exception unused) {
+            }
+        }
+        return null;
+    }
+
+    @Override // defpackage.yo, androidx.activity.a, android.app.Activity
+    public final void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
+        setContentView(R.layout.activity_main);
+        getWindow().setStatusBarColor(Color.parseColor("#C6DAFC"));
+        getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
+        View viewFindViewById = findViewById(R.id.root);
+        mi miVar = new mi(25);
+        WeakHashMap weakHashMap = mg0.a;
+        fg0.i(viewFindViewById, miVar);
+        this.C = new ks(11);
+        View viewFindViewById2 = findViewById(R.id.webView);
+        viewFindViewById2.getClass();
+        this.A = (WebView) viewFindViewById2;
+        View viewFindViewById3 = findViewById(R.id.pageProgress);
+        viewFindViewById3.getClass();
+        this.B = (ProgressBar) viewFindViewById3;
+        int i = 0;
+        WebView.setWebContentsDebuggingEnabled(false);
+        WebView webView = this.A;
+        if (webView == null) {
+            rt.w("webView");
+            throw null;
+        }
+        webView.setBackgroundColor(Color.parseColor("#FAFAFA"));
+        WebView webView2 = this.A;
+        if (webView2 == null) {
+            rt.w("webView");
+            throw null;
+        }
+        WebSettings settings = webView2.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(false);
+        settings.setSupportMultipleWindows(false);
+        settings.setDomStorageEnabled(true);
+        settings.setAllowFileAccess(false);
+        settings.setAllowContentAccess(true);
+        settings.setMixedContentMode(1);
+        settings.setBuiltInZoomControls(false);
+        settings.setDisplayZoomControls(false);
+        settings.setSupportZoom(false);
+        settings.setCacheMode(-1);
+        settings.setMediaPlaybackRequiresUserGesture(true);
+        settings.setUserAgentString(settings.getUserAgentString() + " NavaAndroidApp/12.1.47");
+        if (ih0.a("SAFE_BROWSING_ENABLE")) {
+            try {
+                WebView webView3 = this.A;
+                if (webView3 == null) {
+                    rt.w("webView");
+                    throw null;
+                }
+                WebSettings settings2 = webView3.getSettings();
+                ih0.a.getClass();
+                settings2.setSafeBrowsingEnabled(true);
+            } catch (Exception unused) {
+            }
+        }
+        if (ih0.a("BACK_FORWARD_CACHE")) {
+            try {
+                WebView webView4 = this.A;
+                if (webView4 == null) {
+                    rt.w("webView");
+                    throw null;
+                }
+                WebSettings settings3 = webView4.getSettings();
+                if (!ih0.f.b()) {
+                    throw new UnsupportedOperationException("This method is not supported by the current version of the framework and the current WebView APK");
+                }
+                dh0.a(settings3).n();
+            } catch (Exception unused2) {
+            }
+        }
+        WebView webView5 = this.A;
+        if (webView5 == null) {
+            rt.w("webView");
+            throw null;
+        }
+        webView5.setRendererPriorityPolicy(2, true);
+        WebView webView6 = this.A;
+        if (webView6 == null) {
+            rt.w("webView");
+            throw null;
+        }
+        webView6.setWebChromeClient(new fx(this));
+        WebView webView7 = this.A;
+        if (webView7 == null) {
+            rt.w("webView");
+            throw null;
+        }
+        webView7.setWebViewClient(new gx(this));
+        OfflineRuntime.attach(this, webView7);
+        c00.a(this);
+        NavaNotificationRepair.ensure(this);
+        NavaDirectNotification.ensure(this);
+        WebView webView8 = this.A;
+        if (webView8 == null) {
+            rt.w("webView");
+            throw null;
+        }
+        webView8.setDownloadListener(new DownloadListener() { // from class: ex
+            @Override // android.webkit.DownloadListener
+            public final void onDownloadStart(String str, String str2, String str3, String str4, long j) {
+                int i2 = MainActivity.P;
+                if (str == null || jb0.f0(str)) {
+                    return;
+                }
+                Uri uri = Uri.parse(str);
+                uri.getClass();
+                this.a.v(uri);
+            }
+        });
+        if (ih0.a("WEB_MESSAGE_LISTENER")) {
+            WebView webView9 = this.A;
+            if (webView9 == null) {
+                rt.w("webView");
+                throw null;
+            }
+            bx bxVar = new bx(this);
+            WeakHashMap weakHashMap2 = fh0.a;
+            if (!ih0.d.b()) {
+                throw new UnsupportedOperationException("This method is not supported by the current version of the framework and the current WebView APK");
+            }
+            lh0 lh0VarB = fh0.b(webView9);
+            Set set = this.I;
+            lh0VarB.a.addWebMessageListener("NavaNative", (String[]) set.toArray(new String[0]), new k9(new ch0(i, bxVar)));
+            if (((Boolean) this.J.a()).booleanValue()) {
+                WebView webView10 = this.A;
+                if (webView10 == null) {
+                    rt.w("webView");
+                    throw null;
+                }
+                fh0.a(webView10, (String) this.L.a(), set);
+                WebView webView11 = this.A;
+                if (webView11 == null) {
+                    rt.w("webView");
+                    throw null;
+                }
+                fh0.a(webView11, this.M, set);
+                WebView webView12 = this.A;
+                if (webView12 == null) {
+                    rt.w("webView");
+                    throw null;
+                }
+                fh0.a(webView12, (String) this.K.a(), set);
+            }
+        } else {
+            Toast.makeText(this, "Android System WebView güncellemesi gerekli.", 1).show();
+        }
+        this.D = new h00(this);
+        c00.a(this);
+        if (Build.VERSION.SDK_INT >= 33 && ht.c(this, "android.permission.POST_NOTIFICATIONS") != 0) {
+            SharedPreferences sharedPreferences = getSharedPreferences("nava_notif_permission_v12136", 0);
+            if (!sharedPreferences.getBoolean("asked", false)) {
+                sharedPreferences.edit().putBoolean("asked", true).apply();
+                this.N.E("android.permission.POST_NOTIFICATIONS");
+            }
+        }
+        WebView webView13 = this.A;
+        if (bundle == null) {
+            if (webView13 == null) {
+                rt.w("webView");
+                throw null;
+            }
+            String strU = u(getIntent());
+            if (strU == null) {
+                strU = this.H + "/";
+            }
+            webView13.loadUrl(strU);
+        } else {
+            if (webView13 == null) {
+                rt.w("webView");
+                throw null;
+            }
+            webView13.restoreState(bundle);
+        }
+        i().a(this, new cp(this));
+    }
+
+    @Override // defpackage.z2, defpackage.yo, android.app.Activity
+    public final void onDestroy() {
+        h00 h00Var = this.D;
+        if (h00Var != null) {
+            AlertDialog alertDialog = h00Var.e;
+            if (alertDialog != null) {
+                alertDialog.dismiss();
+            }
+            h00Var.e = null;
+            if (h00Var.d) {
+                try {
+                    h00Var.a.unregisterReceiver(h00Var.l);
+                } catch (Throwable unused) {
+                }
+                h00Var.d = false;
+            }
+            h00Var.b.shutdownNow();
+        }
+        ValueCallback valueCallback = this.F;
+        if (valueCallback != null) {
+            valueCallback.onReceiveValue(null);
+        }
+        this.F = null;
+        WebView webView = this.A;
+        if (webView == null) {
+            rt.w("webView");
+            throw null;
+        }
+        webView.stopLoading();
+        WebView webView2 = this.A;
+        if (webView2 == null) {
+            rt.w("webView");
+            throw null;
+        }
+        webView2.destroy();
+        super.onDestroy();
+    }
+
+    @Override // androidx.activity.a, android.app.Activity
+    public final void onNewIntent(Intent intent) {
+        intent.getClass();
+        super.onNewIntent(intent);
+        setIntent(intent);
+        String strU = u(intent);
+        if (strU != null) {
+            s(strU);
+        }
+    }
+
+    @Override // defpackage.yo, android.app.Activity
+    public final void onPause() {
+        h00 h00Var = this.D;
+        if (h00Var != null) {
+            if (h00Var == null) {
+                rt.w("updateManager");
+                throw null;
+            }
+            h00Var.f = false;
+        }
+        super.onPause();
+    }
+
+    @Override // defpackage.yo, android.app.Activity
+    public final void onResume() {
+        super.onResume();
+        h00 h00Var = this.D;
+        if (h00Var != null) {
+            h00Var.f = true;
+            if (h00Var.g && h00Var.a.getPackageManager().canRequestPackageInstalls()) {
+                h00Var.g = false;
+                File fileF = h00Var.f();
+                if (fileF.exists()) {
+                    String string = h00Var.c.getString("digest", "");
+                    h00Var.g(fileF, string != null ? string : "");
+                }
+            } else {
+                h00Var.e();
+            }
+            long jCurrentTimeMillis = System.currentTimeMillis();
+            if (jCurrentTimeMillis - h00Var.h < 30000) {
+                h00Var.e();
+            } else {
+                if (h00Var.i) {
+                    return;
+                }
+                h00Var.h = jCurrentTimeMillis;
+                h00Var.i = true;
+                h00Var.b.execute(new l1(6, h00Var));
+            }
+        }
+    }
+
+    @Override // androidx.activity.a, android.app.Activity
+    public final void onSaveInstanceState(Bundle bundle) {
+        bundle.getClass();
+        WebView webView = this.A;
+        if (webView == null) {
+            rt.w("webView");
+            throw null;
+        }
+        webView.saveState(bundle);
+        super.onSaveInstanceState(bundle);
+    }
+
+    public final void s(String str) {
+        String url;
+        try {
+            Uri uri = Uri.parse(str);
+            uri.getClass();
+            if (!r(uri)) {
+                v(uri);
+                return;
+            }
+            Uri uriP = p(uri);
+            String string = uriP.toString();
+            string.getClass();
+            String strT = t(string);
+            WebView webView = this.A;
+            if (webView == null) {
+                rt.w("webView");
+                throw null;
+            }
+            WebBackForwardList webBackForwardListCopyBackForwardList = webView.copyBackForwardList();
+            webBackForwardListCopyBackForwardList.getClass();
+            int currentIndex = webBackForwardListCopyBackForwardList.getCurrentIndex();
+            int size = webBackForwardListCopyBackForwardList.getSize();
+            int i = Integer.MAX_VALUE;
+            Integer numValueOf = null;
+            for (int i2 = 0; i2 < size; i2++) {
+                WebHistoryItem itemAtIndex = webBackForwardListCopyBackForwardList.getItemAtIndex(i2);
+                if (itemAtIndex != null && (url = itemAtIndex.getUrl()) != null && rt.b(t(url), strT)) {
+                    int i3 = i2 - currentIndex;
+                    if (i3 == 0) {
+                        return;
+                    }
+                    int iAbs = Math.abs(i3);
+                    if (iAbs < i) {
+                        numValueOf = Integer.valueOf(i3);
+                        i = iAbs;
+                    }
+                }
+            }
+            WebView webView2 = this.A;
+            if (numValueOf != null) {
+                if (webView2 != null) {
+                    webView2.goBackOrForward(numValueOf.intValue());
+                    return;
+                } else {
+                    rt.w("webView");
+                    throw null;
+                }
+            }
+            if (webView2 == null) {
+                rt.w("webView");
+                throw null;
+            }
+            webView2.getSettings().setCacheMode(this.G.contains(strT) ? 1 : -1);
+            WebView webView3 = this.A;
+            if (webView3 == null) {
+                rt.w("webView");
+                throw null;
+            }
+            webView3.loadUrl(uriP.toString());
+        } catch (Exception unused) {
+        }
+    }
+
+    public final void v(Uri uri) {
+        String lowerCase;
+        String scheme = uri.getScheme();
+        if (scheme != null) {
+            lowerCase = scheme.toLowerCase(Locale.ROOT);
+            lowerCase.getClass();
+        } else {
+            lowerCase = null;
+        }
+        if (lowerCase == null) {
+            lowerCase = "";
+        }
+        if (!si0.p("https", "http", "mailto", "tel", "market").contains(lowerCase)) {
+            Toast.makeText(this, "Bu bağlantı türü güvenlik nedeniyle açılamadı.", 0).show();
+            return;
+        }
+        try {
+            startActivity(new Intent("android.intent.action.VIEW", uri));
+        } catch (Exception unused) {
+            Toast.makeText(this, "Bağlantı açılamadı.", 0).show();
+        }
+    }
+
+    public final String w() {
+        Signature[] apkContentsSigners;
+        byte[] byteArray;
+        String strC = "";
+        try {
+            Signature signature = null;
+            if (Build.VERSION.SDK_INT >= 28) {
+                SigningInfo signingInfo = getPackageManager().getPackageInfo(getPackageName(), 134217728).signingInfo;
+                apkContentsSigners = signingInfo != null ? signingInfo.getApkContentsSigners() : null;
+                if (apkContentsSigners == null) {
+                    apkContentsSigners = new Signature[0];
+                }
+            } else {
+                apkContentsSigners = getPackageManager().getPackageInfo(getPackageName(), 64).signatures;
+                if (apkContentsSigners == null) {
+                    apkContentsSigners = new Signature[0];
+                }
+            }
+            if (apkContentsSigners.length != 0) {
+                signature = apkContentsSigners[0];
+            }
+            if (signature != null && (byteArray = signature.toByteArray()) != null) {
+                byte[] bArrDigest = MessageDigest.getInstance("SHA-1").digest(byteArray);
+                bArrDigest.getClass();
+                strC = m6.C(bArrDigest, ":", new ke(2), 30);
+            }
+        } catch (Exception unused) {
+        }
+        if (jb0.f0(strC)) {
+            return "Firebase SHA-1 ayarı eksik.";
+        }
+        Object systemService = getSystemService("clipboard");
+        systemService.getClass();
+        ((ClipboardManager) systemService).setPrimaryClip(ClipData.newPlainText("Nava SHA-1", strC));
+        return "Firebase SHA-1 ayarı eksik. SHA-1 panoya kopyalandı: ".concat(strC);
+    }
+
+    public final void x(String str) {
+        WebView webView = this.A;
+        if (webView == null) {
+            rt.w("webView");
+            throw null;
+        }
+        webView.evaluateJavascript("window.navaAndroidGoogleError && window.navaAndroidGoogleError(" + JSONObject.quote(str) + ");", null);
+    }
+}
