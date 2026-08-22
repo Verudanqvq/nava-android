@@ -1,0 +1,6 @@
+/* Nava Android 12.1.64 — make v12163 downloaded library a real fullscreen overlay. */
+#nava-offline-browser-v12163[hidden]{display:none!important}
+#nava-offline-browser-v12163{position:fixed!important;z-index:10640!important;inset:0!important;background:#f5f7fa!important;color:#24344a!important;font-family:system-ui,-apple-system,"Segoe UI",sans-serif!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
+#nava-offline-browser-v12163 .nava-offline62-tree{flex:1!important;min-height:0!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important}
+html.nava-offline62-open,html.nava-offline62-open body{overflow:hidden!important}
+@media(prefers-color-scheme:dark){#nava-offline-browser-v12163{background:#0d1520!important;color:#e5edf7!important}}
