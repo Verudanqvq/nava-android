@@ -1,1 +1,1 @@
-Trigger native 12.1.63 compile diagnostic after workflow exists on main.
+Trigger full native 12.1.63 rebuild diagnostic after extended workflow exists on main.
