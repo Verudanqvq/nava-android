@@ -7,6 +7,7 @@ on:
       - 'tests/v12169-*'
       - '.github/scripts/nava-12.1.69-final.sh'
       - '.github/workflows/nava-android-12-1-69.yml'
+      - 'diagnostics/nava-12.1.69-release-trigger.txt'
   workflow_dispatch:
 concurrency:
   group: nava-android-12-1-69
