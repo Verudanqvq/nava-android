@@ -3,3 +3,4 @@ base=v12.1.68
 zero-safe-order=0,0.5,1,2,3,4
 language-batch=all-indexed-variants
 storage-trim=icons-webfonts
+release-now=2026-08-22T20:17:00+03:00
