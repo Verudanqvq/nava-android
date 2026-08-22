@@ -6,6 +6,7 @@ on:
     paths:
       - ".github/workflows/nava-android-12-1-63.yml"
       - ".github/scripts/nava-12.1.63-final.sh"
+      - ".github/scripts/nava-12.1.63-native-preflight.sh"
       - "android-patch/v12.1.63/**"
       - "diagnostics/nava-12.1.63-release-trigger.txt"
   workflow_dispatch:
@@ -26,6 +27,9 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
+      - name: Native 63 preflight
+        shell: bash
+        run: bash .github/scripts/nava-12.1.63-native-preflight.sh
       - name: Build and publish 12.1.63
         shell: bash
         run: bash .github/scripts/nava-12.1.63-final.sh
@@ -34,9 +38,11 @@ jobs:
         run: |
           if [ ! -f /tmp/status63.txt ]; then printf 'status=failed\nfinished=%s\n' "$(date -u +%FT%TZ)" > /tmp/status63.txt; fi
           cp /tmp/status63.txt android-build-status-12.1.63.txt
+          if [ -f /tmp/native63-preflight.log ]; then cp /tmp/native63-preflight.log android-build-native-preflight-12.1.63.txt; fi
           git config user.name 'Nava Android Build Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git pull --rebase || true
           git add android-build-status-12.1.63.txt
+          if [ -f android-build-native-preflight-12.1.63.txt ]; then git add android-build-native-preflight-12.1.63.txt; fi
           git commit -m 'Record Android 12.1.63 build [skip ci]' || true
           git push || true
