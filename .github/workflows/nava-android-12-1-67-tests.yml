@@ -5,6 +5,8 @@ on:
     paths:
       - 'android-patch/v12.1.67/**'
       - 'tests/v12167-*'
+      - '.github/scripts/nava-12.1.67-final.sh'
+      - '.github/workflows/nava-android-12-1-67.yml'
       - '.github/workflows/nava-android-12-1-67-tests.yml'
   workflow_dispatch:
 permissions:
