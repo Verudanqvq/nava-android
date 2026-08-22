@@ -1,0 +1,1 @@
+12.1.66 validates canonical series metadata, live Cilt+Bölüm relation join, current-chapter-only language visibility, and horizontal touch scrolling.
