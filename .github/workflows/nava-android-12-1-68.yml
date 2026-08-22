@@ -1,0 +1,86 @@
+name: Nava Android 12.1.68
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'diagnostics/nava-12.1.68-release-trigger.txt'
+  workflow_dispatch:
+concurrency:
+  group: nava-android-12-1-68
+  cancel-in-progress: true
+permissions:
+  contents: write
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax
+        run: |
+          python -m py_compile android-patch/v12.1.68/patch-apk.py
+          node --check android-patch/v12.1.68/library-core-v12168.js
+          node --check android-patch/v12.1.68/downloaded-library-v12168.js
+          node --check android-patch/v12.1.68/language-core-v12168.js
+          node --check android-patch/v12.1.68/language-v12168.js
+          node --check tests/v12168-core.test.js
+          node --check tests/v12168-live.test.js
+          node --check tests/v12168-dom.test.mjs
+      - name: Fixture regressions
+        run: node tests/v12168-core.test.js
+      - name: Headless DOM regressions
+        run: |
+          npm install --no-save --ignore-scripts jsdom@26
+          node tests/v12168-dom.test.mjs
+      - name: Live Blogger contracts
+        run: |
+          curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary/-/Cilt?alt=json&max-results=500&orderby=published' -o /tmp/cilt.json
+          curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary/-/B%C3%B6l%C3%BCm?alt=json&max-results=500&orderby=published' -o /tmp/bolum.json
+          curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary?alt=json&max-results=500&orderby=published' -o /tmp/all.json
+          node tests/v12168-live.test.js /tmp/cilt.json /tmp/bolum.json /tmp/all.json
+      - name: Real 12.1.67 APK dry-run gate
+        run: |
+          curl --retry 3 --retry-all-errors -fsSL 'https://github.com/Verudanqvq/nava-android/releases/download/v12.1.67/Nava.apk' -o /tmp/Nava-12.1.67.apk
+          echo '8848a647ca1dc33743d1b0fcee08d03bb2a6c9646d8b4c98d023c2d810f010e5  /tmp/Nava-12.1.67.apk' | sha256sum -c -
+          python android-patch/v12.1.68/patch-apk.py \
+            /tmp/Nava-12.1.67.apk \
+            android-patch/v12.1.68/library-core-v12168.js \
+            android-patch/v12.1.68/downloaded-library-v12168.js \
+            android-patch/v12.1.68/language-core-v12168.js \
+            android-patch/v12.1.68/language-v12168.js \
+            /tmp/Nava-12.1.68-dryrun.apk
+          unzip -p /tmp/Nava-12.1.68-dryrun.apk assets/nava_app_v11.js > /tmp/app68.js
+          node --check /tmp/app68.js
+          test "$(grep -o 'w\.navaOpenDownloads=show' /tmp/app68.js | wc -l)" -eq 1
+          grep -q 'seriesValue' /tmp/app68.js
+          grep -q 'languages.length>1||!!cur.explicitLang' /tmp/app68.js
+          grep -q 'pageLabels' /tmp/app68.js
+  build:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build and release signed APK after test gate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: bash .github/scripts/nava-12.1.68-final.sh
+      - name: Record build status
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cp /tmp/status68.txt android-build-status-12.1.68.txt || true
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add android-build-status-12.1.68.txt
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record Android 12.1.68 build [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
