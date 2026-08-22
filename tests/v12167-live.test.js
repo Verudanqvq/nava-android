@@ -1,0 +1,32 @@
+'use strict';
+const fs=require('fs'),assert=require('assert');
+const lib=require('../android-patch/v12.1.67/library-core-v12167.js');
+const lang=require('../android-patch/v12.1.67/language-core-v12167.js');
+const cilt=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+const bolum=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
+const volumes=cilt&&cilt.feed&&cilt.feed.entry||[];
+const chapters=bolum&&bolum.feed&&bolum.feed.entry||[];
+assert(volumes.length>0,'live Cilt feed empty');
+assert(chapters.length>0,'live Bölüm feed empty');
+const rel=lib.buildRelations(volumes,chapters);
+const vurl=lib.canon('https://www.verudanava.com/2026/07/tensura-cilt-11.html');
+const vr=rel.byUrl[vurl];
+assert(vr,'live Tensura Cilt 11 relation missing');
+assert.strictEqual(vr.volumeNo,'11');
+assert(/tensei shitara slime datta ken/i.test(vr.series),'live Cilt 11 must map to Tensura work, got '+vr.series);
+const chapterRelations=Object.values(rel.byUrl).filter(x=>x&&x.kind==='chapter'&&x.volumeNo==='11'&&x.series===vr.series);
+assert(chapterRelations.length>0,'live Cilt 11 has no related Bölüm entries');
+const idx=lang.buildIndex(chapters);
+const records=Object.values(idx.byUrl);
+assert(records.length>0,'language index empty');
+const defaultTR=records.filter(r=>r.lang==='TR'&&!r.labels.some(x=>['TR','EN','JP','KR','CN'].includes(String(x).toUpperCase()))).length;
+const multi=[];
+for(const [key,rows] of Object.entries(idx.groups)){
+ const langs=[...new Set(rows.map(r=>r.lang))];
+ if(langs.length>1)multi.push({key,langs,rows:rows.length});
+ const hasUnlabelled=rows.some(r=>!r.labels.some(x=>['TR','EN','JP','KR','CN'].includes(String(x).toUpperCase())));
+ if(hasUnlabelled&&langs.some(x=>x!=='TR'))assert(langs.includes('TR'),'unlabelled Turkish sibling must produce TR in '+key);
+}
+console.log('PASS live relation:',vr.series,'> Cilt 11 >',chapterRelations.length,'chapter URLs');
+console.log('PASS live language index:',records.length,'chapters, default/unlabelled TR=',defaultTR,'multi-language groups=',multi.length);
+console.log(JSON.stringify(multi.slice(0,10),null,2));
