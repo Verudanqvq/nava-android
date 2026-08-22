@@ -1,9 +1,11 @@
+=== RELEASE_DOWNLOAD ===
+RELEASE_DOWNLOAD_RC=0
 === PATCH59 ===
 OFFLINE_RUNTIME_59_SOURCE_PATCH_OK
 PATCH59_RC=0
-=== JADX FIX ===
+=== JADX_FIX ===
 JADX_COMPILE_FIX_59_OK
-JADX_RC=0
+JADX_FIX_RC=0
 === PATCH63 ===
 OFFLINE_RUNTIME_63_SOURCE_PATCH_OK
 PATCH63_RC=0
@@ -15,3 +17,181 @@ Note: /tmp/OfflineRuntime.java uses unchecked or unsafe operations.
 Note: Recompile with -Xlint:unchecked for details.
 1 warning
 JAVAC_RC=0
+CLASS_COUNT=9
+=== D8 ===
+D8_RC=0
+=== MINI_DECODE ===
+I: Using Apktool 2.11.1 on mini63.apk with 4 threads
+I: Copying raw manifest...
+I: Baksmaling classes.dex...
+I: Copying original files...
+I: Copying unknown files...
+MINI_DECODE_RC=0
+=== BASE_DECODE ===
+I: Using Apktool 2.11.1 on Nava.apk with 4 threads
+I: Baksmaling classes.dex...
+I: Baksmaling classes2.dex...
+I: Copying raw resources...
+I: Baksmaling classes3.dex...
+I: Copying raw manifest...
+I: Copying original files...
+I: Copying assets...
+I: Copying lib...
+I: Copying unknown files...
+BASE_DECODE_RC=0
+=== VERSION_INFO_BEFORE ===
+12:  versionCode: null
+13:  versionName: null
+=== SMALI_COPY ===
+SMALI_COPY_RC1=0 RC2=0
+=== MANIFEST_PATCH ===
+Traceback (most recent call last):
+  File "/home/runner/work/nava-android/nava-android/android-patch/v12.1.63/patch-manifest63.py", line 4, in <module>
+    p=Path(sys.argv[1]);s=p.read_text(encoding='utf-8')
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1030, in read_text
+    return f.read()
+           ^^^^^^^^
+  File "<frozen codecs>", line 322, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xec in position 28: invalid continuation byte
+MANIFEST_PATCH_RC=1
+=== VERSION_INFO_AFTER ===
+12:  versionCode: null
+13:  versionName: null
+=== APKTOOL_BUILD ===
+I: Using Apktool 2.11.1 on rebuilt63.apk with 4 threads
+I: Checking whether sources have changed...
+I: Smaling smali folder into classes.dex...
+I: Checking whether sources have changed...
+I: Smaling smali_classes2 folder into classes2.dex...
+I: Checking whether resources have changed...
+I: Copying raw resources...
+I: Checking whether sources have changed...
+I: Smaling smali_classes3 folder into classes3.dex...
+I: Building apk file...
+I: Importing assets...
+I: Importing lib...
+I: Importing unknown files...
+I: Built apk into: /tmp/rebuilt63.apk
+APKTOOL_BUILD_RC=0
+REBUILT_SIZE=3200733
+SERVICE_DEX_GREP_RC=0
+package: name='com.verudanava.nava' versionCode='78' versionName='12.1.62' platformBuildVersionName='17' platformBuildVersionCode='37' compileSdkVersion='37' compileSdkVersionCodename='17'
+sdkVersion:'26'
+targetSdkVersion:'37'
+uses-permission: name='android.permission.INTERNET'
+uses-permission: name='android.permission.REQUEST_INSTALL_PACKAGES'
+uses-permission: name='android.permission.POST_NOTIFICATIONS'
+uses-permission: name='android.permission.USE_BIOMETRIC'
+uses-permission: name='android.permission.USE_FINGERPRINT'
+uses-permission: name='android.permission.ACCESS_NETWORK_STATE'
+uses-permission: name='android.permission.WAKE_LOCK'
+uses-permission: name='com.google.android.c2dm.permission.RECEIVE'
+uses-permission: name='com.verudanava.nava.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
+application-label:'Nava'
+application-label-af:'Nava'
+application-label-am:'Nava'
+application-label-ar:'Nava'
+application-label-as:'Nava'
+application-label-az:'Nava'
+application-label-be:'Nava'
+application-label-bg:'Nava'
+application-label-bn:'Nava'
+application-label-bs:'Nava'
+application-label-ca:'Nava'
+application-label-cs:'Nava'
+application-label-da:'Nava'
+application-label-de:'Nava'
+application-label-el:'Nava'
+application-label-en-AU:'Nava'
+application-label-en-CA:'Nava'
+application-label-en-GB:'Nava'
+application-label-en-IN:'Nava'
+application-label-en-XC:'Nava'
+application-label-es:'Nava'
+application-label-es-419:'Nava'
+application-label-es-US:'Nava'
+application-label-et:'Nava'
+application-label-eu:'Nava'
+application-label-fa:'Nava'
+application-label-fi:'Nava'
+application-label-fr:'Nava'
+application-label-fr-CA:'Nava'
+application-label-gl:'Nava'
+application-label-gu:'Nava'
+application-label-hi:'Nava'
+application-label-hr:'Nava'
+application-label-hu:'Nava'
+application-label-hy:'Nava'
+application-label-in:'Nava'
+application-label-is:'Nava'
+application-label-it:'Nava'
+application-label-iw:'Nava'
+application-label-ja:'Nava'
+application-label-ka:'Nava'
+application-label-kk:'Nava'
+application-label-km:'Nava'
+application-label-kn:'Nava'
+application-label-ko:'Nava'
+application-label-ky:'Nava'
+application-label-lo:'Nava'
+application-label-lt:'Nava'
+application-label-lv:'Nava'
+application-label-mk:'Nava'
+application-label-ml:'Nava'
+application-label-mn:'Nava'
+application-label-mr:'Nava'
+application-label-ms:'Nava'
+application-label-my:'Nava'
+application-label-nb:'Nava'
+application-label-ne:'Nava'
+application-label-nl:'Nava'
+application-label-or:'Nava'
+application-label-pa:'Nava'
+application-label-pl:'Nava'
+application-label-pt:'Nava'
+application-label-pt-BR:'Nava'
+application-label-pt-PT:'Nava'
+application-label-ro:'Nava'
+application-label-ru:'Nava'
+application-label-si:'Nava'
+application-label-sk:'Nava'
+application-label-sl:'Nava'
+application-label-sq:'Nava'
+application-label-sr:'Nava'
+application-label-sr-Latn:'Nava'
+application-label-sv:'Nava'
+application-label-sw:'Nava'
+application-label-ta:'Nava'
+application-label-te:'Nava'
+application-label-th:'Nava'
+application-label-tl:'Nava'
+application-label-tr:'Nava'
+application-label-uk:'Nava'
+application-label-ur:'Nava'
+application-label-uz:'Nava'
+application-label-vi:'Nava'
+application-label-zh-CN:'Nava'
+application-label-zh-HK:'Nava'
+application-label-zh-TW:'Nava'
+application-label-zu:'Nava'
+application-icon-160:'res/BW.xml'
+application-icon-240:'res/BW.xml'
+application-icon-320:'res/BW.xml'
+application-icon-480:'res/BW.xml'
+application-icon-640:'res/BW.xml'
+application-icon-65534:'res/BW.xml'
+application: label='Nava' icon='res/BW.xml'
+launchable-activity: name='com.verudanava.nava.MainActivity'  label='' icon=''
+feature-group: label=''
+  uses-feature: name='android.hardware.faketouch'
+  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
+main
+other-activities
+other-receivers
+other-services
+supports-screens: 'small' 'normal' 'large' 'xlarge'
+supports-any-density: 'true'
+locales: '--_--' 'af' 'am' 'ar' 'as' 'az' 'be' 'bg' 'bn' 'bs' 'ca' 'cs' 'da' 'de' 'el' 'en-AU' 'en-CA' 'en-GB' 'en-IN' 'en-XC' 'es' 'es-419' 'es-US' 'et' 'eu' 'fa' 'fi' 'fr' 'fr-CA' 'gl' 'gu' 'hi' 'hr' 'hu' 'hy' 'in' 'is' 'it' 'iw' 'ja' 'ka' 'kk' 'km' 'kn' 'ko' 'ky' 'lo' 'lt' 'lv' 'mk' 'ml' 'mn' 'mr' 'ms' 'my' 'nb' 'ne' 'nl' 'or' 'pa' 'pl' 'pt' 'pt-BR' 'pt-PT' 'ro' 'ru' 'si' 'sk' 'sl' 'sq' 'sr' 'sr-Latn' 'sv' 'sw' 'ta' 'te' 'th' 'tl' 'tr' 'uk' 'ur' 'uz' 'vi' 'zh-CN' 'zh-HK' 'zh-TW' 'zu'
+densities: '160' '240' '320' '480' '640' '65534'
+native-code: 'arm64-v8a' 'armeabi-v7a' 'x86' 'x86_64'
