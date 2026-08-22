@@ -1,0 +1,42 @@
+name: Nava Android 12.1.64 library overlay fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-android-12-1-64.yml"
+      - ".github/scripts/nava-12.1.64-final.sh"
+      - "android-patch/v12.1.64/**"
+      - "diagnostics/nava-12.1.64-release-trigger.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nava-android-12-1-64
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and publish 12.1.64
+        shell: bash
+        run: bash .github/scripts/nava-12.1.64-final.sh
+      - name: Persist 12.1.64 status
+        if: always()
+        run: |
+          if [ ! -f /tmp/status64.txt ]; then printf 'status=failed\nfinished=%s\n' "$(date -u +%FT%TZ)" > /tmp/status64.txt; fi
+          cp /tmp/status64.txt android-build-status-12.1.64.txt
+          git config user.name 'Nava Android Build Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add android-build-status-12.1.64.txt
+          git commit -m 'Record Android 12.1.64 build [skip ci]' || true
+          git push || true
