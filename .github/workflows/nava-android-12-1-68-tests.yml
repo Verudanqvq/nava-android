@@ -19,6 +19,7 @@ jobs:
           node-version: '22'
       - name: Syntax
         run: |
+          python -m py_compile android-patch/v12.1.68/patch-apk.py
           node --check android-patch/v12.1.68/library-core-v12168.js
           node --check android-patch/v12.1.68/downloaded-library-v12168.js
           node --check android-patch/v12.1.68/language-core-v12168.js
@@ -39,3 +40,29 @@ jobs:
           curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary?alt=json&max-results=500&orderby=published' -o /tmp/all.json
       - name: Live object/title and explicit-TR contract
         run: node tests/v12168-live.test.js /tmp/cilt.json /tmp/bolum.json /tmp/all.json
+      - name: Download signed 12.1.67 base for dry run
+        run: |
+          curl --retry 3 --retry-all-errors -fsSL 'https://github.com/Verudanqvq/nava-android/releases/download/v12.1.67/Nava.apk' -o /tmp/Nava-12.1.67.apk
+          echo '8848a647ca1dc33743d1b0fcee08d03bb2a6c9646d8b4c98d023c2d810f010e5  /tmp/Nava-12.1.67.apk' | sha256sum -c -
+      - name: Dry-run production APK patch — NO RELEASE
+        run: |
+          python android-patch/v12.1.68/patch-apk.py \
+            /tmp/Nava-12.1.67.apk \
+            android-patch/v12.1.68/library-core-v12168.js \
+            android-patch/v12.1.68/downloaded-library-v12168.js \
+            android-patch/v12.1.68/language-core-v12168.js \
+            android-patch/v12.1.68/language-v12168.js \
+            /tmp/Nava-12.1.68-dryrun.apk
+          unzip -p /tmp/Nava-12.1.68-dryrun.apk assets/nava_app_v11.js > /tmp/app68.js
+          node --check /tmp/app68.js
+          test "$(grep -o 'w\.navaOpenDownloads=show' /tmp/app68.js | wc -l)" -eq 1
+          ! grep -q 'Nava Android 12.1.67 TEST-FIRST — object-safe' /tmp/app68.js
+          ! grep -q 'Nava Android 12.1.67 TEST-FIRST — single downloaded-library renderer' /tmp/app68.js
+          ! grep -q 'Nava Android 12.1.67 TEST-FIRST — feed-indexed current-chapter language selector' /tmp/app68.js
+          grep -q 'Nava Android 12.1.68 TEST-FIRST — object-safe downloaded-library core' /tmp/app68.js
+          grep -q 'Nava Android 12.1.68 TEST-FIRST — object-safe single downloaded-library renderer' /tmp/app68.js
+          grep -q 'Nava Android 12.1.68 TEST-FIRST — explicit-label aware current-chapter language core' /tmp/app68.js
+          grep -q 'Nava Android 12.1.68 TEST-FIRST — explicit-label aware reader language selector' /tmp/app68.js
+          grep -q 'languages.length>1||!!cur.explicitLang' /tmp/app68.js
+          grep -q 'pageLabels' /tmp/app68.js
+          grep -q 'seriesValue' /tmp/app68.js
