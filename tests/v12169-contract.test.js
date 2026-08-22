@@ -20,10 +20,13 @@ function keepAll(items){
   return out;
 }
 const batch=keepAll([
-  {url:'chapter-0-tr',lang:'TR'},
-  {url:'chapter-0-en',lang:'EN'},
-  {url:'chapter-0-tr',lang:'TR'}
+  {url:'chapter-0-tr',lang:'TR',chapterNo:'0'},
+  {url:'chapter-0-en',lang:'EN',chapterNo:'0'},
+  {url:'chapter-0-tr',lang:'TR',chapterNo:'0'}
 ]);
 assert.deepStrictEqual(batch.map(x=>x.lang),['TR','EN']);
-console.log('V12169_CONTRACT_OK order=0,0.5,1,2,3,4 languages=TR+EN');
-// CI trigger: workflow now exists on the feature branch.
+const multi=batch.length>1;
+const labels=batch.map(x=>'Bölüm '+x.chapterNo+(multi?' • '+x.lang:''));
+assert.deepStrictEqual(labels,['Bölüm 0 • TR','Bölüm 0 • EN']);
+assert.strictEqual(new Set(batch.map(x=>String(x.chapterNo))).size,1);
+console.log('V12169_CONTRACT_OK order=0,0.5,1,2,3,4 languages=TR+EN labels=clear uniqueChapterCount=1');
