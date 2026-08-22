@@ -1,1 +1,1 @@
-Trigger signed 12.1.63 build with native preflight enabled.
+Trigger final signed 12.1.63 wake-lock build after packaging fix.
