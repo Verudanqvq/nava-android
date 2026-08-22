@@ -1,0 +1,53 @@
+name: Nava Android 12.1.63 native diagnostic
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-android-12-1-63-native-diagnostic.yml"
+      - "diagnostics/nava-12.1.63-native-diagnostic-trigger.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch and compile native 63 source
+        shell: bash
+        run: |
+          set +e
+          LOG=/tmp/native63.log
+          : > "$LOG"
+          echo '=== PATCH59 ===' >> "$LOG"
+          python android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/native-source/OfflineRuntime.java.txt /tmp/OfflineRuntime59.java >> "$LOG" 2>&1
+          echo "PATCH59_RC=$?" >> "$LOG"
+          echo '=== JADX FIX ===' >> "$LOG"
+          python android-patch/v12.1.59/fix-jadx-compile.py /tmp/OfflineRuntime59.java >> "$LOG" 2>&1
+          echo "JADX_RC=$?" >> "$LOG"
+          echo '=== PATCH63 ===' >> "$LOG"
+          python android-patch/v12.1.63/patch-offline-runtime63.py /tmp/OfflineRuntime59.java /tmp/OfflineRuntime.java >> "$LOG" 2>&1
+          P63=$?
+          echo "PATCH63_RC=$P63" >> "$LOG"
+          if [ "$P63" -eq 0 ]; then
+            ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
+            mkdir -p /tmp/javac63
+            echo '=== JAVAC ===' >> "$LOG"
+            javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac63 /tmp/OfflineRuntime.java android-patch/v12.1.63/NavaDownloadService63.java >> "$LOG" 2>&1
+            echo "JAVAC_RC=$?" >> "$LOG"
+          fi
+          mkdir -p diagnostics
+          cp "$LOG" diagnostics/nava-12.1.63-native-build-log.txt
+          exit 0
+      - name: Persist diagnostic
+        run: |
+          git config user.name 'Nava Android Diagnostic Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add diagnostics/nava-12.1.63-native-build-log.txt
+          git commit -m 'Record Android 12.1.63 native diagnostic [skip ci]' || true
+          git push || true
