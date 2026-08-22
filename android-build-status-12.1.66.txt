@@ -1,5 +1,5 @@
 status=running
-started=2026-08-22T14:18:20Z
+started=2026-08-22T14:18:39Z
 source_validation=ok
 base=12.1.65
 fix=canonical-series-metadata-plus-feed-join
@@ -31,6 +31,6 @@ webview_ua_47_preserved=ok
 background_63_preserved=ok
 release=v12.1.66
 asset=Nava.apk
-release_existing=no
+release_existing=yes
 status=success
-finished=2026-08-22T14:18:27Z
+finished=2026-08-22T14:18:45Z
