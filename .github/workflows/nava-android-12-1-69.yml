@@ -1,0 +1,67 @@
+name: Nava Android 12.1.69
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'android-patch/v12.1.69/**'
+      - 'tests/v12169-*'
+      - '.github/scripts/nava-12.1.69-final.sh'
+      - '.github/workflows/nava-android-12-1-69.yml'
+  workflow_dispatch:
+concurrency:
+  group: nava-android-12-1-69
+  cancel-in-progress: true
+permissions:
+  contents: write
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and contracts
+        run: |
+          python -m py_compile \
+            android-patch/v12.1.69/patch-apk.py \
+            android-patch/v12.1.69/patch-offline-runtime69.py \
+            android-patch/v12.1.59/patch-offline-runtime.py \
+            android-patch/v12.1.59/fix-jadx-compile.py \
+            android-patch/v12.1.63/patch-offline-runtime63.py
+          bash -n .github/scripts/nava-12.1.69-final.sh
+          node --check tests/v12169-contract.test.js
+          node tests/v12169-contract.test.js
+      - name: Exact 12.1.68 source available
+        run: |
+          curl --retry 3 --retry-all-errors -fsSL \
+            'https://github.com/Verudanqvq/nava-android/releases/download/v12.1.68/Nava.apk' \
+            -o /tmp/Nava-12.1.68.apk
+          echo 'c7e4b6c9c11d1bb2e5782b7641101a236a2c2bc9bb3fe34cac89e6565a2fb194  /tmp/Nava-12.1.68.apk' | sha256sum -c -
+  build:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build and release signed APK
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: bash .github/scripts/nava-12.1.69-final.sh
+      - name: Record build status
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cp /tmp/status69.txt android-build-status-12.1.69.txt || true
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add android-build-status-12.1.69.txt
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record Android 12.1.69 build [skip ci]'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
