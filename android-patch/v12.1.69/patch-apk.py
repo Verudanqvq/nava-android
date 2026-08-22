@@ -12,8 +12,10 @@ OLD_CH_TREE="v.chapters.sort(function(a,b){return(Number(a.chapterNo)||999999)-(
 NEW_CH_TREE="v.chapters.sort(function(a,b){return((String(a.chapterNo==null?'':a.chapterNo).trim()!==''&&isFinite(Number(a.chapterNo)))?Number(a.chapterNo):999999)-((String(b.chapterNo==null?'':b.chapterNo).trim()!==''&&isFinite(Number(b.chapterNo)))?Number(b.chapterNo):999999)})"
 OLD_PICKER="out.sort(function(a,b){return(Number(a.volumeNo)||9999)-(Number(b.volumeNo)||9999)})"
 NEW_PICKER="out.sort(function(a,b){return((String(a.volumeNo==null?'':a.volumeNo).trim()!==''&&isFinite(Number(a.volumeNo)))?Number(a.volumeNo):9999)-((String(b.volumeNo==null?'':b.volumeNo).trim()!==''&&isFinite(Number(b.volumeNo)))?Number(b.volumeNo):9999)})"
+OLD_COUNT="v.chapters.length+' bölüm'"
+NEW_COUNT="(new Set(v.chapters.map(function(r){return String(r.chapterNo||r.item&&r.item.url||'')}))).size+' bölüm'"
 OLD_FILTER="""function filterDownloadItems(items,name){items=Array.isArray(items)?items.slice():[];var chapters=items.filter(function(x){return x&&x.kind==='chapter'}),other=items.filter(function(x){return !x||x.kind!=='chapter'});if(!chapters.length)return items;var groups=new Map(),selected=getSelected(name,LANGS);chapters.forEach(function(x){var rec=state.index.byUrl[canon(x.url)],k=rec?((rec.volumeKey||'novol')+'|'+rec.chapterNo):('url|'+canon(x.url));if(!groups.has(k))groups.set(k,[]);groups.get(k).push({item:x,rec:rec})});groups.forEach(function(g){var exact=g.find(function(x){return x.rec&&x.rec.lang===selected}),tr=g.find(function(x){return x.rec&&x.rec.lang==='TR'}),chosen=exact||tr||g[0];other.push(chosen.item)});return other}"""
-NEW_FILTER="""function filterDownloadItems(items,name){items=Array.isArray(items)?items.slice():[];var out=[],seen=Object.create(null);function add(x){var u=canon(x&&x.url);if(!u||seen[u])return;seen[u]=1;out.push(x)}items.forEach(function(x){if(!x||x.kind!=='chapter'){add(x);return}var rec=state.index.byUrl[canon(x.url)];if(!rec){add(x);return}var key=(rec.volumeKey||'novol')+'|'+rec.chapterNo,rows=(state.index.groups&&state.index.groups[key]||[rec]).slice();LANGS.forEach(function(lang){rows.forEach(function(r){if(r.lang===lang)add({url:r.url,title:r.title||x.title,seriesTitle:x.seriesTitle,kind:'chapter',chapterNo:r.chapterNo})})})});return out}"""
+NEW_FILTER="""function filterDownloadItems(items,name){items=Array.isArray(items)?items.slice():[];var out=[],seen=Object.create(null);function add(x){var u=canon(x&&x.url);if(!u||seen[u])return;seen[u]=1;out.push(x)}items.forEach(function(x){if(!x||x.kind!=='chapter'){add(x);return}var rec=state.index.byUrl[canon(x.url)];if(!rec){add(x);return}var key=(rec.volumeKey||'novol')+'|'+rec.chapterNo,rows=(state.index.groups&&state.index.groups[key]||[rec]).slice(),langs=LANGS.filter(function(l){return rows.some(function(r){return r.lang===l})}),multi=langs.length>1;langs.forEach(function(lang){rows.forEach(function(r){if(r.lang===lang)add({url:r.url,title:(r.title||x.title)+(multi?' • '+lang:''),seriesTitle:x.seriesTitle,kind:'chapter',chapterNo:r.chapterNo})})})});return out}"""
 
 def u16(d,o):return struct.unpack_from('<H',d,o)[0]
 def u32(d,o):return struct.unpack_from('<I',d,o)[0]
@@ -69,6 +71,7 @@ def main():
   js=once(js,OLD_VOL_TREE,NEW_VOL_TREE,'volume tree zero-sort')
   js=once(js,OLD_CH_TREE,NEW_CH_TREE,'chapter tree zero-sort')
   js=once(js,OLD_PICKER,NEW_PICKER,'volume picker zero-sort')
+  js=once(js,OLD_COUNT,NEW_COUNT,'unique chapter count')
   js=once(js,OLD_FILTER,NEW_FILTER,'all-language batch')
   js=js.rstrip()+'\n'+MARK+'\n'
   manifest=patch_manifest(zin.read('AndroidManifest.xml'))
@@ -86,10 +89,10 @@ def main():
   if c3 is not None and z.read('classes3.dex')!=c3:raise ValueError('classes3 changed unexpectedly')
   if z.read('resources.arsc')!=res or z.read('assets/nava_app_v11.css')!=css or z.read('assets/offline.html')!=off:raise ValueError('preserved asset changed')
   fj=z.read('assets/nava_app_v11.js').decode('utf-8')
-  for old in (OLD_VOL_TREE,OLD_CH_TREE,OLD_PICKER,OLD_FILTER):
+  for old in (OLD_VOL_TREE,OLD_CH_TREE,OLD_PICKER,OLD_COUNT,OLD_FILTER):
    if old in fj:raise ValueError('old 68 contract survived')
-  for token in (MARK,'isFinite(Number(a.chapterNo))','isFinite(Number(a.volumeNo))','state.index.groups','seen=Object.create(null)'):
+  for token in (MARK,'isFinite(Number(a.chapterNo))','isFinite(Number(a.volumeNo))','state.index.groups','seen=Object.create(null)',"multi?' • '+lang",'new Set(v.chapters.map'):
    if token not in fj:raise ValueError('69 JS token missing '+token)
   if fj.count('w.navaOpenDownloads=show')!=1:raise ValueError('download renderer ownership changed')
- print('PATCH_OK versionName=12.1.69 versionCode=85 base=12.1.68 zero-sort=ok all-languages=ok storage-trim=ok')
+ print('PATCH_OK versionName=12.1.69 versionCode=85 base=12.1.68 zero-sort=ok all-languages=ok language-labels=ok unique-count=ok storage-trim=ok')
 if __name__=='__main__':main()
