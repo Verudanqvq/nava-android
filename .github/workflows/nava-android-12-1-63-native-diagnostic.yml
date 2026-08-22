@@ -15,30 +15,77 @@ jobs:
   diagnose:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
-      - name: Patch and compile native 63 source
+      - name: Run complete native 63 rebuild diagnostic
         shell: bash
         run: |
           set +e
           LOG=/tmp/native63.log
           : > "$LOG"
-          echo '=== PATCH59 ===' >> "$LOG"
-          python android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/native-source/OfflineRuntime.java.txt /tmp/OfflineRuntime59.java >> "$LOG" 2>&1
-          echo "PATCH59_RC=$?" >> "$LOG"
-          echo '=== JADX FIX ===' >> "$LOG"
-          python android-patch/v12.1.59/fix-jadx-compile.py /tmp/OfflineRuntime59.java >> "$LOG" 2>&1
-          echo "JADX_RC=$?" >> "$LOG"
-          echo '=== PATCH63 ===' >> "$LOG"
-          python android-patch/v12.1.63/patch-offline-runtime63.py /tmp/OfflineRuntime59.java /tmp/OfflineRuntime.java >> "$LOG" 2>&1
-          P63=$?
-          echo "PATCH63_RC=$P63" >> "$LOG"
-          if [ "$P63" -eq 0 ]; then
-            ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
-            mkdir -p /tmp/javac63
-            echo '=== JAVAC ===' >> "$LOG"
-            javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac63 /tmp/OfflineRuntime.java android-patch/v12.1.63/NavaDownloadService63.java >> "$LOG" 2>&1
-            echo "JAVAC_RC=$?" >> "$LOG"
+          step(){
+            NAME="$1"; shift
+            echo "=== $NAME ===" >> "$LOG"
+            "$@" >> "$LOG" 2>&1
+            RC=$?
+            echo "${NAME}_RC=$RC" >> "$LOG"
+            return $RC
+          }
+          mkdir -p /tmp/current
+          step RELEASE_DOWNLOAD gh release download v12.1.62 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current || true
+          step PATCH59 python android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/native-source/OfflineRuntime.java.txt /tmp/OfflineRuntime59.java || true
+          step JADX_FIX python android-patch/v12.1.59/fix-jadx-compile.py /tmp/OfflineRuntime59.java || true
+          step PATCH63 python android-patch/v12.1.63/patch-offline-runtime63.py /tmp/OfflineRuntime59.java /tmp/OfflineRuntime.java || true
+          ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          rm -rf /tmp/javac63 /tmp/newdex63 /tmp/mini63 /tmp/mini63-dec /tmp/base63-dec
+          mkdir -p /tmp/javac63 /tmp/newdex63 /tmp/mini63
+          echo '=== JAVAC ===' >> "$LOG"
+          javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac63 /tmp/OfflineRuntime.java android-patch/v12.1.63/NavaDownloadService63.java >> "$LOG" 2>&1
+          echo "JAVAC_RC=$?" >> "$LOG"
+          mapfile -t CLASSES < <(find /tmp/javac63/com/verudanava/nava -name '*.class' -type f | sort)
+          echo "CLASS_COUNT=${#CLASSES[@]}" >> "$LOG"
+          echo '=== D8 ===' >> "$LOG"
+          "$BUILD_TOOLS/d8" --lib "$ANDROID_JAR" --min-api 26 --output /tmp/newdex63 "${CLASSES[@]}" >> "$LOG" 2>&1
+          echo "D8_RC=$?" >> "$LOG"
+          unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/mini63/AndroidManifest.xml
+          cp /tmp/newdex63/classes.dex /tmp/mini63/classes.dex 2>> "$LOG"
+          (cd /tmp/mini63 && zip -q /tmp/mini63.apk AndroidManifest.xml classes.dex) >> "$LOG" 2>&1
+          curl -fsSL -o /tmp/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar
+          echo '=== MINI_DECODE ===' >> "$LOG"
+          java -jar /tmp/apktool.jar d -f -r /tmp/mini63.apk -o /tmp/mini63-dec >> "$LOG" 2>&1
+          echo "MINI_DECODE_RC=$?" >> "$LOG"
+          echo '=== BASE_DECODE ===' >> "$LOG"
+          java -jar /tmp/apktool.jar d -f -r /tmp/current/Nava.apk -o /tmp/base63-dec >> "$LOG" 2>&1
+          echo "BASE_DECODE_RC=$?" >> "$LOG"
+          echo '=== VERSION_INFO_BEFORE ===' >> "$LOG"
+          grep -n -E 'versionCode|versionName' /tmp/base63-dec/apktool.yml >> "$LOG" 2>&1
+          grep -n -E 'versionCode|versionName' /tmp/base63-dec/AndroidManifest.xml >> "$LOG" 2>&1
+          echo '=== SMALI_COPY ===' >> "$LOG"
+          rm -f /tmp/base63-dec/smali_classes2/com/verudanava/nava/OfflineRuntime*.smali
+          rm -f /tmp/base63-dec/smali_classes2/com/verudanava/nava/NavaDownloadService63*.smali
+          cp /tmp/mini63-dec/smali/com/verudanava/nava/OfflineRuntime*.smali /tmp/base63-dec/smali_classes2/com/verudanava/nava/ >> "$LOG" 2>&1
+          RC1=$?
+          cp /tmp/mini63-dec/smali/com/verudanava/nava/NavaDownloadService63*.smali /tmp/base63-dec/smali_classes2/com/verudanava/nava/ >> "$LOG" 2>&1
+          RC2=$?
+          echo "SMALI_COPY_RC1=$RC1 RC2=$RC2" >> "$LOG"
+          echo '=== MANIFEST_PATCH ===' >> "$LOG"
+          python android-patch/v12.1.63/patch-manifest63.py /tmp/base63-dec/AndroidManifest.xml >> "$LOG" 2>&1
+          echo "MANIFEST_PATCH_RC=$?" >> "$LOG"
+          echo '=== VERSION_INFO_AFTER ===' >> "$LOG"
+          grep -n -E 'versionCode|versionName' /tmp/base63-dec/apktool.yml >> "$LOG" 2>&1
+          grep -n -E 'FOREGROUND_SERVICE|NavaDownloadService63' /tmp/base63-dec/AndroidManifest.xml >> "$LOG" 2>&1
+          echo '=== APKTOOL_BUILD ===' >> "$LOG"
+          java -jar /tmp/apktool.jar b /tmp/base63-dec -o /tmp/rebuilt63.apk >> "$LOG" 2>&1
+          echo "APKTOOL_BUILD_RC=$?" >> "$LOG"
+          if [ -f /tmp/rebuilt63.apk ]; then
+            unzip -p /tmp/rebuilt63.apk classes2.dex > /tmp/classes2-63.dex
+            unzip -p /tmp/rebuilt63.apk AndroidManifest.xml > /tmp/manifest63.bin
+            echo "REBUILT_SIZE=$(stat -c%s /tmp/rebuilt63.apk)" >> "$LOG"
+            grep -aq 'NavaDownloadService63' /tmp/classes2-63.dex; echo "SERVICE_DEX_GREP_RC=$?" >> "$LOG"
+            "$BUILD_TOOLS/aapt" dump badging /tmp/rebuilt63.apk >> "$LOG" 2>&1
           fi
           mkdir -p diagnostics
           cp "$LOG" diagnostics/nava-12.1.63-native-build-log.txt
@@ -49,5 +96,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git pull --rebase || true
           git add diagnostics/nava-12.1.63-native-build-log.txt
-          git commit -m 'Record Android 12.1.63 native diagnostic [skip ci]' || true
+          git commit -m 'Record Android 12.1.63 full native diagnostic [skip ci]' || true
           git push || true
