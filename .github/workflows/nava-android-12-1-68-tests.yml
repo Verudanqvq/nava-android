@@ -1,0 +1,41 @@
+name: Nava Android 12.1.68 test-first
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'android-patch/v12.1.68/**'
+      - 'tests/v12168-*'
+      - '.github/workflows/nava-android-12-1-68-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax
+        run: |
+          node --check android-patch/v12.1.68/library-core-v12168.js
+          node --check android-patch/v12.1.68/downloaded-library-v12168.js
+          node --check android-patch/v12.1.68/language-core-v12168.js
+          node --check android-patch/v12.1.68/language-v12168.js
+          node --check tests/v12168-core.test.js
+          node --check tests/v12168-live.test.js
+          node --check tests/v12168-dom.test.mjs
+      - name: Fixture regressions
+        run: node tests/v12168-core.test.js
+      - name: Headless DOM regressions
+        run: |
+          npm install --no-save --ignore-scripts jsdom@26
+          node tests/v12168-dom.test.mjs
+      - name: Download live Blogger feeds
+        run: |
+          curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary/-/Cilt?alt=json&max-results=500&orderby=published' -o /tmp/cilt.json
+          curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary/-/B%C3%B6l%C3%BCm?alt=json&max-results=500&orderby=published' -o /tmp/bolum.json
+          curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary?alt=json&max-results=500&orderby=published' -o /tmp/all.json
+      - name: Live object/title and explicit-TR contract
+        run: node tests/v12168-live.test.js /tmp/cilt.json /tmp/bolum.json /tmp/all.json
