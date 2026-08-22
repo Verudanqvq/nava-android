@@ -1,5 +1,5 @@
 'use strict';
-const assert=require('assert');
+import assert from 'node:assert/strict';
 
 function zeroSafe(v,fallback){
   const text=String(v==null?'':v).trim();
