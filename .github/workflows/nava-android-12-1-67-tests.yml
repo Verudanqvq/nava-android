@@ -29,5 +29,6 @@ jobs:
         run: |
           curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary/-/Cilt?alt=json&max-results=500&orderby=published' -o /tmp/cilt.json
           curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary/-/B%C3%B6l%C3%BCm?alt=json&max-results=500&orderby=published' -o /tmp/bolum.json
+          curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary?alt=json&max-results=500&orderby=published' -o /tmp/all.json
       - name: Live relation and language contract
-        run: node tests/v12167-live.test.js /tmp/cilt.json /tmp/bolum.json
+        run: node tests/v12167-live.test.js /tmp/cilt.json /tmp/bolum.json /tmp/all.json
