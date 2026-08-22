@@ -1,0 +1,86 @@
+name: Nava Android 12.1.69 tests
+on:
+  push:
+    branches: [android-12.1.69]
+    paths:
+      - 'android-patch/v12.1.69/**'
+      - 'tests/v12169-*'
+      - '.github/workflows/nava-android-12-1-69-tests.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'android-patch/v12.1.69/**'
+      - 'tests/v12169-*'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and contracts
+        run: |
+          python -m py_compile \
+            android-patch/v12.1.69/patch-apk.py \
+            android-patch/v12.1.69/patch-offline-runtime69.py \
+            android-patch/v12.1.59/patch-offline-runtime.py \
+            android-patch/v12.1.59/fix-jadx-compile.py \
+            android-patch/v12.1.63/patch-offline-runtime63.py
+          node --check tests/v12169-contract.test.js
+          node tests/v12169-contract.test.js
+      - name: Download exact signed 12.1.68 base
+        run: |
+          curl --retry 3 --retry-all-errors -fsSL \
+            'https://github.com/Verudanqvq/nava-android/releases/download/v12.1.68/Nava.apk' \
+            -o /tmp/Nava-12.1.68.apk
+          echo 'c7e4b6c9c11d1bb2e5782b7641101a236a2c2bc9bb3fe34cac89e6565a2fb194  /tmp/Nava-12.1.68.apk' | sha256sum -c -
+      - name: Rebuild only optimized OfflineRuntime
+        run: |
+          python android-patch/v12.1.59/patch-offline-runtime.py \
+            android-patch/v12.1.59/native-source/OfflineRuntime.java.txt /tmp/OfflineRuntime59.java
+          python android-patch/v12.1.59/fix-jadx-compile.py /tmp/OfflineRuntime59.java
+          python android-patch/v12.1.63/patch-offline-runtime63.py /tmp/OfflineRuntime59.java /tmp/OfflineRuntime63.java
+          python android-patch/v12.1.69/patch-offline-runtime69.py /tmp/OfflineRuntime63.java /tmp/OfflineRuntime.java
+          grep -q 'MAX_RESOURCES = 220' /tmp/OfflineRuntime.java
+          grep -q 'submitBatch63' /tmp/OfflineRuntime.java
+          grep -q 'seriesRelations63' /tmp/OfflineRuntime.java
+          ! grep -q 'stylesheet|icon' /tmp/OfflineRuntime.java
+          ! grep -q 'woff2?' /tmp/OfflineRuntime.java
+          ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          rm -rf /tmp/javac69 /tmp/newdex69 /tmp/mini69 /tmp/mini69-dec /tmp/base69-dec
+          mkdir -p /tmp/javac69 /tmp/newdex69 /tmp/mini69
+          javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac69 /tmp/OfflineRuntime.java
+          mapfile -t CLASSES < <(find /tmp/javac69/com/verudanava/nava -name 'OfflineRuntime*.class' -type f | sort)
+          test "${#CLASSES[@]}" -ge 5
+          "$BUILD_TOOLS/d8" --lib "$ANDROID_JAR" --min-api 26 --output /tmp/newdex69 "${CLASSES[@]}"
+          unzip -p /tmp/Nava-12.1.68.apk AndroidManifest.xml > /tmp/mini69/AndroidManifest.xml
+          cp /tmp/newdex69/classes.dex /tmp/mini69/classes.dex
+          (cd /tmp/mini69 && zip -q /tmp/mini69.apk AndroidManifest.xml classes.dex)
+          curl -fsSL -o /tmp/apktool.jar \
+            https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar
+          java -jar /tmp/apktool.jar d -f -r /tmp/mini69.apk -o /tmp/mini69-dec >/tmp/apktool-mini69.log
+          java -jar /tmp/apktool.jar d -f -r /tmp/Nava-12.1.68.apk -o /tmp/base69-dec >/tmp/apktool-base69.log
+          rm -f /tmp/base69-dec/smali_classes2/com/verudanava/nava/OfflineRuntime*.smali
+          cp /tmp/mini69-dec/smali/com/verudanava/nava/OfflineRuntime*.smali \
+             /tmp/base69-dec/smali_classes2/com/verudanava/nava/
+          java -jar /tmp/apktool.jar b /tmp/base69-dec -o /tmp/rebuilt69.apk >/tmp/apktool-build69.log
+          unzip -p /tmp/rebuilt69.apk classes2.dex > /tmp/classes2-69.dex
+          grep -aq 'submitBatch63' /tmp/classes2-69.dex
+          grep -aq 'seriesRelations63' /tmp/classes2-69.dex
+      - name: Real 12.1.68 APK dry-run
+        run: |
+          python android-patch/v12.1.69/patch-apk.py \
+            /tmp/Nava-12.1.68.apk /tmp/classes2-69.dex /tmp/Nava-12.1.69-dryrun.apk
+          unzip -p /tmp/Nava-12.1.69-dryrun.apk assets/nava_app_v11.js > /tmp/app69.js
+          node --check /tmp/app69.js
+          grep -q 'Nava Android 12.1.69 — zero-safe order' /tmp/app69.js
+          grep -q 'isFinite(Number(a.chapterNo))' /tmp/app69.js
+          grep -q 'state.index.groups' /tmp/app69.js
+          test "$(grep -o 'w\.navaOpenDownloads=show' /tmp/app69.js | wc -l)" -eq 1
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          "$BUILD_TOOLS/aapt" dump badging /tmp/Nava-12.1.69-dryrun.apk | grep -q "versionCode='85'.*versionName='12.1.69'"
