@@ -1,0 +1,5 @@
+Nava Android 12.1.69 release trigger
+base=v12.1.68
+zero-safe-order=0,0.5,1,2,3,4
+language-batch=all-indexed-variants
+storage-trim=icons-webfonts
