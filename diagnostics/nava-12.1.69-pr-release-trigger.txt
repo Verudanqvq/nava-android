@@ -1,0 +1,2 @@
+trigger=2026-08-22T21:32:00+03:00
+purpose=observable-pr-release-run
