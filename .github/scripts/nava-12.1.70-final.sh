@@ -64,7 +64,7 @@ grep -q 'submitBatch63' /tmp/OfflineRuntime.java
 rm -rf /tmp/javac70 /tmp/newdex70 /tmp/mini70 /tmp/mini70-dec /tmp/base70-dec
 mkdir -p /tmp/javac70 /tmp/newdex70 /tmp/mini70
 javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac70 /tmp/OfflineRuntime.java /tmp/NavaDownloadService70.java
-mapfile -t CLASSES < <(find /tmp/javac70/com/verudanava/nava -name 'OfflineRuntime*.class' -o -name 'NavaDownloadService70*.class' | sort)
+mapfile -t CLASSES < <(find /tmp/javac70/com/verudanava/nava \( -name 'OfflineRuntime*.class' -o -name 'NavaDownloadService70*.class' \) -type f | sort)
 test "${#CLASSES[@]}" -ge 7
 "$BUILD_TOOLS/d8" --lib "$ANDROID_JAR" --min-api 26 --output /tmp/newdex70 "${CLASSES[@]}"
 
@@ -73,7 +73,7 @@ cp /tmp/newdex70/classes.dex /tmp/mini70/classes.dex
 (cd /tmp/mini70 && zip -q /tmp/mini70.apk AndroidManifest.xml classes.dex)
 curl -fsSL -o /tmp/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar
 java -jar /tmp/apktool.jar d -f -r /tmp/mini70.apk -o /tmp/mini70-dec >/tmp/apktool-mini70.log
-java -jar /tmp/apktool.jar d -f -r "$SOURCE" -o /tmp/base70-dec >/tmp/apktool-base70.log
+java -jar /tmp/apktool.jar d -f "$SOURCE" -o /tmp/base70-dec >/tmp/apktool-base70.log
 rm -f /tmp/base70-dec/smali_classes2/com/verudanava/nava/OfflineRuntime*.smali
 rm -f /tmp/base70-dec/smali_classes2/com/verudanava/nava/NavaDownloadService70*.smali
 cp /tmp/mini70-dec/smali/com/verudanava/nava/OfflineRuntime*.smali /tmp/base70-dec/smali_classes2/com/verudanava/nava/
@@ -90,7 +90,6 @@ java -jar /tmp/apktool.jar b /tmp/base70-dec -o /tmp/rebuilt70.apk >/tmp/apktool
 unzip -p /tmp/rebuilt70.apk classes2.dex > /tmp/classes2-70.dex
 unzip -p /tmp/rebuilt70.apk AndroidManifest.xml > /tmp/manifest-70.bin
 grep -aq 'NavaDownloadService70' /tmp/classes2-70.dex
-grep -aq 'START_REDELIVER_INTENT' /tmp/classes2-70.dex || true
 
 python android-patch/v12.1.70/patch-apk.py "$SOURCE" /tmp/classes2-70.dex /tmp/manifest-70.bin /tmp/Nava-unsigned.apk
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='86'.*versionName='12.1.70'"
