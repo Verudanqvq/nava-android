@@ -1,0 +1,21 @@
+name: Nava Android 12.1.70 tests
+on:
+  pull_request:
+    paths:
+      - 'android-patch/v12.1.70/**'
+      - '.github/scripts/nava-12.1.70-final.sh'
+      - '.github/workflows/nava-android-12-1-70-tests.yml'
+      - '.github/workflows/nava-android-12-1-70.yml'
+permissions:
+  contents: read
+jobs:
+  apk-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Full signed APK dry run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DRY_RUN: '1'
+        run: bash .github/scripts/nava-12.1.70-final.sh
