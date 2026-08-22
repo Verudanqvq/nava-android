@@ -26,4 +26,12 @@ svc.set(A+'exported','false')
 svc.set(A+'stopWithTask','false')
 svc.set(A+'foregroundServiceType','dataSync')
 tree.write(p,encoding='utf-8',xml_declaration=True)
-print('MANIFEST_70_OK service=foreground-dataSync stopWithTask=false versionCode=86')
+
+# Apktool can decode Material state attrs as references even when their declarations
+# are absent from the reconstructed values set. They are only needed to let the
+# temporary rebuilt APK link; final resources.arsc/res entries still come untouched
+# from the signed 12.1.69 source APK.
+compat=p.parent/'res'/'values'/'nava_compat_attrs70.xml'
+compat.parent.mkdir(parents=True,exist_ok=True)
+compat.write_text('''<?xml version="1.0" encoding="utf-8"?>\n<resources>\n  <attr name="state_liftable" format="boolean" />\n  <attr name="state_lifted" format="boolean" />\n  <attr name="state_dragged" format="boolean" />\n  <attr name="state_with_icon" format="boolean" />\n</resources>\n''',encoding='utf-8')
+print('MANIFEST_70_OK service=foreground-dataSync stopWithTask=false versionCode=86 compatAttrs=4')
