@@ -1,0 +1,66 @@
+name: Nava Android 12.1.67 test-first
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'android-patch/v12.1.67/**'
+      - 'tests/v12167-*'
+      - '.github/scripts/nava-12.1.67-final.sh'
+      - '.github/workflows/nava-android-12-1-67.yml'
+      - '.github/workflows/nava-android-12-1-67-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax
+        run: |
+          python -m py_compile android-patch/v12.1.67/patch-apk.py
+          node --check android-patch/v12.1.67/library-core-v12167.js
+          node --check android-patch/v12.1.67/downloaded-library-v12167.js
+          node --check android-patch/v12.1.67/language-core-v12167.js
+          node --check android-patch/v12.1.67/language-v12167.js
+          node --check tests/v12167-core.test.js
+          node --check tests/v12167-live.test.js
+          node --check tests/v12167-dom.test.mjs
+      - name: Fixture regressions
+        run: node tests/v12167-core.test.js
+      - name: Headless DOM regressions
+        run: |
+          npm install --no-save --ignore-scripts jsdom@26
+          node tests/v12167-dom.test.mjs
+      - name: Download live Blogger feeds
+        run: |
+          curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary/-/Cilt?alt=json&max-results=500&orderby=published' -o /tmp/cilt.json
+          curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary/-/B%C3%B6l%C3%BCm?alt=json&max-results=500&orderby=published' -o /tmp/bolum.json
+          curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary?alt=json&max-results=500&orderby=published' -o /tmp/all.json
+      - name: Live relation and language contract
+        run: node tests/v12167-live.test.js /tmp/cilt.json /tmp/bolum.json /tmp/all.json
+      - name: Download signed 12.1.66 base for dry run
+        run: |
+          curl --retry 3 --retry-all-errors -fsSL 'https://github.com/Verudanqvq/nava-android/releases/download/v12.1.66/Nava.apk' -o /tmp/Nava-12.1.66.apk
+          echo '0667cbcab08dccf945ad7ed3e7876b9b88850c1adf50e1e7c18b5e67a03b04c0  /tmp/Nava-12.1.66.apk' | sha256sum -c -
+      - name: Dry-run production APK patch — NO RELEASE
+        run: |
+          python android-patch/v12.1.67/patch-apk.py \
+            /tmp/Nava-12.1.66.apk \
+            android-patch/v12.1.67/library-core-v12167.js \
+            android-patch/v12.1.67/downloaded-library-v12167.js \
+            android-patch/v12.1.67/language-core-v12167.js \
+            android-patch/v12.1.67/language-v12167.js \
+            /tmp/Nava-12.1.67-dryrun.apk
+          unzip -p /tmp/Nava-12.1.67-dryrun.apk assets/nava_app_v11.js > /tmp/app67.js
+          node --check /tmp/app67.js
+          test "$(grep -o 'w\.navaOpenDownloads=show' /tmp/app67.js | wc -l)" -eq 1
+          ! grep -q 'Nava Android 12.1.49 — reliable downloaded library and deletion' /tmp/app67.js
+          ! grep -q 'Nava Android 12.1.62 — canonical downloaded library' /tmp/app67.js
+          ! grep -q 'Nava Android 12.1.66 — canonical relation-aware downloaded library' /tmp/app67.js
+          grep -q 'Nava Android 12.1.67 TEST-FIRST — single downloaded-library renderer' /tmp/app67.js
+          grep -q "explicitLang(labels)||'TR'" /tmp/app67.js
+          grep -q 'touch-action:pan-x' /tmp/app67.js
