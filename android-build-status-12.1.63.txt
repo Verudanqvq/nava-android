@@ -1,5 +1,5 @@
 status=running
-started=2026-08-22T10:48:25Z
+started=2026-08-22T10:49:19Z
 source_validation=ok
 base=12.1.62
 library=relation-aware
@@ -12,4 +12,4 @@ source_apk=ok
 source_sha256=8018f27ddcaf0f23924ab5be2717bdf39dd8faa37e49ae99998d2acbe4ba9484
 live_relation_contract=ok
 status=failed
-finished=2026-08-22T10:48:47Z
+finished=2026-08-22T10:50:14Z
