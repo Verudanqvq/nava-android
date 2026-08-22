@@ -1,7 +1,9 @@
-'use strict';
-const fs=require('fs'),assert=require('assert');
-const lib=require('../android-patch/v12.1.67/library-core-v12167.js');
-const lang=require('../android-patch/v12.1.67/language-core-v12167.js');
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import '../android-patch/v12.1.67/library-core-v12167.js';
+import '../android-patch/v12.1.67/language-core-v12167.js';
+const lib=globalThis.NavaLibraryCoreV12167;
+const lang=globalThis.NavaLanguageCoreV12167;
 const cilt=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
 const bolum=JSON.parse(fs.readFileSync(process.argv[3],'utf8'));
 const volumes=cilt&&cilt.feed&&cilt.feed.entry||[];
