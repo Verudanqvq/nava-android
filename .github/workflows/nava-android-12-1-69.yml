@@ -8,6 +8,10 @@ on:
       - '.github/scripts/nava-12.1.69-final.sh'
       - '.github/workflows/nava-android-12-1-69.yml'
       - 'diagnostics/nava-12.1.69-release-trigger.txt'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'diagnostics/nava-12.1.69-pr-release-trigger.txt'
   workflow_dispatch:
 concurrency:
   group: nava-android-12-1-69
@@ -41,6 +45,7 @@ jobs:
           echo 'c7e4b6c9c11d1bb2e5782b7641101a236a2c2bc9bb3fe34cac89e6565a2fb194  /tmp/Nava-12.1.68.apk' | sha256sum -c -
   build:
     needs: tests
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -53,7 +58,7 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: bash .github/scripts/nava-12.1.69-final.sh
       - name: Record build status
-        if: always()
+        if: always() && github.event_name == 'push'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
