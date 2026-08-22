@@ -15,7 +15,7 @@ permissions:
 jobs:
   startup-smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 25
     env:
       EXPECTED_SOURCE_SHA256: 8b4650833446f30eafa6e0fc1ed28dc19564eeee304421b02c7ce05f5433964c
     steps:
@@ -77,13 +77,19 @@ jobs:
         run: |
           set -euo pipefail
           export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+          ACCEL=off
+          if [ -e /dev/kvm ]; then
+            sudo chmod 666 /dev/kvm || true
+            ACCEL=on
+          fi
+          echo "emulator_accel=$ACCEL"
           nohup "$ANDROID_HOME/emulator/emulator" -avd nava_ci -no-window -noaudio -no-boot-anim \
-            -no-snapshot -gpu swiftshader_indirect -accel off >/tmp/emulator.log 2>&1 &
+            -no-snapshot -gpu swiftshader_indirect -accel "$ACCEL" >/tmp/emulator.log 2>&1 &
           EMU_PID=$!
           cleanup(){ adb emu kill >/dev/null 2>&1 || true; kill "$EMU_PID" >/dev/null 2>&1 || true; }
           trap cleanup EXIT
           adb wait-for-device
-          for i in $(seq 1 180); do
+          for i in $(seq 1 120); do
             [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ] && break
             sleep 2
           done
