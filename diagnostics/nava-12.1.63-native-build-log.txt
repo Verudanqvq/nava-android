@@ -1,0 +1,17 @@
+=== PATCH59 ===
+OFFLINE_RUNTIME_59_SOURCE_PATCH_OK
+PATCH59_RC=0
+=== JADX FIX ===
+JADX_COMPILE_FIX_59_OK
+JADX_RC=0
+=== PATCH63 ===
+OFFLINE_RUNTIME_63_SOURCE_PATCH_OK
+PATCH63_RC=0
+=== JAVAC ===
+warning: [options] bootstrap class path not set in conjunction with -source 8
+Note: android-patch/v12.1.63/NavaDownloadService63.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /tmp/OfflineRuntime.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+1 warning
+JAVAC_RC=0
