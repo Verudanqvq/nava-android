@@ -1,0 +1,1 @@
+Regression cause: v12163 downloaded shell used id nava-offline-browser-v12163 while root CSS was scoped to #nava-offline-browser-v12162. show() still added nava-offline62-open, locking page scroll while the new shell was not fullscreen/styled.
