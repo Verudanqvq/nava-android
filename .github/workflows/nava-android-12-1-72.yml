@@ -1,0 +1,34 @@
+name: Nava Android 12.1.72
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'android-patch/v12.1.72/**'
+      - 'tests/v12172-*'
+      - '.github/scripts/nava-12.1.72-final.sh'
+      - '.github/workflows/nava-android-12-1-72.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'android-patch/v12.1.72/**'
+      - 'tests/v12172-*'
+      - '.github/scripts/nava-12.1.72-final.sh'
+      - '.github/workflows/nava-android-12-1-72.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nava-android-12-1-72-${{ github.event_name }}
+  cancel-in-progress: true
+jobs:
+  apk-regression:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Full signed APK regression and release gate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DRY_RUN: ${{ github.event_name == 'pull_request' && '1' || '0' }}
+        run: bash .github/scripts/nava-12.1.72-final.sh
