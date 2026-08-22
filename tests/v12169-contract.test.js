@@ -26,3 +26,4 @@ const batch=keepAll([
 ]);
 assert.deepStrictEqual(batch.map(x=>x.lang),['TR','EN']);
 console.log('V12169_CONTRACT_OK order=0,0.5,1,2,3,4 languages=TR+EN');
+// CI trigger: workflow now exists on the feature branch.
