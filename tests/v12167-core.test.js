@@ -1,7 +1,8 @@
-'use strict';
-const assert=require('assert');
-const lib=require('../android-patch/v12.1.67/library-core-v12167.js');
-const lang=require('../android-patch/v12.1.67/language-core-v12167.js');
+import assert from 'node:assert/strict';
+import '../android-patch/v12.1.67/library-core-v12167.js';
+import '../android-patch/v12.1.67/language-core-v12167.js';
+const lib=globalThis.NavaLibraryCoreV12167;
+const lang=globalThis.NavaLanguageCoreV12167;
 function entry(title,url,labels){return{title:{$t:title},link:[{rel:'alternate',href:url}],category:(labels||[]).map(term=>({term}))}}
 const SERIES='Tensei Shitara Slime Datta Ken (Light Novel)';
 const VURL='https://www.verudanava.com/2026/07/tensura-cilt-11.html';
