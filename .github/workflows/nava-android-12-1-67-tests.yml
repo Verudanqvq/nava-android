@@ -4,7 +4,7 @@ on:
     branches: [ main ]
     paths:
       - 'android-patch/v12.1.67/**'
-      - 'tests/v12167-*.test.js'
+      - 'tests/v12167-*'
       - '.github/workflows/nava-android-12-1-67-tests.yml'
   workflow_dispatch:
 permissions:
@@ -26,8 +26,13 @@ jobs:
           node --check android-patch/v12.1.67/language-v12167.js
           node --check tests/v12167-core.test.js
           node --check tests/v12167-live.test.js
+          node --check tests/v12167-dom.test.mjs
       - name: Fixture regressions
         run: node tests/v12167-core.test.js
+      - name: Headless DOM regressions
+        run: |
+          npm install --no-save --ignore-scripts jsdom@26
+          node tests/v12167-dom.test.mjs
       - name: Download live Blogger feeds
         run: |
           curl --retry 3 --retry-all-errors -fsSL 'https://www.verudanava.com/feeds/posts/summary/-/Cilt?alt=json&max-results=500&orderby=published' -o /tmp/cilt.json
