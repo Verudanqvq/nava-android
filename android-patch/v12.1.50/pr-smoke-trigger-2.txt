@@ -1,0 +1,2 @@
+trigger=2026-08-21T20:17Z
+purpose=run default-branch PR startup smoke workflow before release
