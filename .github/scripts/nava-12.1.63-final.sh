@@ -1,0 +1,151 @@
+#!/usr/bin/env bash
+set -euo pipefail
+STATUS=/tmp/status63.txt
+: > "$STATUS"
+printf 'status=running\nstarted=%s\n' "$(date -u +%FT%TZ)" >> "$STATUS"
+trap 'rc=$?; if [ "$rc" -ne 0 ] && ! grep -q "^status=success$" "$STATUS"; then printf "status=failed\nfinished=%s\n" "$(date -u +%FT%TZ)" >> "$STATUS"; fi; exit "$rc"' EXIT
+EXPECTED_SOURCE_SHA256=8018f27ddcaf0f23924ab5be2717bdf39dd8faa37e49ae99998d2acbe4ba9484
+EXPECTED_CERT_SHA256=acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51d09fe
+SOURCE_TAG=v12.1.62
+TARGET_TAG=v12.1.63
+
+python -m py_compile android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/fix-jadx-compile.py android-patch/v12.1.63/patch-offline-runtime63.py android-patch/v12.1.63/patch-manifest63.py android-patch/v12.1.63/patch-apk.py
+node --check android-patch/v12.1.63/downloaded-library-v12163.js
+grep -q 'START_REDELIVER_INTENT' android-patch/v12.1.63/NavaDownloadService63.java
+grep -q 'MAX_RESOURCES = 220' android-patch/v12.1.63/patch-offline-runtime63.py
+grep -q 'getSeriesRelations' android-patch/v12.1.63/offline.html
+printf 'source_validation=ok\nbase=12.1.62\nlibrary=relation-aware\nhierarchy=series-volume-chapter\nlegacy_volume_classification=title-url\nbackground=foreground-data-sync-service\nspeed=resource-cap-220-plus-skip\n' >> "$STATUS"
+
+# Production signing material.
+set +x
+export NAVA_KDF_SECRET="$(printf '%s' "$FIREBASE_SERVICE_ACCOUNT" | sha256sum | cut -d' ' -f1)"
+openssl enc -d -aes-256-cbc -pbkdf2 -iter 250000 -in .github/nava-signing/private.pem.enc -out /tmp/nava-private.pem -pass env:NAVA_KDF_SECRET
+unset NAVA_KDF_SECRET
+openssl pkeyutl -decrypt -inkey /tmp/nava-private.pem -in android-signing/key-material.enc -out /tmp/key-material.bin -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
+python - <<'PY'
+from pathlib import Path
+d=Path('/tmp/key-material.bin').read_bytes(); assert len(d)==48
+Path('/tmp/aes-key').write_text(d[:32].hex()); Path('/tmp/aes-iv').write_text(d[32:].hex())
+PY
+openssl enc -d -aes-256-cbc -K "$(cat /tmp/aes-key)" -iv "$(cat /tmp/aes-iv)" -in android-signing/signing-payload.enc -out /tmp/signing.zip
+mkdir -p /tmp/nava-signing
+unzip -q /tmp/signing.zip -d /tmp/nava-signing
+rm -f /tmp/nava-private.pem /tmp/key-material.bin /tmp/aes-key /tmp/aes-iv /tmp/signing.zip
+printf 'signing_material=ok\n' >> "$STATUS"
+
+# Exact 12.1.62 base.
+mkdir -p /tmp/current
+gh release download "$SOURCE_TAG" --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current
+GOT="$(sha256sum /tmp/current/Nava.apk | cut -d' ' -f1)"
+test "$GOT" = "$EXPECTED_SOURCE_SHA256"
+unzip -p /tmp/current/Nava.apk classes.dex > /tmp/c1-base.dex
+unzip -p /tmp/current/Nava.apk classes2.dex > /tmp/c2-base.dex
+if unzip -l /tmp/current/Nava.apk | grep -q ' classes3.dex$'; then unzip -p /tmp/current/Nava.apk classes3.dex > /tmp/c3-base.dex; fi
+unzip -p /tmp/current/Nava.apk resources.arsc > /tmp/res-base.arsc
+printf 'source_apk=ok\nsource_sha256=%s\n' "$GOT" >> "$STATUS"
+
+# Verify the live Cilt relation that fixes legacy Tensura aliases.
+curl -fsSL 'https://www.verudanava.com/feeds/posts/summary/-/Cilt?alt=json&max-results=500' -o /tmp/cilt-feed.json
+python - <<'PY'
+import json
+j=json.load(open('/tmp/cilt-feed.json',encoding='utf-8'))
+entries=j.get('feed',{}).get('entry',[])
+match=[]
+for e in entries:
+    title=e.get('title',{}).get('$t','')
+    labels=[x.get('term','') for x in e.get('category',[])]
+    if title.lower()=='tensura cilt 11': match.append((title,labels))
+assert match, 'Tensura Cilt 11 missing from live Cilt feed'
+assert any('Tensei Shitara Slime Datta Ken (Light Novel)' in labels for _,labels in match), match
+print('LIVE_RELATION_OK')
+PY
+printf 'live_relation_contract=ok\n' >> "$STATUS"
+
+# Rebuild only OfflineRuntime + foreground service into classes2.dex.
+python android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/native-source/OfflineRuntime.java.txt /tmp/OfflineRuntime59.java
+python android-patch/v12.1.59/fix-jadx-compile.py /tmp/OfflineRuntime59.java
+python android-patch/v12.1.63/patch-offline-runtime63.py /tmp/OfflineRuntime59.java /tmp/OfflineRuntime.java
+ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
+BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+rm -rf /tmp/javac63 /tmp/newdex63 /tmp/mini63 /tmp/mini63-dec /tmp/base63-dec
+mkdir -p /tmp/javac63 /tmp/newdex63 /tmp/mini63
+javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac63 /tmp/OfflineRuntime.java android-patch/v12.1.63/NavaDownloadService63.java
+mapfile -t CLASSES < <(find /tmp/javac63/com/verudanava/nava -name '*.class' -type f | sort)
+test "${#CLASSES[@]}" -ge 7
+"$BUILD_TOOLS/d8" --lib "$ANDROID_JAR" --min-api 26 --output /tmp/newdex63 "${CLASSES[@]}"
+unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/mini63/AndroidManifest.xml
+cp /tmp/newdex63/classes.dex /tmp/mini63/classes.dex
+(cd /tmp/mini63 && zip -q /tmp/mini63.apk AndroidManifest.xml classes.dex)
+curl -fsSL -o /tmp/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar
+java -jar /tmp/apktool.jar d -f -r /tmp/mini63.apk -o /tmp/mini63-dec >/tmp/apktool-mini63.log
+java -jar /tmp/apktool.jar d -f -r /tmp/current/Nava.apk -o /tmp/base63-dec >/tmp/apktool-base63.log
+rm -f /tmp/base63-dec/smali_classes2/com/verudanava/nava/OfflineRuntime*.smali
+rm -f /tmp/base63-dec/smali_classes2/com/verudanava/nava/NavaDownloadService63*.smali
+cp /tmp/mini63-dec/smali/com/verudanava/nava/OfflineRuntime*.smali /tmp/base63-dec/smali_classes2/com/verudanava/nava/
+cp /tmp/mini63-dec/smali/com/verudanava/nava/NavaDownloadService63*.smali /tmp/base63-dec/smali_classes2/com/verudanava/nava/
+python android-patch/v12.1.63/patch-manifest63.py /tmp/base63-dec/AndroidManifest.xml
+java -jar /tmp/apktool.jar b /tmp/base63-dec -o /tmp/rebuilt63.apk >/tmp/apktool-build63.log
+unzip -p /tmp/rebuilt63.apk classes2.dex > /tmp/classes2-63.dex
+unzip -p /tmp/rebuilt63.apk AndroidManifest.xml > /tmp/manifest63.bin
+grep -aq 'NavaDownloadService63' /tmp/classes2-63.dex
+grep -aq 'submitBatch63' /tmp/classes2-63.dex
+grep -aq 'seriesRelations63' /tmp/classes2-63.dex
+printf 'native_source_compile=ok\nforeground_service_dex=ok\nrelation_bridge=ok\n' >> "$STATUS"
+
+# Assemble final from exact signed base, preserving stable WebView/updater dex and resources.
+python android-patch/v12.1.63/patch-apk.py /tmp/current/Nava.apk /tmp/manifest63.bin /tmp/classes2-63.dex android-patch/v12.1.63/downloaded-library-v12163.js android-patch/v12.1.63/offline.html /tmp/Nava-unsigned.apk | tee /tmp/patch63.txt
+grep -q 'PATCH_OK versionName=12.1.63 versionCode=79' /tmp/patch63.txt
+unzip -p /tmp/Nava-unsigned.apk classes.dex > /tmp/c1-final.dex
+unzip -p /tmp/Nava-unsigned.apk classes2.dex > /tmp/c2-final.dex
+cmp -s /tmp/c1-base.dex /tmp/c1-final.dex
+! cmp -s /tmp/c2-base.dex /tmp/c2-final.dex
+if [ -f /tmp/c3-base.dex ]; then unzip -p /tmp/Nava-unsigned.apk classes3.dex > /tmp/c3-final.dex; cmp -s /tmp/c3-base.dex /tmp/c3-final.dex; fi
+unzip -p /tmp/Nava-unsigned.apk resources.arsc > /tmp/res-final.arsc
+cmp -s /tmp/res-base.arsc /tmp/res-final.arsc
+unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/app63.js
+node --check /tmp/app63.js
+grep -q '__navaDownloadedLibraryV12163' /tmp/app63.js
+grep -q 'refreshRelations' /tmp/app63.js
+unzip -p /tmp/Nava-unsigned.apk assets/offline.html > /tmp/off63.html
+grep -q 'getSeriesRelations' /tmp/off63.html
+"$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='79'.*versionName='12.1.63'"
+"$BUILD_TOOLS/aapt" dump permissions /tmp/Nava-unsigned.apk | grep -q 'android.permission.FOREGROUND_SERVICE'
+"$BUILD_TOOLS/aapt" dump permissions /tmp/Nava-unsigned.apk | grep -q 'android.permission.FOREGROUND_SERVICE_DATA_SYNC'
+"$BUILD_TOOLS/aapt" dump xmltree /tmp/Nava-unsigned.apk AndroidManifest.xml | grep -q 'NavaDownloadService63'
+printf 'patch=ok\nversionName=12.1.63\nversionCode=79\nclasses1_preserved=ok\nclasses2_background_runtime=ok\nclasses3_preserved=ok\nresources_preserved=ok\nmanifest_foreground_service=ok\n' >> "$STATUS"
+
+# Sign.
+"$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk
+PROP=/tmp/nava-signing/keystore.properties
+export NAVA_STORE_PASS="$(sed -n 's/^storePassword=//p' "$PROP" | tr -d '\r' | head -1)"
+export NAVA_KEY_PASS="$(sed -n 's/^keyPassword=//p' "$PROP" | tr -d '\r' | head -1)"
+KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROP" | tr -d '\r' | head -1)"
+"$BUILD_TOOLS/apksigner" sign --ks /tmp/nava-signing/signing/nava-release.jks --ks-key-alias "$KEY_ALIAS" --ks-pass env:NAVA_STORE_PASS --key-pass env:NAVA_KEY_PASS --out /tmp/Nava.apk /tmp/Nava-aligned.apk
+"$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/verify63.txt
+CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/verify63.txt | sed 's/.*digest:[[:space:]]*//' | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
+test "$CERT" = "$EXPECTED_CERT_SHA256"
+APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
+printf 'zipalign=ok\nsigning=ok\ncert_sha256=%s\napk_sha256=%s\n' "$CERT" "$APK_SHA" >> "$STATUS"
+
+# Final semantic proof.
+unzip -p /tmp/Nava.apk classes.dex > /tmp/signed-c1.dex
+unzip -p /tmp/Nava.apk classes2.dex > /tmp/signed-c2.dex
+cmp -s /tmp/c1-base.dex /tmp/signed-c1.dex
+grep -aq 'StartupOverlay61' /tmp/signed-c1.dex
+grep -aq 'Nava-Android/12.1.60' /tmp/signed-c1.dex
+grep -aq 'NavaAndroidApp/12.1.47' /tmp/signed-c1.dex
+grep -aq 'NavaDownloadService63' /tmp/signed-c2.dex
+grep -aq 'seriesRelations63' /tmp/signed-c2.dex
+printf 'final_semantic_check=ok\nstartup_61_preserved=ok\nupdater_60_preserved=ok\nwebview_ua_47_preserved=ok\nbackground_service=ok\n' >> "$STATUS"
+
+if gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+  gh release upload "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --clobber
+  gh release edit "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.63' --latest
+  printf 'release=v12.1.63\nasset=Nava.apk\nrelease_existing=yes\n' >> "$STATUS"
+else
+  NOTES='12.1.63 indirilenler ve arka plan indirme düzeltmesi. Cilt feedindeki gerçek ilişki cachelenerek Tensura Cilt 11 gibi eski kısa/alias metadata kayıtları doğru ana esere bağlanır. Cilt sayfası eski kind verisi chapter olsa bile başlık ve URL üzerinden cilt olarak tanınır; Cilt → Cilt satırı oluşmaz ve yalnız bölümler alt listede görünür. İndirmeler foreground data-sync service + partial wake lock ile uygulama arka plandayken devam eder ve Android servis yeniden teslim mekanizmasını kullanır. Native canonical URL query temizler, zaten tamamlanmış sayfayı yeniden indirmez. Gereksiz tracker/font/embed kaynakları atlanır, kaynak sınırı 220 ve timeoutlar daha kısa tutularak ağır indirmeler azaltılır. 12.1.61 açılışı, 12.1.60 updater ve 12.1.47 WebView UA korunur.'
+  gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.63' --notes "$NOTES" --latest
+  printf 'release=v12.1.63\nasset=Nava.apk\nrelease_existing=no\n' >> "$STATUS"
+fi
+printf 'status=success\nfinished=%s\n' "$(date -u +%FT%TZ)" >> "$STATUS"
+trap - EXIT
