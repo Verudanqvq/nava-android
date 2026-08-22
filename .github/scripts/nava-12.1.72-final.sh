@@ -107,10 +107,9 @@ cmp -s /tmp/off-72-base /tmp/off-72-final
 node --check /tmp/js-72-final
 grep -q '__navaDownloadStateV12172' /tmp/js-72-final
 grep -q 'getDownloadQueue72' /tmp/js-72-final
-grep -q 'open=!!state.seriesOpen\[sk\]' /tmp/js-72-final
-grep -q 'openV=!!state.volumeOpen\[vk\]' /tmp/js-72-final
-! grep -q 'open=q?true:!!state.seriesOpen\[sk\]' /tmp/js-72-final
-! grep -q 'openV=q?true:!!state.volumeOpen\[vk\]' /tmp/js-72-final
+grep -q 'collapseSearch' /tmp/js-72-final
+grep -q 'stopImmediatePropagation' /tmp/js-72-final
+grep -q 'filterDownloadItems.__v12172' /tmp/js-72-final
 grep -q 'state.index.groups' /tmp/js-72-final
 grep -q 'isFinite(Number(a.chapterNo))' /tmp/js-72-final
 
@@ -127,7 +126,7 @@ APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
 echo "NAVA_12_1_72_BUILD_OK apk_sha256=$APK_SHA cert_sha256=$CERT native_queue=ok metadata=ok search=compact dry_run=$DRY_RUN"
 
 if [ "$DRY_RUN" = "1" ]; then exit 0; fi
-NOTES='12.1.72 indirme ekranı doğruluk düzeltmesi. İndirme sırası artık WebView localStorage tahmininden değil Android native batch ledgerinden okunur; tamamlanan öğeler bekliyor olarak kalmaz, sayfa değişiminde state kaybolmaz. Her indirme için seriesName/volumeNo/chapterNo/lang/groupKey metadata kalıcı kaydedilir ve progress bar yanlış cilde bağlanmaz. İndirilenlerde arama artık tüm eser/cilt/bölüm ağacını otomatik açmaz; sonuçlar kompakt kalır. 12.1.71 retry ve 12.1.70 foreground service korunur.'
+NOTES='12.1.72 indirme ekranı doğruluk düzeltmesi. İndirme sırası artık WebView localStorage tahmininden değil Android native batch ledgerinden okunur; tamamlanan öğeler bekliyor olarak kalmaz, sayfa değişiminde state kaybolmaz. Her indirme için seriesName/volumeNo/chapterNo/lang/groupKey metadata kalıcı kaydedilir ve progress bar yanlış cilde bağlanmaz. İndirilenlerde arama artık tüm eser/cilt/bölüm ağacını otomatik açık bırakmaz; arama kompakt başlar ve yalnızca dokunduğun eser/cilt açılır. 12.1.71 retry ve 12.1.70 foreground service korunur.'
 if gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
   gh release upload "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --clobber
   gh release edit "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.72' --notes "$NOTES" --latest
