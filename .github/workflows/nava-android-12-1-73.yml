@@ -23,3 +23,5 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           DRY_RUN: '0'
         run: bash .github/scripts/nava-12.1.73-final.sh
+      - name: Release trigger verification
+        run: echo "Nava 12.1.73 release workflow triggered by main push"
