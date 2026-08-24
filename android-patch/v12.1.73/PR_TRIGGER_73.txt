@@ -1,0 +1,1 @@
+Trigger 12.1.73 release validation via pull_request event.
