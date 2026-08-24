@@ -1,0 +1,25 @@
+name: Nava Android 12.1.73
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'android-patch/v12.1.73/**'
+      - '.github/scripts/nava-12.1.73-final.sh'
+      - '.github/workflows/nava-android-12-1-73.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nava-android-12-1-73
+  cancel-in-progress: true
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Full signed APK regression and release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DRY_RUN: '0'
+        run: bash .github/scripts/nava-12.1.73-final.sh
