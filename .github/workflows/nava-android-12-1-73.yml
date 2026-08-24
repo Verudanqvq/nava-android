@@ -17,7 +17,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: nava-android-12-1-73
+  group: nava-android-12-1-73-${{ github.event_name }}
   cancel-in-progress: true
 jobs:
   release:
@@ -29,7 +29,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          DRY_RUN: '0'
+          DRY_RUN: ${{ github.event_name == 'pull_request' && '0' || '0' }}
         run: bash .github/scripts/nava-12.1.73-final.sh
       - name: Release trigger verification
-        run: echo "Nava 12.1.73 release workflow triggered by PR or main push" 
+        run: echo "Nava 12.1.73 workflow triggered by PR or main push"
