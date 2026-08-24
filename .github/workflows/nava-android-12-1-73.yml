@@ -1,5 +1,12 @@
 name: Nava Android 12.1.73
 on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'android-patch/v12.1.73/**'
+      - '.github/scripts/nava-12.1.73-final.sh'
+      - '.github/workflows/nava-android-12-1-73.yml'
   push:
     branches: [main]
     paths:
@@ -14,6 +21,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   release:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,4 +32,4 @@ jobs:
           DRY_RUN: '0'
         run: bash .github/scripts/nava-12.1.73-final.sh
       - name: Release trigger verification
-        run: echo "Nava 12.1.73 release workflow triggered by main push"
+        run: echo "Nava 12.1.73 release workflow triggered by PR or main push" 
