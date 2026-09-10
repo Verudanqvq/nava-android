@@ -32,12 +32,13 @@ test "$SOURCE_CERT" = "$EXPECTED_CERT_SHA256"
 
 unzip -p "$SOURCE" AndroidManifest.xml >/tmp/manifest76.bin
 python android-patch/v12.1.76/patch-manifest76.py /tmp/manifest76.bin
-python android-patch/v12.1.76/patch-apk.py "$SOURCE" /tmp/manifest76.bin android-patch/v12.1.76/bottom-nav-v12176.css /tmp/Nava-unsigned.apk
+python android-patch/v12.1.76/patch-apk.py "$SOURCE" /tmp/manifest76.bin android-patch/v12.1.76/bottom-nav-v12176.css android-patch/v12.1.74/ui-shell-v12174.js /tmp/Nava-unsigned.apk
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='92'.*versionName='12.1.76'"
 unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.css >/tmp/app76.css
 unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js >/tmp/app76.js
 grep -q '#17202d' /tmp/app76.css
-! grep -q '__navaShellV12174' /tmp/app76.js
+grep -q 'currentProfileImage' /tmp/app76.js
+grep -q 'nava-nav-profile-image-v12174' /tmp/app76.js
 
 "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk
 PROPERTIES=/tmp/nava-signing/keystore.properties
@@ -49,10 +50,10 @@ KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROPERTIES" | tr -d '\r' | head -1)"
 CERTIFICATE="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/verify76.txt | sed 's/.*digest:[[:space:]]*//' | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
 test "$CERTIFICATE" = "$EXPECTED_CERT_SHA256"
 APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
-echo "NAVA_12_1_76_BUILD_OK apk_sha256=$APK_SHA cert_sha256=$CERTIFICATE bottom-navigation-only=ok dry_run=$DRY_RUN"
+echo "NAVA_12_1_76_BUILD_OK apk_sha256=$APK_SHA cert_sha256=$CERTIFICATE bottom-navigation=ok dark-theme=ok profile-image=ok dry_run=$DRY_RUN"
 
 if [ "$DRY_RUN" = "1" ]; then
   exit 0
 fi
 
-gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.76' --notes '12.1.76: 12.1.74 ve 12.1.75 arayüz değişiklikleri tamamen geri alındı. Sadece alt menü yenilendi.' --latest
+gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.76' --notes '12.1.76: alt menü, karanlık tema ve profil fotoğrafı düzeltmeleri.' --latest
