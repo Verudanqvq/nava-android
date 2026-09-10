@@ -4,4 +4,13 @@ html.nava-app-v9 #nava-app-bottom .nava-app-nav-icon{width:31px!important;height
 html.nava-app-v9 #nava-app-bottom .is-active,html.nava-app-v9 #nava-app-bottom [aria-current='page']{background:rgba(228,72,93,.18)!important;color:#fff!important}
 html.nava-app-v9 #nava-app-bottom .is-active .nava-app-nav-icon,html.nava-app-v9 #nava-app-bottom [aria-current='page'] .nava-app-nav-icon{background:#e4485d!important;box-shadow:0 5px 14px rgba(228,72,93,.28)!important}
 html.nava-app-v9 #nava-app-bottom .nava-app-nav-item:active{transform:scale(.96)!important}
+html.nava-app-v9 .nava-nav-profile-image-v12174{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;border-radius:9px!important;border:1px solid rgba(255,255,255,.18)!important}
+html.nava-app-v9{--nava-bg:#121821!important;--nava-surface:#192231!important;--nava-surface-2:#202b3a!important;--nava-ink:#edf2f7!important;--nava-muted:#aab5c3!important;--nava-line:#303c4d!important;--nava-accent:#e4485d!important;background:#121821!important}
+html.nava-app-v9 body,html.nava-app-v9 #nava-app-page{background:#121821!important;color:#edf2f7!important}
+html.nava-app-v9 #nava-app-topbar{background:#151e2a!important;border-bottom:1px solid #2b3747!important;box-shadow:0 2px 10px rgba(0,0,0,.18)!important}
+html.nava-app-v9 #nava-app-topbar .nava-app-brand,html.nava-app-v9 #nava-app-topbar .nava-app-page-title-top{color:#edf2f7!important}
+html.nava-app-v9 #nava-app-topbar .nava-app-icon-btn{background:#202b3a!important;border-color:#354254!important;color:#dbe3ec!important}
+html.nava-app-v9 body.nava-app-home .nava-hero-slide-v5,html.nava-app-v9 body.nava-app-home .nava-series-card-v2{background:#192231!important;border-color:#303c4d!important;box-shadow:0 5px 16px rgba(0,0,0,.2)!important}
+html.nava-app-v9 body.nava-app-home .nava-app-section-title,html.nava-app-v9 body.nava-app-home .nava-hero-copy-v5 strong,html.nava-app-v9 body.nava-app-home .nava-series-title-v2{color:#edf2f7!important}
+html.nava-app-v9 body.nava-app-home .nava-app-section-subtitle,html.nava-app-v9 body.nava-app-home .nava-hero-copy-v5 small,html.nava-app-v9 body.nava-app-home .nava-series-meta-v2{color:#aab5c3!important}
 @media(max-width:360px){html.nava-app-v9 #nava-app-bottom{left:6px!important;right:6px!important;bottom:6px!important;border-radius:16px!important}html.nava-app-v9 #nava-app-bottom a{font-size:8.7px!important}}
