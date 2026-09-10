@@ -1,0 +1,24 @@
+html.nava-app-v9{--nava-ink-dark:#0c1018;--nava-panel-dark:#151b27;--nava-panel-raised:#1d2533;--nava-text:#f5f7fb;--nava-muted-dark:#9da8b8;--nava-accent-v12174:#e4485d}
+html.nava-app-v9 body{background:var(--nava-ink-dark)!important;color:var(--nava-text)!important}
+html.nava-app-v9 #nava-app-page{background:linear-gradient(180deg,#111722 0,#0c1018 35%,#0c1018 100%)!important;color:var(--nava-text)!important}
+html.nava-app-v9 #nava-app-topbar{background:rgba(12,16,24,.96)!important;border-bottom:1px solid rgba(255,255,255,.08)!important;box-shadow:0 8px 26px rgba(0,0,0,.2)!important}
+html.nava-app-v9 #nava-app-topbar .nava-app-brand,html.nava-app-v9 #nava-app-topbar .nava-app-page-title-top{color:var(--nava-text)!important}
+html.nava-app-v9 #nava-app-topbar .nava-app-brand{display:flex!important;align-items:center!important;gap:8px!important;letter-spacing:-.55px!important}
+html.nava-app-v9 #nava-app-topbar .nava-app-brand:before{content:'N';display:grid;place-items:center;width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#f05566,#bd2038);color:#fff;font:900 14px/1 system-ui!important;letter-spacing:-1px}
+html.nava-app-v9 #nava-app-topbar .nava-app-icon-btn{border-color:rgba(255,255,255,.1)!important;background:rgba(255,255,255,.08)!important;color:#f6f8fb!important;border-radius:50%!important}
+html.nava-app-v9 #nava-app-bottom{left:10px!important;right:10px!important;bottom:8px!important;height:62px!important;min-height:62px!important;padding:5px 6px!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:19px!important;background:rgba(24,31,43,.98)!important;box-shadow:0 12px 30px rgba(0,0,0,.34)!important;overflow:hidden!important}
+html.nava-app-v9 #nava-app-bottom a{height:50px!important;min-height:50px!important;border-radius:14px!important;color:#abb5c4!important;font-size:9.5px!important;transition:color .12s ease,background .12s ease,transform .12s ease!important}
+html.nava-app-v9 #nava-app-bottom .nava-app-nav-icon{width:31px!important;height:27px!important;border-radius:10px!important}
+html.nava-app-v9 #nava-app-bottom .is-active,html.nava-app-v9 #nava-app-bottom .is-pending,html.nava-app-v9 #nava-app-bottom [aria-current='page']{background:rgba(228,72,93,.17)!important;color:#fff!important}
+html.nava-app-v9 #nava-app-bottom .is-active .nava-app-nav-icon,html.nava-app-v9 #nava-app-bottom .is-pending .nava-app-nav-icon,html.nava-app-v9 #nava-app-bottom [aria-current='page'] .nava-app-nav-icon{background:#e4485d!important;box-shadow:0 5px 14px rgba(228,72,93,.28)!important}
+html.nava-app-v9 #nava-app-bottom .nava-app-nav-item:active{transform:scale(.96)!important}
+html.nava-app-v9 .nava-nav-profile-image-v12174{width:22px!important;height:22px!important;border:1px solid rgba(255,255,255,.6)!important;border-radius:50%!important;object-fit:cover!important;display:block!important}
+html.nava-app-v9 #nava-app-bottom .is-active .nava-nav-profile-image-v12174,html.nava-app-v9 #nava-app-bottom .is-pending .nava-nav-profile-image-v12174{border-color:#fff!important}
+html.nava-app-v9 body.nava-app-home .nava-hero-slide-v5{background:#1b2331!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:18px!important;box-shadow:0 12px 28px rgba(0,0,0,.24)!important;overflow:hidden!important}
+html.nava-app-v9 body.nava-app-home .nava-app-section-title,html.nava-app-v9 body.nava-app-home .nava-hero-copy-v5 strong{color:#fff!important}
+html.nava-app-v9 body.nava-app-home .nava-app-section-subtitle,html.nava-app-v9 body.nava-app-home .nava-hero-copy-v5 small{color:var(--nava-muted-dark)!important}
+html.nava-app-v9 body.nava-app-home .nava-series-card-v2{background:#151b27!important;border-color:rgba(255,255,255,.08)!important;border-radius:13px!important;box-shadow:none!important}
+html.nava-app-v9 body.nava-app-home .nava-series-title-v2{color:#f6f8fb!important}
+html.nava-app-v9 body.nava-app-home .nava-series-meta-v2{color:#aeb7c5!important}
+html.nava-route-pending-v12174 #nava-app-page{opacity:.985!important}
+@media(max-width:360px){html.nava-app-v9 #nava-app-bottom{left:7px!important;right:7px!important;bottom:6px!important;border-radius:17px!important}html.nava-app-v9 #nava-app-bottom a{font-size:8.7px!important}}
