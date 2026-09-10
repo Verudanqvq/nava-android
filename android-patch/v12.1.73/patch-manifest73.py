@@ -24,7 +24,7 @@ while pos + 8 <= limit:
     size = u32(pos + 4)
     if size < 8 or pos + size > limit:
         raise ValueError('invalid AXML chunk')
-    if typ == 0x001C:
+    if typ == 0x0001:  # RES_STRING_POOL_TYPE
         sp = pos
         break
     pos += size
