@@ -14,12 +14,9 @@ def main():
   names=set(zin.namelist()); req={'AndroidManifest.xml','classes.dex','classes2.dex','assets/nava_app_v11.js','assets/nava_app_v11.css','assets/offline.html','resources.arsc'}
   if not req.issubset(names): raise ValueError('base entries missing')
   keep={n:zin.read(n) for n in ('classes.dex','classes2.dex','assets/nava_app_v11.css','assets/offline.html','resources.arsc')}
-  js=zin.read('assets/nava_app_v11.js').decode('utf-8')
-  start=js.find('/* Nava Android 12.1.49 — per-series chapter language variants. */')
-  if start<0: raise ValueError('49 language marker missing')
-  endm='})(document,window);'; end=js.find(endm,start)
-  if end<0: raise ValueError('49 language iife end missing')
-  js=js[:start]+language.rstrip()+js[end+len(endm):]
+  base_js=zin.read('assets/nava_app_v11.js').decode('utf-8')
+  if 'NavaLanguageCoreV12168' not in base_js: raise ValueError('12.1.68 language core missing')
+  js=language
   with zipfile.ZipFile(out,'w') as zout:
    for info in zin.infolist():
     if oldsig(info.filename): continue
@@ -31,7 +28,7 @@ def main():
   for n,v in keep.items():
    if z.read(n)!=v: raise ValueError('preserved entry changed '+n)
   fj=z.read('assets/nava_app_v11.js').decode('utf-8')
-  for token in ('querySelectorAll(\'a[href]\')','chapterAnchors','LANGUAGE_VARIANTS_73_PATCH_OK'):
+  for token in ('querySelectorAll(\'a[href]\')','listAnchors','NavaLanguageCoreV12168','LANGUAGE_VARIANTS_73_PATCH_OK'):
    if token not in fj: raise ValueError('73 JS token missing '+token)
  print('PATCH_73_OK base=12.1.72 generic-anchor-scan=numeric-sort=all-chapters-preserved versionCode=89')
 if __name__=='__main__': main()

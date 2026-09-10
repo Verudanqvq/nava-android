@@ -25,8 +25,9 @@ BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d 
 SRC_CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/source73-cert.txt | sed 's/.*digest:[[:space:]]*//' | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
 test "$SRC_CERT" = "$EXPECTED_CERT_SHA256"
 unzip -p "$SOURCE" AndroidManifest.xml >/tmp/manifest73.bin
+unzip -p "$SOURCE" assets/nava_app_v11.js >/tmp/app73-base.js
 python android-patch/v12.1.73/patch-manifest73.py /tmp/manifest73.bin
-python android-patch/v12.1.73/patch-language-variants73.py android-patch/v12.1.49/language-variants.js /tmp/language73.js
+python android-patch/v12.1.73/patch-language-variants73.py /tmp/app73-base.js /tmp/language73.js
 python android-patch/v12.1.73/patch-apk.py "$SOURCE" /tmp/manifest73.bin /tmp/language73.js /tmp/Nava-unsigned.apk
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='89'.*versionName='12.1.73'"
 unzip -p /tmp/Nava-unsigned.apk classes.dex >/tmp/c1-73-final.dex
