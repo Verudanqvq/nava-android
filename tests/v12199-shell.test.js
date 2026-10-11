@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const html=readFileSync(new URL('../android-patch/v12.1.99/offline.html',import.meta.url),'utf8');
+const script=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.js',import.meta.url),'utf8');
+const patch=readFileSync(new URL('../android-patch/v12.1.99/patch-apk99.py',import.meta.url),'utf8');
+const native=readFileSync(new URL('../android-patch/v12.1.99/patch-offline-runtime99.py',import.meta.url),'utf8');
+assert.match(html,/NAVA_OFFLINE_STORAGE_COMPRESSED_V12199/);
+assert.match(html,/optimize-storage/);assert.match(html,/N\.optimizeStorage/);assert.match(html,/storageBytes/);
+assert.doesNotMatch(html,/function bytesOf/);assert.match(html,/id="storage-bar"/);assert.match(html,/id="menu"/);
+assert.match(script,/__navaShellV12199/);assert.match(patch,/classes2\.dex/);
+assert.match(native,/Bitmap\.CompressFormat\.WEBP/);assert.match(native,/public void optimizeStorage/);assert.match(native,/MAX_IMAGE_DIMENSION99/);
+console.log('v12.1.99 image compression, native optimizer and downloads UI checks passed');
