@@ -26,7 +26,7 @@ addition=needle+'''        if (pageFile(context, strCanonicalNava).isFile() && i
 '''
 if s.count(needle)!=1: raise ValueError('smart download patch point count='+str(s.count(needle)))
 s=s.replace(needle,addition,1)
-if 'cleanupReadChapters' not in s or 'chapterLanguage' not in s or 'smartDownloads' in s or 'setDefaultLanguage' in s: raise ValueError('cleanup/unconditional dedupe patch markers invalid')
+if 'cleanupReadChapters' not in s or 'chapterLanguage' not in s or 'getSmartDownloads' in s or 'setDefaultLanguage' in s: raise ValueError('cleanup/unconditional dedupe patch markers invalid')
 cleanup='''    private static String chapterLanguage(String url) {
         try {
             String path = java.net.URI.create(url).getPath().toLowerCase(java.util.Locale.ROOT);
