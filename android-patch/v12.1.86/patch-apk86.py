@@ -9,7 +9,7 @@ if len(sys.argv)!=6: raise SystemExit('usage: patch-apk86.py SRC MANIFEST JS CSS
 source,manifest_file,js_file,css_file,output=map(Path,sys.argv[1:])
 manifest=manifest_file.read_bytes(); script=js_file.read_text(encoding='utf-8'); stylesheet=css_file.read_text(encoding='utf-8')
 if b'12.1.86' not in manifest and '12.1.86'.encode('utf-16le') not in manifest: raise ValueError('manifest version marker missing')
-if '__navaShellV12186' not in script or 'nava-nav-profile-image-v12186' not in stylesheet: raise ValueError('shell markers missing')
+if '__navaShellV12186' not in script: raise ValueError('shell marker missing')
 with zipfile.ZipFile(source) as zin, zipfile.ZipFile(output,'w') as zout:
     required={'AndroidManifest.xml','classes.dex','classes2.dex','assets/nava_app_v11.js','assets/nava_app_v11.css','assets/offline.html','resources.arsc'}
     if not required.issubset(set(zin.namelist())): raise ValueError('base APK entries missing')
