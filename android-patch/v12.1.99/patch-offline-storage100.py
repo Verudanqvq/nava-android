@@ -11,10 +11,6 @@ replacement='''            File storageRoot = root(context);
             jSONObjectLoadIndex.put("wifiOnly", prefs(context).getBoolean("wifiOnly", true));'''
 if s.count(needle)!=1: raise ValueError('storage index patch-point count='+str(s.count(needle)))
 s=s.replace(needle,replacement,1)
-anchor='''        @JavascriptInterface
-        public void download(final String str, final String str2, final String str3, final String str4) {'''
-if s.count(anchor)!=1: raise ValueError('settings bridge insertion point count='+str(s.count(anchor)))
-s=s.replace(anchor,bridge+anchor,1)
 needle='''        if (strCanonicalNava == null) {
             throw new Exception("Geçersiz Nava bağlantısı.");
         }
