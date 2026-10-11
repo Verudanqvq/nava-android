@@ -6,8 +6,10 @@ const native=readFileSync(new URL('../android-patch/v12.1.99/patch-offline-stora
 assert.match(html,/NAVA_OFFLINE_STORAGE_COMPRESSED_V12199/);
 assert.doesNotMatch(html,/optimize-storage|N\.optimizeStorage|sıkıştır/i);
 assert.match(html,/storageBytes/);assert.match(html,/storageAvailableBytes/);assert.match(html,/storageTotalBytes/);
+assert.match(html,/setting-wifi/);assert.match(html,/setting-smart/);assert.match(html,/setting-language/);assert.match(html,/save-settings/);
 assert.match(html,/id="storage-bar"/);assert.match(html,/id="menu"/);
 assert.doesNotMatch(html,/1 GB ölçek/);
 assert.match(native,/getUsableSpace\(\)/);assert.match(native,/getTotalSpace\(\)/);
+assert.match(native,/getSmartDownloads/);assert.match(native,/setDefaultLanguage/);assert.match(native,/canonicalBatchUrl/);
 assert.match(patch,/NAVA_OFFLINE_STORAGE_COMPRESSED_V12199/);
-console.log('v12.1.99 offline storage display and compression-option removal checks passed');
+console.log('v12.1.99 unified downloads UI, settings and real storage checks passed');
