@@ -6,7 +6,7 @@ on:
       - 'android-patch/v12.1.94/**'
       - 'tests/v12194-shell.test.js'
       - '.github/scripts/nava-12.1.94-final.sh'
-      - '.github/workflows/nava-android-12-1-93.yml'
+      - '.github/workflows/nava-android-12-1-94.yml'
   workflow_dispatch:
 permissions:
   contents: write
