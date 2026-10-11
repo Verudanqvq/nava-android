@@ -11,7 +11,7 @@ on:
       - 'android-patch/v12.1.72/patch-offline-runtime72.py'
       - 'tests/v12199-shell.test.js'
       - '.github/scripts/nava-12.1.99-final.sh'
-      - '.github/workflows/nava-android-12-2-00.yml'
+      - '.github/workflows/nava-android-12-1-99.yml'
   workflow_dispatch:
 permissions:
   contents: write
