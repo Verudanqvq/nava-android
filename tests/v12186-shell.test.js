@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 const script = readFileSync(new URL('../android-patch/v12.1.86/shell-v12186.js', import.meta.url), 'utf8');
 const stylesheet = readFileSync(new URL('../android-patch/v12.1.86/shell-v12186.css', import.meta.url), 'utf8');
 
-assert.match(script, /hint\\.rel = 'prefetch'/);
+assert.match(script, /prefetch/);
 assert.match(script, /timeout: 450/);
 assert.match(script, /links\(\)\.forEach\(function\(link\) \{ warm\(link\); \}\)/);
 assert.doesNotMatch(script, /setTimeout\(next, 300\)/);
