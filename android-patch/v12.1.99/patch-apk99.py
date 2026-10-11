@@ -33,5 +33,5 @@ with zipfile.ZipFile(output) as result:
  if '__navaShellV12199' not in result.read('assets/nava_app_v11.js').decode():raise ValueError('shell JS missing')
  if b'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' not in result.read('assets/offline.html'):raise ValueError('offline html missing')
  if b'nava-crystal-mark-v12190' in result.read('assets/nava_app_v11.js'):raise ValueError('brand override remains')
-if result.read('classes2.dex')!=classes2:raise ValueError('compressed native runtime missing')
-print('PATCH_99_OK compressed native runtime and offline screen installed')
+ if result.read('classes2.dex')!=classes2:raise ValueError('compressed native runtime missing')
+ print('PATCH_99_OK compressed native runtime and offline screen installed')
