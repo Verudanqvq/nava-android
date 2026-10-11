@@ -8,7 +8,7 @@ def old_signature(name):
 if len(sys.argv)!=6: raise SystemExit('usage: patch-apk84.py SRC MANIFEST JS CSS OUT')
 source,manifest_file,js_file,css_file,output=map(Path,sys.argv[1:])
 manifest=manifest_file.read_bytes(); script=js_file.read_text(encoding='utf-8'); stylesheet=css_file.read_text(encoding='utf-8')
-if b'12.1.84' not in manifest and '12.1.84'.encode('utf-16le') not in manifest: raise ValueError('manifest version marker missing')
+if b'12.1.85' not in manifest and '12.1.85'.encode('utf-16le') not in manifest: raise ValueError('manifest version marker missing')
 if '__navaShellV12184' not in script or 'nava-nav-profile-image-v12184' not in stylesheet: raise ValueError('shell markers missing')
 with zipfile.ZipFile(source) as zin, zipfile.ZipFile(output,'w') as zout:
     required={'AndroidManifest.xml','classes.dex','classes2.dex','assets/nava_app_v11.js','assets/nava_app_v11.css','assets/offline.html','resources.arsc'}

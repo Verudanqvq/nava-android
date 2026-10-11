@@ -3,7 +3,7 @@ set -euo pipefail
 
 EXPECTED_CERT_SHA256=acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51d09fe
 SOURCE_TAG=v12.1.73
-TARGET_TAG=v12.1.84
+TARGET_TAG=v12.1.85
 
 python -m py_compile android-patch/v12.1.84/patch-manifest84.py android-patch/v12.1.84/patch-apk84.py
 node --check android-patch/v12.1.84/shell-v12184.js
@@ -33,7 +33,7 @@ test "$SOURCE_CERT" = "$EXPECTED_CERT_SHA256"
 unzip -p "$SOURCE" AndroidManifest.xml >/tmp/manifest84.bin
 python android-patch/v12.1.84/patch-manifest84.py /tmp/manifest84.bin
 python android-patch/v12.1.84/patch-apk84.py "$SOURCE" /tmp/manifest84.bin android-patch/v12.1.84/shell-v12184.js android-patch/v12.1.84/shell-v12184.css /tmp/Nava-unsigned.apk
-"$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='100'.*versionName='12.1.84'"
+"$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='101'.*versionName='12.1.85'"
 unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js >/tmp/app84.js
 node --check /tmp/app84.js
 grep -q '__navaShellV12184' /tmp/app84.js
@@ -51,4 +51,4 @@ KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROPERTIES" | tr -d '\r' | head -1)"
 "$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk >/tmp/verify84.txt
 CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/verify84.txt | sed 's/.*digest:[[:space:]]*//' | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
 test "$CERT" = "$EXPECTED_CERT_SHA256"
-gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.84' --notes 'Nava tasarım kimliğine dönüş ve alt menü geçişlerinde daha erken sayfa ısıtması. İndirme sistemi, çevrimdışı kütüphane ve native Android kodu v12.1.73 tabanından korunur.' --latest
+gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.85' --notes 'Nava tasarım kimliğine dönüş ve alt menü geçişlerinde daha erken sayfa ısıtması. İndirme sistemi, çevrimdışı kütüphane ve native Android kodu v12.1.73 tabanından korunur.' --latest
