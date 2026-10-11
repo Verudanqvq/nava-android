@@ -123,7 +123,7 @@ grep -aq 'storageAvailableBytes' /tmp/c2-final.dex
 grep -aq 'WEBP' /tmp/c2-final.dex
 unzip -p /tmp/Nava-unsigned.apk assets/offline.html > /tmp/off99.html
 grep -q 'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' /tmp/off99.html
-! ! grep -q 'N.optimizeStorage' /tmp/off99.html
+! grep -q 'N.optimizeStorage' /tmp/off99.html
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='115'.*versionName='12.1.99'"
 "$BUILD_TOOLS/aapt" dump permissions /tmp/Nava-unsigned.apk | grep -q 'android.permission.WAKE_LOCK'
 printf 'patch=ok\nversionName=12.1.99\nversionCode=115\nclasses1_preserved=ok\nclasses2_webp_compression=ok\nclasses3_preserved=ok\nresources_preserved=ok\n' >> "$STATUS"
