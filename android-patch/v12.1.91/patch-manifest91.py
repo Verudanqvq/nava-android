@@ -39,7 +39,7 @@ while pos+8<=len(d):
    for i in range(total):
     a=start+i*asz;name=u32(a+4)
     if name<count and strings[name][0]=='versionCode':
-     if d[a+15]!=16 or u32(a+16)!=106:raise ValueError('unexpected source versionCode')
+     if d[a+15]!=16 or u32(a+16)!=89:raise ValueError('unexpected source versionCode')
      struct.pack_into('<I',d,a+16,107);codes+=1
  pos+=size
 if codes!=1:raise ValueError('expected one versionCode')
