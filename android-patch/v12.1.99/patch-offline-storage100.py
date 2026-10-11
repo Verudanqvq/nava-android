@@ -31,7 +31,7 @@ cleanup='''    private static String chapterLanguage(String url) {
     }
 
     private static int chapterNumber(String value) {
-        java.util.regex.Matcher m = java.util.regex.Pattern.compile("(?:bölüm|bolum|chapter|ch\\.?|episode|ep\\.?)\\s*#?([0-9]+)", java.util.regex.Pattern.CASE_INSENSITIVE).matcher(value == null ? "" : value);
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("(?:bölüm|bolum|chapter|ch[.]?|episode|ep[.]?)[ ]*#?([0-9]+)", java.util.regex.Pattern.CASE_INSENSITIVE).matcher(value == null ? "" : value);
         int result = -1; while (m.find()) { try { result = Integer.parseInt(m.group(1)); } catch (Throwable ignored) {} } return result;
     }
 
