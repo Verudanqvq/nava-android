@@ -15,7 +15,8 @@ node tests/v12199-shell.test.js
 grep -q 'PowerManager.PARTIAL_WAKE_LOCK' android-patch/v12.1.63/patch-offline-runtime63.py
 grep -q 'Bitmap.CompressFormat.WEBP' android-patch/v12.1.99/patch-offline-runtime99.py
 grep -q 'MAX_RESOURCES = 220' android-patch/v12.1.63/patch-offline-runtime63.py
-grep -q 'getSeriesRelations' android-patch/v12.1.99/offline.html
+grep -q 'Bitmap.CompressFormat.WEBP' android-patch/v12.1.99/patch-offline-runtime99.py
+grep -q 'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' android-patch/v12.1.99/offline.html
 printf 'source_validation=ok\nbase=12.1.98\nimage_compression=WebP-quality-80-max-2400px\nexisting_download_optimizer=enabled\nlibrary=relation-aware\nhierarchy=series-volume-chapter\nlegacy_volume_classification=title-url\nbackground=wakelock-native-executor\nspeed=resource-cap-220-plus-skip\n' >> "$STATUS"
 
 # Production signing material.
@@ -71,14 +72,14 @@ python android-patch/v12.1.72/patch-offline-runtime72.py /tmp/OfflineRuntime63.j
 python android-patch/v12.1.99/patch-offline-runtime99.py /tmp/OfflineRuntime72.java /tmp/OfflineRuntime.java
 ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
 BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
-rm -rf /tmp/javac63 /tmp/newdex63 /tmp/mini99 /tmp/mini99-dec /tmp/base99-dec
-mkdir -p /tmp/javac63 /tmp/newdex63 /tmp/mini99
-javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac63 /tmp/OfflineRuntime.java
-mapfile -t CLASSES < <(find /tmp/javac63/com/verudanava/nava -name 'OfflineRuntime*.class' -type f | sort)
+rm -rf /tmp/javac99 /tmp/newdex99 /tmp/mini99 /tmp/mini99-dec /tmp/base99-dec
+mkdir -p /tmp/javac99 /tmp/newdex99 /tmp/mini99
+javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac99 /tmp/OfflineRuntime.java
+mapfile -t CLASSES < <(find /tmp/javac99/com/verudanava/nava -name 'OfflineRuntime*.class' -type f | sort)
 test "${#CLASSES[@]}" -ge 5
-"$BUILD_TOOLS/d8" --lib "$ANDROID_JAR" --min-api 26 --output /tmp/newdex63 "${CLASSES[@]}"
+"$BUILD_TOOLS/d8" --lib "$ANDROID_JAR" --min-api 26 --output /tmp/newdex99 "${CLASSES[@]}"
 unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/mini99/AndroidManifest.xml
-cp /tmp/newdex63/classes.dex /tmp/mini99/classes.dex
+cp /tmp/newdex99/classes.dex /tmp/mini99/classes.dex
 (cd /tmp/mini99 && zip -q /tmp/mini99.apk AndroidManifest.xml classes.dex)
 curl -fsSL -o /tmp/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar
 java -jar /tmp/apktool.jar d -f -r /tmp/mini99.apk -o /tmp/mini99-dec >/tmp/apktool-mini99.log
@@ -97,6 +98,7 @@ printf 'native_source_compile=ok\nimage_webp_compression=ok\nexisting_download_o
 unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/manifest99.bin
 python android-patch/v12.1.99/patch-manifest99.py /tmp/manifest99.bin
 grep -q 'optimizeImage99' /tmp/OfflineRuntime.java
+grep -q 'optimizeStorage' /tmp/OfflineRuntime.java
 python android-patch/v12.1.99/patch-apk99.py /tmp/current/Nava.apk /tmp/manifest99.bin /tmp/classes2-99.dex android-patch/v12.1.99/shell-v12199.js android-patch/v12.1.99/shell-v12199.css /tmp/Nava-unsigned.apk | tee /tmp/patch99.txt
 grep -q 'PATCH_99_OK compressed native runtime and offline screen installed' /tmp/patch99.txt
 unzip -p /tmp/Nava-unsigned.apk classes.dex > /tmp/c1-final.dex
