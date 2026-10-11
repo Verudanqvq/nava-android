@@ -4,7 +4,7 @@ EXPECTED_CERT_SHA256=acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51
 SOURCE_TAG=v12.1.73
 TARGET_TAG=v12.1.82
 DRY_RUN="${DRY_RUN:-0}"
-python -m py_compile android-patch/v12.1.82/patch-manifest82.py android-patch/v12.1.80/preserve-apk.py
+python -m py_compile android-patch/v12.1.82/patch-manifest82.py android-patch/v12.1.82/preserve-apk82.py
 export NAVA_KDF_SECRET="$(printf '%s' "$FIREBASE_SERVICE_ACCOUNT" | sha256sum | cut -d' ' -f1)"
 openssl enc -d -aes-256-cbc -pbkdf2 -iter 250000 -in .github/nava-signing/private.pem.enc -out /tmp/nava-private.pem -pass env:NAVA_KDF_SECRET
 unset NAVA_KDF_SECRET
