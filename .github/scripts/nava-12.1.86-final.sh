@@ -7,7 +7,7 @@ sed \
   -e 's#tests/v12184-shell.test.js#tests/v12186-shell.test.js#g' \
   -e 's#v12184#v12186#g' \
   -e 's#TARGET_TAG=v12.1.85#TARGET_TAG=v12.1.86#g' \
-  -e "s/versionCode='101'.*versionName='12.1.85'/versionCode='102'.*versionName='12.1.86'/" \
+  -e "s/versionCode='101'.*versionName='12.1.85'/versionCode='102'/" \
   -e "s/versionName='12.1.85'/versionName='12.1.86'/" \
   -e "s/Nava 12.1.85/Nava 12.1.86/g" \
   -e 's#source84-cert#source86-cert#g' \
