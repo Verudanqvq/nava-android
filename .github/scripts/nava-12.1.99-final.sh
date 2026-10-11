@@ -4,7 +4,7 @@ STATUS=/tmp/status99.txt
 : > "$STATUS"
 printf 'status=running\nstarted=%s\n' "$(date -u +%FT%TZ)" >> "$STATUS"
 trap 'rc=$?; if [ "$rc" -ne 0 ] && ! grep -q "^status=success$" "$STATUS"; then printf "status=failed\nfinished=%s\n" "$(date -u +%FT%TZ)" >> "$STATUS"; fi; exit "$rc"' EXIT
-EXPECTED_SOURCE_SHA256=57fdb5e5f9be19eae2d2bad1f382ea2e326f0a7f428d665a059346ac34efa8c3
+EXPECTED_SOURCE_SHA256=e69f0afac55987767739fb6c8cc3aa978efe3fe0c2cb97bb303ff6c165e144c8
 EXPECTED_CERT_SHA256=acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51d09fe
 SOURCE_TAG=v12.2.00
 TARGET_TAG=v12.2.01
@@ -15,8 +15,8 @@ node tests/v12199-shell.test.js
 grep -q 'PowerManager.PARTIAL_WAKE_LOCK' android-patch/v12.1.63/patch-offline-runtime63.py
 grep -q 'Bitmap.CompressFormat.WEBP' android-patch/v12.1.99/patch-offline-runtime99.py
 grep -q 'MAX_RESOURCES = 220' android-patch/v12.1.63/patch-offline-runtime63.py
-grep -q 'Bitmap.CompressFormat.WEBP' android-patch/v12.1.99/patch-offline-runtime99.py
 grep -q 'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' android-patch/v12.1.99/offline.html
+echo SOURCE_PATCH_VALIDATION_OK
 printf 'source_validation=ok\nbase=12.1.98\nimage_compression=WebP-quality-80-max-2400px\ncompression_option=removed
 storage_capacity=real-filesystem-free-and-total\nlibrary=relation-aware\nhierarchy=series-volume-chapter\nlegacy_volume_classification=title-url\nbackground=wakelock-native-executor\nspeed=resource-cap-220-plus-skip\n' >> "$STATUS"
 
