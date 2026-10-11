@@ -22,7 +22,6 @@ addition=needle+'''        if (pageFile(context, strCanonicalNava).isFile() && i
 '''
 if s.count(needle)!=1: raise ValueError('smart download patch point count='+str(s.count(needle)))
 s=s.replace(needle,addition,1)
-if 'cleanupReadChapters' not in s or 'chapterLanguage' not in s or 'public boolean getSmartDownloads' in s or 'public void setDefaultLanguage' in s: raise ValueError('cleanup/unconditional dedupe patch markers invalid')
 cleanup='''    private static String chapterLanguage(String url) {
         try {
             String path = java.net.URI.create(url).getPath().toLowerCase(java.util.Locale.ROOT);
@@ -62,5 +61,6 @@ if s.count(anchor)!=1: raise ValueError('open bridge anchor count='+str(s.count(
 s=s.replace(anchor,cleanup+anchor,1)
 s=s.replace('''                String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''','''                cleanupReadChapters(this.context, strCanonicalNava);
                 String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''',1)
+if 'cleanupReadChapters' not in s or 'chapterLanguage' not in s or 'public boolean getSmartDownloads' in s or 'public void setDefaultLanguage' in s: raise ValueError('cleanup/unconditional dedupe patch markers invalid')
 Path(sys.argv[2]).write_text(s,encoding='utf-8')
 print('OFFLINE_STORAGE_100_OK storage capacity, Wi-Fi setting and language-safe chapter cleanup installed')
