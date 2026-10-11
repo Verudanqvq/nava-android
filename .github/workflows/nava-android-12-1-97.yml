@@ -1,0 +1,22 @@
+name: Nava Android 12.1.97
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'android-patch/v12.1.97/**'
+      - 'tests/v12197-shell.test.js'
+      - '.github/scripts/nava-12.1.97-final.sh'
+      - '.github/workflows/nava-android-12-1-97.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build, verify and publish APK
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: bash .github/scripts/nava-12.1.97-final.sh
