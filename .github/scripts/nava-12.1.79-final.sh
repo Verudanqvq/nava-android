@@ -31,8 +31,8 @@ SOURCE_CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/source76-cert.txt 
 test "$SOURCE_CERT" = "$EXPECTED_CERT_SHA256"
 
 unzip -p "$SOURCE" AndroidManifest.xml >/tmp/manifest79.bin
-python android-patch/v12.1.79/patch-manifest79.py /tmp/manifest76.bin
-python android-patch/v12.1.79/patch-apk.py "$SOURCE" /tmp/manifest76.bin android-patch/v12.1.77/bottom-nav-v12177.css android-patch/v12.1.74/ui-shell-v12174.js /tmp/Nava-unsigned.apk
+python android-patch/v12.1.79/patch-manifest79.py /tmp/manifest79.bin
+python android-patch/v12.1.79/patch-apk.py "$SOURCE" /tmp/manifest79.bin android-patch/v12.1.77/bottom-nav-v12177.css android-patch/v12.1.74/ui-shell-v12174.js /tmp/Nava-unsigned.apk
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='95'.*versionName='12.1.79'"
 unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.css >/tmp/app76.css
 unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js >/tmp/app76.js
