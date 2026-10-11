@@ -8,8 +8,8 @@ sed \
   -e 's#v12184#v12187#g' \
   -e 's#__navaShellV12184#__navaShellV12187#g' \
   -e 's#TARGET_TAG=v12.1.85#TARGET_TAG=v12.1.87#g' \
-  -e "s/versionCode='101'.*versionName='12.1.85'/versionCode='103'/\" \
-  -e "s/versionName='12.1.85'/versionName='12.1.87'/\" \
+  -e "s/versionCode='101'.*versionName='12.1.85'/versionCode='103'/" \
+  -e "s/versionName='12.1.85'/versionName='12.1.87'/" \
   -e 's#Nava 12.1.85#Nava 12.1.87#g' \
   -e 's#source84-cert#source87-cert#g' \
   -e 's#manifest84#manifest87#g' \
