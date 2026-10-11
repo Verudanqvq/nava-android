@@ -9,10 +9,12 @@ EXPECTED_CERT_SHA256=acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51
 SOURCE_TAG=v12.1.98
 TARGET_TAG=v12.1.99
 
-python -m py_compile android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/fix-jadx-compile.py android-patch/v12.1.99/patch-offline-runtime63.py android-patch/v12.1.99/patch-apk.py
-node --check android-patch/v12.1.99/downloaded-library-v12163.js
-grep -q 'PowerManager.PARTIAL_WAKE_LOCK' android-patch/v12.1.99/patch-offline-runtime63.py
-grep -q 'MAX_RESOURCES = 220' android-patch/v12.1.99/patch-offline-runtime63.py
+python -m py_compile android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/fix-jadx-compile.py android-patch/v12.1.63/patch-offline-runtime63.py android-patch/v12.1.99/patch-apk99.py
+node --check android-patch/v12.1.99/shell-v12199.js
+node tests/v12199-shell.test.js
+grep -q 'PowerManager.PARTIAL_WAKE_LOCK' android-patch/v12.1.63/patch-offline-runtime63.py
+grep -q 'Bitmap.CompressFormat.WEBP' android-patch/v12.1.99/patch-offline-runtime99.py
+grep -q 'MAX_RESOURCES = 220' android-patch/v12.1.63/patch-offline-runtime63.py
 grep -q 'getSeriesRelations' android-patch/v12.1.99/offline.html
 printf 'source_validation=ok\nbase=12.1.98\nimage_compression=WebP-quality-80-max-2400px\nexisting_download_optimizer=enabled\nlibrary=relation-aware\nhierarchy=series-volume-chapter\nlegacy_volume_classification=title-url\nbackground=wakelock-native-executor\nspeed=resource-cap-220-plus-skip\n' >> "$STATUS"
 
@@ -64,7 +66,9 @@ printf 'live_relation_contract=ok\n' >> "$STATUS"
 # Rebuild only OfflineRuntime in classes2.dex. No manifest/resource rebuild.
 python android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/native-source/OfflineRuntime.java.txt /tmp/OfflineRuntime59.java
 python android-patch/v12.1.59/fix-jadx-compile.py /tmp/OfflineRuntime59.java
-python android-patch/v12.1.99/patch-offline-runtime63.py /tmp/OfflineRuntime59.java /tmp/OfflineRuntime.java
+python android-patch/v12.1.63/patch-offline-runtime63.py /tmp/OfflineRuntime59.java /tmp/OfflineRuntime63.java
+python android-patch/v12.1.72/patch-offline-runtime72.py /tmp/OfflineRuntime63.java /tmp/OfflineRuntime72.java
+python android-patch/v12.1.99/patch-offline-runtime99.py /tmp/OfflineRuntime72.java /tmp/OfflineRuntime.java
 ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
 BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
 rm -rf /tmp/javac63 /tmp/newdex63 /tmp/mini99 /tmp/mini99-dec /tmp/base99-dec
@@ -87,10 +91,13 @@ grep -aq 'submitBatch63' /tmp/classes2-99.dex
 grep -aq 'seriesRelations63' /tmp/classes2-99.dex
 grep -aq 'Nava:OfflineDownload63' /tmp/classes2-99.dex
 ! grep -aq 'NavaDownloadService63' /tmp/classes2-99.dex
-printf 'native_source_compile=ok\nwakelock_runtime=ok\nrelation_bridge=ok\n' >> "$STATUS"
+printf 'native_source_compile=ok\nimage_webp_compression=ok\nexisting_download_optimizer=ok\nwakelock_runtime=ok\nrelation_bridge=ok\n' >> "$STATUS"
 
-# Assemble from exact signed base, binary-patching only version + classes2 + app assets.
-python android-patch/v12.1.99/patch-apk.py /tmp/current/Nava.apk /tmp/classes2-99.dex android-patch/v12.1.99/downloaded-library-v12163.js android-patch/v12.1.99/offline.html /tmp/Nava-unsigned.apk | tee /tmp/patch99.txt
+# Patch the original signed APK while replacing the native offline runtime and UI assets.
+unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/manifest99.bin
+python android-patch/v12.1.99/patch-manifest99.py /tmp/manifest99.bin
+grep -q 'optimizeImage99' /tmp/OfflineRuntime.java
+python android-patch/v12.1.99/patch-apk99.py /tmp/current/Nava.apk /tmp/manifest99.bin /tmp/classes2-99.dex android-patch/v12.1.99/shell-v12199.js android-patch/v12.1.99/shell-v12199.css /tmp/Nava-unsigned.apk | tee /tmp/patch99.txt
 grep -q 'PATCH_99_OK compressed native runtime and offline screen installed' /tmp/patch99.txt
 unzip -p /tmp/Nava-unsigned.apk classes.dex > /tmp/c1-final.dex
 unzip -p /tmp/Nava-unsigned.apk classes2.dex > /tmp/c2-final.dex
@@ -101,14 +108,15 @@ unzip -p /tmp/Nava-unsigned.apk resources.arsc > /tmp/res-final.arsc
 cmp -s /tmp/res-base.arsc /tmp/res-final.arsc
 unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/app99.js
 node --check /tmp/app99.js
-grep -q '__navaDownloadedLibraryV12163' /tmp/app99.js
-grep -q 'refreshRelations' /tmp/app99.js
+grep -q '__navaShellV12199' /tmp/app99.js
+grep -aq 'optimizeStorage' /tmp/c2-final.dex
+grep -aq 'WEBP' /tmp/c2-final.dex
 unzip -p /tmp/Nava-unsigned.apk assets/offline.html > /tmp/off99.html
 grep -q 'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' /tmp/off99.html
 grep -q 'N.optimizeStorage' /tmp/off99.html
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='115'.*versionName='12.1.99'"
 "$BUILD_TOOLS/aapt" dump permissions /tmp/Nava-unsigned.apk | grep -q 'android.permission.WAKE_LOCK'
-printf 'patch=ok\nversionName=12.1.99\nversionCode=115\nclasses1_preserved=ok\nclasses2_wakelock_runtime=ok\nclasses3_preserved=ok\nresources_preserved=ok\n' >> "$STATUS"
+printf 'patch=ok\nversionName=12.1.99\nversionCode=115\nclasses1_preserved=ok\nclasses2_webp_compression=ok\nclasses3_preserved=ok\nresources_preserved=ok\n' >> "$STATUS"
 
 # Sign.
 "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk
@@ -132,6 +140,8 @@ grep -aq 'Nava-Android/12.1.60' /tmp/signed-c1.dex
 grep -aq 'NavaAndroidApp/12.1.47' /tmp/signed-c1.dex
 grep -aq 'Nava:OfflineDownload63' /tmp/signed-c2.dex
 grep -aq 'seriesRelations63' /tmp/signed-c2.dex
+grep -aq 'optimizeStorage' /tmp/signed-c2.dex
+grep -aq 'WEBP' /tmp/signed-c2.dex
 printf 'final_semantic_check=ok\nstartup_61_preserved=ok\nupdater_60_preserved=ok\nwebview_ua_47_preserved=ok\nbackground_wakelock=ok\n' >> "$STATUS"
 
 if gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
