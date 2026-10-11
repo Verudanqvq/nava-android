@@ -39,18 +39,17 @@ anchor='''        @JavascriptInterface
         public void download(final String str, final String str2, final String str3, final String str4) {'''
 if s.count(anchor)!=1: raise ValueError('settings bridge insertion point count='+str(s.count(anchor)))
 s=s.replace(anchor,bridge+anchor,1)
-old='''                                try {
-                                    OfflineRuntime.downloadOne(Bridge.this.context, jSONObjectOptJSONObject.optString("url"), jSONObjectOptJSONObject.optString("title"), jSONObjectOptJSONObject.optString("seriesTitle"), jSONObjectOptJSONObject.optString("kind", "chapter"));
-                                    i++;'''
-new='''                                try {
-                                    String batchUrl = jSONObjectOptJSONObject.optString("url");
-                                    String canonicalBatchUrl = OfflineRuntime.canonicalNava(batchUrl);
-                                    if (OfflineRuntime.prefs(Bridge.this.context).getBoolean("smartDownloads", true) && canonicalBatchUrl != null && OfflineRuntime.pageFile(Bridge.this.context, canonicalBatchUrl).isFile() && OfflineRuntime.itemFor(OfflineRuntime.loadIndex(Bridge.this.context), canonicalBatchUrl) != null) { i++; continue; }
-                                    OfflineRuntime.downloadOne(Bridge.this.context, batchUrl, jSONObjectOptJSONObject.optString("title"), jSONObjectOptJSONObject.optString("seriesTitle"), jSONObjectOptJSONObject.optString("kind", "chapter"));
-                                    i++;'''
-if s.count(old)!=1: raise ValueError('batch patch point count='+str(s.count(old)))
-s=s.replace(old,new,1)
-s=s.replace("print('OFFLINE_STORAGE_100_OK usable and total filesystem bytes exposed')", "print('OFFLINE_STORAGE_100_OK storage capacity, persisted preferences and smart batch skip installed')")
-if 'getSmartDownloads' not in s or 'canonicalBatchUrl' not in s: raise ValueError('settings patch markers missing')
+if 'getSmartDownloads' not in s or 'setDefaultLanguage' not in s or 'Zaten indirilmiş.' not in s: raise ValueError('settings patch markers missing')
+needle='''        if (strCanonicalNava == null) {
+            throw new Exception("Geçersiz Nava bağlantısı.");
+        }
+'''
+addition=needle+'''        if (prefs(context).getBoolean("smartDownloads", true) && pageFile(context, strCanonicalNava).isFile() && itemFor(loadIndex(context), strCanonicalNava) != null) {
+            emit(event("skipped", strCanonicalNava, str2, "Zaten indirilmiş."));
+            return;
+        }
+'''
+if s.count(needle)!=1: raise ValueError('smart download patch point count='+str(s.count(needle)))
+s=s.replace(needle,addition,1)
 Path(sys.argv[2]).write_text(s,encoding='utf-8')
 print('OFFLINE_STORAGE_100_OK usable and total filesystem bytes exposed')
