@@ -1,4 +1,4 @@
-name: Nava Android 12.2.00 unified downloads settings
+name: Nava Android 12.2.01 unified downloads settings
 on:
   push:
     branches: [main]
