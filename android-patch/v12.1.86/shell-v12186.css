@@ -1,0 +1,6 @@
+/* Nava 12.1.86: preserve Nava's blue-gray identity. */
+html.nava-app-v9{--nava-bg:#f4f7fb;--nava-surface:#fff;--nava-ink:#243449;--nava-muted:#77869a;--nava-line:#dce6f0;--nava-accent:#456f9d;background:var(--nava-bg)!important;color:var(--nava-ink)!important}
+html.nava-app-v9 body,html.nava-app-v9 #nava-app-page{background:var(--nava-bg)!important;color:var(--nava-ink)!important}
+html.nava-app-v9 #nava-app-bottom{background:#fff!important;border-top:1px solid #dce6f0!important;box-shadow:0 -3px 12px rgba(35,50,70,.07)!important}
+html.nava-app-v9 #nava-app-bottom .is-active,html.nava-app-v9 #nava-app-bottom .is-pending,html.nava-app-v9 #nava-app-bottom [aria-current='page']{background:#edf4fb!important;color:#456f9d!important}
+html.nava-app-v9 #nava-app-page{overflow-x:clip!important}
