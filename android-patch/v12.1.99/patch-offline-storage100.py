@@ -39,7 +39,6 @@ anchor='''        @JavascriptInterface
         public void download(final String str, final String str2, final String str3, final String str4) {'''
 if s.count(anchor)!=1: raise ValueError('settings bridge insertion point count='+str(s.count(anchor)))
 s=s.replace(anchor,bridge+anchor,1)
-if 'getSmartDownloads' not in s or 'setDefaultLanguage' not in s or 'Zaten indirilmiş.' not in s: raise ValueError('settings patch markers missing')
 needle='''        if (strCanonicalNava == null) {
             throw new Exception("Geçersiz Nava bağlantısı.");
         }
@@ -51,5 +50,6 @@ addition=needle+'''        if (prefs(context).getBoolean("smartDownloads", true)
 '''
 if s.count(needle)!=1: raise ValueError('smart download patch point count='+str(s.count(needle)))
 s=s.replace(needle,addition,1)
+if 'getSmartDownloads' not in s or 'setDefaultLanguage' not in s or 'Zaten indirilmiş.' not in s: raise ValueError('settings patch markers missing')
 Path(sys.argv[2]).write_text(s,encoding='utf-8')
-print('OFFLINE_STORAGE_100_OK usable and total filesystem bytes exposed')
+print('OFFLINE_STORAGE_100_OK storage capacity and persisted smart/Wi-Fi/language settings installed')
