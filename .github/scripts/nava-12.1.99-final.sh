@@ -68,14 +68,18 @@ printf 'live_relation_contract=ok\n' >> "$STATUS"
 python android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/native-source/OfflineRuntime.java.txt /tmp/OfflineRuntime59.java
 python android-patch/v12.1.59/fix-jadx-compile.py /tmp/OfflineRuntime59.java
 python android-patch/v12.1.63/patch-offline-runtime63.py /tmp/OfflineRuntime59.java /tmp/OfflineRuntime63.java
-python android-patch/v12.1.72/patch-offline-runtime72.py /tmp/OfflineRuntime63.java /tmp/OfflineRuntime72.java
+python android-patch/v12.1.69/patch-offline-runtime69.py /tmp/OfflineRuntime63.java /tmp/OfflineRuntime69.java
+python android-patch/v12.1.70/patch-offline-runtime70.py /tmp/OfflineRuntime69.java /tmp/OfflineRuntime70.java
+python android-patch/v12.1.71/patch-offline-runtime71.py /tmp/OfflineRuntime70.java /tmp/OfflineRuntime71.java
+python android-patch/v12.1.72/patch-offline-runtime72.py /tmp/OfflineRuntime71.java /tmp/OfflineRuntime72.java
 python android-patch/v12.1.99/patch-offline-runtime99.py /tmp/OfflineRuntime72.java /tmp/OfflineRuntime.java
 ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
 BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+cp android-patch/v12.1.70/native-source/NavaDownloadService70.java.txt /tmp/NavaDownloadService70.java
 rm -rf /tmp/javac99 /tmp/newdex99 /tmp/mini99 /tmp/mini99-dec /tmp/base99-dec
 mkdir -p /tmp/javac99 /tmp/newdex99 /tmp/mini99
-javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac99 /tmp/OfflineRuntime.java
-mapfile -t CLASSES < <(find /tmp/javac99/com/verudanava/nava -name 'OfflineRuntime*.class' -type f | sort)
+javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac99 /tmp/OfflineRuntime.java /tmp/NavaDownloadService70.java
+mapfile -t CLASSES < <(find /tmp/javac99/com/verudanava/nava \( -name 'OfflineRuntime*.class' -o -name 'NavaDownloadService70*.class' \) -type f | sort)
 test "${#CLASSES[@]}" -ge 5
 "$BUILD_TOOLS/d8" --lib "$ANDROID_JAR" --min-api 26 --output /tmp/newdex99 "${CLASSES[@]}"
 unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/mini99/AndroidManifest.xml
@@ -84,13 +88,15 @@ cp /tmp/newdex99/classes.dex /tmp/mini99/classes.dex
 curl -fsSL -o /tmp/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar
 java -jar /tmp/apktool.jar d -f -r /tmp/mini99.apk -o /tmp/mini99-dec >/tmp/apktool-mini99.log
 java -jar /tmp/apktool.jar d -f -r /tmp/current/Nava.apk -o /tmp/base99-dec >/tmp/apktool-base99.log
-rm -f /tmp/base99-dec/smali_classes2/com/verudanava/nava/OfflineRuntime*.smali
+rm -f /tmp/base99-dec/smali_classes2/com/verudanava/nava/OfflineRuntime*.smali /tmp/base99-dec/smali_classes2/com/verudanava/nava/NavaDownloadService70*.smali
 cp /tmp/mini99-dec/smali/com/verudanava/nava/OfflineRuntime*.smali /tmp/base99-dec/smali_classes2/com/verudanava/nava/
+cp /tmp/mini99-dec/smali/com/verudanava/nava/NavaDownloadService70*.smali /tmp/base99-dec/smali_classes2/com/verudanava/nava/
 java -jar /tmp/apktool.jar b /tmp/base99-dec -o /tmp/rebuilt99.apk >/tmp/apktool-build63.log
 unzip -p /tmp/rebuilt99.apk classes2.dex > /tmp/classes2-99.dex
 grep -aq 'submitBatch63' /tmp/classes2-99.dex
 grep -aq 'seriesRelations63' /tmp/classes2-99.dex
 grep -aq 'Nava:OfflineDownload63' /tmp/classes2-99.dex
+grep -aq 'NavaDownloadService70' /tmp/classes2-99.dex
 ! grep -aq 'NavaDownloadService63' /tmp/classes2-99.dex
 printf 'native_source_compile=ok\nimage_webp_compression=ok\nexisting_download_optimizer=ok\nwakelock_runtime=ok\nrelation_bridge=ok\n' >> "$STATUS"
 
@@ -141,6 +147,7 @@ grep -aq 'StartupOverlay61' /tmp/signed-c1.dex
 grep -aq 'Nava-Android/12.1.60' /tmp/signed-c1.dex
 grep -aq 'NavaAndroidApp/12.1.47' /tmp/signed-c1.dex
 grep -aq 'Nava:OfflineDownload63' /tmp/signed-c2.dex
+grep -aq 'NavaDownloadService70' /tmp/signed-c2.dex
 grep -aq 'seriesRelations63' /tmp/signed-c2.dex
 grep -aq 'optimizeStorage' /tmp/signed-c2.dex
 grep -aq 'WEBP' /tmp/signed-c2.dex
