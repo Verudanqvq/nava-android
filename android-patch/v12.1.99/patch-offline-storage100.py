@@ -64,7 +64,7 @@ anchor='''        @JavascriptInterface
         public void open(String str) {'''
 if s.count(anchor)!=1: raise ValueError('open bridge anchor count='+str(s.count(anchor)))
 s=s.replace(anchor,cleanup+anchor,1)
-s=s.replace('''                String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''','''                OfflineRuntime.cleanupReadChapters(this.context, strCanonicalNava);
+s=s.replace('''                String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''','''                cleanupReadChapters(this.context, strCanonicalNava);
                 String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''',1)
 Path(sys.argv[2]).write_text(s,encoding='utf-8')
 print('OFFLINE_STORAGE_100_OK storage capacity, Wi-Fi setting and language-safe chapter cleanup installed')
