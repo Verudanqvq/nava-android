@@ -1,0 +1,28 @@
+name: Nava Android 12.1.99 image compression
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'android-patch/v12.1.99/**'
+      - 'android-patch/v12.1.59/native-source/OfflineRuntime.java.txt'
+      - 'android-patch/v12.1.59/patch-offline-runtime.py'
+      - 'android-patch/v12.1.59/fix-jadx-compile.py'
+      - 'android-patch/v12.1.63/patch-offline-runtime63.py'
+      - 'android-patch/v12.1.72/patch-offline-runtime72.py'
+      - 'tests/v12199-shell.test.js'
+      - '.github/scripts/nava-12.1.99-final.sh'
+      - '.github/workflows/nava-android-12-1-99.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build native image compression, verify and publish APK
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: bash .github/scripts/nava-12.1.99-final.sh
