@@ -2,6 +2,7 @@ name: Nava Android 12.1.91
 on:
   push:
     branches: [main]
+  workflow_dispatch:
     paths:
       - 'android-patch/v12.1.91/**'
       - 'tests/v12191-shell.test.js'
