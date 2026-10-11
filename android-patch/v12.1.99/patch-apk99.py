@@ -7,7 +7,7 @@ if len(sys.argv)!=7:raise SystemExit('usage: patch-apk99.py SRC MANIFEST CLASSES
 source,manifest_file,classes2_file,js_file,css_file,output=map(Path,sys.argv[1:])
 manifest=manifest_file.read_bytes();classes2=classes2_file.read_bytes();script=js_file.read_text(encoding='utf-8');stylesheet=css_file.read_text(encoding='utf-8')
 offline=Path('android-patch/v12.1.99/offline.html').read_bytes()
-if b'12.2.00' not in manifest and '12.2.00'.encode('utf-16le') not in manifest:raise ValueError('manifest version marker missing')
+if b'12.2.01' not in manifest and '12.2.01'.encode('utf-16le') not in manifest:raise ValueError('manifest version marker missing')
 if '__navaShellV12199' not in script:raise ValueError('shell marker missing')
 if b'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' not in offline:raise ValueError('offline hierarchy marker missing')
 with zipfile.ZipFile(source) as zin,zipfile.ZipFile(output,'w') as zout:
