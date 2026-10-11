@@ -4,9 +4,9 @@ STATUS=/tmp/status99.txt
 : > "$STATUS"
 printf 'status=running\nstarted=%s\n' "$(date -u +%FT%TZ)" >> "$STATUS"
 trap 'rc=$?; if [ "$rc" -ne 0 ] && ! grep -q "^status=success$" "$STATUS"; then printf "status=failed\nfinished=%s\n" "$(date -u +%FT%TZ)" >> "$STATUS"; fi; exit "$rc"' EXIT
-EXPECTED_SOURCE_SHA256=e69f0afac55987767739fb6c8cc3aa978efe3fe0c2cb97bb303ff6c165e144c8
+EXPECTED_SOURCE_SHA256=57fdb5e5f9be19eae2d2bad1f382ea2e326f0a7f428d665a059346ac34efa8c3
 EXPECTED_CERT_SHA256=acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51d09fe
-SOURCE_TAG=v12.2.00
+SOURCE_TAG=v12.1.98
 TARGET_TAG=v12.2.01
 
 python -m py_compile android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/fix-jadx-compile.py android-patch/v12.1.63/patch-offline-runtime63.py android-patch/v12.1.99/patch-apk99.py android-patch/v12.1.99/patch-offline-storage100.py
