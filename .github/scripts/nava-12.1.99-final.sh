@@ -107,6 +107,8 @@ unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/manifest99.bin
 python android-patch/v12.1.99/patch-manifest99.py /tmp/manifest99.bin
 grep -q 'optimizeImage99' /tmp/OfflineRuntime.java
 grep -q 'storageAvailableBytes' /tmp/OfflineRuntime.java
+grep -q 'getSmartDownloads' /tmp/OfflineRuntime.java
+grep -q 'setDefaultLanguage' /tmp/OfflineRuntime.java
 python android-patch/v12.1.99/patch-apk99.py /tmp/current/Nava.apk /tmp/manifest99.bin /tmp/classes2-99.dex android-patch/v12.1.99/shell-v12199.js android-patch/v12.1.99/shell-v12199.css /tmp/Nava-unsigned.apk | tee /tmp/patch99.txt
 grep -q 'PATCH_99_OK compressed native runtime and offline screen installed' /tmp/patch99.txt
 unzip -p /tmp/Nava-unsigned.apk classes.dex > /tmp/c1-final.dex
@@ -120,6 +122,8 @@ unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/app99.js
 node --check /tmp/app99.js
 grep -q '__navaShellV12199' /tmp/app99.js
 grep -aq 'storageAvailableBytes' /tmp/c2-final.dex
+grep -aq 'getSmartDownloads' /tmp/c2-final.dex
+grep -aq 'setDefaultLanguage' /tmp/c2-final.dex
 grep -aq 'WEBP' /tmp/c2-final.dex
 unzip -p /tmp/Nava-unsigned.apk assets/offline.html > /tmp/off99.html
 grep -q 'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' /tmp/off99.html
@@ -152,6 +156,8 @@ grep -aq 'Nava:OfflineDownload63' /tmp/signed-c2.dex
 grep -aq 'NavaDownloadService70' /tmp/signed-c2.dex
 grep -aq 'seriesRelations63' /tmp/signed-c2.dex
 grep -aq 'storageAvailableBytes' /tmp/signed-c2.dex
+grep -aq 'getSmartDownloads' /tmp/signed-c2.dex
+grep -aq 'setDefaultLanguage' /tmp/signed-c2.dex
 grep -aq 'WEBP' /tmp/signed-c2.dex
 printf 'final_semantic_check=ok\nstartup_61_preserved=ok\nupdater_60_preserved=ok\nwebview_ua_47_preserved=ok\nbackground_wakelock=ok\n' >> "$STATUS"
 
