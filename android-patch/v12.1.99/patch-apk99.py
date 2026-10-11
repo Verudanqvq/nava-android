@@ -16,8 +16,8 @@ with zipfile.ZipFile(source) as zin,zipfile.ZipFile(output,'w') as zout:
  original={n:zin.read(n) for n in ('classes.dex','resources.arsc')}
  base_js=zin.read('assets/nava_app_v11.js').decode();base_css=zin.read('assets/nava_app_v11.css').decode()
  auto="if(ratings&&!ratings.dataset.navaAutoOpen){ratings.dataset.navaAutoOpen='1';setTimeout(function(){try{ratings.click()}catch(_){}},0)}"
- if base_js.count(auto)!=1:raise ValueError('expected one profile auto-tab switch to remove')
- base_js=base_js.replace(auto,"/* v12.1.99: preserve the current profile tab on entry */")
+ if base_js.count(auto)>1:raise ValueError('unexpected duplicate profile auto-tab switch')
+ if base_js.count(auto)==1:base_js=base_js.replace(auto,"/* v12.1.99: preserve the current profile tab on entry */")
  for info in zin.infolist():
   if old_signature(info.filename):continue
   data=zin.read(info.filename)
