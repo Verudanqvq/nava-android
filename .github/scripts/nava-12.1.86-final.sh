@@ -6,6 +6,7 @@ sed \
   -e 's#patch-apk84.py#patch-apk86.py#g' \
   -e 's#tests/v12184-shell.test.js#tests/v12186-shell.test.js#g' \
   -e 's#v12184#v12186#g' \
+  -e 's#__navaShellV12184#__navaShellV12186#g' \
   -e 's#TARGET_TAG=v12.1.85#TARGET_TAG=v12.1.86#g' \
   -e "s/versionCode='101'.*versionName='12.1.85'/versionCode='102'/" \
   -e "s/versionName='12.1.85'/versionName='12.1.86'/" \
