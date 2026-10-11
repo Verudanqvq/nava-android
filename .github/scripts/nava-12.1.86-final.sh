@@ -2,6 +2,8 @@
 set -euo pipefail
 sed \
   -e 's#android-patch/v12.1.84#android-patch/v12.1.86#g' \
+  -e 's#patch-manifest84.py#patch-manifest86.py#g' \
+  -e 's#patch-apk84.py#patch-apk86.py#g' \
   -e 's#tests/v12184-shell.test.js#tests/v12186-shell.test.js#g' \
   -e 's#v12184#v12186#g' \
   -e 's#TARGET_TAG=v12.1.85#TARGET_TAG=v12.1.86#g' \
