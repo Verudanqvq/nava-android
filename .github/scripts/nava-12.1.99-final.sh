@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
-STATUS=/tmp/status63.txt
+STATUS=/tmp/status99.txt
 : > "$STATUS"
 printf 'status=running\nstarted=%s\n' "$(date -u +%FT%TZ)" >> "$STATUS"
 trap 'rc=$?; if [ "$rc" -ne 0 ] && ! grep -q "^status=success$" "$STATUS"; then printf "status=failed\nfinished=%s\n" "$(date -u +%FT%TZ)" >> "$STATUS"; fi; exit "$rc"' EXIT
-EXPECTED_SOURCE_SHA256=8018f27ddcaf0f23924ab5be2717bdf39dd8faa37e49ae99998d2acbe4ba9484
+EXPECTED_SOURCE_SHA256=57fdb5e5f9be19eae2d2bad1f382ea2e326f0a7f428d665a059346ac34efa8c3
 EXPECTED_CERT_SHA256=acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51d09fe
-SOURCE_TAG=v12.1.62
-TARGET_TAG=v12.1.63
+SOURCE_TAG=v12.1.98
+TARGET_TAG=v12.1.99
 
-python -m py_compile android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/fix-jadx-compile.py android-patch/v12.1.63/patch-offline-runtime63.py android-patch/v12.1.63/patch-apk.py
-node --check android-patch/v12.1.63/downloaded-library-v12163.js
-grep -q 'PowerManager.PARTIAL_WAKE_LOCK' android-patch/v12.1.63/patch-offline-runtime63.py
-grep -q 'MAX_RESOURCES = 220' android-patch/v12.1.63/patch-offline-runtime63.py
-grep -q 'getSeriesRelations' android-patch/v12.1.63/offline.html
-printf 'source_validation=ok\nbase=12.1.62\nimage_compression=WebP-80-max2400px\nexisting_download_optimizer=enabled\nlibrary=relation-aware\nhierarchy=series-volume-chapter\nlegacy_volume_classification=title-url\nbackground=wakelock-native-executor\nspeed=resource-cap-220-plus-skip\n' >> "$STATUS"
+python -m py_compile android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/fix-jadx-compile.py android-patch/v12.1.99/patch-offline-runtime63.py android-patch/v12.1.99/patch-apk.py
+node --check android-patch/v12.1.99/downloaded-library-v12163.js
+grep -q 'PowerManager.PARTIAL_WAKE_LOCK' android-patch/v12.1.99/patch-offline-runtime63.py
+grep -q 'MAX_RESOURCES = 220' android-patch/v12.1.99/patch-offline-runtime63.py
+grep -q 'getSeriesRelations' android-patch/v12.1.99/offline.html
+printf 'source_validation=ok\nbase=12.1.98\nimage_compression=WebP-quality-80-max-2400px\nexisting_download_optimizer=enabled\nlibrary=relation-aware\nhierarchy=series-volume-chapter\nlegacy_volume_classification=title-url\nbackground=wakelock-native-executor\nspeed=resource-cap-220-plus-skip\n' >> "$STATUS"
 
 # Production signing material.
 set +x
@@ -33,7 +33,7 @@ unzip -q /tmp/signing.zip -d /tmp/nava-signing
 rm -f /tmp/nava-private.pem /tmp/key-material.bin /tmp/aes-key /tmp/aes-iv /tmp/signing.zip
 printf 'signing_material=ok\n' >> "$STATUS"
 
-# Exact 12.1.62 base.
+# Exact 12.1.98 base.
 mkdir -p /tmp/current
 gh release download "$SOURCE_TAG" --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current
 GOT="$(sha256sum /tmp/current/Nava.apk | cut -d' ' -f1)"
@@ -64,34 +64,34 @@ printf 'live_relation_contract=ok\n' >> "$STATUS"
 # Rebuild only OfflineRuntime in classes2.dex. No manifest/resource rebuild.
 python android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/native-source/OfflineRuntime.java.txt /tmp/OfflineRuntime59.java
 python android-patch/v12.1.59/fix-jadx-compile.py /tmp/OfflineRuntime59.java
-python android-patch/v12.1.63/patch-offline-runtime63.py /tmp/OfflineRuntime59.java /tmp/OfflineRuntime.java
+python android-patch/v12.1.99/patch-offline-runtime63.py /tmp/OfflineRuntime59.java /tmp/OfflineRuntime.java
 ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
 BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
-rm -rf /tmp/javac63 /tmp/newdex63 /tmp/mini63 /tmp/mini63-dec /tmp/base63-dec
-mkdir -p /tmp/javac63 /tmp/newdex63 /tmp/mini63
+rm -rf /tmp/javac63 /tmp/newdex63 /tmp/mini99 /tmp/mini99-dec /tmp/base99-dec
+mkdir -p /tmp/javac63 /tmp/newdex63 /tmp/mini99
 javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac63 /tmp/OfflineRuntime.java
 mapfile -t CLASSES < <(find /tmp/javac63/com/verudanava/nava -name 'OfflineRuntime*.class' -type f | sort)
 test "${#CLASSES[@]}" -ge 5
 "$BUILD_TOOLS/d8" --lib "$ANDROID_JAR" --min-api 26 --output /tmp/newdex63 "${CLASSES[@]}"
-unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/mini63/AndroidManifest.xml
-cp /tmp/newdex63/classes.dex /tmp/mini63/classes.dex
-(cd /tmp/mini63 && zip -q /tmp/mini63.apk AndroidManifest.xml classes.dex)
+unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/mini99/AndroidManifest.xml
+cp /tmp/newdex63/classes.dex /tmp/mini99/classes.dex
+(cd /tmp/mini99 && zip -q /tmp/mini99.apk AndroidManifest.xml classes.dex)
 curl -fsSL -o /tmp/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar
-java -jar /tmp/apktool.jar d -f -r /tmp/mini63.apk -o /tmp/mini63-dec >/tmp/apktool-mini63.log
-java -jar /tmp/apktool.jar d -f -r /tmp/current/Nava.apk -o /tmp/base63-dec >/tmp/apktool-base63.log
-rm -f /tmp/base63-dec/smali_classes2/com/verudanava/nava/OfflineRuntime*.smali
-cp /tmp/mini63-dec/smali/com/verudanava/nava/OfflineRuntime*.smali /tmp/base63-dec/smali_classes2/com/verudanava/nava/
-java -jar /tmp/apktool.jar b /tmp/base63-dec -o /tmp/rebuilt63.apk >/tmp/apktool-build63.log
-unzip -p /tmp/rebuilt63.apk classes2.dex > /tmp/classes2-63.dex
-grep -aq 'submitBatch63' /tmp/classes2-63.dex
-grep -aq 'seriesRelations63' /tmp/classes2-63.dex
-grep -aq 'Nava:OfflineDownload63' /tmp/classes2-63.dex
-! grep -aq 'NavaDownloadService63' /tmp/classes2-63.dex
+java -jar /tmp/apktool.jar d -f -r /tmp/mini99.apk -o /tmp/mini99-dec >/tmp/apktool-mini99.log
+java -jar /tmp/apktool.jar d -f -r /tmp/current/Nava.apk -o /tmp/base99-dec >/tmp/apktool-base99.log
+rm -f /tmp/base99-dec/smali_classes2/com/verudanava/nava/OfflineRuntime*.smali
+cp /tmp/mini99-dec/smali/com/verudanava/nava/OfflineRuntime*.smali /tmp/base99-dec/smali_classes2/com/verudanava/nava/
+java -jar /tmp/apktool.jar b /tmp/base99-dec -o /tmp/rebuilt99.apk >/tmp/apktool-build63.log
+unzip -p /tmp/rebuilt99.apk classes2.dex > /tmp/classes2-99.dex
+grep -aq 'submitBatch63' /tmp/classes2-99.dex
+grep -aq 'seriesRelations63' /tmp/classes2-99.dex
+grep -aq 'Nava:OfflineDownload63' /tmp/classes2-99.dex
+! grep -aq 'NavaDownloadService63' /tmp/classes2-99.dex
 printf 'native_source_compile=ok\nwakelock_runtime=ok\nrelation_bridge=ok\n' >> "$STATUS"
 
 # Assemble from exact signed base, binary-patching only version + classes2 + app assets.
-python android-patch/v12.1.63/patch-apk.py /tmp/current/Nava.apk /tmp/classes2-63.dex android-patch/v12.1.63/downloaded-library-v12163.js android-patch/v12.1.63/offline.html /tmp/Nava-unsigned.apk | tee /tmp/patch63.txt
-grep -q 'PATCH_OK versionName=12.1.63 versionCode=115' /tmp/patch63.txt
+python android-patch/v12.1.99/patch-apk.py /tmp/current/Nava.apk /tmp/classes2-99.dex android-patch/v12.1.99/downloaded-library-v12163.js android-patch/v12.1.99/offline.html /tmp/Nava-unsigned.apk | tee /tmp/patch99.txt
+grep -q 'PATCH_99_OK compressed native runtime and offline screen installed' /tmp/patch99.txt
 unzip -p /tmp/Nava-unsigned.apk classes.dex > /tmp/c1-final.dex
 unzip -p /tmp/Nava-unsigned.apk classes2.dex > /tmp/c2-final.dex
 cmp -s /tmp/c1-base.dex /tmp/c1-final.dex
@@ -99,15 +99,16 @@ cmp -s /tmp/c1-base.dex /tmp/c1-final.dex
 if [ -f /tmp/c3-base.dex ]; then unzip -p /tmp/Nava-unsigned.apk classes3.dex > /tmp/c3-final.dex; cmp -s /tmp/c3-base.dex /tmp/c3-final.dex; fi
 unzip -p /tmp/Nava-unsigned.apk resources.arsc > /tmp/res-final.arsc
 cmp -s /tmp/res-base.arsc /tmp/res-final.arsc
-unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/app63.js
-node --check /tmp/app63.js
-grep -q '__navaDownloadedLibraryV12163' /tmp/app63.js
-grep -q 'refreshRelations' /tmp/app63.js
-unzip -p /tmp/Nava-unsigned.apk assets/offline.html > /tmp/off63.html
-grep -q 'getSeriesRelations' /tmp/off63.html
-"$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='79'.*versionName='12.1.63'"
+unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/app99.js
+node --check /tmp/app99.js
+grep -q '__navaDownloadedLibraryV12163' /tmp/app99.js
+grep -q 'refreshRelations' /tmp/app99.js
+unzip -p /tmp/Nava-unsigned.apk assets/offline.html > /tmp/off99.html
+grep -q 'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' /tmp/off99.html
+grep -q 'N.optimizeStorage' /tmp/off99.html
+"$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='115'.*versionName='12.1.99'"
 "$BUILD_TOOLS/aapt" dump permissions /tmp/Nava-unsigned.apk | grep -q 'android.permission.WAKE_LOCK'
-printf 'patch=ok\nversionName=12.1.63\nversionCode=79\nclasses1_preserved=ok\nclasses2_wakelock_runtime=ok\nclasses3_preserved=ok\nresources_preserved=ok\n' >> "$STATUS"
+printf 'patch=ok\nversionName=12.1.99\nversionCode=115\nclasses1_preserved=ok\nclasses2_wakelock_runtime=ok\nclasses3_preserved=ok\nresources_preserved=ok\n' >> "$STATUS"
 
 # Sign.
 "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk
@@ -116,8 +117,8 @@ export NAVA_STORE_PASS="$(sed -n 's/^storePassword=//p' "$PROP" | tr -d '\r' | h
 export NAVA_KEY_PASS="$(sed -n 's/^keyPassword=//p' "$PROP" | tr -d '\r' | head -1)"
 KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROP" | tr -d '\r' | head -1)"
 "$BUILD_TOOLS/apksigner" sign --ks /tmp/nava-signing/signing/nava-release.jks --ks-key-alias "$KEY_ALIAS" --ks-pass env:NAVA_STORE_PASS --key-pass env:NAVA_KEY_PASS --out /tmp/Nava.apk /tmp/Nava-aligned.apk
-"$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/verify63.txt
-CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/verify63.txt | sed 's/.*digest:[[:space:]]*//' | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
+"$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/verify99.txt
+CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/verify99.txt | sed 's/.*digest:[[:space:]]*//' | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
 test "$CERT" = "$EXPECTED_CERT_SHA256"
 APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
 printf 'zipalign=ok\nsigning=ok\ncert_sha256=%s\napk_sha256=%s\n' "$CERT" "$APK_SHA" >> "$STATUS"
@@ -135,12 +136,12 @@ printf 'final_semantic_check=ok\nstartup_61_preserved=ok\nupdater_60_preserved=o
 
 if gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
   gh release upload "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --clobber
-  gh release edit "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.63' --latest
-  printf 'release=v12.1.63\nasset=Nava.apk\nrelease_existing=yes\n' >> "$STATUS"
+  gh release edit "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.99' --latest
+  printf 'release=v12.1.99\nasset=Nava.apk\nrelease_existing=yes\n' >> "$STATUS"
 else
-  NOTES='12.1.63 indirilenler, arka plan ve hız düzeltmesi. Canlı Cilt ilişkisi cachelenerek Tensura Cilt 11 gibi eski kısa/alias metadata kayıtları gerçek ana esere bağlanır. Eski kind=chapter olsa bile Cilt 11 başlık/URL kaydı cilt sayfası olarak tanınır; Cilt altında ikinci Cilt satırı oluşmaz ve yalnız bölümler listelenir. Native batch indirme partial wake lock ile uygulama arka plana atıldığında ve ekran kapandığında çalışmayı sürdürür. Query varyantları tek canonical URL olur, tamamlanmış sayfa yeniden indirilmez. Gereksiz tracker/font/embed kaynakları atlanır, kaynak sınırı 220 ve timeoutlar kısaltılmıştır. 12.1.61 açılışı, 12.1.60 updater ve 12.1.47 WebView UA korunur.'
-  gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.63' --notes "$NOTES" --latest
-  printf 'release=v12.1.63\nasset=Nava.apk\nrelease_existing=no\n' >> "$STATUS"
+  NOTES='12.1.99 çevrimdışı görsel sıkıştırma: JPG/PNG/WebP görselleri WebP quality 80'e dönüştürülür, 2400 piksel üst sınırıyla yeniden örneklenir ve en az %8 küçülmüyorsa değiştirilmez. Yeni indirmelerde otomatik uygulanır; eski indirmeler için İndirilenleri sıkıştır düğmesi eklenmiştir. Canlı Cilt ilişkisi cachelenerek Tensura Cilt 11 gibi eski kısa/alias metadata kayıtları gerçek ana esere bağlanır. Eski kind=chapter olsa bile Cilt 11 başlık/URL kaydı cilt sayfası olarak tanınır; Cilt altında ikinci Cilt satırı oluşmaz ve yalnız bölümler listelenir. Native batch indirme partial wake lock ile uygulama arka plana atıldığında ve ekran kapandığında çalışmayı sürdürür. Query varyantları tek canonical URL olur, tamamlanmış sayfa yeniden indirilmez. Gereksiz tracker/font/embed kaynakları atlanır, kaynak sınırı 220 ve timeoutlar kısaltılmıştır. 12.1.61 açılışı, 12.1.60 updater ve 12.1.47 WebView UA korunur.'
+  gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.1.99' --notes "$NOTES" --latest
+  printf 'release=v12.1.99\nasset=Nava.apk\nrelease_existing=no\n' >> "$STATUS"
 fi
 printf 'status=success\nfinished=%s\n' "$(date -u +%FT%TZ)" >> "$STATUS"
 trap - EXIT
