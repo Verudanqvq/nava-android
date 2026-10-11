@@ -41,7 +41,7 @@ codes = 0; position = u16(2)
 while position + 8 <= len(data):
     kind, size = u16(position), u32(position + 4)
     if size < 8 or position + size > len(data): raise ValueError('invalid AXML chunk')
-    if kind == 0x0103:
+    if kind == 0x0102:
         extension = position + 16; start = extension + u16(extension + 8); attribute_size = u16(extension + 10); total = u16(extension + 12)
         if attribute_size >= 20 and start + total * attribute_size <= position + size:
             for index in range(total):
