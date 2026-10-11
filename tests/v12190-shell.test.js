@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const script=readFileSync(new URL('../android-patch/v12.1.90/shell-v12190.js',import.meta.url),'utf8');
+const stylesheet=readFileSync(new URL('../android-patch/v12.1.90/shell-v12190.css',import.meta.url),'utf8');
+const patch=readFileSync(new URL('../android-patch/v12.1.90/patch-apk90.py',import.meta.url),'utf8');
+assert.match(script,/nava-crystal-mark-v12190/);
+assert.match(script,/warmAll\(\);/);
+assert.match(script,/rel='preconnect'/);
+assert.match(script,/rel='prefetch'/);
+assert.match(script,/addEventListener\('touchstart'/);
+assert.match(stylesheet,/bottom:0!important/);
+assert.match(stylesheet,/visibility:visible!important/);
+assert.doesNotMatch(stylesheet,/\.is-pending/);
+assert.match(patch,/preserve the current profile tab on entry/);
+console.log('v12.1.90 crystal emblem, immediate navigation warming, bottom alignment and profile checks passed');
