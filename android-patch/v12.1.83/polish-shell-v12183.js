@@ -40,7 +40,7 @@ function updateAvatar(){
 function labelFor(link){
  var icon=link.querySelector('.nava-app-nav-icon');
  var existing=link.querySelector('.nava-app-nav-label,.nava-app-nav-text,.nava-nav-label-v12183');
- if(existing)return existing;
+ if(existing){existing.classList.add('nava-nav-label-v12183');return existing;}
  var candidates=Array.prototype.slice.call(link.children).filter(function(node){return node!==icon});
  if(candidates.length){
   candidates[0].classList.add('nava-nav-label-v12183');
