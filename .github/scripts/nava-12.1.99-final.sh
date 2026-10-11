@@ -36,12 +36,15 @@ mkdir -p /tmp/nava-signing
 unzip -q /tmp/signing.zip -d /tmp/nava-signing
 rm -f /tmp/nava-private.pem /tmp/key-material.bin /tmp/aes-key /tmp/aes-iv /tmp/signing.zip
 printf 'signing_material=ok\n' >> "$STATUS"
+echo SIGNING_MATERIAL_OK
 
 # Exact 12.1.98 base.
 mkdir -p /tmp/current
 gh release download "$SOURCE_TAG" --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/current
 GOT="$(sha256sum /tmp/current/Nava.apk | cut -d' ' -f1)"
+echo "SOURCE_APK_SHA256=$GOT"
 test "$GOT" = "$EXPECTED_SOURCE_SHA256"
+echo SOURCE_APK_OK
 unzip -p /tmp/current/Nava.apk classes.dex > /tmp/c1-base.dex
 unzip -p /tmp/current/Nava.apk classes2.dex > /tmp/c2-base.dex
 if unzip -l /tmp/current/Nava.apk | grep -q ' classes3.dex$'; then unzip -p /tmp/current/Nava.apk classes3.dex > /tmp/c3-base.dex; fi
