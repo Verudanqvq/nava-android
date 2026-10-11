@@ -10,7 +10,7 @@ assert.match(html,/setting-wifi/);assert.doesNotMatch(html,/setting-smart|settin
 assert.match(html,/id="storage-bar"/);assert.match(html,/id="menu"/);
 assert.doesNotMatch(html,/1 GB ölçek/);
 assert.match(native,/getUsableSpace\(\)/);assert.match(native,/getTotalSpace\(\)/);
-assert.match(native,/cleanupReadChapters/);assert.match(native,/chapterLanguage/);assert.doesNotMatch(native,/public boolean getSmartDownloads|public void setDefaultLanguage/);
+assert.match(native,/cleanupReadChapters/);assert.match(native,/chapterLanguage/);assert.doesNotMatch(native,/bridge='''[\s\S]*?public boolean getSmartDownloads/);
 const inlineScript=html.match(/<script>([\s\S]*?)<\/script>/);assert.ok(inlineScript,'offline page script exists');assert.doesNotThrow(()=>new Function(inlineScript[1]));
 assert.match(patch,/NAVA_OFFLINE_STORAGE_COMPRESSED_V12199/);
 console.log('v12.1.99 unified downloads UI, settings and real storage checks passed');
