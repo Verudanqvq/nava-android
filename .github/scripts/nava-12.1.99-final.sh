@@ -9,7 +9,7 @@ EXPECTED_CERT_SHA256=acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51
 SOURCE_TAG=v12.1.98
 TARGET_TAG=v12.1.99
 
-python -m py_compile android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/fix-jadx-compile.py android-patch/v12.1.63/patch-offline-runtime63.py android-patch/v12.1.99/patch-apk99.py
+python -m py_compile android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/fix-jadx-compile.py android-patch/v12.1.63/patch-offline-runtime63.py android-patch/v12.1.99/patch-apk99.py android-patch/v12.1.99/patch-offline-storage100.py
 node --check android-patch/v12.1.99/shell-v12199.js
 node tests/v12199-shell.test.js
 grep -q 'PowerManager.PARTIAL_WAKE_LOCK' android-patch/v12.1.63/patch-offline-runtime63.py
@@ -17,7 +17,8 @@ grep -q 'Bitmap.CompressFormat.WEBP' android-patch/v12.1.99/patch-offline-runtim
 grep -q 'MAX_RESOURCES = 220' android-patch/v12.1.63/patch-offline-runtime63.py
 grep -q 'Bitmap.CompressFormat.WEBP' android-patch/v12.1.99/patch-offline-runtime99.py
 grep -q 'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' android-patch/v12.1.99/offline.html
-printf 'source_validation=ok\nbase=12.1.98\nimage_compression=WebP-quality-80-max-2400px\nexisting_download_optimizer=enabled\nlibrary=relation-aware\nhierarchy=series-volume-chapter\nlegacy_volume_classification=title-url\nbackground=wakelock-native-executor\nspeed=resource-cap-220-plus-skip\n' >> "$STATUS"
+printf 'source_validation=ok\nbase=12.1.98\nimage_compression=WebP-quality-80-max-2400px\ncompression_option=removed
+storage_capacity=real-filesystem-free-and-total\nlibrary=relation-aware\nhierarchy=series-volume-chapter\nlegacy_volume_classification=title-url\nbackground=wakelock-native-executor\nspeed=resource-cap-220-plus-skip\n' >> "$STATUS"
 
 # Production signing material.
 set +x
@@ -72,7 +73,8 @@ python android-patch/v12.1.69/patch-offline-runtime69.py /tmp/OfflineRuntime63.j
 python android-patch/v12.1.70/patch-offline-runtime70.py /tmp/OfflineRuntime69.java /tmp/OfflineRuntime70.java
 python android-patch/v12.1.71/patch-offline-runtime71.py /tmp/OfflineRuntime70.java /tmp/OfflineRuntime71.java
 python android-patch/v12.1.72/patch-offline-runtime72.py /tmp/OfflineRuntime71.java /tmp/OfflineRuntime72.java
-python android-patch/v12.1.99/patch-offline-runtime99.py /tmp/OfflineRuntime72.java /tmp/OfflineRuntime.java
+python android-patch/v12.1.99/patch-offline-runtime99.py /tmp/OfflineRuntime72.java /tmp/OfflineRuntime99.java
+python android-patch/v12.1.99/patch-offline-storage100.py /tmp/OfflineRuntime99.java /tmp/OfflineRuntime.java
 ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
 BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
 cp android-patch/v12.1.70/native-source/NavaDownloadService70.java.txt /tmp/NavaDownloadService70.java
@@ -104,7 +106,7 @@ printf 'native_source_compile=ok\nimage_webp_compression=ok\nexisting_download_o
 unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/manifest99.bin
 python android-patch/v12.1.99/patch-manifest99.py /tmp/manifest99.bin
 grep -q 'optimizeImage99' /tmp/OfflineRuntime.java
-grep -q 'optimizeStorage' /tmp/OfflineRuntime.java
+grep -q 'storageAvailableBytes' /tmp/OfflineRuntime.java
 python android-patch/v12.1.99/patch-apk99.py /tmp/current/Nava.apk /tmp/manifest99.bin /tmp/classes2-99.dex android-patch/v12.1.99/shell-v12199.js android-patch/v12.1.99/shell-v12199.css /tmp/Nava-unsigned.apk | tee /tmp/patch99.txt
 grep -q 'PATCH_99_OK compressed native runtime and offline screen installed' /tmp/patch99.txt
 unzip -p /tmp/Nava-unsigned.apk classes.dex > /tmp/c1-final.dex
@@ -117,11 +119,11 @@ cmp -s /tmp/res-base.arsc /tmp/res-final.arsc
 unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/app99.js
 node --check /tmp/app99.js
 grep -q '__navaShellV12199' /tmp/app99.js
-grep -aq 'optimizeStorage' /tmp/c2-final.dex
+grep -aq 'storageAvailableBytes' /tmp/c2-final.dex
 grep -aq 'WEBP' /tmp/c2-final.dex
 unzip -p /tmp/Nava-unsigned.apk assets/offline.html > /tmp/off99.html
 grep -q 'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' /tmp/off99.html
-grep -q 'N.optimizeStorage' /tmp/off99.html
+! ! grep -q 'N.optimizeStorage' /tmp/off99.html
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='115'.*versionName='12.1.99'"
 "$BUILD_TOOLS/aapt" dump permissions /tmp/Nava-unsigned.apk | grep -q 'android.permission.WAKE_LOCK'
 printf 'patch=ok\nversionName=12.1.99\nversionCode=115\nclasses1_preserved=ok\nclasses2_webp_compression=ok\nclasses3_preserved=ok\nresources_preserved=ok\n' >> "$STATUS"
@@ -149,7 +151,7 @@ grep -aq 'NavaAndroidApp/12.1.47' /tmp/signed-c1.dex
 grep -aq 'Nava:OfflineDownload63' /tmp/signed-c2.dex
 grep -aq 'NavaDownloadService70' /tmp/signed-c2.dex
 grep -aq 'seriesRelations63' /tmp/signed-c2.dex
-grep -aq 'optimizeStorage' /tmp/signed-c2.dex
+grep -aq 'storageAvailableBytes' /tmp/signed-c2.dex
 grep -aq 'WEBP' /tmp/signed-c2.dex
 printf 'final_semantic_check=ok\nstartup_61_preserved=ok\nupdater_60_preserved=ok\nwebview_ua_47_preserved=ok\nbackground_wakelock=ok\n' >> "$STATUS"
 
