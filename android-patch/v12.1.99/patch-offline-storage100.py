@@ -39,13 +39,13 @@ page_replacement = '''        String strDecodeHtml = decodeHtml(fetch2.bytes, fe
         LinkedHashSet<String> linkedHashSetCollectResources = collectResources(strCanonicalNava, strDecodeHtml);'''
 if s.count(page_anchor) != 1: raise ValueError('page space guard anchor count='+str(s.count(page_anchor)))
 s=s.replace(page_anchor,page_replacement,1)
-resource_anchor = '''                        if (j + fetch.bytes.length > MAX_PAGE_RESOURCES) {
+resource_anchor = '''                        if (j + storedBytes.length > MAX_PAGE_RESOURCES) {
                             break;
                         }
-                        writeBytes(fileResourceFile, fetch.bytes);'''
-resource_replacement = '''                        if (j + fetch.bytes.length > MAX_PAGE_RESOURCES) break;
-                        if (usedBefore + fetch2.bytes.length + j + fetch.bytes.length > effectiveLimit) throw new Exception("İndirme sınırına veya cihazdaki boş alana ulaşıldı.");
-                        writeBytes(fileResourceFile, fetch.bytes);'''
+                        writeBytes(fileResourceFile, storedBytes);'''
+resource_replacement = '''                        if (j + storedBytes.length > MAX_PAGE_RESOURCES) break;
+                        if (usedBefore + fetch2.bytes.length + j + storedBytes.length > effectiveLimit) throw new Exception("İndirme sınırına veya cihazdaki boş alana ulaşıldı.");
+                        writeBytes(fileResourceFile, storedBytes);'''
 if s.count(resource_anchor) != 1: raise ValueError('resource space guard anchor count='+str(s.count(resource_anchor)))
 s=s.replace(resource_anchor,resource_replacement,1)
 page_write_anchor = '''        String strPrepareOfflineHtml = prepareOfflineHtml(strCanonicalNava, strDecodeHtml);
