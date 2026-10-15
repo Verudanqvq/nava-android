@@ -9,6 +9,8 @@ manifest=manifest_file.read_bytes();classes2=classes2_file.read_bytes();script=j
 offline=Path('android-patch/v12.1.99/offline.html').read_bytes()
 if b'12.2.18' not in manifest and '12.2.18'.encode('utf-16le') not in manifest:raise ValueError('manifest version marker missing')
 if '__navaShellV12199' not in script:raise ValueError('shell marker missing')
+if "function root(){if(new URLSearchParams(w.location.search).get('u'))return null;var r=d.querySelector('.nava-profile-app');" not in script:raise ValueError('profile-only download settings guard missing')
+if 'nava-membership-card-12218' not in script or 'nava-membership-card-12218' not in stylesheet:raise ValueError('membership-card feature flag UI missing')
 if b'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' not in offline:raise ValueError('offline hierarchy marker missing')
 with zipfile.ZipFile(source) as zin,zipfile.ZipFile(output,'w') as zout:
  required={'AndroidManifest.xml','classes.dex','classes2.dex','assets/nava_app_v11.js','assets/nava_app_v11.css','assets/offline.html','resources.arsc'}
