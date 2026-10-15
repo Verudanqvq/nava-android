@@ -307,6 +307,12 @@ service cloud.firestore {
       allow read, create, update, delete: if isAdmin();
     }
 
+    // Public read is limited to the membership-card visibility flag; only admins may change it.
+    match /appConfig/{configId} {
+      allow read: if configId == 'membership';
+      allow create, update, delete: if isAdmin();
+    }
+
     match /devicePushTokens/{tokenDocId} {
       allow read: if signedIn() && resource.data.uid == request.auth.uid;
       allow create: if verified() && request.resource.data.uid == request.auth.uid;
