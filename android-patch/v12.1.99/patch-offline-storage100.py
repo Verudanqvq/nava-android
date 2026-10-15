@@ -7,6 +7,24 @@ replacement_refresh = '''                if (false && fileResourceFile.isFile() 
 if s.count(needle_refresh) != 1: raise ValueError('resource refresh patch-point count=' + str(s.count(needle_refresh)))
 s = s.replace(needle_refresh, replacement_refresh, 1)
 
+needle_scripts = '''    private static boolean allowedResource(String str, String str2) {
+        String strNormalizeMime = normalizeMime(str);
+        if (strNormalizeMime.startsWith("image/") || strNormalizeMime.equals("text/css") || strNormalizeMime.startsWith("font/") || strNormalizeMime.contains("font-woff") || strNormalizeMime.contains("font-ttf")) {
+            return true;
+        }
+        return str2.toLowerCase(Locale.ROOT).matches(".*\\\\.(?:png|jpe?g|gif|webp|svg|avif|css|woff2?|ttf|otf)(?:\\\\?.*)?$");
+    }'''
+replacement_scripts = '''    private static boolean allowedResource(String str, String str2) {
+        String strNormalizeMime = normalizeMime(str);
+        String url = str2 == null ? "" : str2.toLowerCase(Locale.ROOT);
+        if (strNormalizeMime.startsWith("image/") || strNormalizeMime.equals("text/css") || strNormalizeMime.startsWith("font/") || strNormalizeMime.contains("font-woff") || strNormalizeMime.contains("font-ttf") || strNormalizeMime.contains("javascript") || strNormalizeMime.equals("application/ecmascript")) {
+            return true;
+        }
+        return url.matches(".*\\\\.(?:js|mjs|cjs|png|jpe?g|gif|webp|svg|avif|css|woff2?|ttf|otf)(?:\\\\?.*)?$");
+    }'''
+if s.count(needle_scripts) != 1: raise ValueError('script-resource patch-point count=' + str(s.count(needle_scripts)))
+s = s.replace(needle_scripts, replacement_scripts, 1)
+
 needle='''            jSONObjectLoadIndex.put("storageBytes", folderSize(root(context)));
             jSONObjectLoadIndex.put("wifiOnly", prefs(context).getBoolean("wifiOnly", true));'''
 replacement='''            File storageRoot = root(context);
