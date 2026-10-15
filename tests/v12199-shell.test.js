@@ -10,7 +10,7 @@ assert.match(html,/setting-wifi/);assert.match(html,/setting-smart/);assert.does
 assert.match(html,/id="storage-bar"/);assert.match(html,/id="menu"/);
 assert.doesNotMatch(html,/1 GB ölçek/);
 assert.match(readFileSync(new URL('../android-patch/v12.1.99/patch-offline-runtime99.py',import.meta.url),'utf8'),/preserve reader scripts/);assert.match(readFileSync(new URL('../android-patch/v12.1.99/patch-offline-runtime99.py',import.meta.url),'utf8'),/IFRAME\.matcher\(str2\)\.replaceAll/);
-assert.doesNotMatch(native,/Zaten indirilmiş/);assert.match(native,/if \(false && fileResourceFile\.isFile\(\)/);assert.match(native,/getUsableSpace\(\)/);assert.match(native,/getTotalSpace\(\)/);
+assert.doesNotMatch(native,/Zaten indirilmiş/);assert.match(native,/if \(false && fileResourceFile\.isFile\(\)/);assert.match(native,/strNormalizeMime\.contains\(\"javascript\"\)/);assert.match(native,/\|js\|mjs\|cjs\|/);assert.match(native,/getUsableSpace\(\)/);assert.match(native,/getTotalSpace\(\)/);
 assert.match(native,/cleanupReadChapters/);assert.match(native,/chapterLanguage/);assert.match(native,/public boolean getSmartDownloads\(\)/);assert.match(native,/setStorageLimitBytes/);assert.match(native,/physicallyAvailable/);assert.match(native,/effectiveLimit/);assert.match(native,/pageBytes/);
 const inlineScript=html.match(/<script>([\s\S]*?)<\/script>/);assert.ok(inlineScript,'offline page script exists');assert.doesNotThrow(()=>new Function(inlineScript[1]));
 assert.match(patch,/NAVA_OFFLINE_STORAGE_COMPRESSED_V12199/);
