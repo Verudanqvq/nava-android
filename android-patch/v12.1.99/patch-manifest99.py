@@ -52,4 +52,4 @@ while position + 8 <= len(data):
     position += size
 if codes != 1: raise ValueError('expected one source versionCode')
 path.write_bytes(data)
-print('MANIFEST_201_OK versionName=12.2.02 versionCode=117')
+print('MANIFEST_202_OK versionName=12.2.02 versionCode=118')
