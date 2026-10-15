@@ -2,6 +2,11 @@ from pathlib import Path
 import sys
 if len(sys.argv)!=3: raise SystemExit('usage: patch-offline-storage100.py INPUT.java OUTPUT.java')
 s=Path(sys.argv[1]).read_text(encoding='utf-8')
+needle_refresh = '''                if (fileResourceFile.isFile() && fileResourceMimeFile.isFile()) {'''
+replacement_refresh = '''                if (false && fileResourceFile.isFile() && fileResourceMimeFile.isFile()) {'''
+if s.count(needle_refresh) != 1: raise ValueError('resource refresh patch-point count=' + str(s.count(needle_refresh)))
+s = s.replace(needle_refresh, replacement_refresh, 1)
+
 needle='''            jSONObjectLoadIndex.put("storageBytes", folderSize(root(context)));
             jSONObjectLoadIndex.put("wifiOnly", prefs(context).getBoolean("wifiOnly", true));'''
 replacement='''            File storageRoot = root(context);
@@ -15,11 +20,7 @@ needle='''        if (strCanonicalNava == null) {
             throw new Exception("Geçersiz Nava bağlantısı.");
         }
 '''
-addition=needle+'''        if (pageFile(context, strCanonicalNava).isFile() && itemFor(loadIndex(context), strCanonicalNava) != null) {
-            emit(event("skipped", strCanonicalNava, str2, "Zaten indirilmiş."));
-            return;
-        }
-        File storageRoot = root(context);
+addition=needle+'''        File storageRoot = root(context);
         long usedBefore = folderSize(storageRoot);
         long physicallyAvailable = Math.max(0L, storageRoot.getUsableSpace() - 268435456L);
         long configuredLimit = prefs(context).getLong("storageLimitBytes", 2147483648L);
