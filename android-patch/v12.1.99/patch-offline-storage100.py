@@ -19,13 +19,54 @@ addition=needle+'''        if (pageFile(context, strCanonicalNava).isFile() && i
             emit(event("skipped", strCanonicalNava, str2, "Zaten indirilmiş."));
             return;
         }
+        File storageRoot = root(context);
+        long usedBefore = folderSize(storageRoot);
+        long physicallyAvailable = Math.max(0L, storageRoot.getUsableSpace() - 268435456L);
         long configuredLimit = prefs(context).getLong("storageLimitBytes", 2147483648L);
-        if (configuredLimit > 0 && folderSize(root(context)) >= configuredLimit) {
-            throw new Exception("İndirme sınırına ulaşıldı. Ayarlardan GB sınırını artırabilirsin.");
+        long effectiveLimit = Math.min(configuredLimit, usedBefore + physicallyAvailable);
+        if (configuredLimit <= 0 || usedBefore >= effectiveLimit) {
+            throw new Exception("İndirme sınırına veya cihazdaki boş alana ulaşıldı.");
         }
 '''
 if s.count(needle)!=1: raise ValueError('smart download patch point count='+str(s.count(needle)))
 s=s.replace(needle,addition,1)
+
+# Enforce both the user-configured limit and real device free space during every download.
+page_anchor = '''        String strDecodeHtml = decodeHtml(fetch2.bytes, fetch2.contentType);
+        LinkedHashSet<String> linkedHashSetCollectResources = collectResources(strCanonicalNava, strDecodeHtml);'''
+page_replacement = '''        String strDecodeHtml = decodeHtml(fetch2.bytes, fetch2.contentType);
+        if (usedBefore + fetch2.bytes.length > effectiveLimit) throw new Exception("Bu sayfa için cihazda yeterli boş alan yok.");
+        LinkedHashSet<String> linkedHashSetCollectResources = collectResources(strCanonicalNava, strDecodeHtml);'''
+if s.count(page_anchor) != 1: raise ValueError('page space guard anchor count='+str(s.count(page_anchor)))
+s=s.replace(page_anchor,page_replacement,1)
+resource_anchor = '''                        if (j + fetch.bytes.length > MAX_PAGE_RESOURCES) {
+                            break;
+                        }
+                        writeBytes(fileResourceFile, fetch.bytes);'''
+resource_replacement = '''                        if (j + fetch.bytes.length > MAX_PAGE_RESOURCES) break;
+                        if (usedBefore + fetch2.bytes.length + j + fetch.bytes.length > effectiveLimit) throw new Exception("İndirme sınırına veya cihazdaki boş alana ulaşıldı.");
+                        writeBytes(fileResourceFile, fetch.bytes);'''
+if s.count(resource_anchor) != 1: raise ValueError('resource space guard anchor count='+str(s.count(resource_anchor)))
+s=s.replace(resource_anchor,resource_replacement,1)
+page_write_anchor = '''        String strPrepareOfflineHtml = prepareOfflineHtml(strCanonicalNava, strDecodeHtml);
+        File filePageFile = pageFile(context, strCanonicalNava);
+        writeBytes(filePageFile, strPrepareOfflineHtml.getBytes(StandardCharsets.UTF_8));'''
+page_write_replacement = '''        String strPrepareOfflineHtml = prepareOfflineHtml(strCanonicalNava, strDecodeHtml);
+        File filePageFile = pageFile(context, strCanonicalNava);
+        byte[] pageBytes = strPrepareOfflineHtml.getBytes(StandardCharsets.UTF_8);
+        if (usedBefore + length + pageBytes.length > effectiveLimit) throw new Exception("İndirme sınırına veya cihazdaki boş alana ulaşıldı.");
+        writeBytes(filePageFile, pageBytes);'''
+if s.count(page_write_anchor) != 1: raise ValueError('page write space guard anchor count='+str(s.count(page_write_anchor)))
+s=s.replace(page_write_anchor,page_write_replacement,1)
+setter_anchor = '''        public void setStorageLimitBytes(long bytes) { OfflineRuntime.prefs(this.context).edit().putLong("storageLimitBytes", Math.max(536870912L, Math.min(214748364800L, bytes))).apply(); }'''
+setter_replacement = '''        public void setStorageLimitBytes(long bytes) {
+            File storageRoot = OfflineRuntime.root(this.context);
+            long usable = Math.max(0L, storageRoot.getUsableSpace() - 268435456L);
+            long maximum = Math.max(104857600L, OfflineRuntime.folderSize(storageRoot) + usable);
+            OfflineRuntime.prefs(this.context).edit().putLong("storageLimitBytes", Math.max(104857600L, Math.min(Math.min(214748364800L, maximum), bytes))).apply();
+        }'''
+if s.count(setter_anchor) != 1: raise ValueError('storage setter cap anchor count='+str(s.count(setter_anchor)))
+s=s.replace(setter_anchor,setter_replacement,1)
 cleanup='''    private static String chapterLanguage(String url) {
         try {
             String path = java.net.URI.create(url).getPath().toLowerCase(java.util.Locale.ROOT);
@@ -85,6 +126,6 @@ anchor='''        @JavascriptInterface
 if s.count(anchor)!=1: raise ValueError('open bridge anchor count='+str(s.count(anchor)))
 s=s.replace(anchor,cleanup+bridge_methods+anchor,1)
 s=s.replace('''                String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''','''                String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''',1)
-if 'cleanupReadChapters' not in s or 'chapterLanguage' not in s or 'public boolean getSmartDownloads()' not in s or 'storageLimitBytes' not in s: raise ValueError('smart settings and storage cap patch markers missing')
+if 'cleanupReadChapters' not in s or 'chapterLanguage' not in s or 'public boolean getSmartDownloads()' not in s or 'storageLimitBytes' not in s or 'physicallyAvailable' not in s or 'pageBytes' not in s: raise ValueError('smart settings and storage cap patch markers missing')
 Path(sys.argv[2]).write_text(s,encoding='utf-8')
 print('OFFLINE_STORAGE_100_OK storage capacity, Wi-Fi setting and language-safe chapter cleanup installed')
