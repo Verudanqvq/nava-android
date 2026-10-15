@@ -18,4 +18,5 @@ const shell=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.js',imp
 const css=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.css',import.meta.url),'utf8');
 assert.match(shell,/__navaSmartDownloadPolicy12200/);assert.match(shell,/chapterNumber/);assert.match(shell,/navaDownloadCapGb/);assert.match(shell,/cleanup\(completed\)/);assert.match(shell,/next>from\.chapter/);assert.doesNotMatch(shell,/u\.hash='';u\.search='';/);assert.match(shell,/cilt\|volume\|vol/);assert.doesNotMatch(shell,/KEEP='navaSmartKeep'/);
 assert.doesNotMatch(shell,/nava-crystal-mark-v12199|updateBrand/);assert.doesNotMatch(css,/crystal-mark|faceted star emblem/i);
-assert.doesNotMatch(shell,/\\d\+\(\?:\\\.\\d\+\)\?/);assert.match(html,/function cn\(v\).*?\(\[0-9\]\+\)/);\nconsole.log('v12.1.99 unified downloads UI, integer chapter parsing and refreshable offline content checks passed');
+assert.doesNotMatch(shell,/\\d\+\(\?:\\\.\\d\+\)\?/);assert.match(html,/function cn\(v\).*?\(\[0-9\]\+\)/);
+console.log('v12.1.99 unified downloads UI, integer chapter parsing and refreshable offline content checks passed');
