@@ -1,4 +1,4 @@
-name: Nava Android 12.2.08 update-check test release
+name: Nava Android 12.2.09 update-check test release
 on:
   push:
     branches: [main]
