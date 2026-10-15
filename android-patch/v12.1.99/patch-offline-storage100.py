@@ -58,15 +58,6 @@ page_write_replacement = '''        String strPrepareOfflineHtml = prepareOfflin
         writeBytes(filePageFile, pageBytes);'''
 if s.count(page_write_anchor) != 1: raise ValueError('page write space guard anchor count='+str(s.count(page_write_anchor)))
 s=s.replace(page_write_anchor,page_write_replacement,1)
-setter_anchor = '''        public void setStorageLimitBytes(long bytes) { OfflineRuntime.prefs(this.context).edit().putLong("storageLimitBytes", Math.max(536870912L, Math.min(214748364800L, bytes))).apply(); }'''
-setter_replacement = '''        public void setStorageLimitBytes(long bytes) {
-            File storageRoot = OfflineRuntime.root(this.context);
-            long usable = Math.max(0L, storageRoot.getUsableSpace() - 268435456L);
-            long maximum = Math.max(104857600L, OfflineRuntime.folderSize(storageRoot) + usable);
-            OfflineRuntime.prefs(this.context).edit().putLong("storageLimitBytes", Math.max(104857600L, Math.min(Math.min(214748364800L, maximum), bytes))).apply();
-        }'''
-if s.count(setter_anchor) != 1: raise ValueError('storage setter cap anchor count='+str(s.count(setter_anchor)))
-s=s.replace(setter_anchor,setter_replacement,1)
 cleanup='''    private static String chapterLanguage(String url) {
         try {
             String path = java.net.URI.create(url).getPath().toLowerCase(java.util.Locale.ROOT);
@@ -121,6 +112,12 @@ bridge_methods='''        @JavascriptInterface
         public void setStorageLimitBytes(long bytes) { OfflineRuntime.prefs(this.context).edit().putLong("storageLimitBytes", Math.max(536870912L, Math.min(214748364800L, bytes))).apply(); }
 
 '''
+bridge_methods=bridge_methods.replace('''        public void setStorageLimitBytes(long bytes) { OfflineRuntime.prefs(this.context).edit().putLong("storageLimitBytes", Math.max(536870912L, Math.min(214748364800L, bytes))).apply(); }''','''        public void setStorageLimitBytes(long bytes) {
+            File storageRoot = OfflineRuntime.root(this.context);
+            long usable = Math.max(0L, storageRoot.getUsableSpace() - 268435456L);
+            long maximum = Math.max(104857600L, OfflineRuntime.folderSize(storageRoot) + usable);
+            OfflineRuntime.prefs(this.context).edit().putLong("storageLimitBytes", Math.max(104857600L, Math.min(Math.min(214748364800L, maximum), bytes))).apply();
+        }''')
 anchor='''        @JavascriptInterface
         public void open(String str) {'''
 if s.count(anchor)!=1: raise ValueError('open bridge anchor count='+str(s.count(anchor)))
