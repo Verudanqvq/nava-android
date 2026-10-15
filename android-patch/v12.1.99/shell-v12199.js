@@ -49,9 +49,9 @@
  window.__navaSmartDownloadPolicy12200=true;
  var KEY='navaSmartDownload',KEEP='navaSmartKeep',CAP='navaDownloadCapGb',timer=0,lastPage='';
  function pref(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(_){return d}}
- function enabled(){return pref(KEY,'true')!=='false'}
- function keepCount(){var n=parseInt(pref(KEEP,'2'),10);return n===3?3:2}
- function capBytes(){var n=Number(pref(CAP,'2'));if(!isFinite(n)||n<.5)n=2;return Math.min(200,n)*1073741824}
+ function enabled(){try{if(window.NavaOffline&&typeof window.NavaOffline.getSmartDownloads==='function')return !!window.NavaOffline.getSmartDownloads()}catch(_){}return pref(KEY,'true')!=='false'}
+ function keepCount(){try{if(window.NavaOffline&&typeof window.NavaOffline.getSmartKeep==='function')return Number(window.NavaOffline.getSmartKeep())===3?3:2}catch(_){}var n=parseInt(pref(KEEP,'2'),10);return n===3?3:2}
+ function capBytes(){try{if(window.NavaOffline&&typeof window.NavaOffline.getStorageLimitBytes==='function'){var b=Number(window.NavaOffline.getStorageLimitBytes());if(isFinite(b)&&b>=536870912)return Math.min(214748364800,b)}}catch(_){}var n=Number(pref(CAP,'2'));if(!isFinite(n)||n<.5)n=2;return Math.min(200,n)*1073741824}
  function clean(s){return String(s||'').toLocaleLowerCase('tr-TR').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c').replace(/(?:bölüm|bolum|chapter|ch\.?|episode|ep\.?)\s*#?\s*\d+(?:\.\d+)?/gi,' ').replace(/\b\d+\s*(?:bölüm|bolum|chapter|episode)\b/gi,' ').replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim()}
  function chapterNumber(s){var t=String(s||'');var patterns=[/(?:bölüm|bolum|chapter|episode|ep\.?|ch\.?)\s*#?\s*(\d+(?:\.\d+)?)/i,/(\d+(?:\.\d+)?)\s*(?:bölüm|bolum|chapter|episode)/i,/\/(?:bolum|chapter|episode)[-_/ ]*(\d+(?:\.\d+)?)/i];for(var i=0;i<patterns.length;i++){var m=t.match(patterns[i]);if(m)return Number(m[1])}return 0}
  function downloads(){try{var d=JSON.parse(window.NavaOffline.listDownloads()||'{}');return Array.isArray(d.items)?d.items:[]}catch(_){return[]}}
