@@ -45,3 +45,25 @@ html.nava-app-v9 body.nava-app-own-profile .nava-profile-tabs .is-active,html.na
 html.nava-app-v9 body.nava-app-own-profile .nava-profile-panel{padding:12px!important}
 @media(prefers-color-scheme:dark){html.nava-app-v9 body.nava-app-own-profile .nava-profile-hero,html.nava-app-v9 body.nava-app-own-profile .nava-profile-favorites,html.nava-app-v9 body.nava-app-own-profile .nava-profile-stats,html.nava-app-v9 body.nava-app-own-profile .nava-profile-panel,html.nava-app-v9 body.nava-app-own-profile .nava-profile-action-v5,html.nava-app-v9 body.nava-app-own-profile .nava-profile-tabs{background:#121a25!important;border-color:#293444!important;box-shadow:0 2px 8px rgba(0,0,0,.12)!important}html.nava-app-v9 body.nava-app-own-profile .nava-profile-tabs .is-active,html.nava-app-v9 body.nava-app-own-profile .nava-profile-tabs [aria-selected=true]{background:#1d2a3a!important;color:#d8e6f7!important}}
 @media(max-width:390px){html.nava-app-v9 body.nava-app-own-profile .nava-profile-hero{padding:16px 13px!important;border-radius:15px!important}html.nava-app-v9 body.nava-app-own-profile .nava-profile-tabs button,html.nava-app-v9 body.nava-app-own-profile .nava-profile-tabs [role=tab]{padding-inline:9px!important;font-size:10px!important}html.nava-app-v9 body.nava-app-own-profile .nava-profile-panel{padding:9px!important}}
+
+
+/* v12.2.18 membership-card placeholder and admin-only visibility control. */
+html.nava-app-v9 .nava-membership-card-12218{box-sizing:border-box;display:flex;align-items:center;gap:12px;width:100%;padding:14px;border:1px solid #d8e4f2;border-radius:15px;background:linear-gradient(120deg,#f6f9ff,#fff);color:#26384e}
+html.nava-app-v9 .nava-membership-mark-12218{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:12px;background:#e2ecfa;color:#365f8d;font-size:20px;font-weight:900}
+html.nava-app-v9 .nava-membership-copy-12218{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+html.nava-app-v9 .nava-membership-copy-12218 strong{font-size:13px;font-weight:850}
+html.nava-app-v9 .nava-membership-copy-12218 span{font-size:11px;line-height:1.4;color:#78879a}
+html.nava-app-v9 .nava-membership-status-12218{flex:0 0 auto;padding:5px 7px;border-radius:7px;background:#e8eef7;color:#557092;font-size:9px;font-weight:850;letter-spacing:.04em}
+html.nava-app-v9 .nava-membership-admin-12218{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:12px;border:1px dashed #c5d5e8;border-radius:12px;background:#f7faff;color:#26384e}
+html.nava-app-v9 .nava-membership-admin-copy-12218{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+html.nava-app-v9 .nava-membership-admin-copy-12218 strong{font-size:12px;font-weight:800}
+html.nava-app-v9 .nava-membership-admin-copy-12218 small{font-size:10px;line-height:1.45;color:#77869a}
+html.nava-app-v9 .nava-membership-switch-12218{position:relative;display:block;flex:0 0 44px;width:44px;height:26px}
+html.nava-app-v9 .nava-membership-switch-12218 input{position:absolute;opacity:0;width:1px;height:1px}
+html.nava-app-v9 .nava-membership-switch-12218 span{position:absolute;inset:0;border-radius:99px;background:#cbd5e1;transition:background .15s}
+html.nava-app-v9 .nava-membership-switch-12218 span:after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0002;transition:transform .15s}
+html.nava-app-v9 .nava-membership-switch-12218 input:checked+span{background:#4f7cad}
+html.nava-app-v9 .nava-membership-switch-12218 input:checked+span:after{transform:translateX(18px)}
+html.nava-app-v9 .nava-membership-switch-12218 input:focus-visible+span{outline:2px solid #4f7cad;outline-offset:3px}
+html.nava-app-v9 .nava-membership-switch-12218 input:disabled+span{opacity:.55}
+@media(prefers-color-scheme:dark){html.nava-app-v9 .nava-membership-card-12218{background:linear-gradient(120deg,#172438,#121a25);border-color:#2b3d52;color:#e5edf7}html.nava-app-v9 .nava-membership-mark-12218{background:#263b54;color:#cfe0f7}html.nava-app-v9 .nava-membership-copy-12218 span,html.nava-app-v9 .nava-membership-admin-copy-12218 small{color:#9aadc3}html.nava-app-v9 .nava-membership-status-12218{background:#24354a;color:#c7d8ed}html.nava-app-v9 .nava-membership-admin-12218{background:#121d2b;border-color:#344861;color:#e5edf7}}
