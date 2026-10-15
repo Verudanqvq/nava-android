@@ -33,7 +33,7 @@ strings = [entry(index) for index in range(count)]
 names = 0
 for value, start, length in strings:
     if value == '12.1.98':
-        replacement = '12.2.02'.encode('utf-8' if utf8 else 'utf-16le')
+        replacement = '12.2.03'.encode('utf-8' if utf8 else 'utf-16le')
         if len(replacement) != length: raise ValueError('versionName length mismatch')
         data[start:start + length] = replacement; names += 1
 if names != 1: raise ValueError('expected one versionName')
@@ -48,8 +48,8 @@ while position + 8 <= len(data):
                 attribute = start + index * attribute_size; name = u32(attribute + 4)
                 if name < count and strings[name][0] == 'versionCode':
                     if data[attribute + 15] != 0x10 or u32(attribute + 16) != 114: raise ValueError('unexpected versionCode')
-                    struct.pack_into('<I', data, attribute + 16, 118); codes += 1
+                    struct.pack_into('<I', data, attribute + 16, 119); codes += 1
     position += size
 if codes != 1: raise ValueError('expected one source versionCode')
 path.write_bytes(data)
-print('MANIFEST_202_OK versionName=12.2.02 versionCode=118')
+print('MANIFEST_203_OK versionName=12.2.03 versionCode=119')
