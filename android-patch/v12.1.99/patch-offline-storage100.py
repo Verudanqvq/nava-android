@@ -41,14 +41,16 @@ cleanup='''    private static String chapterLanguage(String url) {
             JSONObject current = itemFor(index, currentUrl); if (current == null) return;
             String series = current.optString("seriesTitle", ""); String language = chapterLanguage(currentUrl);
             int currentNo = chapterNumber(current.optString("title", "") + " " + currentUrl);
-            if (series.isEmpty() || language.isEmpty() || currentNo < 4 || !"chapter".equalsIgnoreCase(current.optString("kind", "chapter"))) return;
+            if (!prefs(context).getBoolean("smartDownloads", true) || series.isEmpty() || language.isEmpty() || !"chapter".equalsIgnoreCase(current.optString("kind", "chapter"))) return;
+            int keep = Math.max(2, Math.min(3, prefs(context).getInt("smartKeep", 2)));
+            if (currentNo < keep + 2) return;
             java.util.ArrayList<String> remove = new java.util.ArrayList<>();
             for (int i = 0; i < items.length(); i++) {
                 JSONObject item = items.optJSONObject(i); if (item == null) continue;
                 String url = item.optString("url", "");
                 if (url.equals(currentUrl) || !series.equals(item.optString("seriesTitle", "")) || !"chapter".equalsIgnoreCase(item.optString("kind", "chapter")) || !language.equals(chapterLanguage(url))) continue;
                 int no = chapterNumber(item.optString("title", "") + " " + url);
-                if (no >= 0 && no <= currentNo - 3) remove.add(url);
+                if (no >= 0 && no < currentNo - keep - 1) remove.add(url);
             }
             for (String url : remove) deleteOne(context, url);
         } catch (Throwable ignored) {}
@@ -56,11 +58,26 @@ cleanup='''    private static String chapterLanguage(String url) {
 
 '''
 anchor='''        @JavascriptInterface
+        public boolean getSmartDownloads() { return OfflineRuntime.prefs(this.context).getBoolean("smartDownloads", true); }
+
+        @JavascriptInterface
+        public void setSmartDownloads(boolean enabled) { OfflineRuntime.prefs(this.context).edit().putBoolean("smartDownloads", enabled).apply(); }
+
+        @JavascriptInterface
+        public int getSmartKeep() { return OfflineRuntime.prefs(this.context).getInt("smartKeep", 2); }
+
+        @JavascriptInterface
+        public void setSmartKeep(int count) { OfflineRuntime.prefs(this.context).edit().putInt("smartKeep", Math.max(2, Math.min(3, count))).apply(); }
+
+        @JavascriptInterface
+        public void setStorageLimitBytes(long bytes) { OfflineRuntime.prefs(this.context).edit().putLong("storageLimitBytes", Math.max(536870912L, Math.min(214748364800L, bytes))).apply(); }
+
+        @JavascriptInterface
         public void open(String str) {'''
 if s.count(anchor)!=1: raise ValueError('open bridge anchor count='+str(s.count(anchor)))
 s=s.replace(anchor,cleanup+anchor,1)
 s=s.replace('''                String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''','''                cleanupReadChapters(this.context, strCanonicalNava);
                 String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''',1)
-if 'cleanupReadChapters' not in s or 'chapterLanguage' not in s or 'public boolean getSmartDownloads' in s or 'public void setDefaultLanguage' in s: raise ValueError('cleanup/unconditional dedupe patch markers invalid')
+if 'cleanupReadChapters' not in s or 'chapterLanguage' not in s or 'public boolean getSmartDownloads()' not in s or 'storageLimitBytes' not in s: raise ValueError('smart settings and storage cap patch markers missing')
 Path(sys.argv[2]).write_text(s,encoding='utf-8')
 print('OFFLINE_STORAGE_100_OK storage capacity, Wi-Fi setting and language-safe chapter cleanup installed')
