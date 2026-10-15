@@ -10,7 +10,11 @@ assert.match(html,/setting-wifi/);assert.match(html,/setting-smart/);assert.matc
 assert.match(html,/id="storage-bar"/);assert.match(html,/id="menu"/);
 assert.doesNotMatch(html,/1 GB ölçek/);
 assert.match(native,/getUsableSpace\(\)/);assert.match(native,/getTotalSpace\(\)/);
-assert.match(native,/cleanupReadChapters/);assert.match(native,/chapterLanguage/);assert.doesNotMatch(native,/bridge='''[\s\S]*?public boolean getSmartDownloads/);
+assert.match(native,/cleanupReadChapters/);assert.match(native,/chapterLanguage/);assert.match(native,/public boolean getSmartDownloads\(\)/);assert.match(native,/setStorageLimitBytes/);
 const inlineScript=html.match(/<script>([\s\S]*?)<\/script>/);assert.ok(inlineScript,'offline page script exists');assert.doesNotThrow(()=>new Function(inlineScript[1]));
-assert.match(patch,/NAVA_OFFLINE_STORAGE_COMPRESSED_V12199/);\nconst shell=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.js',import.meta.url),'utf8');\nconst css=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.css',import.meta.url),'utf8');\nassert.match(shell,/__navaSmartDownloadPolicy12200/);assert.match(shell,/chapterNumber/);assert.match(shell,/navaDownloadCapGb/);\nassert.doesNotMatch(shell,/nava-crystal-mark-v12199|updateBrand/);assert.doesNotMatch(css,/crystal-mark|faceted star emblem/i);
+assert.match(patch,/NAVA_OFFLINE_STORAGE_COMPRESSED_V12199/);
+const shell=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.js',import.meta.url),'utf8');
+const css=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.css',import.meta.url),'utf8');
+assert.match(shell,/__navaSmartDownloadPolicy12200/);assert.match(shell,/chapterNumber/);assert.match(shell,/navaDownloadCapGb/);
+assert.doesNotMatch(shell,/nava-crystal-mark-v12199|updateBrand/);assert.doesNotMatch(css,/crystal-mark|faceted star emblem/i);
 console.log('v12.1.99 unified downloads UI, settings and real storage checks passed');
