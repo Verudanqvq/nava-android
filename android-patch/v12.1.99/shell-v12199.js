@@ -92,23 +92,3 @@
  function init(){tick();if(window.MutationObserver)new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});window.addEventListener('popstate',schedule);window.addEventListener('pageshow',schedule);document.addEventListener('click',function(ev){var a=ev.target&&ev.target.closest?ev.target.closest('a[href]'):null;if(!a)return;var from=pageInfo(),to=String(a.href||''),label=String(a.textContent||'').toLocaleLowerCase('tr-TR'),next=chapterNumber(label)||chapterNumber(to),isNext=/sonraki|ileri|next|sonraki bölüm|next chapter/.test(label)||a.rel==='next'||/next|older|chapter-next|next-chapter|blog-pager-older-link/i.test(String(a.className||''));if(from&&isNext&&next>from.chapter){var completed={chapter:from.chapter,series:from.series,url:from.url,language:from.language};try{localStorage.setItem('navaLastCompletedChapter',JSON.stringify(completed))}catch(_){}cleanup(completed)}setTimeout(schedule,150)},true);setInterval(tick,2500)}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(window,document);
-
-
-
-
-/* Online gear opens the exact same settings drawer used by offline Downloads. */
-(function(w,d){
-'use strict';
-if(w.__navaDownloadsSettingsRoute12214)return;w.__navaDownloadsSettingsRoute12214=true;
-function openSharedSettings(){try{if(w.NavaOffline&&typeof w.NavaOffline.openDownloads==='function')w.NavaOffline.openDownloads()}catch(_){}}
-function ensure(){
-var actions=d.querySelector('#nava-app-topbar .nava-app-top-actions');if(!actions)return;
-var gear=d.getElementById('nava-shared-download-settings12214');
-if(!gear){gear=d.createElement('button');gear.type='button';gear.id='nava-shared-download-settings12214';gear.className='nava-app-icon-btn nava-shared-download-settings12214';gear.setAttribute('aria-label','İndirme ayarları');gear.setAttribute('title','İndirme ayarları');gear.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 0 1-2.4-2.4l.1-.1a1.7 1.7 0 0 0-1.2-2.9H4a1.7 1.7 0 0 1 0-3.4h.2a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a1.7 1.7 0 0 1 2.4-2.4l.1.1a1.7 1.7 0 0 0 2.9-1.2V2a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 0 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2 2.9Z"/></svg>';gear.addEventListener('click',openSharedSettings)}
-var download=d.getElementById('nava-download-top-v12149');
-if(download&&download.parentNode===actions){if(gear.parentNode!==actions)actions.insertBefore(gear,download.nextSibling);else if(gear.previousSibling!==download)actions.insertBefore(gear,download.nextSibling)}
-else if(gear.parentNode!==actions)actions.appendChild(gear);
-}
-function init(){ensure();if(w.MutationObserver&&d.body)new MutationObserver(ensure).observe(d.body,{childList:true,subtree:true});w.addEventListener('pageshow',ensure)}
-if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',init,{once:true});else init();
-})(window,document);
