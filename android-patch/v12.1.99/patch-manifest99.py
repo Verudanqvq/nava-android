@@ -47,7 +47,7 @@ while position + 8 <= len(data):
             for index in range(total):
                 attribute = start + index * attribute_size; name = u32(attribute + 4)
                 if name < count and strings[name][0] == 'versionCode':
-                    if data[attribute + 15] != 0x10 or u32(attribute + 16) != 118: raise ValueError('unexpected versionCode')
+                    if data[attribute + 15] != 0x10 or u32(attribute + 16) != 114: raise ValueError('unexpected versionCode')
                     struct.pack_into('<I', data, attribute + 16, 118); codes += 1
     position += size
 if codes != 1: raise ValueError('expected one source versionCode')
