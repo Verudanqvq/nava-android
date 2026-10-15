@@ -74,6 +74,9 @@ anchor='''        @JavascriptInterface
         public void setSmartKeep(int count) { OfflineRuntime.prefs(this.context).edit().putInt("smartKeep", Math.max(2, Math.min(3, count))).apply(); }
 
         @JavascriptInterface
+        public long getStorageLimitBytes() { return OfflineRuntime.prefs(this.context).getLong("storageLimitBytes", 2147483648L); }
+
+        @JavascriptInterface
         public void setStorageLimitBytes(long bytes) { OfflineRuntime.prefs(this.context).edit().putLong("storageLimitBytes", Math.max(536870912L, Math.min(214748364800L, bytes))).apply(); }
 
         @JavascriptInterface
