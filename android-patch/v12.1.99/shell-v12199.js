@@ -92,3 +92,33 @@
  function init(){tick();if(window.MutationObserver)new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});window.addEventListener('popstate',schedule);window.addEventListener('pageshow',schedule);document.addEventListener('click',function(ev){var a=ev.target&&ev.target.closest?ev.target.closest('a[href]'):null;if(!a)return;var from=pageInfo(),to=String(a.href||''),label=String(a.textContent||'').toLocaleLowerCase('tr-TR'),next=chapterNumber(label)||chapterNumber(to),isNext=/sonraki|ileri|next|sonraki bölüm|next chapter/.test(label)||a.rel==='next'||/next|older|chapter-next|next-chapter|blog-pager-older-link/i.test(String(a.className||''));if(from&&isNext&&next>from.chapter){var completed={chapter:from.chapter,series:from.series,url:from.url,language:from.language};try{localStorage.setItem('navaLastCompletedChapter',JSON.stringify(completed))}catch(_){}cleanup(completed)}setTimeout(schedule,150)},true);setInterval(tick,2500)}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(window,document);
+
+
+/* Online Downloads settings v12.2.12 */
+(function(w,d){
+'use strict';
+if(w.__navaOnlineDownloadSettings12212)return;w.__navaOnlineDownloadSettings12212=true;
+var hubId='nava-download-hub-v12149';
+function call(k,v){try{var a=w.NavaOffline||{};return typeof a[k]==='function'?a[k](v):null}catch(_){return null}}
+function el(t,c,s){var x=d.createElement(t);x.className=c||'';if(s!=null)x.textContent=s;return x}
+function fmt(n){n=Math.max(0,Number(n)||0);if(n<1048576)return Math.round(n/1024)+' KB';if(n<1073741824)return(n/1048576).toFixed(1)+' MB';return(n/1073741824).toFixed(2)+' GB'}
+function stats(){try{return JSON.parse(call('listDownloads')||'{}')}catch(_){return{}}}
+function ensure(){
+var h=d.getElementById(hubId);if(!h||h.dataset.settings12212)return;
+var actions=h.querySelector('.nava-download-hub-actions-v12149');if(!actions)return;h.dataset.settings12212='1';
+var open=el('button','nava-online-settings-open12212');open.type='button';open.innerHTML='<span>⚙</span><span><strong>İndirme ayarları</strong><small>Wi-Fi, Akıllı İndirme ve depolama sınırı</small></span><b>›</b>';actions.append(open);
+var panel=el('section','nava-online-settings-panel12212');panel.hidden=true;
+var top=el('header','nava-online-settings-top12212');top.append(el('strong','','İndirme ayarları'));var close=el('button','','×');close.type='button';top.append(close);panel.append(top);
+var usage=el('div','nava-online-settings-storage12212'),used=el('strong','','Depolama hesaplanıyor'),free=el('small','');usage.append(used,free);panel.append(usage);
+function checkbox(label,desc,get,set){var row=el('label','nava-online-settings-row12212'),copy=el('span','nava-online-settings-copy12212'),title=el('strong','',label),sub=el('small','',desc),input=d.createElement('input');input.type='checkbox';input.checked=call(get)!==false;copy.append(title,sub);row.append(copy,input);input.onchange=function(){call(set,input.checked)};panel.append(row);return input}
+var wifi=checkbox('Yalnızca Wi-Fi','Mobil veriyle indirmeyi engeller.','getWifiOnly','setWifiOnly');
+var smart=checkbox('Akıllı İndirme','Sonraki bölüme geçince sayar; 3 bölüm ilerleyince eski bölümleri siler.','getSmartDownloads','setSmartDownloads');
+var row=el('label','nava-online-settings-row12212'),copy=el('span','nava-online-settings-copy12212'),capTitle=el('strong','','İndirme sınırı (GB)'),capSub=el('small','','İndirmelerin kullanabileceği en yüksek alan.'),cap=d.createElement('input');cap.type='number';cap.min='1';cap.max='200';cap.step='1';cap.className='nava-online-settings-cap12212';copy.append(capTitle,capSub);row.append(copy,cap);panel.append(row);
+panel.append(el('p','nava-online-settings-note12212','Bu ayarlar çevrim içi ve çevrim dışı indirmelerde ortaktır.'));var done=el('button','nava-online-settings-done12212','Tamam');done.type='button';panel.append(done);h.append(panel);
+function refresh(){var x=stats(),u=Number(x.storageBytes)||0,f=Number(x.storageAvailableBytes)||0,max=Math.max(1,Math.min(200,Math.floor((u+f-268435456)/1073741824))),gb=Math.floor((Number(call('getStorageLimitBytes'))||2147483648)/1073741824)||2;cap.max=String(max);cap.value=String(Math.max(1,Math.min(max,gb)));used.textContent=fmt(u)+' kullanılıyor';free.textContent=fmt(f)+' cihazda boş · '+cap.value+' GB sınır';wifi.checked=call('getWifiOnly')!==false;smart.checked=call('getSmartDownloads')!==false}
+function show(){refresh();panel.hidden=false;open.hidden=true}function hide(){panel.hidden=true;open.hidden=false}
+open.onclick=show;close.onclick=hide;done.onclick=hide;cap.onchange=function(){var x=stats(),u=Number(x.storageBytes)||0,f=Number(x.storageAvailableBytes)||0,max=Math.max(1,Math.min(200,Math.floor((u+f-268435456)/1073741824))),n=Number(cap.value);if(!isFinite(n))n=2;n=Math.max(1,Math.min(max,Math.floor(n)));cap.value=String(n);call('setStorageLimitBytes',Math.round(n*1073741824));refresh()};
+}
+function init(){ensure();if(w.MutationObserver&&d.body)new MutationObserver(ensure).observe(d.body,{childList:true,subtree:true});w.addEventListener('pageshow',ensure)}
+if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})(window,document);
