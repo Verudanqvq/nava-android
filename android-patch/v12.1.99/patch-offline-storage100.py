@@ -14,14 +14,14 @@ s=s.replace(needle,replacement,1)
 needle='''        if (strCanonicalNava == null) {
             throw new Exception("Geçersiz Nava bağlantısı.");
         }
-        long configuredLimit = prefs(context).getLong("storageLimitBytes", 2147483648L);
-        if (configuredLimit > 0 && folderSize(root(context)) >= configuredLimit) {
-            throw new Exception("İndirme sınırına ulaşıldı. Ayarlardan GB sınırını artırabilirsin.");
-        }
 '''
 addition=needle+'''        if (pageFile(context, strCanonicalNava).isFile() && itemFor(loadIndex(context), strCanonicalNava) != null) {
             emit(event("skipped", strCanonicalNava, str2, "Zaten indirilmiş."));
             return;
+        }
+        long configuredLimit = prefs(context).getLong("storageLimitBytes", 2147483648L);
+        if (configuredLimit > 0 && folderSize(root(context)) >= configuredLimit) {
+            throw new Exception("İndirme sınırına ulaşıldı. Ayarlardan GB sınırını artırabilirsin.");
         }
 '''
 if s.count(needle)!=1: raise ValueError('smart download patch point count='+str(s.count(needle)))
