@@ -10,7 +10,7 @@ assert.match(html,/setting-wifi/);assert.match(html,/setting-smart/);assert.does
 assert.match(html,/id="storage-bar"/);assert.match(html,/id="menu"/);
 assert.doesNotMatch(html,/1 GB ölçek/);
 assert.match(readFileSync(new URL('../android-patch/v12.1.99/patch-offline-runtime99.py',import.meta.url),'utf8'),/preserve reader scripts/);assert.match(readFileSync(new URL('../android-patch/v12.1.99/patch-offline-runtime99.py',import.meta.url),'utf8'),/IFRAME\.matcher\(str2\)\.replaceAll/);
-assert.match(native,/getUsableSpace\(\)/);assert.match(native,/getTotalSpace\(\)/);
+assert.doesNotMatch(native,/Zaten indirilmiş/);assert.match(native,/if \(false && fileResourceFile\.isFile\(\)/);assert.match(native,/getUsableSpace\(\)/);assert.match(native,/getTotalSpace\(\)/);
 assert.match(native,/cleanupReadChapters/);assert.match(native,/chapterLanguage/);assert.match(native,/public boolean getSmartDownloads\(\)/);assert.match(native,/setStorageLimitBytes/);assert.match(native,/physicallyAvailable/);assert.match(native,/effectiveLimit/);assert.match(native,/pageBytes/);
 const inlineScript=html.match(/<script>([\s\S]*?)<\/script>/);assert.ok(inlineScript,'offline page script exists');assert.doesNotThrow(()=>new Function(inlineScript[1]));
 assert.match(patch,/NAVA_OFFLINE_STORAGE_COMPRESSED_V12199/);
@@ -18,4 +18,4 @@ const shell=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.js',imp
 const css=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.css',import.meta.url),'utf8');
 assert.match(shell,/__navaSmartDownloadPolicy12200/);assert.match(shell,/chapterNumber/);assert.match(shell,/navaDownloadCapGb/);assert.match(shell,/cleanup\(completed\)/);assert.match(shell,/next>from\.chapter/);assert.doesNotMatch(shell,/u\.hash='';u\.search='';/);assert.match(shell,/cilt\|volume\|vol/);assert.doesNotMatch(shell,/KEEP='navaSmartKeep'/);
 assert.doesNotMatch(shell,/nava-crystal-mark-v12199|updateBrand/);assert.doesNotMatch(css,/crystal-mark|faceted star emblem/i);
-console.log('v12.1.99 unified downloads UI, settings and real storage checks passed');
+assert.doesNotMatch(shell,/\\d\+\(\?:\\\.\\d\+\)\?/);assert.match(html,/function cn\(v\).*?\(\[0-9\]\+\)/);\nconsole.log('v12.1.99 unified downloads UI, integer chapter parsing and refreshable offline content checks passed');
