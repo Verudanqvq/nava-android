@@ -15,7 +15,7 @@ assert.match(native,/cleanupReadChapters/);assert.match(native,/chapterLanguage/
 const downloadMenu=readFileSync(new URL('../android-patch/v12.1.49/download-menu.js',import.meta.url),'utf8');assert.match(downloadMenu,/function openLibrary\(\)\{hideHub\(\);if\(typeof w\.navaOpenDownloads==='function'\)w\.navaOpenDownloads\(\)/);
 const inlineScript=html.match(/<script>([\s\S]*?)<\/script>/);assert.ok(inlineScript,'offline page script exists');assert.doesNotThrow(()=>new Function(inlineScript[1]));
 assert.match(patch,/NAVA_OFFLINE_STORAGE_COMPRESSED_V12199/);
-assert.match(patch,/open_library_old/);assert.match(patch,/location\.href='file:\/\/\/android_asset\/offline\.html'/);assert.match(patch,/legacy downloads folder route not found exactly once/);
+assert.match(patch,/open_library_old/);assert.match(patch,/NavaOffline&&typeof w\.NavaOffline\.openDownloads==='function'/);assert.match(patch,/legacy downloads folder route not found exactly once/);assert.match(readFileSync(new URL('../android-patch/v12.1.59/native-source/OfflineRuntime.java.txt',import.meta.url),'utf8'),/public void openDownloads\(\)/);
 const shell=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.js',import.meta.url),'utf8');
 const css=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.css',import.meta.url),'utf8');
 assert.match(shell,/__navaSmartDownloadPolicy12200/);assert.match(shell,/chapterNumber/);assert.match(shell,/navaDownloadCapGb/);assert.match(shell,/cleanup\(completed\)/);assert.match(shell,/next>from\.chapter/);assert.doesNotMatch(shell,/u\.hash='';u\.search='';/);assert.match(shell,/cilt\|volume\|vol/);assert.doesNotMatch(shell,/KEEP='navaSmartKeep'/);

@@ -7,7 +7,7 @@ if len(sys.argv)!=7:raise SystemExit('usage: patch-apk99.py SRC MANIFEST CLASSES
 source,manifest_file,classes2_file,js_file,css_file,output=map(Path,sys.argv[1:])
 manifest=manifest_file.read_bytes();classes2=classes2_file.read_bytes();script=js_file.read_text(encoding='utf-8');stylesheet=css_file.read_text(encoding='utf-8')
 offline=Path('android-patch/v12.1.99/offline.html').read_bytes()
-if b'12.2.09' not in manifest and '12.2.09'.encode('utf-16le') not in manifest:raise ValueError('manifest version marker missing')
+if b'12.2.10' not in manifest and '12.2.10'.encode('utf-16le') not in manifest:raise ValueError('manifest version marker missing')
 if '__navaShellV12199' not in script:raise ValueError('shell marker missing')
 if b'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' not in offline:raise ValueError('offline hierarchy marker missing')
 with zipfile.ZipFile(source) as zin,zipfile.ZipFile(output,'w') as zout:
@@ -16,7 +16,7 @@ with zipfile.ZipFile(source) as zin,zipfile.ZipFile(output,'w') as zout:
  original={n:zin.read(n) for n in ('classes.dex','resources.arsc')}
  base_js=zin.read('assets/nava_app_v11.js').decode();base_css=zin.read('assets/nava_app_v11.css').decode()
  open_library_old="function openLibrary(){hideHub();if(typeof w.navaOpenDownloads==='function')w.navaOpenDownloads();else status('İndirilenler açılamadı.',true)}"
- open_library_new="function openLibrary(){hideHub();location.href='file:///android_asset/offline.html'}"
+ open_library_new="function openLibrary(){hideHub();if(w.NavaOffline&&typeof w.NavaOffline.openDownloads==='function')w.NavaOffline.openDownloads();else status('İndirilenler açılamadı.',true)}"
  if base_js.count(open_library_old)!=1:raise ValueError('legacy downloads folder route not found exactly once')
  base_js=base_js.replace(open_library_old,open_library_new)
  auto="if(ratings&&!ratings.dataset.navaAutoOpen){ratings.dataset.navaAutoOpen='1';setTimeout(function(){try{ratings.click()}catch(_){}},0)}"
@@ -38,4 +38,4 @@ with zipfile.ZipFile(output) as result:
  if b'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' not in result.read('assets/offline.html'):raise ValueError('offline html missing')
  if b'nava-crystal-mark-v12190' in result.read('assets/nava_app_v11.js'):raise ValueError('brand override remains')
  if result.read('classes2.dex')!=classes2:raise ValueError('compressed native runtime missing')
- print('PATCH_99_OK compressed native runtime and offline screen installed')
+ print('PATCH_210_OK native bridge opens bundled offline downloads screen')
