@@ -55,7 +55,8 @@
  function clean(s){return String(s||'').toLocaleLowerCase('tr-TR').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c').replace(/(?:bölüm|bolum|chapter|ch\.?|episode|ep\.?)\s*#?\s*\d+(?:\.\d+)?/gi,' ').replace(/\b\d+\s*(?:bölüm|bolum|chapter|episode)\b/gi,' ').replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim()}
  function chapterNumber(s){var t=String(s||'');var patterns=[/(?:bölüm|bolum|chapter|episode|ep\.?|ch\.?)\s*#?\s*(\d+(?:\.\d+)?)/i,/(\d+(?:\.\d+)?)\s*(?:bölüm|bolum|chapter|episode)/i,/\/(?:bolum|chapter|episode)[-_/ ]*(\d+(?:\.\d+)?)/i];for(var i=0;i<patterns.length;i++){var m=t.match(patterns[i]);if(m)return Number(m[1])}return 0}
  function downloads(){try{var d=JSON.parse(window.NavaOffline.listDownloads()||'{}');return Array.isArray(d.items)?d.items:[]}catch(_){return[]}}
- function pageInfo(){var title=(document.querySelector('article h1, .post-title, h1, article h2')||{}).textContent||document.title||'';var url=location.href;var ch=chapterNumber(title)||chapterNumber(url);if(!ch)return null;var series=clean(title)||clean(url.split('/').pop());if(!series)return null;return{chapter:ch,series:series,url:url}}
+ function pageInfo(){var title=(document.querySelector('article h1, .post-title, h1, article h2')||{}).textContent||document.title||'';var url=location.href;var ch=chapterNumber(title)||chapterNumber(url);if(!ch)return null;var series=clean(title)||clean(url.split('/').pop());if(!series)return null;return{chapter:ch,series:series,url:url,language:languageFromUrl(url)}}
+ function languageFromUrl(url){try{var m=new URL(url,location.href).pathname.toLowerCase().match(/\/(tr|en|ja|jp|es|fr|de|ko|zh)(?:\/|$)/);return m?m[1]:''}catch(_){return''}}
  function cleanup(){
   if(!enabled()||!window.NavaOffline||typeof window.NavaOffline.listDownloads!=='function'||typeof window.NavaOffline.delete!=='function')return;
   var p=pageInfo();if(!p||p.url===lastPage)return;lastPage=p.url;
@@ -65,7 +66,7 @@
    var url=String(item.url||'');if(!url||url===p.url||seen[url])return;
    var label=String(item.title||'')+' '+url, n=chapterNumber(label);if(!n||n>=floor)return;
    var series=clean(item.seriesTitle||item.series||item.workTitle||'');
-   if(!series||series!==p.series)return;
+   if(!series||series!==p.series)return;var lang=languageFromUrl(url);if(!p.language||!lang||lang!==p.language)return;
    seen[url]=1;try{window.NavaOffline.delete(url)}catch(_){}
   });
  }
