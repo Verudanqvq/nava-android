@@ -61,7 +61,7 @@ cleanup='''    private static String chapterLanguage(String url) {
     }
 
 '''
-anchor='''        @JavascriptInterface
+bridge_methods='''        @JavascriptInterface
         public boolean getSmartDownloads() { return OfflineRuntime.prefs(this.context).getBoolean("smartDownloads", true); }
 
         @JavascriptInterface
@@ -79,10 +79,11 @@ anchor='''        @JavascriptInterface
         @JavascriptInterface
         public void setStorageLimitBytes(long bytes) { OfflineRuntime.prefs(this.context).edit().putLong("storageLimitBytes", Math.max(536870912L, Math.min(214748364800L, bytes))).apply(); }
 
-        @JavascriptInterface
+'''
+anchor='''        @JavascriptInterface
         public void open(String str) {'''
 if s.count(anchor)!=1: raise ValueError('open bridge anchor count='+str(s.count(anchor)))
-s=s.replace(anchor,cleanup+anchor,1)
+s=s.replace(anchor,cleanup+bridge_methods+anchor,1)
 s=s.replace('''                String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''','''                cleanupReadChapters(this.context, strCanonicalNava);
                 String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''',1)
 if 'cleanupReadChapters' not in s or 'chapterLanguage' not in s or 'public boolean getSmartDownloads()' not in s or 'storageLimitBytes' not in s: raise ValueError('smart settings and storage cap patch markers missing')
