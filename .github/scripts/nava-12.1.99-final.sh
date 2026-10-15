@@ -115,23 +115,31 @@ grep -q 'cleanupReadChapters' /tmp/OfflineRuntime.java
 grep -q 'chapterLanguage' /tmp/OfflineRuntime.java
 python android-patch/v12.1.99/patch-apk99.py /tmp/current/Nava.apk /tmp/manifest99.bin /tmp/classes2-99.dex android-patch/v12.1.99/shell-v12199.js android-patch/v12.1.99/shell-v12199.css /tmp/Nava-unsigned.apk | tee /tmp/patch99.txt
 grep -q 'PATCH_213_OK online shortcut routes to canonical downloads/settings screen' /tmp/patch99.txt
+echo CHECK_PATCH_OK
 unzip -p /tmp/Nava-unsigned.apk classes.dex > /tmp/c1-final.dex
 unzip -p /tmp/Nava-unsigned.apk classes2.dex > /tmp/c2-final.dex
 cmp -s /tmp/c1-base.dex /tmp/c1-final.dex
+echo CHECK_CLASSES1_OK
 ! cmp -s /tmp/c2-base.dex /tmp/c2-final.dex
+echo CHECK_CLASSES2_CHANGED
 if [ -f /tmp/c3-base.dex ]; then unzip -p /tmp/Nava-unsigned.apk classes3.dex > /tmp/c3-final.dex; cmp -s /tmp/c3-base.dex /tmp/c3-final.dex; fi
 unzip -p /tmp/Nava-unsigned.apk resources.arsc > /tmp/res-final.arsc
 cmp -s /tmp/res-base.arsc /tmp/res-final.arsc
+echo CHECK_RESOURCES_OK
 unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/app99.js
 node --check /tmp/app99.js
+echo CHECK_JS_SYNTAX_OK
 grep -q '__navaShellV12199' /tmp/app99.js
 grep -q '__navaDownloadsSettingsRoute12213' /tmp/app99.js
+echo CHECK_SETTINGS_ROUTE_OK
 grep -aq 'storageAvailableBytes' /tmp/c2-final.dex
+echo CHECK_NATIVE_STORAGE_OK
 grep -aq 'cleanupReadChapters' /tmp/c2-final.dex
 grep -aq 'chapterLanguage' /tmp/c2-final.dex
 grep -aq 'WEBP' /tmp/c2-final.dex
 unzip -p /tmp/Nava-unsigned.apk assets/offline.html > /tmp/off99.html
 grep -q 'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' /tmp/off99.html
+echo CHECK_OFFLINE_ASSET_OK
 ! grep -q 'N.optimizeStorage' /tmp/off99.html
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='128'.*versionName='12.2.13'"
 "$BUILD_TOOLS/aapt" dump permissions /tmp/Nava-unsigned.apk | grep -q 'android.permission.WAKE_LOCK'
