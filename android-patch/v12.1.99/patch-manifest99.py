@@ -33,7 +33,7 @@ strings = [entry(index) for index in range(count)]
 names = 0
 for value, start, length in strings:
     if value == '12.1.98':
-        replacement = '12.2.12'.encode('utf-8' if utf8 else 'utf-16le')
+        replacement = '12.2.13'.encode('utf-8' if utf8 else 'utf-16le')
         if len(replacement) != length: raise ValueError('versionName length mismatch')
         data[start:start + length] = replacement; names += 1
 if names != 1: raise ValueError('expected one versionName')
@@ -52,4 +52,4 @@ while position + 8 <= len(data):
     position += size
 if codes != 1: raise ValueError('expected one source versionCode')
 path.write_bytes(data)
-print('MANIFEST_212_OK versionName=12.2.12 versionCode=127')
+print('MANIFEST_213_OK versionName=12.2.13 versionCode=128')

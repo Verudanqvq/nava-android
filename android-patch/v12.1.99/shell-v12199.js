@@ -95,29 +95,20 @@
 
 
 
-/* Route Downloads settings to the existing global app settings panel. */
+
+/* Use the same canonical Downloads screen and settings menu for online and offline. */
 (function(w,d){
 'use strict';
 if(w.__navaDownloadsSettingsRoute12213)return;w.__navaDownloadsSettingsRoute12213=true;
-function findSettings(){
-return d.querySelector('#nava-app-settings, #nava-settings-panel, #nava-settings-sheet, [data-page="settings"], #nava-app-page [data-settings-panel], #nava-app-settings-panel, .nava-app-settings-panel');
-}
-function openExisting(){
-var candidates=[].slice.call(d.querySelectorAll('button,a,[role="button"]'));
-var b=candidates.find(function(x){return /^(ayarlar|settings)$/i.test((x.getAttribute('aria-label')||x.textContent||'').trim())&& !x.closest('#nava-download-hub-v12149')});
-if(b){b.click();return true}
-var panel=findSettings();
-if(panel){panel.hidden=false;panel.removeAttribute('hidden');panel.classList.add('is-open','active');panel.setAttribute('aria-hidden','false');return true}
-var nav=[].slice.call(d.querySelectorAll('#nava-app-bottom a, #nava-app-bottom button, nav a, nav button')).find(function(x){return /ayarlar|settings/i.test((x.getAttribute('aria-label')||'')+' '+(x.textContent||''))});
-if(nav){nav.click();return true}
-return false;
-}
 function ensure(){
 var hub=d.getElementById('nava-download-hub-v12149');if(!hub)return;
 var actions=hub.querySelector('.nava-download-hub-actions-v12149');if(!actions)return;
 var b=hub.querySelector('[data-nava-open-existing-settings]');
-if(!b){b=d.createElement('button');b.type='button';b.className='nava-online-settings-open12213';b.setAttribute('data-nava-open-existing-settings','1');b.innerHTML='<span aria-hidden="true">⚙</span><span><strong>Ayarlar</strong><small>Uygulamanın tüm ayarları</small></span><b>›</b>';actions.appendChild(b)}
-b.onclick=function(){if(!openExisting()){var old=hub.querySelector('[data-status]');if(old){old.textContent='Ayarlar menüsü bulunamadı.';old.classList.add('is-error')}}};
+if(!b){b=d.createElement('button');b.type='button';b.className='nava-online-settings-open12213';b.setAttribute('data-nava-open-existing-settings','1');b.innerHTML='<span aria-hidden="true">⚙</span><span><strong>Ayarlar</strong><small>Ortak indirme ayarlarını aç</small></span><b>›</b>';actions.appendChild(b)}
+b.onclick=function(){
+try{if(w.NavaOffline&&typeof w.NavaOffline.openDownloads==='function'){w.NavaOffline.openDownloads();return}}catch(_){}
+var status=hub.querySelector('[data-status]');if(status){status.textContent='İndirme ayarları açılamadı.';status.classList.add('is-error')}
+};
 }
 function init(){ensure();if(w.MutationObserver&&d.body)new MutationObserver(ensure).observe(d.body,{childList:true,subtree:true});w.addEventListener('pageshow',ensure)}
 if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',init,{once:true});else init();
