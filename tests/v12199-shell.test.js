@@ -6,7 +6,7 @@ const native=readFileSync(new URL('../android-patch/v12.1.99/patch-offline-stora
 assert.match(html,/NAVA_OFFLINE_STORAGE_COMPRESSED_V12199/);
 assert.doesNotMatch(html,/optimize-storage|N\.optimizeStorage|sıkıştır/i);
 assert.match(html,/storageBytes/);assert.match(html,/storageAvailableBytes/);assert.match(html,/storageTotalBytes/);
-assert.match(html,/setting-wifi/);assert.match(html,/setting-smart/);assert.match(html,/setting-keep/);assert.match(html,/setting-cap/);assert.match(html,/navaDownloadCapGb/);assert.doesNotMatch(html,/setting-language|save-settings|linear-gradient/);
+assert.match(html,/setting-wifi/);assert.match(html,/setting-smart/);assert.doesNotMatch(html,/setting-keep|Kaç bölüm geride kalsın/);assert.match(html,/3 bölüm daha ilerlediğinde eski bölümler otomatik silinir/);assert.match(html,/setting-cap/);assert.match(html,/navaDownloadCapGb/);assert.doesNotMatch(html,/setting-language|save-settings|linear-gradient/);
 assert.match(html,/id="storage-bar"/);assert.match(html,/id="menu"/);
 assert.doesNotMatch(html,/1 GB ölçek/);
 assert.match(native,/getUsableSpace\(\)/);assert.match(native,/getTotalSpace\(\)/);
@@ -15,6 +15,6 @@ const inlineScript=html.match(/<script>([\s\S]*?)<\/script>/);assert.ok(inlineSc
 assert.match(patch,/NAVA_OFFLINE_STORAGE_COMPRESSED_V12199/);
 const shell=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.js',import.meta.url),'utf8');
 const css=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.css',import.meta.url),'utf8');
-assert.match(shell,/__navaSmartDownloadPolicy12200/);assert.match(shell,/chapterNumber/);assert.match(shell,/navaDownloadCapGb/);
+assert.match(shell,/__navaSmartDownloadPolicy12200/);assert.match(shell,/chapterNumber/);assert.match(shell,/navaDownloadCapGb/);assert.match(shell,/cleanup\(completed\)/);assert.match(shell,/next>from\.chapter/);assert.doesNotMatch(shell,/KEEP='navaSmartKeep'/);
 assert.doesNotMatch(shell,/nava-crystal-mark-v12199|updateBrand/);assert.doesNotMatch(css,/crystal-mark|faceted star emblem/i);
 console.log('v12.1.99 unified downloads UI, settings and real storage checks passed');
