@@ -7,7 +7,7 @@ assert.match(html,/NAVA_OFFLINE_STORAGE_COMPRESSED_V12199/);
 assert.doesNotMatch(html,/optimize-storage|N\.optimizeStorage|sıkıştır/i);
 assert.match(html,/storageBytes/);assert.match(html,/storageAvailableBytes/);assert.match(html,/storageTotalBytes/);
 assert.match(html,/setting-wifi/);assert.match(html,/setting-smart/);assert.doesNotMatch(html,/setting-keep|Kaç bölüm geride kalsın/);assert.match(html,/3 bölüm ilerleyince eski bölümleri arka planda otomatik siler/);assert.doesNotMatch(html,/<strong>Otomatik temizleme<\/strong>/);assert.doesNotMatch(html,/u\.hash='';u\.search='';/);assert.match(html,/setting-cap/);assert.match(html,/navaDownloadCapGb/);assert.doesNotMatch(html,/setting-language|save-settings|linear-gradient/);
-assert.match(html,/id="storage-bar"/);assert.match(html,/id="menu"/);
+assert.match(html,/id="storage-bar"/);assert.match(html,/id="menu"/);assert.match(html,/↻ Yenile/);assert.doesNotMatch(html,/id="go-home"|Ana sayfaya dön/);assert.match(html,/Math\.floor/);
 assert.doesNotMatch(html,/1 GB ölçek/);
 assert.match(readFileSync(new URL('../android-patch/v12.1.99/patch-offline-runtime99.py',import.meta.url),'utf8'),/preserve reader scripts/);assert.match(readFileSync(new URL('../android-patch/v12.1.99/patch-offline-runtime99.py',import.meta.url),'utf8'),/IFRAME\.matcher\(str2\)\.replaceAll/);
 assert.doesNotMatch(native,/Zaten indirilmiş/);assert.match(native,/if \(false && fileResourceFile\.isFile\(\)/);assert.match(native,/strNormalizeMime\.contains\(\"javascript\"\)/);assert.match(native,/js\|mjs\|cjs/);assert.match(native,/getUsableSpace\(\)/);assert.match(native,/getTotalSpace\(\)/);
@@ -19,4 +19,4 @@ const css=readFileSync(new URL('../android-patch/v12.1.99/shell-v12199.css',impo
 assert.match(shell,/__navaSmartDownloadPolicy12200/);assert.match(shell,/chapterNumber/);assert.match(shell,/navaDownloadCapGb/);assert.match(shell,/cleanup\(completed\)/);assert.match(shell,/next>from\.chapter/);assert.doesNotMatch(shell,/u\.hash='';u\.search='';/);assert.match(shell,/cilt\|volume\|vol/);assert.doesNotMatch(shell,/KEEP='navaSmartKeep'/);
 assert.doesNotMatch(shell,/nava-crystal-mark-v12199|updateBrand/);assert.doesNotMatch(css,/crystal-mark|faceted star emblem/i);
 assert.doesNotMatch(shell,/\\d\+\(\?:\\\.\\d\+\)\?/);assert.match(html,/function cn\(v\).*?\(\[0-9\]\+\)/);
-console.log('v12.1.99 unified downloads UI, integer chapter parsing and refreshable offline content checks passed');
+assert.match(html,/Math\.floor\(n\)/);console.log('v12.1.99 unified downloads UI, rounded storage limit and offline navigation checks passed');
