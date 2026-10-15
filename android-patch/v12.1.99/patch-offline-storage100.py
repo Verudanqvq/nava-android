@@ -84,8 +84,7 @@ anchor='''        @JavascriptInterface
         public void open(String str) {'''
 if s.count(anchor)!=1: raise ValueError('open bridge anchor count='+str(s.count(anchor)))
 s=s.replace(anchor,cleanup+bridge_methods+anchor,1)
-s=s.replace('''                String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''','''                cleanupReadChapters(this.context, strCanonicalNava);
-                String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''',1)
+s=s.replace('''                String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''','''                String unused = OfflineRuntime.forcedUrl = strCanonicalNava;''',1)
 if 'cleanupReadChapters' not in s or 'chapterLanguage' not in s or 'public boolean getSmartDownloads()' not in s or 'storageLimitBytes' not in s: raise ValueError('smart settings and storage cap patch markers missing')
 Path(sys.argv[2]).write_text(s,encoding='utf-8')
 print('OFFLINE_STORAGE_100_OK storage capacity, Wi-Fi setting and language-safe chapter cleanup installed')
