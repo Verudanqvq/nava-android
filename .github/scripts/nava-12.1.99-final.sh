@@ -141,8 +141,11 @@ unzip -p /tmp/Nava-unsigned.apk assets/offline.html > /tmp/off99.html
 grep -q 'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' /tmp/off99.html
 echo CHECK_OFFLINE_ASSET_OK
 ! grep -q 'N.optimizeStorage' /tmp/off99.html
+echo CHECK_NO_OPTIMIZE_OPTION
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='128'.*versionName='12.2.13'"
+echo CHECK_MANIFEST_BADGING
 "$BUILD_TOOLS/aapt" dump permissions /tmp/Nava-unsigned.apk | grep -q 'android.permission.WAKE_LOCK'
+echo CHECK_WAKE_LOCK_PERMISSION
 printf 'patch=ok\nversionName=12.2.13\nversionCode=128\nclasses1_preserved=ok\nclasses2_webp_compression=ok\nclasses3_preserved=ok\nresources_preserved=ok\n' >> "$STATUS"
 
 # Sign.
