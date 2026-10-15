@@ -7,7 +7,7 @@ trap 'rc=$?; if [ "$rc" -ne 0 ] && ! grep -q "^status=success$" "$STATUS"; then 
 EXPECTED_SOURCE_SHA256=57fdb5e5f9be19eae2d2bad1f382ea2e326f0a7f428d665a059346ac34efa8c3
 EXPECTED_CERT_SHA256=acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51d09fe
 SOURCE_TAG=v12.1.98
-TARGET_TAG=v12.2.11
+TARGET_TAG=v12.2.12
 
 python -m py_compile android-patch/v12.1.59/patch-offline-runtime.py android-patch/v12.1.59/fix-jadx-compile.py android-patch/v12.1.63/patch-offline-runtime63.py android-patch/v12.1.99/patch-apk99.py android-patch/v12.1.99/patch-offline-storage100.py
 node --check android-patch/v12.1.99/shell-v12199.js
@@ -16,6 +16,8 @@ grep -q 'PowerManager.PARTIAL_WAKE_LOCK' android-patch/v12.1.63/patch-offline-ru
 grep -q 'Bitmap.CompressFormat.WEBP' android-patch/v12.1.99/patch-offline-runtime99.py
 grep -q 'MAX_RESOURCES = 220' android-patch/v12.1.63/patch-offline-runtime63.py
 grep -q 'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' android-patch/v12.1.99/offline.html
+grep -q '__navaOnlineDownloadSettings12212' android-patch/v12.1.99/shell-v12199.js
+grep -q 'nava-online-settings-panel12212' android-patch/v12.1.99/shell-v12199.css
 echo SOURCE_PATCH_VALIDATION_OK
 printf 'source_validation=ok\nbase=12.1.98\nimage_compression=WebP-quality-80-max-2400px\ncompression_option=removed
 storage_capacity=real-filesystem-free-and-total\nlibrary=relation-aware\nhierarchy=series-volume-chapter\nlegacy_volume_classification=title-url\nbackground=wakelock-native-executor\nspeed=resource-cap-220-plus-skip\n' >> "$STATUS"
@@ -113,7 +115,7 @@ grep -q 'storageAvailableBytes' /tmp/OfflineRuntime.java
 grep -q 'cleanupReadChapters' /tmp/OfflineRuntime.java
 grep -q 'chapterLanguage' /tmp/OfflineRuntime.java
 python android-patch/v12.1.99/patch-apk99.py /tmp/current/Nava.apk /tmp/manifest99.bin /tmp/classes2-99.dex android-patch/v12.1.99/shell-v12199.js android-patch/v12.1.99/shell-v12199.css /tmp/Nava-unsigned.apk | tee /tmp/patch99.txt
-grep -q 'PATCH_210_OK native bridge opens bundled offline downloads screen' /tmp/patch99.txt
+grep -q 'PATCH_212_OK online and offline downloads settings available' /tmp/patch99.txt
 unzip -p /tmp/Nava-unsigned.apk classes.dex > /tmp/c1-final.dex
 unzip -p /tmp/Nava-unsigned.apk classes2.dex > /tmp/c2-final.dex
 cmp -s /tmp/c1-base.dex /tmp/c1-final.dex
@@ -124,6 +126,7 @@ cmp -s /tmp/res-base.arsc /tmp/res-final.arsc
 unzip -p /tmp/Nava-unsigned.apk assets/nava_app_v11.js > /tmp/app99.js
 node --check /tmp/app99.js
 grep -q '__navaShellV12199' /tmp/app99.js
+grep -q '__navaOnlineDownloadSettings12212' /tmp/app99.js
 grep -aq 'storageAvailableBytes' /tmp/c2-final.dex
 grep -aq 'cleanupReadChapters' /tmp/c2-final.dex
 grep -aq 'chapterLanguage' /tmp/c2-final.dex
@@ -131,9 +134,9 @@ grep -aq 'WEBP' /tmp/c2-final.dex
 unzip -p /tmp/Nava-unsigned.apk assets/offline.html > /tmp/off99.html
 grep -q 'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' /tmp/off99.html
 ! grep -q 'N.optimizeStorage' /tmp/off99.html
-"$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='126'.*versionName='12.2.11'"
+"$BUILD_TOOLS/aapt" dump badging /tmp/Nava-unsigned.apk | grep -q "versionCode='127'.*versionName='12.2.12'"
 "$BUILD_TOOLS/aapt" dump permissions /tmp/Nava-unsigned.apk | grep -q 'android.permission.WAKE_LOCK'
-printf 'patch=ok\nversionName=12.2.11\nversionCode=126\nclasses1_preserved=ok\nclasses2_webp_compression=ok\nclasses3_preserved=ok\nresources_preserved=ok\n' >> "$STATUS"
+printf 'patch=ok\nversionName=12.2.12\nversionCode=127\nclasses1_preserved=ok\nclasses2_webp_compression=ok\nclasses3_preserved=ok\nresources_preserved=ok\n' >> "$STATUS"
 
 # Sign.
 "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk
@@ -166,12 +169,12 @@ printf 'final_semantic_check=ok\nstartup_61_preserved=ok\nupdater_60_preserved=o
 
 if gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
   gh release upload "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --clobber
-  gh release edit "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" --title 'Nava 12.2.11' --latest
-  printf 'release=v12.2.11\nasset=Nava.apk\nrelease_existing=yes\n' >> "$STATUS"
+  gh release edit "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" --title 'Nava 12.2.12' --latest
+  printf 'release=v12.2.12\nasset=Nava.apk\nrelease_existing=yes\n' >> "$STATUS"
 else
-  NOTES='12.2.11: İndirilenler ekranında görünür Ayarlar düğmesi eklendi. Çevrimdışı bölüm sayfalarında okuyucunun satır içi ve harici scriptleri korunur; iframe öğeleri kaldırılır. Bölüm URL adreslerinde sorgu parametreleri korunarak çevrim içi ve çevrim dışı aynı bölüm eşleştirilir. Depolama sınırı hem ayarlanan GB miktarını hem cihazdaki gerçek boş alanı aşamaz. Akıllı İndirme tek ayardır: yalnızca sonraki bölüme geçildiğinde tamamlanma sayar ve üç bölüm ileride eski bölümleri arka planda temizler. Ayrı otomatik temizleme ayarı yoktur. İndirilenler ve çevrimdışı içerikler tek ekranda birleştirildi. Wi-Fi ile indirme tercihi kaydedilir; yeniden indirme seçildiğinde bölüm sayfası ve kaynakları güncellenir. Dil, eser sayfasında seçilen varyanttan alınır. Okuyucu aynı eserde aynı dilde en az üç bölüm ilerlediğinde eski bölümler otomatik temizlenir. Gerçek depolama kullanımı, boş alan ve toplam alan gösterilir. Gereksiz akıllı indirme ve genel dil ayarları kaldırıldı; ana sayfadaki küçük indirme penceresi korunur. Düz, sade alt gezinme stilleri kullanılır. Canlı Cilt ilişkisi cachelenerek Tensura Cilt 11 gibi eski kısa/alias metadata kayıtları gerçek ana esere bağlanır. Eski kind=chapter olsa bile Cilt 11 başlık/URL kaydı cilt sayfası olarak tanınır; Cilt altında ikinci Cilt satırı oluşmaz ve yalnız bölümler listelenir. Native batch indirme partial wake lock ile uygulama arka plana atıldığında ve ekran kapandığında çalışmayı sürdürür. Bölüm sorgu parametreleri korunur, tamamlanmış sayfa yeniden indirilmez. Gereksiz tracker/font/embed kaynakları atlanır, kaynak sınırı 220 ve timeoutlar kısaltılmıştır. 12.1.61 açılışı, 12.1.60 updater ve 12.1.47 WebView UA korunur.'
-  gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.2.11' --notes "$NOTES" --latest
-  printf 'release=v12.2.11\nasset=Nava.apk\nrelease_existing=no\n' >> "$STATUS"
+  NOTES='12.2.12: Çevrim içi İndirmeler açılır penceresine doğrudan Wi-Fi, Akıllı İndirme ve GB sınırı ayarları eklendi; çevrim dışı indirme ayarları da korunur. Çevrimdışı bölüm sayfalarında okuyucunun satır içi ve harici scriptleri korunur; iframe öğeleri kaldırılır. Bölüm URL adreslerinde sorgu parametreleri korunarak çevrim içi ve çevrim dışı aynı bölüm eşleştirilir. Depolama sınırı hem ayarlanan GB miktarını hem cihazdaki gerçek boş alanı aşamaz. Akıllı İndirme tek ayardır: yalnızca sonraki bölüme geçildiğinde tamamlanma sayar ve üç bölüm ileride eski bölümleri arka planda temizler. Ayrı otomatik temizleme ayarı yoktur. İndirilenler ve çevrimdışı içerikler tek ekranda birleştirildi. Wi-Fi ile indirme tercihi kaydedilir; yeniden indirme seçildiğinde bölüm sayfası ve kaynakları güncellenir. Dil, eser sayfasında seçilen varyanttan alınır. Okuyucu aynı eserde aynı dilde en az üç bölüm ilerlediğinde eski bölümler otomatik temizlenir. Gerçek depolama kullanımı, boş alan ve toplam alan gösterilir. Gereksiz akıllı indirme ve genel dil ayarları kaldırıldı; ana sayfadaki küçük indirme penceresi korunur. Düz, sade alt gezinme stilleri kullanılır. Canlı Cilt ilişkisi cachelenerek Tensura Cilt 11 gibi eski kısa/alias metadata kayıtları gerçek ana esere bağlanır. Eski kind=chapter olsa bile Cilt 11 başlık/URL kaydı cilt sayfası olarak tanınır; Cilt altında ikinci Cilt satırı oluşmaz ve yalnız bölümler listelenir. Native batch indirme partial wake lock ile uygulama arka plana atıldığında ve ekran kapandığında çalışmayı sürdürür. Bölüm sorgu parametreleri korunur, tamamlanmış sayfa yeniden indirilmez. Gereksiz tracker/font/embed kaynakları atlanır, kaynak sınırı 220 ve timeoutlar kısaltılmıştır. 12.1.61 açılışı, 12.1.60 updater ve 12.1.47 WebView UA korunur.'
+  gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.2.12' --notes "$NOTES" --latest
+  printf 'release=v12.2.12\nasset=Nava.apk\nrelease_existing=no\n' >> "$STATUS"
 fi
 printf 'status=success\nfinished=%s\n' "$(date -u +%FT%TZ)" >> "$STATUS"
 trap - EXIT
