@@ -32,7 +32,7 @@ def entry(index):
 strings = [entry(index) for index in range(count)]
 names = 0
 for value, start, length in strings:
-    if value == '12.2.02':
+    if value == '12.1.98':
         replacement = '12.2.02'.encode('utf-8' if utf8 else 'utf-16le')
         if len(replacement) != length: raise ValueError('versionName length mismatch')
         data[start:start + length] = replacement; names += 1
