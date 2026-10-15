@@ -9,6 +9,7 @@ assert.match(html,/storageBytes/);assert.match(html,/storageAvailableBytes/);ass
 assert.match(html,/setting-wifi/);assert.match(html,/setting-smart/);assert.doesNotMatch(html,/setting-keep|Kaç bölüm geride kalsın/);assert.match(html,/3 bölüm daha ilerlediğinde eski bölümler otomatik silinir/);assert.match(html,/setting-cap/);assert.match(html,/navaDownloadCapGb/);assert.doesNotMatch(html,/setting-language|save-settings|linear-gradient/);
 assert.match(html,/id="storage-bar"/);assert.match(html,/id="menu"/);
 assert.doesNotMatch(html,/1 GB ölçek/);
+assert.match(readFileSync(new URL('../android-patch/v12.1.99/patch-offline-runtime99.py',import.meta.url),'utf8'),/preserve inline reader scripts/);
 assert.match(native,/getUsableSpace\(\)/);assert.match(native,/getTotalSpace\(\)/);
 assert.match(native,/cleanupReadChapters/);assert.match(native,/chapterLanguage/);assert.match(native,/public boolean getSmartDownloads\(\)/);assert.match(native,/setStorageLimitBytes/);
 const inlineScript=html.match(/<script>([\s\S]*?)<\/script>/);assert.ok(inlineScript,'offline page script exists');assert.doesNotThrow(()=>new Function(inlineScript[1]));
