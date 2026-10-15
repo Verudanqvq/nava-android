@@ -26,10 +26,6 @@ html.nava-app-v9 #nava-app-bottom .is-active .nava-app-nav-icon,html.nava-app-v9
 
 
 
-/* Downloads settings shortcut: match the existing shared settings control. */
-.nava-online-settings-open12213{display:flex!important;align-items:center!important;gap:12px!important;width:100%!important;min-height:58px!important;margin-top:8px!important;padding:10px 14px!important;border:1px solid var(--nava-line,#dce5f0)!important;border-radius:12px!important;background:var(--nava-surface,#fff)!important;color:var(--nava-ink,#344d6b)!important;text-align:left!important}
-.nava-online-settings-open12213>span:nth-child(2){display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}.nava-online-settings-open12213 strong{font-size:13px!important}.nava-online-settings-open12213 small{font-size:11px!important;color:var(--nava-muted,#687789)!important}.nava-online-settings-open12213>span:first-child{font-size:21px!important}.nava-online-settings-open12213>b{font-size:20px!important}
-
 /* v12.2.14: align shared settings gear beside Downloads, not inside a second panel */
 #nava-app-topbar .nava-app-top-actions{display:flex!important;align-items:center!important;gap:6px!important}
 #nava-shared-download-settings12214{flex:0 0 auto!important;margin:0!important;position:relative!important}
