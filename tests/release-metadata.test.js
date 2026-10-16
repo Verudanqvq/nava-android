@@ -11,8 +11,8 @@ test('current release metadata and retired release automation stay consistent', 
   const readme = read('README.md');
   const legacyWorkflow = read('.github/workflows/nava-android-12-1-91.yml');
 
-  assert.match(readme, /Current stable Android release: \*\*12\.2\.30\*\* \(`versionCode 169`\)/);
-  assert.match(readme, /349516597e0d23a93eab5b48813fabd0395bcb9e5903dfbab6e52dc9fe6a832b/);
+  assert.match(readme, /Current stable Android release: \*\*12\.2\.31\*\* \(`versionCode 174`\)/);
+  assert.match(readme, /45768a3b6672c9307657fd6d38466c40855229ef89203e57adc35af23a741a41/);
   assert.match(legacyWorkflow, /^on:\s*\n\s+workflow_dispatch:/m);
   assert.doesNotMatch(legacyWorkflow, /^\s+push:/m);
 });
