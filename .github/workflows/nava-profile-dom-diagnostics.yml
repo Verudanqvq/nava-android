@@ -21,6 +21,7 @@ jobs:
           echo '--- DECOMPILED ACTIVITY LOAD SOURCE ---'
           curl -fsSL https://github.com/skylot/jadx/releases/download/v1.5.2/jadx-1.5.2.zip -o /tmp/jadx.zip || true
           if [ -s /tmp/jadx.zip ]; then mkdir -p /tmp/jadx && unzip -q /tmp/jadx.zip -d /tmp/jadx; chmod +x /tmp/jadx/bin/jadx; /tmp/jadx/bin/jadx -d /tmp/decompiled /tmp/Nava.apk >/dev/null 2>&1 || true; grep -RniE 'nava_app_v11|loadUrl\(|loadData|onPageFinished|WebViewClient|https?://' /tmp/decompiled/sources/com/verudanava/nava 2>/dev/null | head -100 || true; echo '--- MainActivity relevant source ---'; sed -n '150,360p' /tmp/decompiled/sources/com/verudanava/nava/MainActivity.java 2>/dev/null || true; fi
+          echo '--- gx WebViewClient implementation ---'; find /tmp/decompiled/sources -name 'gx.java' -print -exec sed -n '1,240p' {} \; 2>/dev/null || true
           echo '--- PROFILE MARKUP AND SELECTORS ---'
           echo '--- ANDROID DEX ASSET LOADING REFERENCES ---'
           strings <(unzip -p /tmp/Nava.apk classes.dex) | grep -Ei 'nava_app_v11|assets/|loadUrl|loadData|WebView|firebase|remote|profile' | head -240 || true
