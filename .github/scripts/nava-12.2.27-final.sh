@@ -257,15 +257,22 @@ print(f'APK_PATCH_OK versionName=12.2.27 versionCode={new_code}; only manifest/c
 PY
 
 "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk
+echo ZIPALIGN_OK
 PROP=/tmp/nava-signing/keystore.properties
 export NAVA_STORE_PASS="$(sed -n 's/^storePassword=//p' "$PROP" | tr -d '\r' | head -1)"
 export NAVA_KEY_PASS="$(sed -n 's/^keyPassword=//p' "$PROP" | tr -d '\r' | head -1)"
 KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROP" | tr -d '\r' | head -1)"
 "$BUILD_TOOLS/apksigner" sign --ks /tmp/nava-signing/signing/nava-release.jks --ks-key-alias "$KEY_ALIAS" --ks-pass env:NAVA_STORE_PASS --key-pass env:NAVA_KEY_PASS --out /tmp/Nava.apk /tmp/Nava-aligned.apk
+echo APK_SIGN_OK
 "$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/verify223.txt
 CERT=$(grep -i -m1 "certificate SHA-256 digest:" /tmp/verify223.txt | sed -E "s/.*digest:[[:space:]]*//" | tr -d ":[:space:]" | tr "[:upper:]" "[:lower:]")
-test "$CERT" = "$EXPECTED_CERT_SHA256"
-"$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | grep -q "versionCode='${TARGET_CODE}'.*versionName='12.2.27'"
+printf 'CERT_ACTUAL=%s CERT_EXPECTED=%s\\n' "$CERT" "$EXPECTED_CERT_SHA256"
+if [ "$CERT" != "$EXPECTED_CERT_SHA256" ]; then cat /tmp/verify223.txt; echo CERTIFICATE_CHECK_FAILED; exit 1; fi
+echo CERTIFICATE_OK
+"$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk > /tmp/final-badging.txt
+head -2 /tmp/final-badging.txt
+if ! grep -q "versionCode='${TARGET_CODE}'.*versionName='12.2.27'" /tmp/final-badging.txt; then echo APK_BADGING_CHECK_FAILED; cat /tmp/final-badging.txt; exit 1; fi
+echo APK_BADGING_OK
 APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
 printf 'zipalign=ok\nsigning=ok\ncert_sha256=%s\napk_sha256=%s\n' "$CERT" "$APK_SHA" >> "$STATUS"
 
