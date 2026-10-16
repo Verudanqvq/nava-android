@@ -272,7 +272,7 @@ with zipfile.ZipFile(out) as z, zipfile.ZipFile(src) as original:
     assert z.read('assets/nava_app_v11.js')==Path('/tmp/nava_app_v11.js').read_bytes()
     assert z.read('assets/nava_app_v11.css')==original.read('assets/nava_app_v11.css')
     assert z.read('assets/offline.html')==Path('/tmp/offline.html').read_bytes()
-print(f'APK_PATCH_OK versionName=12.2.29 versionCode={new_code}; only manifest/classes2 and the two download-limit assets changed')
+print(f'APK_PATCH_OK versionName=12.2.29 versionCode={new_code}; manifest, classes.dex, classes2.dex, and two storage-limit assets changed')
 PY
 
 "$BUILD_TOOLS/zipalign" -f -p 4 /tmp/Nava-unsigned.apk /tmp/Nava-aligned.apk
@@ -290,7 +290,7 @@ if [ "$CERT" != "$EXPECTED_CERT_SHA256" ]; then cat /tmp/verify229.txt; echo CER
 echo CERTIFICATE_OK
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk > /tmp/final-badging229.txt
 head -2 /tmp/final-badging229.txt
-if ! grep -q "versionCode='${TARGET_CODE}'.*versionName='12.2.27'" /tmp/final-badging229.txt; then echo APK_BADGING_CHECK_FAILED; cat /tmp/final-badging229.txt; exit 1; fi
+if ! grep -q "versionCode='${TARGET_CODE}'.*versionName='12.2.29'" /tmp/final-badging229.txt; then echo APK_BADGING_CHECK_FAILED; cat /tmp/final-badging229.txt; exit 1; fi
 echo APK_BADGING_OK
 APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
 printf 'zipalign=ok\nsigning=ok\ncert_sha256=%s\napk_sha256=%s\n' "$CERT" "$APK_SHA" >> "$STATUS"
