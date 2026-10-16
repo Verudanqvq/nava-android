@@ -33,8 +33,9 @@ jobs:
           profile: pixel_2
           script: |
             set -euo pipefail
-            PACKAGE="$($(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)/aapt dump badging /tmp/Nava.apk | sed -n "s/^package: name='\\([^']*\\)'.*/\\1/p")"
-            ACTIVITY="$($(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)/aapt dump badging /tmp/Nava.apk | sed -n "s/^launchable-activity: name='\\([^']*\\)'.*/\\1/p")"
+            AAPT="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)/aapt"
+            PACKAGE="$("$AAPT" dump badging /tmp/Nava.apk | sed -n "s/^package: name='\([^']*\)'.*/\1/p")"
+            ACTIVITY="$("$AAPT" dump badging /tmp/Nava.apk | sed -n "s/^launchable-activity: name='\([^']*\)'.*/\1/p")"
             test -n "$PACKAGE" && test -n "$ACTIVITY"
             adb install -r /tmp/Nava.apk
             adb shell am start -n "$PACKAGE/$ACTIVITY"
@@ -58,7 +59,7 @@ jobs:
                     while target is not None and target.attrib.get('clickable')!='true':
                         target=parents.get(target)
                     if target is None: continue
-                    m=re.match(r'\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]',target.attrib.get('bounds',''))
+                    m=re.match(r'\[(\d+),(\d+)\]\[(\d+),(\d+)\]',target.attrib.get('bounds',''))
                     if not m: continue
                     x1,y1,x2,y2=map(int,m.groups())
                     subprocess.run(['adb','shell','input','tap',str((x1+x2)//2),str((y1+y2)//2)],check=True)
