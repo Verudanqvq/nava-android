@@ -32,9 +32,9 @@ jobs:
           set -euo pipefail
           BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
           "$BUILD_TOOLS/apksigner" verify --verbose /tmp/Nava.apk
-          "$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | tee /tmp/badging238.txt
-          grep -q "versionCode='190'.*versionName='12.2.39'" /tmp/badging238.txt
-          grep -q 'status=success' /tmp/status238.txt
+          "$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | tee /tmp/badging239.txt
+          grep -q "versionCode='190'.*versionName='12.2.39'" /tmp/badging239.txt
+          grep -q 'status=success' /tmp/status239.txt
           unzip -p /tmp/Nava.apk assets/nava_app_v11.js | grep -q 'nava-profile-redesign-12239'
       - name: Publish profile update
         run: |
@@ -50,7 +50,7 @@ jobs:
           name: nava-12.2.39-profile-validation
           path: |
             /tmp/Nava.apk
-            /tmp/verify238.txt
-            /tmp/badging238.txt
-            /tmp/status238.txt
+            /tmp/verify239.txt
+            /tmp/badging239.txt
+            /tmp/status239.txt
           if-no-files-found: ignore
