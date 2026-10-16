@@ -43,8 +43,8 @@ jobs:
           grep -q 'storageTotalBytes' /tmp/offline-check.html
           grep -q 'storageAvailableBytes' /tmp/profile-check.js
           grep -q 'storageTotalBytes' /tmp/profile-check.js
-          grep -Fq 'Math.floor(freeBytes/1073741824)' /tmp/offline-check.html
-          grep -Fq 'Math.floor(s.free/1073741824)' /tmp/profile-check.js
+          grep -Fq 'Math.floor((freeBytes+bytes)/1073741824)' /tmp/offline-check.html
+          grep -Fq 'Math.floor((s.free+s.used)/1073741824)' /tmp/profile-check.js
           sha256sum /tmp/Nava.apk
           echo "FAST_STORAGE_CAP_REGRESSION_CHECKS_OK"
       - name: Publish verified APK
