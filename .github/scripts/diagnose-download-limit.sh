@@ -3,7 +3,7 @@ set -euo pipefail
 mkdir -p /tmp/nava-limit-diag
 gh release download v12.2.23 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/nava-limit-diag
 unzip -p /tmp/nava-limit-diag/Nava.apk assets/nava_app_v11.js > /tmp/nava-limit-diag/app.js
-python - <<'PY'
+python - <<'PY' > /tmp/download-limit-diagnostic.txt
 from pathlib import Path
 import re
 s=Path('/tmp/nava-limit-diag/app.js').read_text(errors='replace')
