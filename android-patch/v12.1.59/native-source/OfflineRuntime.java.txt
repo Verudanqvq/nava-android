@@ -802,7 +802,7 @@ public final class OfflineRuntime {
                         int count;
                         while ((count = in.read(buffer)) != -1) out.write(buffer, 0, count);
                         String html = new String(out.toByteArray(), StandardCharsets.UTF_8);
-                        webView.loadDataWithBaseURL("https://www.verudanava.com/__nava_offline_downloads__/#settings", html, "text/html", "UTF-8", null);
+                        webView.loadDataWithBaseURL("https://www.verudanava.com/__nava_offline_downloads__/", html, "text/html", "UTF-8", null);
                     } catch (Throwable ignored) {
                     }
                 }

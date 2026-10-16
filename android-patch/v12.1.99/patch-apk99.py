@@ -7,7 +7,7 @@ if len(sys.argv)!=7:raise SystemExit('usage: patch-apk99.py SRC MANIFEST CLASSES
 source,manifest_file,classes2_file,js_file,css_file,output=map(Path,sys.argv[1:])
 manifest=manifest_file.read_bytes();classes2=classes2_file.read_bytes();script=js_file.read_text(encoding='utf-8');stylesheet=css_file.read_text(encoding='utf-8')
 offline=Path('android-patch/v12.1.99/offline.html').read_bytes()
-if b'12.2.19' not in manifest and '12.2.19'.encode('utf-16le') not in manifest:raise ValueError('manifest version marker missing')
+if b'12.2.20' not in manifest and '12.2.20'.encode('utf-16le') not in manifest:raise ValueError('manifest version marker missing')
 if '__navaShellV12199' not in script:raise ValueError('shell marker missing')
 if "function root(){if(new URLSearchParams(w.location.search).get('u'))return null;var r=d.querySelector('.nava-profile-app');" not in script:raise ValueError('profile-only download settings guard missing')
 if 'nava-membership-card-12218' not in script or 'nava-membership-card-12218' not in stylesheet:raise ValueError('membership-card feature flag UI missing')
@@ -20,7 +20,7 @@ with zipfile.ZipFile(source) as zin,zipfile.ZipFile(output,'w') as zout:
  open_library_old="function openLibrary(){hideHub();if(typeof w.navaOpenDownloads==='function')w.navaOpenDownloads();else status('İndirilenler açılamadı.',true)}"
  if base_js.count(open_library_old)!=1:raise ValueError('downloads folder route not found exactly once')
  # Keep the WebView's downloaded-content browser as the destination.
- # NavaOffline.openDownloads() opens the native offline/settings surface, not the library list.
+ # Keep the native offline library as the destination; its URL must not force the settings panel.
  auto="if(ratings&&!ratings.dataset.navaAutoOpen){ratings.dataset.navaAutoOpen='1';setTimeout(function(){try{ratings.click()}catch(_){}},0)}"
  if base_js.count(auto)>1:raise ValueError('unexpected duplicate profile auto-tab switch')
  if base_js.count(auto)==1:base_js=base_js.replace(auto,"/* v12.1.99: preserve the current profile tab on entry */")
@@ -40,4 +40,4 @@ with zipfile.ZipFile(output) as result:
  if b'NAVA_OFFLINE_STORAGE_COMPRESSED_V12199' not in result.read('assets/offline.html'):raise ValueError('offline html missing')
  if b'nava-crystal-mark-v12190' in result.read('assets/nava_app_v11.js'):raise ValueError('brand override remains')
  if result.read('classes2.dex')!=classes2:raise ValueError('compressed native runtime missing')
- print('PATCH_219_OK shared download settings stay editable in profile')
+ print('PATCH_220_OK online Downloads opens the list, not settings')
