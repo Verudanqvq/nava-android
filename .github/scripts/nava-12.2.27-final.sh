@@ -174,13 +174,17 @@ test "${#CLASSES[@]}" -ge 5
 unzip -p /tmp/current/Nava.apk AndroidManifest.xml > /tmp/mini223/AndroidManifest.xml
 cp /tmp/newdex223/classes.dex /tmp/mini223/classes.dex
 (cd /tmp/mini223 && zip -q /tmp/mini223.apk AndroidManifest.xml classes.dex)
-curl -fsSL -o /tmp/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar
+echo APKTOOL_DOWNLOAD_START
+curl --connect-timeout 20 --max-time 120 --retry 2 -fsSL -o /tmp/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar
+echo APKTOOL_DOWNLOAD_OK
 java -jar /tmp/apktool.jar d -f -r /tmp/mini223.apk -o /tmp/mini223-dec >/tmp/apktool-mini223.log
 java -jar /tmp/apktool.jar d -f -r /tmp/current/Nava.apk -o /tmp/base223-dec >/tmp/apktool-base223.log
 test -d /tmp/base223-dec/smali_classes2/com/verudanava/nava
 rm -f /tmp/base223-dec/smali_classes2/com/verudanava/nava/OfflineRuntime*.smali
 cp /tmp/mini223-dec/smali/com/verudanava/nava/OfflineRuntime*.smali /tmp/base223-dec/smali_classes2/com/verudanava/nava/
+echo APKTOOL_REBUILD_START
 java -jar /tmp/apktool.jar b /tmp/base223-dec -o /tmp/rebuilt223.apk >/tmp/apktool-build223.log
+echo APKTOOL_REBUILD_OK
 unzip -p /tmp/rebuilt223.apk classes2.dex > /tmp/classes2-223.dex
 printf 'native_source_compile=ok\nclasses2_rebuild=ok\n' >> "$STATUS"
 
@@ -277,4 +281,5 @@ APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
 printf 'zipalign=ok\nsigning=ok\ncert_sha256=%s\napk_sha256=%s\n' "$CERT" "$APK_SHA" >> "$STATUS"
 
 printf 'candidate=v12.2.27\nasset=/tmp/Nava.apk\nstatus=candidate_ready\nfinished=%s\n' "$(date -u +%FT%TZ)" >> "$STATUS"
+echo CANDIDATE_READY
 trap - EXIT
