@@ -1,0 +1,37 @@
+name: Nava Android 12.2.26 Storage-aware download limit
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-android-12-2-26.yml"
+      - ".github/scripts/nava-12.2.26-final.sh"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nava-android-12-2-26
+  cancel-in-progress: false
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build, verify and publish 12.2.26 storage-aware download limit
+        run: bash .github/scripts/nava-12.2.26-final.sh
+      - name: Preserve build status
+        if: always()
+        run: |
+          if [ ! -f /tmp/status226.txt ]; then printf 'status=failed\\nreason=build did not start\\n' > /tmp/status226.txt; fi
+          cp /tmp/status226.txt android-build-status-12.2.26.txt
+          git config user.name 'Nava Android Build Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add android-build-status-12.2.26.txt
+          git commit -m 'Record Android 12.2.26 build status [skip ci]' || true
+          git push || true
