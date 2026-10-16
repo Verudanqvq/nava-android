@@ -1,0 +1,19 @@
+name: Nava download limit diagnosis
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/diagnose-download-limit.yml"
+      - ".github/scripts/diagnose-download-limit.sh"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect download limit setting inside published APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/diagnose-download-limit.sh
