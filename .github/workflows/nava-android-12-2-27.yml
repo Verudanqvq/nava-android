@@ -9,7 +9,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: nava-android-12-2-27-v3
+  group: nava-android-12-2-27-v4
   cancel-in-progress: true
 jobs:
   build-test-release:
