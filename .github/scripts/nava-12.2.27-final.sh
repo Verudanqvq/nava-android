@@ -224,7 +224,7 @@ with zipfile.ZipFile(src) as zin:
     if string_pool is None: raise ValueError('string pool missing')
     strings=pool(data,string_pool); versions=[x for x in strings if x[0]=='12.2.26']
     if len(versions)!=1: raise ValueError('expected one versionName 12.2.26')
-    _,start,nbytes,utf8=versions[0]; replacement='12.2.26'.encode('utf-8' if utf8 else 'utf-16le')
+    _,start,nbytes,utf8=versions[0]; replacement='12.2.27'.encode('utf-8' if utf8 else 'utf-16le')
     if len(replacement)!=nbytes: raise ValueError('versionName byte length changed')
     data[start:start+nbytes]=replacement
     count=0; off=u16(data,2)
