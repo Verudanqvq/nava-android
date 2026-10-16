@@ -1,0 +1,308 @@
+ASSET_BYTES 203501
+--- PATTERN .{0,180}(?:download.{0,30}limit|limit.{0,30}download).{0,260}
+HITS 1
+ar used=0;try{var d=JSON.parse(api.listDownloads()||'{}');used=Number(d.storageBytes)||0}catch(_){} if(used>=capBytes()){ try{window.dispatchEvent(new CustomEvent('nava:download-cap-reached',{detail:{limitGb:capBytes()/1073741824,usedBytes:used}}))}catch(_){} return; } return original.apply(api,arguments); }; }); api.__navaCapWrapped=true; }catch(_){} } function tick(){storageGuard()} function schedule(){if(timer)return;timer=setT
+--- PATTERN .{0,180}(?:storage.{0,30}limit|limit.{0,30}storage).{0,260}
+HITS 3
+fline.getSmartDownloads()}catch(_){}return pref(KEY,'true')!=='false'} function keepCount(){return 3} function capBytes(){try{if(window.NavaOffline&&typeof window.NavaOffline.getStorageLimitBytes==='function'){var b=Number(window.NavaOffline.getStorageLimitBytes());if(isFinite(b)&&b>=536870912)return Math.min(214748364800,b)}}catch(_){}var n=Number(pref(CAP,'2'));if(!isFinite(n)||n<.5)n=2;return Math.min(200,n)*1073741824} function clean(s){retu
+n;w.__navaProfileDownloadSettings12218=true;var id='nava-profile-download-settings-12218',timer=0;function api(){return w.NavaOffline||null}function gb(){try{var a=api(),n=a&&a.getStorageLimitBytes?Number(a.getStorageLimitBytes())/1073741824:2;return Math.max(1,Math.floor(n||2))}catch(_){return 2}}function state(){var a=api(),s={used:0,free:0,cap:gb(),items:0};try{var x=JSON.parse(a&&a.listDownloads?a.listDownloads():'{}');s.used=Number(x.storageBytes)||0;s.free=Number(x.storag
+e(),max=Math.max(1,Math.floor((s.used+s.free-268435456)/1073741824)),n=Math.max(1,Math.min(max,Math.floor(Number(cap.value)||gb())));cap.value=String(n);try{var a=api();if(a&&a.setStorageLimitBytes)a.setStorageLimitBytes(n*1073741824);w.localStorage.setItem('navaDownloadCapGb',String(n))}catch(_){}refresh()});var b=el('button','nava-profile-download-refresh','İndirilenleri yenile');b.type='button';b.addEventListener('click',refresh);card.append(b);(r.matches('body.nava-a
+--- PATTERN .{0,180}(?:39\.2321302|GB|gb|gigabyte).{0,260}
+HITS 10
+rr.length)return wrap; arr.forEach(function(it,index){ var a=e('a','nava-hero-slide-v5');a.href=it.url; if(it.image)a.style.backgroundImage='linear-gradient(90deg,rgba(11,18,32,.82),rgba(11,18,32,.24)),url("'+String(it.image).replace(/"/g,'%22')+'")'; var copy=e('div','nava-hero-copy-v5'); copy.append(e('div','nava-hero-kicker-v5',(it.type||'Eser')+(it.status?' · '+it.status:'')),e('div','nava-hero-title-v5',it
+-sizing:border-box;display:grid;grid-template-columns:minmax(84px,.72fr) minmax(0,1.28fr);align-items:center;gap:10px;margin:8px 12px 12px;padding:12px 0 2px;border-top:1px solid rgba(127,145,166,.22);min-width:0;overflow:hidden}.nava-reader-language-copy-v12168{min-width:0;display:grid;gap:2px}.nava-reader-language-copy-v12168 strong{font-size:12px;font-weight:850}.nava-reader-language-copy-v12168 small{font-size:9.5px;opacity:.62}.nava-
+if(!keys.length){var e=d.createElement('div');e.className='nava-download-queue-empty-v12149';e.textContent='Sıra boş.';list.append(e);return}keys.sort(function(a,b){var ga=live[a],gb=live[b];return(Number(volNo(ga.volume))||9999)-(Number(volNo(gb.volume))||9999)}).slice(0,30).forEach(function(k){var g=live[k],track=s[k]||{items:{}},items=Object.keys(track.items||{}).map(function(u){return track.items[u]}),active=items.some(function(x){ret
+ion fmt(n){n=Number(n)||0;if(n<1024)return n+' B';if(n<1048576)return(n/1024).toFixed(1)+' KB';if(n<1073741824)return(n/1048576).toFixed(1)+' MB';return(n/1073741824).toFixed(2)+' GB'} function loadRaw(){try{var x=JSON.parse(call('listDownloads')||'{}');if(!Array.isArray(x.items))x.items=[];return x}catch(_){return{items:[],storageBytes:0}}} function validRel(j){return j&&typeof j==='object'&&j.byUrl&&j.byAlias} function loadCache(){try{v
+on(window,document){ 'use strict'; if(window.__navaSmartDownloadPolicy12200)return; window.__navaSmartDownloadPolicy12200=true; var KEY='navaSmartDownload',CAP='navaDownloadCapGb',timer=0,lastPage=''; function pref(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(_){return d}} function enabled(){try{if(window.NavaOffline&&typeof window.NavaOffline.getSmartDownloads==='function')return !!window.NavaOffline.getSmartDow
+istDownloads()||'{}');used=Number(d.storageBytes)||0}catch(_){} if(used>=capBytes()){ try{window.dispatchEvent(new CustomEvent('nava:download-cap-reached',{detail:{limitGb:capBytes()/1073741824,usedBytes:used}}))}catch(_){} return; } return original.apply(api,arguments); }; }); api.__navaCapWrapped=true; }catch(_){} } function tick(){storageGuard()} function schedule(){if(timer)return;timer=setTim
+fileDownloadSettings12218)return;w.__navaProfileDownloadSettings12218=true;var id='nava-profile-download-settings-12218',timer=0;function api(){return w.NavaOffline||null}function gb(){try{var a=api(),n=a&&a.getStorageLimitBytes?Number(a.getStorageLimitBytes())/1073741824:2;return Math.max(1,Math.floor(n||2))}catch(_){return 2}}function state(){var a=api(),s={used:0,free:0,cap:gb(),items:0};try{var x=JSON.parse(a&&a.listDownloads?a.listDo
+free=Number(x.storageAvailableBytes)||0;s.items=(x.items||[]).length}catch(_){}return s}function fmt(n){n=Math.max(0,Number(n)||0);return n>=1073741824?(n/1073741824).toFixed(2)+' GB':n>=1048576?(n/1048576).toFixed(1)+' MB':Math.round(n/1024)+' KB'}function root(){var r=d.querySelector('.nava-profile-panel, .nava-profile-hero, .nava-profile-page, body.nava-app-own-profile #nava-app-page');if(!r)return null;var s=w.getComputedStyle?w.getCo
+','setSmartDownloads','navaSmartDownload');var row=el('label','nava-profile-download-row'),copy=el('span','nava-profile-download-copy');copy.append(el('strong','','İndirme sınırı (GB)'),el('small','','Her iki modda da aynı sınır geçerlidir.'));var cap=el('input','');cap.type='number';cap.id=id+'-cap';cap.min='1';cap.max='200';cap.step='1';cap.inputMode='numeric';row.append(copy,cap);card.append(row);cap.addEventListener('change',function(
+){var s=state(),max=Math.max(1,Math.floor((s.used+s.free-268435456)/1073741824)),n=Math.max(1,Math.min(max,Math.floor(Number(cap.value)||gb())));cap.value=String(n);try{var a=api();if(a&&a.setStorageLimitBytes)a.setStorageLimitBytes(n*1073741824);w.localStorage.setItem('navaDownloadCapGb',String(n))}catch(_){}refresh()});var b=el('button','nava-profile-download-refresh','İndirilenleri yenile');b.
+--- PATTERN .{0,180}(?:range|step=).{0,220}
+HITS 2
+uerySelector('input');if(typeof prefill==='string'){i.value=prefill;i.dispatchEvent(new Event('input',{bubbles:true}))}setTimeout(function(){try{i.focus();if(prefill)i.setSelectionRange(i.value.length,i.value.length)}catch(_){}},40);postNative('haptic');} function chapterMeta(){ var n=d.querySelector('[data-nava-chapter-meta]'); return n?{volumeTitle:clean(n.getAttribute('data-volume-title'
+strong','','İndirme sınırı (GB)'),el('small','','Her iki modda da aynı sınır geçerlidir.'));var cap=el('input','');cap.type='number';cap.id=id+'-cap';cap.min='1';cap.max='200';cap.step='1';cap.inputMode='numeric';row.append(copy,cap);card.append(row);cap.addEventListener('change',function(){var s=state(),max=Math.max(1,Math.floor((s.used+s.free-268435456)/1073741824)),n=Math.max(1,Math.min(max,Math.flo
+--- NEAR LIMIT TOKENS
+umeReadCache(uid,label){
+    var result={urls:new Set(),ids:new Set()};
+    try{
+      var raw=localStorage.getItem(volumeReadCacheKey(uid,label));
+      if(!raw)raw=localStorage.getItem(volumeReadLegacyCacheKey(uid,label));
+      var parsed=JSON.parse(raw||'null');
+      if(Array.isArr
+
+    try{
+      var raw=localStorage.getItem(volumeReadCacheKey(uid,label));
+      if(!raw)raw=localStorage.getItem(volumeReadLegacyCacheKey(uid,label));
+      var parsed=JSON.parse(raw||'null');
+      if(Array.isArray(parsed)){
+        parsed.forEach(function(v){var k=urlKey(v);if(k)re
+
+    return result;
+  }
+  function saveVolumeReadCache(uid,label,urlSet,idSet){
+    try{
+      localStorage.setItem(volumeReadCacheKey(uid,label),JSON.stringify({
+        urls:Array.from(urlSet||[]).slice(0,1200),
+        ids:Array.from(idSet||[]).slice(0,1200)
+      }));
+    }catch(_){
+||300000;
+    var k='nava-v11:'+encodeURIComponent(url),cached=null;
+    try{cached=JSON.parse(localStorage.getItem(k)||'null')}catch(_){}
+    function network(){
+      return fetch(url,{credentials:'same-origin',cache:'no-store'}).then(function(r){
+        if(!r.ok)throw Error('feed');
+       if(!r.ok)throw Error('feed');return r.json();
+      }).then(function(data){
+        try{localStorage.setItem(k,JSON.stringify({t:Date.now(),d:data}))}catch(_){}
+        try{d.dispatchEvent(new CustomEvent('nava-app-feed-refresh',{detail:{url:url,data:data}}))}catch(_){}
+        r
+inueUnsub=w.db.collection('users').doc(user.uid).collection('reading').orderBy('lastReadAt','desc').limit(8).onSnapshot(function(snap){state.continueItems=snap.docs.map(function(doc){return Object.assign({docId:doc.id},doc.data()||{})});var p=d.getElementById('nava-app-page');if(p&&st
+estore()).collection('users').doc(user.uid).collection('notifications').orderBy('createdAt','desc').limit(40).onSnapshot(function(snap){state.notifications=snap.docs.map(function(doc){return Object.assign({id:doc.id},doc.data()||{})});renderAppNotifications()},function(){renderAppNoti
+ection('usernames').orderBy(firebase.firestore.FieldPath.documentId()).startAt(q).endAt(q+'\uf8ff').limit(12).get().then(function(snap){
+      var claims=snap.docs.map(function(doc){return{username:doc.id,uid:(doc.data()||{}).uid}}).filter(function(x){return x.uid});
+      return Prom
+s+/g,' ').trim();
+    var images=[].slice.call(reader.querySelectorAll('img'));
+    var forced=localStorage.getItem('navaAppReaderMode')||'auto';
+
+    /* Etiket varsa heuristiğin önüne geçsin.
+       LN/WN/Novel sayfasındaki 3 küçük illüstrasyon artık yanlışlıkla manga sayılmıyor. */
+  
+ttings(){
+    var box=d.getElementById('nava-reader-settings-v2');if(!box)return;
+    var mode=localStorage.getItem('navaAppReaderMode')||'auto';
+    box.querySelectorAll('[data-reader-mode]').forEach(function(b){b.classList.toggle('is-active',b.dataset.readerMode===mode)});
+  }
+  funct
+pography(){
+    var reader=d.getElementById('reader');if(!reader)return;
+    var font=parseInt(localStorage.getItem('navaAppReaderFont')||'18',10);font=Math.max(15,Math.min(24,font||18));
+    var line=parseFloat(localStorage.getItem('navaAppReaderLine')||'1.78');line=Math.max(1.5,Math.m
+navaAppReaderFont')||'18',10);font=Math.max(15,Math.min(24,font||18));
+    var line=parseFloat(localStorage.getItem('navaAppReaderLine')||'1.78');line=Math.max(1.5,Math.min(2.05,line||1.78));
+    reader.style.setProperty('--nava-reader-font',font+'px');reader.style.setProperty('--nava-r
+urn;state.readerPositionRestored=true;
+    setTimeout(function(){
+      try{var raw=JSON.parse(localStorage.getItem(readerPositionKey())||'null');var y=raw&&Number(raw.y);var max=Math.max(0,d.documentElement.scrollHeight-w.innerHeight);if(y>90&&max>150)w.scrollTo(0,Math.min(y,max))}catc
+aderSaveTimer)return;state.readerSaveTimer=w.setTimeout(function(){state.readerSaveTimer=0;try{localStorage.setItem(readerPositionKey(),JSON.stringify({y:Math.round(w.scrollY||0),t:Date.now()}))}catch(_){}},550);
+  }
+
+  function hideLegacyReaderChrome(){
+    var navi=d.getElementById('n
+).forEach(function(btn){btn.onclick=function(){var dir=Number(btn.dataset.dir)||0,cur=parseInt(localStorage.getItem('navaAppReaderFont')||'18',10)||18;cur=Math.max(15,Math.min(24,cur+dir));localStorage.setItem('navaAppReaderFont',String(cur));applyReaderTypography();postNative('haptic')
+(localStorage.getItem('navaAppReaderFont')||'18',10)||18;cur=Math.max(15,Math.min(24,cur+dir));localStorage.setItem('navaAppReaderFont',String(cur));applyReaderTypography();postNative('haptic')}});
+    box.querySelectorAll('[data-line]').forEach(function(btn){btn.onclick=function(){loca
+tic')}});
+    box.querySelectorAll('[data-line]').forEach(function(btn){btn.onclick=function(){localStorage.setItem('navaAppReaderLine',String(Number(btn.dataset.line)||1.78));applyReaderTypography();postNative('haptic')}});
+    box.querySelectorAll('[data-reader-mode]').forEach(functio
+);
+    box.querySelectorAll('[data-reader-mode]').forEach(function(btn){btn.onclick=function(){localStorage.setItem('navaAppReaderMode',btn.dataset.readerMode||'auto');detectAppReaderMode(d.getElementById('reader'));normalizeReaderImages();syncReaderSettings();postNative('haptic')}});
+ 
+)*16).toString(16);return out}}
+  function persistent(key,prefix,bytes){var value='';try{value=localStorage.getItem(key)||''}catch(_){}if(!value){value=prefix+randomHex(bytes);try{localStorage.setItem(key,value)}catch(_){}}return value}
+  var installBase=persistent(INSTALL_KEY,'d_',24),
+try{value=localStorage.getItem(key)||''}catch(_){}if(!value){value=prefix+randomHex(bytes);try{localStorage.setItem(key,value)}catch(_){}}return value}
+  var installBase=persistent(INSTALL_KEY,'d_',24),deviceKey=persistent(DEVICE_KEY,'k_',32);
+  function ready(){return!!(w.db&&w.firebas
+nChannel:'nava_follower_releases_v4',updatedAt:stamp},{merge:true}).then(function(){
+      try{localStorage.setItem('nava_push_registered_v12147:'+uid,'1')}catch(_){}
+      if(verifyTimer)clearTimeout(verifyTimer);verifyTimer=setTimeout(function(){if(currentUser)requestNativeToken()},60
+nNow(){
+    try{
+      if(!d.body||!d.body.classList.contains('nava-app-reader'))return;
+      localStorage.setItem(readerPositionKey(),JSON.stringify({y:Math.max(0,Math.round(w.scrollY||0)),t:Date.now()}));
+    }catch(_){}
+  }
+
+  function cleanOldLocalCaches(){
+    try{
+      var now=D
+atch(_){}
+  }
+
+  function cleanOldLocalCaches(){
+    try{
+      var now=Date.now(),last=Number(localStorage.getItem('nava-v12130-cache-clean-at')||0);
+      if(now-last<24*60*60*1000)return;
+      for(var i=localStorage.length-1;i>=0;i--){
+        var k=localStorage.key(i)||'';
+        
+tem('nava-v12130-cache-clean-at')||0);
+      if(now-last<24*60*60*1000)return;
+      for(var i=localStorage.length-1;i>=0;i--){
+        var k=localStorage.key(i)||'';
+        if(k.indexOf('nava-v11:')===0){
+          try{var v=JSON.parse(localStorage.getItem(k)||'null');if(v&&Number(v.t
+(now-last<24*60*60*1000)return;
+      for(var i=localStorage.length-1;i>=0;i--){
+        var k=localStorage.key(i)||'';
+        if(k.indexOf('nava-v11:')===0){
+          try{var v=JSON.parse(localStorage.getItem(k)||'null');if(v&&Number(v.t)>0&&now-Number(v.t)>7*24*60*60*1000)localStora
+ocalStorage.key(i)||'';
+        if(k.indexOf('nava-v11:')===0){
+          try{var v=JSON.parse(localStorage.getItem(k)||'null');if(v&&Number(v.t)>0&&now-Number(v.t)>7*24*60*60*1000)localStorage.removeItem(k)}catch(_){}
+        }else if(k.indexOf('nava-reader-position-v9:')===0){
+       
+ON.parse(localStorage.getItem(k)||'null');if(v&&Number(v.t)>0&&now-Number(v.t)>7*24*60*60*1000)localStorage.removeItem(k)}catch(_){}
+        }else if(k.indexOf('nava-reader-position-v9:')===0){
+          try{var p=JSON.parse(localStorage.getItem(k)||'null');if(p&&Number(p.t)>0&&now-Numb
+{}
+        }else if(k.indexOf('nava-reader-position-v9:')===0){
+          try{var p=JSON.parse(localStorage.getItem(k)||'null');if(p&&Number(p.t)>0&&now-Number(p.t)>120*24*60*60*1000)localStorage.removeItem(k)}catch(_){}
+        }
+      }
+      localStorage.setItem('nava-v12130-cache-cl
+.parse(localStorage.getItem(k)||'null');if(p&&Number(p.t)>0&&now-Number(p.t)>120*24*60*60*1000)localStorage.removeItem(k)}catch(_){}
+        }
+      }
+      localStorage.setItem('nava-v12130-cache-clean-at',String(now));
+    }catch(_){}
+  }
+
+  function polishImages(scope){
+    try{
+    
+ow-Number(p.t)>120*24*60*60*1000)localStorage.removeItem(k)}catch(_){}
+        }
+      }
+      localStorage.setItem('nava-v12130-cache-clean-at',String(now));
+    }catch(_){}
+  }
+
+  function polishImages(scope){
+    try{
+      (scope||d).querySelectorAll('img').forEach(function(img){
+  
+ u=canon(i&&i.url);if(u)o[u]=1})}catch(_){}return o}
+function loadQueue(){try{var q=JSON.parse(localStorage.getItem(QUEUE_KEY)||'[]');queue=Array.isArray(q)?q:[]}catch(_){queue=[]}return queue}function saveQueue(){try{localStorage.setItem(QUEUE_KEY,JSON.stringify(queue.slice(0,900)))}ca
+EY)||'[]');queue=Array.isArray(q)?q:[]}catch(_){queue=[]}return queue}function saveQueue(){try{localStorage.setItem(QUEUE_KEY,JSON.stringify(queue.slice(0,900)))}catch(_){}renderQueue()}function addQueue(items){loadQueue();var map=Object.create(null);queue.forEach(function(x){var u=cano
+);if(!c)throw new Error('Oturum yok');var removed=0;for(var pass=0;pass<30;pass++){var snap=await c.limit(400).get();if(snap.empty)break;var batch=db.batch();snap.docs.forEach(function(x){batch.delete(x.ref)});await batch.commit();removed+=snap.size;if(snap.size<400)break}return remov
+urn;unsub=db.collection('users').doc(u.uid).collection('notifications').orderBy('createdAt','desc').limit(50).onSnapshot(function(s){docs=s.docs.map(function(x){return Object.assign({id:x.id},x.data()||{})});setTimeout(mapIds,0)},function(){})});for(var i=0;i<8;i++)setTimeout(wirePane
+:cilt|volume|vol\.?) *\d+/i);if(m&&clean(m[1]))return clean(m[1],300)}return pageTitle()}
+function storageKey(name){return PREFIX+clean(name||seriesName(),300).toLocaleLowerCase('tr-TR').replace(/ +/g,' ')}
+function getSelected(name,available){var saved='';try{saved=localStorage.getIt
+Case('tr-TR').replace(/ +/g,' ')}
+function getSelected(name,available){var saved='';try{saved=localStorage.getItem(storageKey(name))||''}catch(_){}if(available&&available.indexOf(saved)>=0)return saved;if(available&&available.indexOf('TR')>=0)return'TR';return available&&available[0]||
+place(/ +/g,' ')}
+function getSelected(name,available){var saved='';try{saved=localStorage.getItem(storageKey(name))||''}catch(_){}if(available&&available.indexOf(saved)>=0)return saved;if(available&&available.indexOf('TR')>=0)return'TR';return available&&available[0]||'TR'}
+function s
+n setSelected(name,lang){lang=clean(lang,10).toUpperCase();if(LANGS.indexOf(lang)<0)return;try{localStorage.setItem(storageKey(name),lang)}catch(_){}schedule()}
+async function allPosts(){var out=[],start=1,size=500;for(var pass=0;pass<6;pass++){var r=await fetch('/feeds/posts/summary?al
+me,lang){lang=clean(lang,10).toUpperCase();if(LANGS.indexOf(lang)<0)return;try{localStorage.setItem(storageKey(name),lang)}catch(_){}schedule()}
+async function allPosts(){var out=[],start=1,size=500;for(var pass=0;pass<6;pass++){var r=await fetch('/feeds/posts/summary?alt=json&max-resul
+);if(!c)throw new Error('Oturum yok');var removed=0;for(var pass=0;pass<30;pass++){var snap=await c.limit(400).get();if(snap.empty)break;var batch=db.batch();snap.docs.forEach(function(x){batch.delete(x.ref)});await batch.commit();removed+=snap.size;if(snap.size<400)break}return remov
+urn;unsub=db.collection('users').doc(u.uid).collection('notifications').orderBy('createdAt','desc').limit(80).onSnapshot(function(s){docs=s.docs.map(function(x){return Object.assign({id:x.id},x.data()||{})});setTimeout(function(){wirePanel();mapIds()},0)},function(err){console.error('
+=canon(x&&x.url),k=logicalKey(x);if(u)m[u]=1;if(k)m['k:'+k]=1})}catch(_){}try{var q=JSON.parse(localStorage.getItem(QUEUE_KEY)||'[]');if(Array.isArray(q))q.forEach(function(x){var u=canon(x&&x.url),k=logicalKey(x),s=clean(x&&x.status,30).toLowerCase();if(s!=='error'){if(u)m[u]=1;if(k)m[
+]=1;if(k)m['k:'+k]=1}})}catch(_){}return m}
+function queueAdd(items){var q=[];try{q=JSON.parse(localStorage.getItem(QUEUE_KEY)||'[]');if(!Array.isArray(q))q=[]}catch(_){q=[]}var map={};q.forEach(function(x){var u=canon(x&&x.url);if(u&&x.status!=='done')map[u]=x});items.forEach(function(
+sTitle,300),kind:clean(x.kind,30)||'chapter',status:'waiting',done:0,total:0,message:''}});try{localStorage.setItem(QUEUE_KEY,JSON.stringify(Object.keys(map).map(function(k){return map[k]}).slice(0,900)))}catch(_){}}
+async function startSelected(q){if(busy)return;var info=q.__seriesInfo
+t|volume|vol\.?) *\d+(?:\.\d+)?(?: .*)?$/i,'').trim()}
+function queue(){try{var q=JSON.parse(localStorage.getItem(QUEUE_KEY)||'[]');return Array.isArray(q)?q:[]}catch(_){return[]}}
+function state(){try{var s=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');return s&&typeof s==='objec
+||'[]');return Array.isArray(q)?q:[]}catch(_){return[]}}
+function state(){try{var s=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');return s&&typeof s==='object'?s:{}}catch(_){return{}}}
+function saveState(s){try{localStorage.setItem(STATE_KEY,JSON.stringify(s))}catch(_){}}
+function i
+E_KEY)||'{}');return s&&typeof s==='object'?s:{}}catch(_){return{}}}
+function saveState(s){try{localStorage.setItem(STATE_KEY,JSON.stringify(s))}catch(_){}}
+function info(x){x=x||{};var st=clean(x.seriesTitle,350),title=clean(x.title,220),n=volNo(st+' '+title),series=stripVol(st)||strip
+on('users').doc(u.uid).collection('notifications'),removed=0;for(var i=0;i<30;i++){var snap=await c.limit(400).get();if(snap.empty)break;var batch=db.batch();snap.docs.forEach(function(x){batch.delete(x.ref)});await batch.commit();removed+=snap.size;if(snap.size<400)break}return remov
+isChapter:String(x.kind||'').toLowerCase()==='chapter'}}
+function queue(){try{var q=JSON.parse(localStorage.getItem(QUEUE_KEY)||'[]');return Array.isArray(q)?q:[]}catch(_){return[]}}
+function saveQueue(q){try{localStorage.setItem(QUEUE_KEY,JSON.stringify((q||[]).slice(0,900)))}catch(_){
+m(QUEUE_KEY)||'[]');return Array.isArray(q)?q:[]}catch(_){return[]}}
+function saveQueue(q){try{localStorage.setItem(QUEUE_KEY,JSON.stringify((q||[]).slice(0,900)))}catch(_){}}
+function state(){try{var s=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');return s&&typeof s==='object'?s:{}
+UE_KEY,JSON.stringify((q||[]).slice(0,900)))}catch(_){}}
+function state(){try{var s=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');return s&&typeof s==='object'?s:{}}catch(_){return{}}}
+function saveState(s){try{localStorage.setItem(STATE_KEY,JSON.stringify(s||{}))}catch(_){}}
+functi
+E_KEY)||'{}');return s&&typeof s==='object'?s:{}}catch(_){return{}}}
+function saveState(s){try{localStorage.setItem(STATE_KEY,JSON.stringify(s||{}))}catch(_){}}
+function pctOf(g){var items=Object.keys(g.items||{}).map(function(k){return g.items[k]}),total=items.length;if(!total)return 0
+ar c=col();if(!c)throw new Error('Oturum yok');var n=0;for(var pass=0;pass<30;pass++){var s=await c.limit(400).get();if(s.empty)break;var b=db.batch();s.docs.forEach(function(x){b.delete(x.ref)});await b.commit();n+=s.size;if(s.size<400)break}return n}
+function ensureClear(){var sh=d.
+try{unsub=db.collection('users').doc(u.uid).collection('notifications').orderBy('createdAt','desc').limit(40).onSnapshot(function(s){docs=s.docs.map(function(x){return{id:x.id,data:x.data()||{}}});setTimeout(decorateRows,0)},function(err){console.error('Nava 61 bildirim dinleyici:',er
+all('listDownloads')||'{}');if(!Array.isArray(x.items))x.items=[];return x}catch(_){return{items:[],storageBytes:0}}}
+function validRel(j){return j&&typeof j==='object'&&j.byUrl&&j.byAlias}
+function loadCache(){try{var j=JSON.parse(localStorage.getItem(REL_KEY)||'{}');if(validRel(j)){st
+){return j&&typeof j==='object'&&j.byUrl&&j.byAlias}
+function loadCache(){try{var j=JSON.parse(localStorage.getItem(REL_KEY)||'{}');if(validRel(j)){state.rel=j;state.ready=Object.keys(j.byUrl).length>0}}catch(_){}return state.ready}
+function saveCache(r){state.rel=validRel(r)?r:{byUrl:{
+=validRel(r)?r:{byUrl:{},byAlias:{}};state.ready=!!Object.keys(state.rel.byUrl||{}).length;try{localStorage.setItem(REL_KEY,JSON.stringify(state.rel))}catch(_){}}
+async function feed(label){var out=[],start=1,size=500;for(var p=0;p<6;p++){var r=await fetch('https://www.verudanava.com/fe
+,state.rel);s.querySelector('[data-summary]').textContent=(all.length?all.length+' içerik':'')+(idx.storageBytes?' • '+fmt(idx.storageBytes):'');tree.replaceChildren();if(!gs.length){var e=el('div','nava-offline62-empty');e.append(el('strong','',all.length?'Sonuç yok':'Henüz indirme yok
+('[data-summary]').textContent=(all.length?all.length+' içerik':'')+(idx.storageBytes?' • '+fmt(idx.storageBytes):'');tree.replaceChildren();if(!gs.length){var e=el('div','nava-offline62-empty');e.append(el('strong','',all.length?'Sonuç yok':'Henüz indirme yok'),el('span','',all.length?
+e});
+})(document,window);
+/* Nava Android 12.1.69 — zero-safe order + all-language download batch + storage trim. */
+/* Nava Android 12.1.72 — authoritative native queue + compact downloaded search. */
+;(function(d,w){
+'use strict';
+if(w.__navaDownloadStateV12172)return;w.__navaDownload
+12149');if(hub&&!hub.hidden)renderQueue();patchLanguage();compactSearch()}
+function init(){try{localStorage.removeItem('nava_download_group_state_v12158')}catch(_){}sync();if(timer)clearInterval(timer);timer=setInterval(tick,500);w.addEventListener('pageshow',function(){setTimeout(sync,
+'navaSmartDownload',CAP='navaDownloadCapGb',timer=0,lastPage='';
+ function pref(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(_){return d}}
+ function enabled(){try{if(window.NavaOffline&&typeof window.NavaOffline.getSmartDownloads==='function')return !!window.NavaOffl
+ keepCount(){return 3}
+ function capBytes(){try{if(window.NavaOffline&&typeof window.NavaOffline.getStorageLimitBytes==='function'){var b=Number(window.NavaOffline.getStorageLimitBytes());if(isFinite(b)&&b>=536870912)return Math.min(214748364800,b)}}catch(_){}var n=Number(pref(CAP,'2'))
+unt(){return 3}
+ function capBytes(){try{if(window.NavaOffline&&typeof window.NavaOffline.getStorageLimitBytes==='function'){var b=Number(window.NavaOffline.getStorageLimitBytes());if(isFinite(b)&&b>=536870912)return Math.min(214748364800,b)}}catch(_){}var n=Number(pref(CAP,'2'));if(!
+ne&&typeof window.NavaOffline.getStorageLimitBytes==='function'){var b=Number(window.NavaOffline.getStorageLimitBytes());if(isFinite(b)&&b>=536870912)return Math.min(214748364800,b)}}catch(_){}var n=Number(pref(CAP,'2'));if(!isFinite(n)||n<.5)n=2;return Math.min(200,n)*1073741824}
+ func
+eof window.NavaOffline.getStorageLimitBytes==='function'){var b=Number(window.NavaOffline.getStorageLimitBytes());if(isFinite(b)&&b>=536870912)return Math.min(214748364800,b)}}catch(_){}var n=Number(pref(CAP,'2'));if(!isFinite(n)||n<.5)n=2;return Math.min(200,n)*1073741824}
+ function 
+=p.language)return;
+   seen[url]=1;try{window.NavaOffline.delete(url)}catch(_){}
+  });
+ }
+ function storageGuard(){
+  var api=window.NavaOffline;if(!api||api.__navaCapWrapped)return;
+  try{
+   ['download','downloadBatch'].forEach(function(name){
+    if(typeof api[name]!=='function')retu
+api[name]=function(){
+     var used=0;try{var d=JSON.parse(api.listDownloads()||'{}');used=Number(d.storageBytes)||0}catch(_){}
+     if(used>=capBytes()){
+      try{window.dispatchEvent(new CustomEvent('nava:download-cap-reached',{detail:{limitGb:capBytes()/1073741824,usedBytes:used}}))
+d>=capBytes()){
+      try{window.dispatchEvent(new CustomEvent('nava:download-cap-reached',{detail:{limitGb:capBytes()/1073741824,usedBytes:used}}))}catch(_){}
+      return;
+     }
+     return original.apply(api,arguments);
+    };
+   });
+   api.__navaCapWrapped=true;
+  }catch(_){}
+ }
+
+apply(api,arguments);
+    };
+   });
+   api.__navaCapWrapped=true;
+  }catch(_){}
+ }
+ function tick(){storageGuard()}
+ function schedule(){if(timer)return;timer=setTimeout(function(){timer=0;tick()},350)}
+ function init(){tick();if(window.MutationObserver)new MutationObserver(schedule).ob
+ar completed={chapter:from.chapter,series:from.series,url:from.url,language:from.language};try{localStorage.setItem('navaLastCompletedChapter',JSON.stringify(completed))}catch(_){}cleanup(completed)}setTimeout(schedule,150)},true);setInterval(tick,2500)}
+ if(document.readyState==='loadi
+gs-12218',timer=0;function api(){return w.NavaOffline||null}function gb(){try{var a=api(),n=a&&a.getStorageLimitBytes?Number(a.getStorageLimitBytes())/1073741824:2;return Math.max(1,Math.floor(n||2))}catch(_){return 2}}function state(){var a=api(),s={used:0,free:0,cap:gb(),items:0};try{
+8',timer=0;function api(){return w.NavaOffline||null}function gb(){try{var a=api(),n=a&&a.getStorageLimitBytes?Number(a.getStorageLimitBytes())/1073741824:2;return Math.max(1,Math.floor(n||2))}catch(_){return 2}}function state(){var a=api(),s={used:0,free:0,cap:gb(),items:0};try{var x
+(){return w.NavaOffline||null}function gb(){try{var a=api(),n=a&&a.getStorageLimitBytes?Number(a.getStorageLimitBytes())/1073741824:2;return Math.max(1,Math.floor(n||2))}catch(_){return 2}}function state(){var a=api(),s={used:0,free:0,cap:gb(),items:0};try{var x=JSON.parse(a&&a.listDown
+rn w.NavaOffline||null}function gb(){try{var a=api(),n=a&&a.getStorageLimitBytes?Number(a.getStorageLimitBytes())/1073741824:2;return Math.max(1,Math.floor(n||2))}catch(_){return 2}}function state(){var a=api(),s={used:0,free:0,cap:gb(),items:0};try{var x=JSON.parse(a&&a.listDownloads
+0,cap:gb(),items:0};try{var x=JSON.parse(a&&a.listDownloads?a.listDownloads():'{}');s.used=Number(x.storageBytes)||0;s.free=Number(x.storageAvailableBytes)||0;s.items=(x.items||[]).length}catch(_){}return s}function fmt(n){n=Math.max(0,Number(n)||0);return n>=1073741824?(n/1073741824).t
+N.parse(a&&a.listDownloads?a.listDownloads():'{}');s.used=Number(x.storageBytes)||0;s.free=Number(x.storageAvailableBytes)||0;s.items=(x.items||[]).length}catch(_){}return s}function fmt(n){n=Math.max(0,Number(n)||0);return n>=1073741824?(n/1073741824).toFixed(2)+' GB':n>=1048576?(n/104
+ddEventListener('change',function(){try{var a=api();if(a&&a[method])a[method](input.checked);w.localStorage.setItem(pref,String(input.checked))}catch(_){}});return input}check('wifi','Yalnızca Wi‑Fi','Mobil veriyle indirmeyi engeller.','setWifiOnly','navaWifiOnly');check('smart','Akıllı
+1,Math.min(max,Math.floor(Number(cap.value)||gb())));cap.value=String(n);try{var a=api();if(a&&a.setStorageLimitBytes)a.setStorageLimitBytes(n*1073741824);w.localStorage.setItem('navaDownloadCapGb',String(n))}catch(_){}refresh()});var b=el('button','nava-profile-download-refresh','İndir
+min(max,Math.floor(Number(cap.value)||gb())));cap.value=String(n);try{var a=api();if(a&&a.setStorageLimitBytes)a.setStorageLimitBytes(n*1073741824);w.localStorage.setItem('navaDownloadCapGb',String(n))}catch(_){}refresh()});var b=el('button','nava-profile-download-refresh','İndirilenl
+or(Number(cap.value)||gb())));cap.value=String(n);try{var a=api();if(a&&a.setStorageLimitBytes)a.setStorageLimitBytes(n*1073741824);w.localStorage.setItem('navaDownloadCapGb',String(n))}catch(_){}refresh()});var b=el('button','nava-profile-download-refresh','İndirilenleri yenile');b.typ
+er(cap.value)||gb())));cap.value=String(n);try{var a=api();if(a&&a.setStorageLimitBytes)a.setStorageLimitBytes(n*1073741824);w.localStorage.setItem('navaDownloadCapGb',String(n))}catch(_){}refresh()});var b=el('button','nava-profile-download-refresh','İndirilenleri yenile');b.type='bu
+=String(n);try{var a=api();if(a&&a.setStorageLimitBytes)a.setStorageLimitBytes(n*1073741824);w.localStorage.setItem('navaDownloadCapGb',String(n))}catch(_){}refresh()});var b=el('button','nava-profile-download-refresh','İndirilenleri yenile');b.type='button';b.addEventListener('click',r
+status=d.getElementById(id+'-status');if(wif)wif.checked=!!(a&&a.getWifiOnly?a.getWifiOnly():w.localStorage.getItem('navaWifiOnly')!=='false');if(smart)smart.checked=!!(a&&a.getSmartDownloads?a.getSmartDownloads():w.localStorage.getItem('navaSmartDownload')!=='false');if(cap){if(d.activ
+WifiOnly')!=='false');if(smart)smart.checked=!!(a&&a.getSmartDownloads?a.getSmartDownloads():w.localStorage.getItem('navaSmartDownload')!=='false');if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(1,Math.floor((s.used+s.free-268435456)/1073741824)))}if(st
