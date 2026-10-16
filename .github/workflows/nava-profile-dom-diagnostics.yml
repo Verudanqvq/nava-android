@@ -19,7 +19,7 @@ jobs:
           gh release download v12.2.32 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp
           unzip -p /tmp/Nava.apk assets/nava_app_v11.js > /tmp/nava_app_v11.js
           echo '--- DECOMPILED ACTIVITY LOAD SOURCE ---'
-          curl -fsSL https://github.com/skylot/jadx/releases/latest/download/jadx-1.5.2.zip -o /tmp/jadx.zip || true
+          curl -fsSL https://github.com/skylot/jadx/releases/download/v1.5.2/jadx-1.5.2.zip -o /tmp/jadx.zip || true
           if [ -s /tmp/jadx.zip ]; then mkdir -p /tmp/jadx && unzip -q /tmp/jadx.zip -d /tmp/jadx; chmod +x /tmp/jadx/bin/jadx; /tmp/jadx/bin/jadx -d /tmp/decompiled /tmp/Nava.apk >/dev/null 2>&1 || true; grep -RniE 'nava_app_v11|loadUrl\(|loadData|WebView|https?://' /tmp/decompiled/sources/com/verudanava/nava 2>/dev/null | head -100 || true; fi
           echo '--- PROFILE MARKUP AND SELECTORS ---'
           echo '--- ANDROID DEX ASSET LOADING REFERENCES ---'
