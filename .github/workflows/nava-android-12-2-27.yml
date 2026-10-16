@@ -9,7 +9,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: nava-android-12-2-27-v2
+  group: nava-android-12-2-27-v3
   cancel-in-progress: false
 jobs:
   build-test-release:
@@ -41,14 +41,14 @@ jobs:
             adb shell am start -n "$PACKAGE/$ACTIVITY"
             sleep 12
             adb shell pidof "$PACKAGE"
-            adb shell uiautomator dump /sdcard/nava-home.xml >/dev/null
+            timeout 30s adb shell uiautomator dump /sdcard/nava-home.xml >/dev/null
             adb shell cat /sdcard/nava-home.xml > /tmp/nava-home.xml
             cat /tmp/nava-home.xml
             python - <<'PY'
             import re, subprocess, time
             import xml.etree.ElementTree as ET
             def dump(path):
-                subprocess.run(['adb','shell','uiautomator','dump',path],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+                subprocess.run(['timeout','30s','adb','shell','uiautomator','dump',path],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=35)
                 return ET.parse(__import__('io').BytesIO(subprocess.check_output(['adb','shell','cat',path]))).getroot()
             def click_match(root, needle):
                 nodes=list(root.iter())
