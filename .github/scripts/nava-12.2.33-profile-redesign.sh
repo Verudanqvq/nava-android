@@ -21,27 +21,10 @@ BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d 
 SOURCE_BADGING="$("$BUILD_TOOLS/aapt" dump badging "$SOURCE_APK")"
 printf '%s\n' "$SOURCE_BADGING" | grep -q "package: name='com.verudanava.nava' versionCode='179' versionName='12.2.32'"
 
-# Rebuild the DEX through smali/baksmali; never byte-replace sorted DEX string_ids.
-curl --connect-timeout 20 --max-time 120 --retry 2 -fsSL -o /tmp/apktool.jar https://github.com/iBotPeaches/Apktool/releases/download/v2.11.1/apktool_2.11.1.jar
-java -jar /tmp/apktool.jar d -f -r "$SOURCE_APK" -o /tmp/nava-decoded
-python - <<'PY'
-from pathlib import Path
-root=Path('/tmp/nava-decoded')
-old='Nava-Android/12.1.23'
-new='Nava-Android/12.2.33'
-hits=[]
-for p in root.rglob('*.smali'):
-    s=p.read_text(encoding='utf-8')
-    if old in s:
-        hits.append(str(p))
-        p.write_text(s.replace(old,new),encoding='utf-8')
-assert hits, 'Updater identity string was not found in decoded smali'
-print('PATCHED_UPDATER_IDENTITY_IN_SMALI', hits)
-PY
-java -jar /tmp/apktool.jar b /tmp/nava-decoded -o /tmp/Nava-rebuilt.apk
-unzip -p /tmp/Nava-rebuilt.apk classes.dex > /tmp/classes233.dex
+# Keep the verified DEX unchanged; only the web profile asset and version metadata change.
+unzip -p "$SOURCE_APK" classes.dex > /tmp/classes233.dex
 test -s /tmp/classes233.dex
-printf 'dex_reassembled=ok\n' >> "$STATUS"
+printf 'dex_preserved=ok\n' >> "$STATUS"
 
 # Decode production signing material.
 set +x
