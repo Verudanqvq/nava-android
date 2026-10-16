@@ -212,9 +212,9 @@ export NAVA_KEY_PASS="$(sed -n 's/^keyPassword=//p' "$PROP" | tr -d '\r' | head 
 KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROP" | tr -d '\r' | head -1)"
 "$BUILD_TOOLS/apksigner" sign --ks /tmp/nava-signing/signing/nava-release.jks --ks-key-alias "$KEY_ALIAS" --ks-pass env:NAVA_STORE_PASS --key-pass env:NAVA_KEY_PASS --out /tmp/Nava.apk /tmp/Nava-aligned.apk
 "$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/verify223.txt
-CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/verify223.txt | sed 's/.*digest:[[:space:]]*//' | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
+CERT=$(grep -i -m1 "certificate SHA-256 digest:" /tmp/verify223.txt | sed -E "s/.*digest:[[:space:]]*//" | tr -d ":[:space:]" | tr "[:upper:]" "[:lower:]")
 test "$CERT" = "$EXPECTED_CERT_SHA256"
-"$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | grep -q "versionCode='$TARGET_CODE'.*versionName='12.2.25'"
+"$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | grep -q "versionCode=${TARGET_CODE}.*versionName=12.2.25"
 APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
 printf 'zipalign=ok\nsigning=ok\ncert_sha256=%s\napk_sha256=%s\n' "$CERT" "$APK_SHA" >> "$STATUS"
 
@@ -222,7 +222,7 @@ if gh release view "$TARGET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; th
   echo "$TARGET_TAG already exists; refusing to overwrite an existing release" >&2
   exit 1
 fi
-NOTES='12.2.25: İndirme sınırı artık çevrimiçi profil ve çevrimdışı klasörde ortak yerel ayara kaydedilir; 0,1 GB hatalı alt sınırı ve boş depolama bilgisi yüzünden sınırın 0,1 GB'a düşmesi düzeltildi. İndirmeler yerel sınırı uygular.'
-gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.2.25' --notes "$NOTES" --latest --target 253b2ebd07053153d5b155ff834f50f055daa44a
+NOTES="12.2.25: İndirme sınırı artık çevrimiçi profil ve çevrimdışı klasörde ortak yerel ayara kaydedilir; 0,1 GB hatalı alt sınırı ve boş depolama bilgisi yüzünden sınırın 0,1 GB değerine düşmesi düzeltildi. İndirmeler yerel sınırı uygular."
+gh release create "$TARGET_TAG" /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title "Nava 12.2.25" --notes "$NOTES" --latest --target 253b2ebd07053153d5b155ff834f50f055daa44a
 printf 'release=v12.2.25\nasset=Nava.apk\nstatus=success\nfinished=%s\n' "$(date -u +%FT%TZ)" >> "$STATUS"
 trap - EXIT
