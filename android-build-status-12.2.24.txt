@@ -1,0 +1,16 @@
+status=running
+started=2026-10-16T11:27:58Z
+source_apk=ok
+source_sha256=2ed913a7c881c9828cb2f491b94537f00be054cf51225b1cce852306e0f2a1af
+source_version_code=138
+target_version_code=143
+signing_material=ok
+javascript_fix=ok
+zipalign=ok
+signing=ok
+cert_sha256=acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51d09fe
+apk_sha256=583c6c096f12ddfb92168b8bc9a5c81e9117b021bdf2673cdfcffe9c14b76cd3
+release=v12.2.24
+asset=Nava.apk
+status=success
+finished=2026-10-16T11:28:05Z
