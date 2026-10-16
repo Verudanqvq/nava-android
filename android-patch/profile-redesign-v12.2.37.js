@@ -27,8 +27,3 @@
 @media(max-width:390px){.nava-profile-app.nava-profile-redesign-12237{padding:9px!important}.nava-profile-app.nava-profile-redesign-12237 .nava-profile-stats{gap:5px!important}.nava-profile-app.nava-profile-redesign-12237 .nava-profile-stat{padding:11px 2px!important}.nava-profile-app.nava-profile-redesign-12237 .nava-profile-stat span{font-size:10px!important}.nava-profile-app.nava-profile-redesign-12237 .nava-profile-tabs{gap:3px!important;padding:4px!important}.nava-profile-app.nava-profile-redesign-12237 .nava-profile-tab{font-size:11px!important}}`;
 d.head.appendChild(s)}if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',apply,{once:true});else apply();new MutationObserver(apply).observe(d.documentElement,{childList:true,subtree:true})})(document,window);
 
-.nava-profile-app.nava-profile-redesign-12237 .nava-profile-stats{gap:9px!important}
-.nava-profile-app.nava-profile-redesign-12237 .nava-profile-stat{border-radius:20px!important;border-color:#e0e7f4!important;box-shadow:0 8px 20px rgba(42,61,102,.045)!important}
-.nava-profile-app.nava-profile-redesign-12237 .nava-profile-tabs{border-color:#dfe7f5!important;background:#edf2fc!important;border-radius:20px!important}
-.nava-profile-app.nava-profile-redesign-12237 .nava-profile-tab.is-active{background:linear-gradient(135deg,#dce8ff,#e8e3ff)!important;color:#354b88!important}
-.nava-profile-app.nava-profile-redesign-12237 .nava-profile-panel{border-radius:24px!important;border-color:#e0e7f4!important;box-shadow:0 10px 26px rgba(42,61,102,.045)!important}
