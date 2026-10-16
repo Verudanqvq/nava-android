@@ -1,0 +1,19 @@
+name: Inspect offline download limit
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/scripts/inspect-offline-limit.sh"
+      - ".github/workflows/inspect-offline-limit.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect released APK assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/inspect-offline-limit.sh
