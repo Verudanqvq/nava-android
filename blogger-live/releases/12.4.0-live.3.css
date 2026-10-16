@@ -1,0 +1,30 @@
+/* Nava profile redesign 12.4.0-live.3 — profile page and editor usability. */
+.nava-profile-app.nava-profile-redesign-live-1240{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important}
+.nava-profile-app.nava-profile-redesign-live-1240 :is(button,a,input,textarea,select){-webkit-tap-highlight-color:transparent}
+.nava-profile-app.nava-profile-redesign-live-1240 :is(button,a):focus-visible{outline:3px solid #78a9f8!important;outline-offset:3px!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-hero{isolation:isolate}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-hero-inner{position:relative!important;z-index:1!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-avatar{width:100%!important;height:100%!important;object-fit:cover!important;border-radius:50%!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-hero-actions .nava-btn{cursor:pointer!important;transition:transform .16s ease,background .16s ease!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-hero-actions .nava-btn:hover{transform:translateY(-1px)!important;background:rgba(255,255,255,.24)!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-tab{white-space:nowrap!important;cursor:pointer!important;transition:background .16s ease,color .16s ease!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-stat{transition:transform .16s ease,box-shadow .16s ease!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-stat:hover{transform:translateY(-2px)!important;box-shadow:0 6px 16px rgba(42,61,102,.09)!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-favorite-link{display:block!important;min-width:0!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-favorite-link img{display:block!important;width:100%!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-edit-modal{padding:12px!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-edit-modal .nava-modal-content{width:min(100%,620px)!important;max-height:min(88dvh,900px)!important;overflow:auto!important;border:1px solid #dce3ec!important;border-radius:22px!important;box-shadow:0 24px 80px rgba(15,23,42,.24)!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-edit-form{gap:14px!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-edit-form :is(input,textarea,select){max-width:100%!important;min-width:0!important;border-radius:12px!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-edit-form .nava-banner-choice{min-width:0!important;border-radius:12px!important;overflow:hidden!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-edit-form .nava-banner-choice.is-selected{outline:2px solid #3b82f6!important;outline-offset:2px!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-edit-form .nava-avatar-choice{border-radius:14px!important;overflow:hidden!important}
+.nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-edit-form .nava-avatar-choice.is-selected{outline:2px solid #3b82f6!important;outline-offset:2px!important}
+@media(max-width:520px){
+ .nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-edit-modal{padding:6px!important}
+ .nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-edit-modal .nava-modal-content{max-height:94dvh!important;border-radius:18px!important}
+ .nava-profile-app.nava-profile-redesign-live-1240 .nava-profile-edit-modal .nava-modal-actions{position:sticky!important;bottom:0!important;z-index:2!important;padding:10px!important;background:#fff!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .nava-profile-app.nava-profile-redesign-live-1240 *{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
