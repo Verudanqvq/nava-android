@@ -77,11 +77,7 @@ guard='''        if (prefs(context).getBoolean("wifiOnly", true) && !onWifi(cont
             throw new Exception("Yalnız Wi‑Fi indirmesi açık.");
         }
 '''
-guard2=guard+'''        long maxStorageLimit = maxStorageLimitBytes(context);
-        long storageLimit = Math.max(0L, Math.min(maxStorageLimit, prefs(context).getLong("storageLimitBytes", Math.min(2147483648L, maxStorageLimit))));
-        if (folderSize(root(context)) >= storageLimit) {
-            throw new Exception("İndirme sınırına ulaşıldı. Profildeki indirme sınırını artır.");
-        }
+guard2=guard+'''        ensureStorageCapacity(context, 0L);
 '''
 assert s.count(guard)==1
 s=s.replace(guard,guard2,1)
@@ -100,7 +96,25 @@ indexOld='''    /* JADX INFO: Access modifiers changed from: private */
         }
         return jSONObjectLoadIndex;
     }'''
-indexNew='''    private static long deviceStorageTotalBytes(Context context) {
+indexNew='''    private static long storageLimitBytes(Context context) {
+        long max = maxStorageLimitBytes(context);
+        long fallback = Math.min(2147483648L, max);
+        long value = prefs(context).getLong("storageLimitBytes", fallback);
+        return Math.max(0L, Math.min(max, value));
+    }
+
+    private static void ensureStorageCapacity(Context context, long additionalBytes) throws Exception {
+        if (additionalBytes < 0L) {
+            throw new Exception("Geçersiz indirme boyutu.");
+        }
+        long used = folderSize(root(context));
+        long limit = storageLimitBytes(context);
+        if (used > limit || additionalBytes > limit - used) {
+            throw new Exception("İndirme sınırına ulaşıldı. Profildeki indirme sınırını artır.");
+        }
+    }
+
+    private static long deviceStorageTotalBytes(Context context) {
         try {
             return new StatFs(Environment.getDataDirectory().getAbsolutePath()).getTotalBytes();
         } catch (Throwable ignored) {
@@ -118,7 +132,8 @@ indexNew='''    private static long deviceStorageTotalBytes(Context context) {
 
     private static long maxStorageLimitBytes(Context context) {
         long available = deviceStorageAvailableBytes(context);
-        long allocatable = Math.max(0L, available);
+        long existingDownloads = folderSize(root(context));
+        long allocatable = Math.max(0L, available + existingDownloads);
         long wholeGb = allocatable / 1073741824L;
         return Math.min(214748364800L, wholeGb * 1073741824L);
     }
@@ -137,37 +152,48 @@ indexNew='''    private static long deviceStorageTotalBytes(Context context) {
     }'''
 assert s.count(indexOld)==1, 'expected publicIndex block'
 s=s.replace(indexOld,indexNew,1)
+
+resourceOld='''                        writeBytes(fileResourceFile, fetch.bytes);
+                        writeBytes(fileResourceMimeFile, normalizeMime(fetch.contentType).getBytes(StandardCharsets.UTF_8));'''
+resourceNew='''                        byte[] mimeBytes = normalizeMime(fetch.contentType).getBytes(StandardCharsets.UTF_8);
+                        long resourceGrowth = Math.max(0L, fetch.bytes.length - (fileResourceFile.isFile() ? fileResourceFile.length() : 0L));
+                        long mimeGrowth = Math.max(0L, mimeBytes.length - (fileResourceMimeFile.isFile() ? fileResourceMimeFile.length() : 0L));
+                        ensureStorageCapacity(context, resourceGrowth + mimeGrowth);
+                        writeBytes(fileResourceFile, fetch.bytes);
+                        writeBytes(fileResourceMimeFile, mimeBytes);'''
+assert s.count(resourceOld)==1, 'expected resource writes'
+s=s.replace(resourceOld,resourceNew,1)
+
+pageOld='''        File filePageFile = pageFile(context, strCanonicalNava);
+        writeBytes(filePageFile, strPrepareOfflineHtml.getBytes(StandardCharsets.UTF_8));'''
+pageNew='''        File filePageFile = pageFile(context, strCanonicalNava);
+        byte[] pageBytes = strPrepareOfflineHtml.getBytes(StandardCharsets.UTF_8);
+        long pageGrowth = Math.max(0L, pageBytes.length - (filePageFile.isFile() ? filePageFile.length() : 0L));
+        ensureStorageCapacity(context, pageGrowth);
+        writeBytes(filePageFile, pageBytes);'''
+assert s.count(pageOld)==1, 'expected page write'
+s=s.replace(pageOld,pageNew,1)
 p.write_text(s,encoding='utf-8')
-print('SHARED_NATIVE_DOWNLOAD_LIMIT_OK: max bounded by free storage, whole-GB steps, 0-200GB')
+assert 'available + existingDownloads' in s
+assert 'ensureStorageCapacity(context, resourceGrowth + mimeGrowth)' in s
+assert 'ensureStorageCapacity(context, pageGrowth)' in s
+print('NATIVE_STORAGE_QUOTA_GUARD_OK: total quota checked before resource and page writes')
 PY
 python android-patch/v12.1.59/fix-jadx-compile.py /tmp/OfflineRuntime.java
-printf 'source_patch=shared_native_download_limit\n' >> "$STATUS"
+printf 'source_patch=storage_quota_guard\n' >> "$STATUS"
 
-# Patch both UIs to use the same native preference and remove the false 0.1 GB fallback.
+# Validate the existing quota UI contract; the total quota includes bytes already downloaded.
 unzip -p /tmp/current/Nava.apk assets/offline.html > /tmp/offline.html
 unzip -p /tmp/current/Nava.apk assets/nava_app_v11.js > /tmp/nava_app_v11.js
 python - <<'PY'
 from pathlib import Path
-
-def replace_once(text, old, new, label):
-    count=text.count(old)
-    if count != 1:
-        raise SystemExit(f'{label}: expected one match, found {count}: {old}')
-    return text.replace(old,new,1)
-
-p=Path('/tmp/offline.html')
-s=p.read_text(encoding='utf-8')
-s=replace_once(s, "maxGb=Math.max(0,Math.min(200,Math.floor((freeBytes+bytes)/1073741824)))", "maxGb=Math.max(0,Math.min(200,Math.floor(freeBytes/1073741824)))", "offline freeBytes cap")
-s=replace_once(s, "maxGb=Math.max(0,Math.min(200,Math.floor((free+used)/1073741824)))", "maxGb=Math.max(0,Math.min(200,Math.floor(free/1073741824)))", "offline free cap")
-p.write_text(s,encoding='utf-8')
-
-p=Path('/tmp/nava_app_v11.js')
-s=p.read_text(encoding='utf-8')
-s=replace_once(s, "cap.max=String(Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))))", "cap.max=String(Math.max(0,Math.min(200,Math.floor(s.free/1073741824))))", "profile cap.max")
-s=replace_once(s, "max=Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))),n=Math.max(0,Math.min(max,Math.floor(Number(cap.value)||gb())))", "max=Math.max(0,Math.min(200,Math.floor(s.free/1073741824))),n=Math.max(0,Math.min(max,Math.floor(Number(cap.value)||gb())))", "profile cap input")
-s=replace_once(s, "if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(0,Math.min(200,Math.floor(s.free/1073741824))))}", "if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(0,Math.min(200,Math.floor(s.free/1073741824))))}", "profile cap render")
-p.write_text(s,encoding='utf-8')
-print('STORAGE_CAP_UI_PATCH_OK: cap upper bounds use free space only; whole GB; no free+used fallback')
+offline=Path('/tmp/offline.html').read_text(encoding='utf-8')
+profile=Path('/tmp/nava_app_v11.js').read_text(encoding='utf-8')
+assert "Math.floor((freeBytes+bytes)/1073741824)" in offline, "offline quota must include existing downloaded bytes"
+assert "Math.floor((free+used)/1073741824)" in offline, "offline fallback quota must include existing downloaded bytes"
+assert "Math.floor((s.free+s.used)/1073741824)" in profile, "profile quota must include existing downloaded bytes"
+assert "storageAvailableBytes" in profile and "storageTotalBytes" in profile, "profile storage telemetry missing"
+print('STORAGE_CAP_UI_CHECK_OK: total quota includes free plus existing downloaded bytes')
 PY
 ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
 mkdir -p /tmp/javac223 /tmp/newdex223 /tmp/mini223
