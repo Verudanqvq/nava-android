@@ -19,7 +19,7 @@ test "$(sha256sum "$SOURCE_APK" | cut -d' ' -f1)" = "$EXPECTED_SOURCE_SHA256"
 
 BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
 SOURCE_BADGING="$("$BUILD_TOOLS/aapt" dump badging "$SOURCE_APK")"
-printf '%s\n' "$SOURCE_BADGING" | grep -q "package: name='com.verudanava.nava' versionCode='191' versionName='12.2.41'"
+printf '%s\n' "$SOURCE_BADGING" | grep -q "package: name='com.verudanava.nava' versionCode='191' versionName='12.2.40'"
 
 # Keep the verified DEX unchanged; only the web profile asset and version metadata change.
 unzip -p "$SOURCE_APK" classes.dex > /tmp/classes240.dex
