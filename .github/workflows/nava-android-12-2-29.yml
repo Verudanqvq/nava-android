@@ -1,0 +1,64 @@
+name: Nava Android 12.2.29 storage cap stability release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/nava-12.2.29-final.sh'
+      - '.github/workflows/nava-android-12-2-29.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nava-android-12-2-29-release
+  cancel-in-progress: true
+
+jobs:
+  build-sign-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build, sign, and verify APK
+        run: bash .github/scripts/nava-12.2.29-final.sh
+      - name: Fast regression checks
+        run: |
+          set -euo pipefail
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          "$BUILD_TOOLS/apksigner" verify --verbose /tmp/Nava.apk
+          "$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | grep -q "package: name='com.verudanava.nava' versionName='12.2.29'"
+          unzip -p /tmp/Nava.apk assets/offline.html > /tmp/offline-check.html
+          unzip -p /tmp/Nava.apk assets/nava_app_v11.js > /tmp/profile-check.js
+          grep -q 'storageAvailableBytes' /tmp/offline-check.html
+          grep -q 'storageTotalBytes' /tmp/offline-check.html
+          grep -q 'storageAvailableBytes' /tmp/profile-check.js
+          grep -q 'storageTotalBytes' /tmp/profile-check.js
+          ! grep -Fq 'freeBytes+bytes' /tmp/offline-check.html
+          ! grep -Fq 'free+used' /tmp/offline-check.html
+          ! grep -Fq 's.free+s.used' /tmp/profile-check.js
+          grep -Fq 'Math.floor(freeBytes/1073741824)' /tmp/offline-check.html
+          grep -Fq 'Math.floor(s.free/1073741824)' /tmp/profile-check.js
+          sha256sum /tmp/Nava.apk
+          echo "FAST_STORAGE_CAP_REGRESSION_CHECKS_OK"
+      - name: Publish verified APK
+        run: |
+          gh release create v12.2.29 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.2.29' --notes 'Depolama üst sınırı artık cihazın gerçek boş alanıyla sınırlıdır; mevcut indirmeler boş alana eklenmez. Profil ve çevrimdışı ekranlarda sınır tam GB adımlarıyla gösterilir. Güncelleme kimliği 12.2.29 ile eşleştirildi. Üretim sertifikası, paket kimliği ve sürüm manifesti yayından önce doğrulandı.' --latest --target "$GITHUB_SHA"
+          sha256sum /tmp/Nava.apk
+      - name: Upload validation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nava-12.2.29-validation
+          path: |
+            /tmp/Nava.apk
+            /tmp/verify229.txt
+            /tmp/final-badging229.txt
+            /tmp/status229.txt
+          if-no-files-found: ignore
