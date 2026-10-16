@@ -108,10 +108,9 @@ old="var n=Math.max(1,Math.min(200,Math.floor(Number(cap.value)||gb())))"
 new="var s=state(),max=Math.max(1,Math.min(200,Math.floor(s.free/1073741824))),n=Math.max(1,Math.min(max,Math.floor(Number(cap.value)||gb())))"
 assert s.count(old)==1
 s=s.replace(old,new,1)
-oldmax="cap.max='200'"
-newmax="cap.max=String(Math.max(1,Math.min(200,Math.floor(state().free/1073741824))))"
-assert s.count(oldmax)==1
-s=s.replace(oldmax,newmax,1)
+import re
+s, changed = re.subn(r"cap\\.max\\s*=\\s*(['\\\"]?)200\\1", "cap.max=String(Math.max(1,Math.min(200,Math.floor(state().free/1073741824))))", s, count=1)
+assert changed==1, 'expected one cap.max=200 assignment, changed '+str(changed)
 p.write_text(s,encoding='utf-8')
 print('OFFLINE_SETTINGS_FIX_OK shared native value; whole-GB cap bounded by free storage')
 PY
