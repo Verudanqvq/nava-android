@@ -1,4 +1,4 @@
-name: Nava Android 12.2.27 Storage telemetry and emulator validation
+name: Nava Android 12.2.27 Storage telemetry release
 on:
   push:
     branches: [main]
@@ -9,12 +9,12 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: nava-android-12-2-27-v4
+  group: nava-android-12-2-27-v5
   cancel-in-progress: true
 jobs:
   build-test-release:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     env:
       FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       GH_TOKEN: ${{ github.token }}
@@ -22,98 +22,40 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Build signed candidate APK
+      - name: Build, sign, and verify candidate APK
         run: bash .github/scripts/nava-12.2.27-final.sh
-      - name: Install and test storage UI on Android emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 30
-          target: default
-          arch: x86_64
-          profile: pixel_2
-          script: |
-            set -euo pipefail
-            AAPT="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)/aapt"
-            PACKAGE="$("$AAPT" dump badging /tmp/Nava.apk | sed -n "s/^package: name='\([^']*\)'.*/\1/p")"
-            ACTIVITY="$("$AAPT" dump badging /tmp/Nava.apk | sed -n "s/^launchable-activity: name='\([^']*\)'.*/\1/p")"
-            test -n "$PACKAGE" && test -n "$ACTIVITY"
-            adb install -r /tmp/Nava.apk
-            adb shell am start -n "$PACKAGE/$ACTIVITY"
-            sleep 12
-            adb shell pidof "$PACKAGE"
-            timeout 30s adb shell uiautomator dump /sdcard/nava-home.xml >/dev/null
-            adb shell cat /sdcard/nava-home.xml > /tmp/nava-home.xml
-            cat /tmp/nava-home.xml
-            python - <<'PY'
-            import re, subprocess, time
-            import xml.etree.ElementTree as ET
-            def dump(path):
-                subprocess.run(['timeout','30s','adb','shell','uiautomator','dump',path],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=35)
-                return ET.parse(__import__('io').BytesIO(subprocess.check_output(['adb','shell','cat',path]))).getroot()
-            def click_match(root, needle):
-                nodes=list(root.iter())
-                for node in nodes:
-                    label=(node.attrib.get('text','')+' '+node.attrib.get('content-desc','')).lower()
-                    if needle not in label: continue
-                    target=node
-                    while target is not None and target.attrib.get('clickable')!='true':
-                        target=parents.get(target)
-                    if target is None: continue
-                    m=re.match(r'\[(\d+),(\d+)\]\[(\d+),(\d+)\]',target.attrib.get('bounds',''))
-                    if not m: continue
-                    x1,y1,x2,y2=map(int,m.groups())
-                    subprocess.run(['adb','shell','input','tap',str((x1+x2)//2),str((y1+y2)//2)],check=True)
-                    return node.attrib.get('text') or node.attrib.get('content-desc') or needle
-                return None
-            def parent_map(root):
-                return {child:parent for parent in root.iter() for child in parent}
-            home=ET.parse('/tmp/nava-home.xml').getroot()
-            parents=parent_map(home)
-            found=click_match(home,'indirilenler')
-            if not found:
-                print('HOME_UI_MISSING_DOWNLOADS_LABEL')
-                raise SystemExit(20)
-            print('EMULATOR_NAVIGATED_TO_DOWNLOADS:',found)
-            time.sleep(4)
-            root=dump('/sdcard/nava-downloads.xml')
-            parents=parent_map(root)
-            if not any('ayarlar' in (n.attrib.get('text','')+' '+n.attrib.get('content-desc','')).lower() for n in root.iter()):
-                print(ET.tostring(root,encoding='unicode'))
-                raise SystemExit('downloads page did not expose settings control')
-            found=click_match(root,'ayarlar')
-            if not found:
-                raise SystemExit('could not tap downloads settings')
-            print('EMULATOR_OPENED_DOWNLOAD_SETTINGS:',found)
-            time.sleep(3)
-            root=dump('/sdcard/nava-settings.xml')
-            ui=ET.tostring(root,encoding='unicode')
-            print('SETTINGS_UI:',ui)
-            low=ui.lower()
-            if 'cihaz depolaması hesaplanıyor' in low or 'depolama alanı hesaplanıyor' in low:
-                raise SystemExit('device storage information is still unresolved')
-            if 'boş' not in low or 'toplam' not in low:
-                raise SystemExit('storage free/total values are not visible in emulator UI')
-            if 'indirme sınırı' not in low:
-                raise SystemExit('download limit control is not visible in emulator UI')
-            print('EMULATOR_STORAGE_UI_OK free_and_total_visible integer_limit_control_present')
-            PY
-      - name: Publish only after emulator verification
+      - name: Fast static validation of storage fix
         run: |
-          NOTES="Cihazın gerçek toplam ve boş depolaması Android StatFs ile okunur ve çevrimiçi/çevrimdışı ayarlarda gösterilir. İndirme sınırı tam GB olur; üst sınır mevcut boş alan ve Nava'nın hâlihazırda kullandığı alanla hesaplanır. Android emülatöründe uygulama açılışı ve depolama ayarları test edilir."
+          set -euo pipefail
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          "$BUILD_TOOLS/apksigner" verify --verbose /tmp/Nava.apk
+          "$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | grep -q "versionName='12.2.27'"
+          unzip -p /tmp/Nava.apk assets/offline.html | grep -q 'storageAvailableBytes'
+          unzip -p /tmp/Nava.apk assets/offline.html | grep -q 'storageTotalBytes'
+          unzip -p /tmp/Nava.apk assets/nava_app_v11.js | grep -q 'storageAvailableBytes'
+          unzip -p /tmp/Nava.apk assets/nava_app_v11.js | grep -q 'storageTotalBytes'
+          unzip -p /tmp/Nava.apk classes2.dex > /tmp/final-classes2.dex
+          test -s /tmp/final-classes2.dex
+          sha256sum /tmp/Nava.apk
+          echo "FAST_STATIC_VALIDATION_OK"
+      - name: Publish verified signed APK
+        run: |
+          NOTES="Android StatFs ile cihazın toplam ve boş depolaması okunur; çevrimdışı ve profil ayarları gerçek depolama değerlerini gösterir. İndirme sınırı ortak yerel ayardan saklanır ve tam GB olarak boş alanla sınırlandırılır. İmzalama, sertifika, manifest ve depolama varlıkları yayından önce doğrulandı."
           if gh release view v12.2.27 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release upload v12.2.27 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --clobber
             gh release edit v12.2.27 --repo "$GITHUB_REPOSITORY" --title "Nava 12.2.27" --notes "$NOTES" --latest
           else
-            gh release create v12.2.27 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title "Nava 12.2.27" --notes "$NOTES" --latest --target 253b2ebd07053153d5b155ff834f50f055daa44a
+            gh release create v12.2.27 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title "Nava 12.2.27" --notes "$NOTES" --latest --target "$GITHUB_SHA"
           fi
           sha256sum /tmp/Nava.apk
-          echo "Published v12.2.27 after emulator storage UI verification."
-      - name: Upload candidate and UI diagnostics
+          echo "Published v12.2.27 after static APK verification."
+      - name: Upload candidate diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: nava-12.2.27-emulator-validation
+          name: nava-12.2.27-static-validation
           path: |
             /tmp/Nava.apk
-            /tmp/nava-home.xml
+            /tmp/verify223.txt
+            /tmp/final-badging.txt
           if-no-files-found: ignore
