@@ -66,7 +66,8 @@ python - "$SOURCE_APK" /tmp/classes233.dex /tmp/Nava-unsigned.apk "$TARGET_CODE"
 import hashlib, struct, sys, zipfile
 from pathlib import Path
 src,dex,out=Path(sys.argv[1]),Path(sys.argv[2]),Path(sys.argv[3])
-target_code=int(sys.argv[4])
+target_code=int(sys.argv[4]); patch=Path(sys.argv[5])
+asset=Path('/tmp/nava_app_v11-redesigned.js')
 def u16(d,o): return struct.unpack_from('<H',d,o)[0]
 def u32(d,o): return struct.unpack_from('<I',d,o)[0]
 def p32(d,o,v): struct.pack_into('<I',d,o,v)
@@ -84,6 +85,7 @@ def pool(d,off):
    ln,a=l16(d,p); st=p+a; v=bytes(d[st:st+ln*2]).decode('utf-16le'); out.append((v,st,ln*2,False))
  return out
 with zipfile.ZipFile(src) as zin:
+ asset.write_bytes(zin.read('assets/nava_app_v11.js') + b'\n;\n' + patch.read_bytes())
  data=bytearray(zin.read('AndroidManifest.xml'))
  assert u16(data,0)==3
  off=u16(data,2); po=None
@@ -108,7 +110,7 @@ with zipfile.ZipFile(src) as zin:
    for i in range(total):
     a=begin+i*asz; ni=u32(data,a+4)
     if ni<len(strings) and strings[ni][0]=='versionCode':
-     assert data[a+15]==0x10 and u32(data,a+16)==158
+     assert data[a+15]==0x10 and u32(data,a+16)==179
      p32(data,a+16,target_code); changed+=1
   off+=size
  assert changed==1
@@ -118,6 +120,7 @@ with zipfile.ZipFile(src) as zin:
    if upper.startswith('META-INF/') and (leaf=='MANIFEST.MF' or leaf.endswith(('.SF','.RSA','.DSA','.EC'))): continue
    if info.filename=='AndroidManifest.xml': payload=bytes(data)
    elif info.filename=='classes.dex': payload=dex.read_bytes()
+   elif info.filename=='assets/nava_app_v11.js': payload=asset.read_bytes()
    else: payload=zin.read(info.filename)
    zout.writestr(info,payload)
 with zipfile.ZipFile(out) as z, zipfile.ZipFile(src) as original:
@@ -138,8 +141,8 @@ CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/verify233.txt | sed -E 's
 test "$CERT" = "$EXPECTED_CERT_SHA256"
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk > /tmp/badging233.txt
 grep -q "package: name='com.verudanava.nava'" /tmp/badging233.txt
-grep -q "versionCode='179'.*versionName='12.2.33'" /tmp/badging233.txt
+grep -q "versionCode='184'.*versionName='12.2.33'" /tmp/badging233.txt
 sha256sum /tmp/Nava.apk | tee /tmp/nava233.sha256
-printf 'status=success\nversion=12.2.33\nversion_code=179\ncert_sha256=%s\napk_sha256=%s\nfinished=%s\n' "$CERT" "$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)" "$(date -u +%FT%TZ)" >> "$STATUS"
+printf 'status=success\nversion=12.2.33\nversion_code=184\ncert_sha256=%s\napk_sha256=%s\nfinished=%s\n' "$CERT" "$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)" "$(date -u +%FT%TZ)" >> "$STATUS"
 echo NAVA_12_2_32_CANDIDATE_READY
 trap - EXIT
