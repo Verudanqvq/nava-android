@@ -1,0 +1,56 @@
+name: Nava Android 12.2.31 startup hotfix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/nava-12.2.31-rollback.sh'
+      - '.github/workflows/nava-android-12-2-31.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nava-android-12-2-31-release
+  cancel-in-progress: true
+
+jobs:
+  rollback-sign-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore known-good app payload, bump version, and sign
+        run: bash .github/scripts/nava-12.2.31-rollback.sh
+      - name: Verify release candidate
+        run: |
+          set -euo pipefail
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          "$BUILD_TOOLS/apksigner" verify --verbose /tmp/Nava.apk
+          "$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | tee /tmp/release-badging231.txt
+          grep -q "package: name='com.verudanava.nava'" /tmp/release-badging231.txt
+          grep -q "versionCode='174'.*versionName='12.2.31'" /tmp/release-badging231.txt
+          grep -q 'status=success' /tmp/status231.txt
+          sha256sum /tmp/Nava.apk
+          echo "STARTUP_ROLLBACK_RELEASE_CHECKS_OK"
+      - name: Publish verified startup hotfix
+        run: |
+          gh release create v12.2.31 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.2.31' --notes 'Başlangıçta kapanma sorununa karşı, v12.2.28 uygulama içeriğine geri dönülerek imzalı acil düzeltme yayımlandı. Sürüm ve güncelleme kimliği 12.2.31 olarak yükseltildi; depolama kotası değişiklikleri bu sürümde geri alındı.' --latest --target "$GITHUB_SHA"
+          sha256sum /tmp/Nava.apk
+      - name: Upload validation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nava-12.2.31-startup-hotfix
+          path: |
+            /tmp/Nava.apk
+            /tmp/verify231.txt
+            /tmp/badging231.txt
+            /tmp/status231.txt
+          if-no-files-found: ignore
