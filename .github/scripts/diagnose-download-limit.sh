@@ -11,15 +11,15 @@ print('ASSET_BYTES',len(s))
 patterns=[
  r'.{0,180}(?:download.{0,30}limit|limit.{0,30}download).{0,260}',
  r'.{0,180}(?:storage.{0,30}limit|limit.{0,30}storage).{0,260}',
- r'.{0,180}(?:39\\.2321302|GB|gb|gigabyte).{0,260}',
- r'.{0,180}(?:range|type=["\\']range|step=).{0,220}'
+ r'.{0,180}(?:39\.2321302|GB|gb|gigabyte).{0,260}',
+ r'.{0,180}(?:range|step=).{0,220}'
 ]
 for pat in patterns:
  print('--- PATTERN',pat)
  hits=list(re.finditer(pat,s,re.I|re.S))
  print('HITS',len(hits))
  for m in hits[:18]:
-  print(re.sub(r'\\s+',' ',m.group(0))[:600])
+  print(re.sub(r'\s+',' ',m.group(0))[:600])
 print('--- NEAR LIMIT TOKENS')
 for m in list(re.finditer(r'limit|storage|download.?size|size.?limit|quota',s,re.I))[:120]:
  print(re.sub(r'\\s+',' ',s[max(0,m.start()-100):min(len(s),m.end()+180)])[:360])
