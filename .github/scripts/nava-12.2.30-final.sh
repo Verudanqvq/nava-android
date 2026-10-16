@@ -204,7 +204,15 @@ p=Path('/tmp/nava_app_v11.js')
 s=p.read_text(encoding='utf-8')
 s=replace_once(s, "cap.max=String(Math.max(0,Math.min(200,Math.floor(s.free/1073741824))))", "cap.max=String(Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))))", "profile cap.max")
 s=replace_once(s, "max=Math.max(0,Math.min(200,Math.floor(s.free/1073741824))),n=Math.max(0,Math.min(max,Math.floor(Number(cap.value)||gb())))", "max=Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))),n=Math.max(0,Math.min(max,Math.floor(Number(cap.value)||gb())))", "profile cap input")
-s=replace_once(s, "if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(0,Math.min(200,Math.floor(s.free/1073741824))))}", "if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))))}", "profile cap render")
+render_old="if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max='200'}"
+render_new="if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))))}"
+render_variant="if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(0,Math.min(200,Math.floor(s.free/1073741824))))}"
+if s.count(render_old)==1:
+    s=s.replace(render_old,render_new,1)
+elif s.count(render_variant)==1:
+    s=s.replace(render_variant,render_new,1)
+else:
+    raise SystemExit("profile cap render: no known safe source expression found")
 p.write_text(s,encoding='utf-8')
 print('STORAGE_CAP_UI_PATCH_OK: total quota includes free plus existing downloaded bytes')
 PY
