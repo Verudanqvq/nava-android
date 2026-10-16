@@ -1,5 +1,8 @@
 name: Inspect Nava 12.2.26 storage UI
 on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/inspect-nava-storage-ui.yml"]
   workflow_dispatch:
 permissions:
   contents: read
