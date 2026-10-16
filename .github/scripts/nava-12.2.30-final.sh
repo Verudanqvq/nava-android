@@ -109,7 +109,7 @@ indexNew='''    private static long storageLimitBytes(Context context) {
         }
         long used = folderSize(root(context));
         long limit = storageLimitBytes(context);
-        if (used > limit || additionalBytes > limit - used) {
+        if (used >= limit || additionalBytes > limit - used) {
             throw new Exception("İndirme sınırına ulaşıldı. Profildeki indirme sınırını artır.");
         }
     }
