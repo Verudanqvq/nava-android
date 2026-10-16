@@ -8,7 +8,7 @@
   var style=d.getElementById('nava-profile-redesign-style-12233');
   if(!style){
    style=d.createElement('style');style.id='nava-profile-redesign-style-12233';
-   style.textContent=String.raw\`
+   style.textContent=String.raw`
 html.nava-app-v9 body.nava-profile-redesign-12233 .nava-profile-app{max-width:720px!important;padding:12px!important;box-sizing:border-box!important}
 html.nava-app-v9 body.nava-profile-redesign-12233 .nava-profile-hero{border:1px solid rgba(255,255,255,.12)!important;border-radius:24px!important;min-height:0!important;margin:0 0 14px!important;overflow:hidden!important;box-shadow:0 14px 35px rgba(0,0,0,.18)!important}
 html.nava-app-v9 body.nava-profile-redesign-12233 .nava-profile-hero-inner{min-height:0!important;padding:26px 18px 18px!important;gap:10px!important}
@@ -35,7 +35,7 @@ html.nava-app-v9 body.nava-profile-redesign-12233 .nava-profile-library-card{bor
 html.nava-app-v9 body.nava-profile-redesign-12233 .nava-library-filter-v2 button{border-radius:999px!important;background:var(--nava-surface)!important;color:var(--nava-ink)!important;border-color:var(--nava-line)!important}
 html.nava-app-v9 body.nava-profile-redesign-12233 .nava-library-filter-v2 button.is-active{background:var(--nava-accent)!important;color:#142033!important}
 @media(max-width:390px){html.nava-app-v9 body.nava-profile-redesign-12233 .nava-profile-stats{gap:5px!important}html.nava-app-v9 body.nava-profile-redesign-12233 .nava-profile-stat{padding:10px 2px!important}html.nava-app-v9 body.nava-profile-redesign-12233 .nava-profile-stat strong{font-size:16px!important}html.nava-app-v9 body.nava-profile-redesign-12233 .nava-profile-action-v5{font-size:11px!important}}
-\`;
+`;
    d.head.appendChild(style);
   }
   /* The "Eserler" tab is the user's reading-status library, not Favorites. Give it a clear name. */
