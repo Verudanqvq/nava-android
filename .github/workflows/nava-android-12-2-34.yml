@@ -1,0 +1,54 @@
+name: Nava Android 12.2.34 rollback hotfix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/nava-12.2.34-rollback.sh'
+      - '.github/workflows/nava-android-12-2-34.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nava-android-12-2-34-release
+  cancel-in-progress: true
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build rollback APK from known-good 12.2.32
+        run: bash .github/scripts/nava-12.2.34-rollback.sh
+      - name: Verify signature, metadata, and unchanged web assets
+        run: |
+          set -euo pipefail
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          "$BUILD_TOOLS/apksigner" verify --verbose /tmp/Nava.apk
+          "$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | tee /tmp/badging234.txt
+          grep -q "versionCode='185'.*versionName='12.2.34'" /tmp/badging234.txt
+          grep -q 'status=success' /tmp/status234.txt
+          ! unzip -p /tmp/Nava.apk assets/nava_app_v11.js | grep -q 'nava-profile-redesign-12233'
+      - name: Publish rollback hotfix
+        run: |
+          gh release create v12.2.34 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.2.34 — Profil düzeltmesi' --notes '12.2.33 profil yaması geri alındı. Bilinen çalışan 12.2.32 uygulama içeriği korunarak yalnızca sürüm metadata bilgileri güncellendi. İmza ve paket metadata kontrolleri geçti; emülatör testi bu derlemede çalıştırılmadı.' --latest --target "$GITHUB_SHA"
+          sha256sum /tmp/Nava.apk
+      - name: Upload build evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nava-12.2.34-rollback-validation
+          path: |
+            /tmp/Nava.apk
+            /tmp/verify234.txt
+            /tmp/badging234.txt
+            /tmp/status234.txt
+          if-no-files-found: ignore
