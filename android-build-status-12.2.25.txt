@@ -1,0 +1,16 @@
+status=running
+started=2026-10-16T11:36:49Z
+source_apk=ok
+source_sha256=583c6c096f12ddfb92168b8bc9a5c81e9117b021bdf2673cdfcffe9c14b76cd3
+source_version_code=143
+target_version_code=148
+signing_material=ok
+source_patch=shared_native_download_limit
+native_source_compile=ok
+classes2_rebuild=ok
+zipalign=ok
+signing=ok
+cert_sha256=acde7cf216852448a8a8277fe4bf11eac183394e6b34a862b124e693d51d09fe
+apk_sha256=56e0cd69ce96917f3c03ffa847213c7fad22e435ee521aae2087574605afe9e8
+status=failed
+finished=2026-10-16T11:38:06Z
