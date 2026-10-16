@@ -51,15 +51,22 @@ def utf8_length(data, offset):
     first = data[offset]
     return ((first & 0x7f, 1) if not first & 0x80 else (((first & 0x7f) << 8) | data[offset + 1], 2))
 
+def utf16_length(data, offset):
+    first = u16(data, offset)
+    return ((first & 0x7fff, 2) if not first & 0x8000 else (((first & 0x7fff) << 16) | u16(data, offset + 2), 4))
+
 def strings(data, offset):
     header_size, count, flags, start = u16(data, offset + 2), u32(data, offset + 8), u32(data, offset + 16), u32(data, offset + 20)
-    assert flags & 0x100
     result = []
     for index in range(count):
         cursor = offset + start + u32(data, offset + header_size + index * 4)
-        _, size = utf8_length(data, cursor); cursor += size
-        length, size = utf8_length(data, cursor); cursor += size
-        result.append((bytes(data[cursor:cursor + length]).decode('utf-8'), cursor, length))
+        if flags & 0x100:
+            _, size = utf8_length(data, cursor); cursor += size
+            length, size = utf8_length(data, cursor); cursor += size
+            result.append((bytes(data[cursor:cursor + length]).decode('utf-8'), cursor, length))
+        else:
+            length, size = utf16_length(data, cursor); cursor += size
+            result.append((bytes(data[cursor:cursor + length * 2]).decode('utf-16le'), cursor, length * 2))
     return result
 
 def patch_manifest(payload):
@@ -77,8 +84,9 @@ def patch_manifest(payload):
     versions = [item for item in pool if item[0] == old_version.decode()]
     assert len(versions) == 1
     _, position, length = versions[0]
-    assert len(new_version) == length
-    data[position:position + length] = new_version
+    replacement = new_version if length == len(new_version) else new_version.decode().encode('utf-16le')
+    assert len(replacement) == length
+    data[position:position + length] = replacement
     changed = 0
     offset = u16(data, 2)
     while offset + 8 <= len(data):
