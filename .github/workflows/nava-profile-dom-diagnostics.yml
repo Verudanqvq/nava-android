@@ -19,6 +19,8 @@ jobs:
           gh release download v12.2.32 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp
           unzip -p /tmp/Nava.apk assets/nava_app_v11.js > /tmp/nava_app_v11.js
           echo '--- PROFILE MARKUP AND SELECTORS ---'
+          echo '--- ANDROID DEX ASSET LOADING REFERENCES ---'
+          strings <(unzip -p /tmp/Nava.apk classes.dex) | grep -Ei 'nava_app_v11|assets/|loadUrl|loadData|WebView|firebase|remote|profile' | head -240 || true
           python - <<'PY'
           import re
           from pathlib import Path
