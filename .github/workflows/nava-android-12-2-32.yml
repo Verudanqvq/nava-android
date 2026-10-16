@@ -1,0 +1,71 @@
+name: Nava Android 12.2.32 startup repair
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/nava-12.2.32-startup-fix.sh'
+      - '.github/workflows/nava-android-12-2-32.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nava-android-12-2-32-release
+  cancel-in-progress: true
+
+jobs:
+  build-test-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Rebuild DEX, sign, and verify APK
+        run: bash .github/scripts/nava-12.2.32-startup-fix.sh
+      - name: Verify candidate metadata and signature
+        run: |
+          set -euo pipefail
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          "$BUILD_TOOLS/apksigner" verify --verbose /tmp/Nava.apk
+          "$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | tee /tmp/release-badging232.txt
+          grep -q "versionCode='179'.*versionName='12.2.32'" /tmp/release-badging232.txt
+          grep -q 'status=success' /tmp/status232.txt
+      - name: Install and launch candidate on Android emulator
+        uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          script: |
+            set -e
+            adb install /tmp/Nava.apk
+            adb logcat -c
+            adb shell monkey -p com.verudanava.nava -c android.intent.category.LAUNCHER 1
+            sleep 25
+            adb logcat -d -t 5000 > /tmp/logcat232.txt
+            ! grep -E -i 'FATAL EXCEPTION|Fatal signal|Process: com\.verudanava\.nava|Unable to start activity|Out-of-order string_ids' /tmp/logcat232.txt
+            test -n "$(adb shell pidof com.verudanava.nava)"
+            echo STARTUP_SMOKE_OK version=12.2.32
+      - name: Publish only after emulator startup passes
+        run: |
+          gh release create v12.2.32 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.2.32' --notes 'Başlangıçta kapanma hatası için DEX, sürüm metnini ham biçimde değiştirmek yerine smali üzerinden yeniden oluşturuldu. Üretim imzası doğrulandı ve Android emülatöründe açılış testi başarılı olmadan yayımlanmaz.' --latest --target "$GITHUB_SHA"
+          sha256sum /tmp/Nava.apk
+      - name: Upload startup evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nava-12.2.32-startup-validation
+          path: |
+            /tmp/Nava.apk
+            /tmp/verify232.txt
+            /tmp/badging232.txt
+            /tmp/status232.txt
+            /tmp/logcat232.txt
+          if-no-files-found: ignore
