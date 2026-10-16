@@ -1,0 +1,66 @@
+name: Nava Android startup smoke test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/nava-startup-smoke.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  launch:
+    name: Launch v${{ matrix.version }} on Android emulator
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['12.2.28', '12.2.30', '12.2.31']
+    steps:
+      - name: Download exact released APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          curl -fL --retry 3 --connect-timeout 20 \
+            "https://github.com/Verudanqvq/nava-android/releases/download/v${{ matrix.version }}/Nava.apk" \
+            -o artifacts/Nava-${{ matrix.version }}.apk
+          sha256sum artifacts/Nava-${{ matrix.version }}.apk | tee artifacts/sha256.txt
+          test -s artifacts/Nava-${{ matrix.version }}.apk
+      - name: Install and launch on emulator
+        uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          script: |
+            set -e
+            adb install "artifacts/Nava-${{ matrix.version }}.apk"
+            adb logcat -c
+            adb shell monkey -p com.verudanava.nava -c android.intent.category.LAUNCHER 1
+            sleep 25
+            mkdir -p artifacts
+            adb shell dumpsys activity activities > "artifacts/activities-${{ matrix.version }}.txt" || true
+            adb shell pidof com.verudanava.nava > "artifacts/pid-${{ matrix.version }}.txt" || true
+            adb logcat -d -t 5000 > "artifacts/logcat-${{ matrix.version }}.txt"
+            if grep -E -i 'FATAL EXCEPTION|Fatal signal|Process: com\.verudanava\.nava|Unable to start activity' "artifacts/logcat-${{ matrix.version }}.txt"; then
+              echo "STARTUP_SMOKE_FAILED version=${{ matrix.version }}"
+              exit 1
+            fi
+            if ! grep -q '[0-9]' "artifacts/pid-${{ matrix.version }}.txt"; then
+              echo "APP_PROCESS_NOT_RUNNING version=${{ matrix.version }}"
+              tail -n 250 "artifacts/logcat-${{ matrix.version }}.txt"
+              exit 1
+            fi
+            echo "STARTUP_SMOKE_OK version=${{ matrix.version }}"
+      - name: Upload emulator evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nava-startup-${{ matrix.version }}
+          path: artifacts/
+          if-no-files-found: warn
