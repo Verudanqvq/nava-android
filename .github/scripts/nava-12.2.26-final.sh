@@ -94,11 +94,7 @@ python - <<'PY'
 from pathlib import Path
 p=Path('/tmp/offline.html')
 s=p.read_text(encoding='utf-8')
-repls=[
- ('id="setting-cap" type="number" min="1" max="200" step="1" value="2"','id="setting-cap" type="number" min="1" max="200" step="1" value="2"'),
- ('capGb=Math.max(1,Math.min(maxGb,Math.floor(Number(nativeCapGb())||Number(readPref(\\'navaDownloadCapGb\\',\\'2\\'))||2)))','capGb=Math.max(1,Math.min(maxGb,Math.floor(Number(nativeCapGb())||Number(readPref(\\'navaDownloadCapGb\\',\\'2\\'))||2)))'),
- ('n=Math.max(1,Math.min(maxGb,Math.floor(n)))','n=Math.max(1,Math.min(maxGb,Math.floor(n)))')
-]
+repls=[]
 for old,new in repls:
  if s.count(old)!=1: raise SystemExit('offline.html expected exactly one occurrence: '+old+' found '+str(s.count(old)))
  s=s.replace(old,new,1)
@@ -117,7 +113,7 @@ newmax="cap.max=String(Math.max(1,Math.min(200,Math.floor(state().free/107374182
 assert s.count(oldmax)==1
 s=s.replace(oldmax,newmax,1)
 p.write_text(s,encoding='utf-8')
-print('OFFLINE_SETTINGS_FIX_OK shared native value; min=1GB max=200GB')
+print('OFFLINE_SETTINGS_FIX_OK shared native value; whole-GB cap bounded by free storage')
 PY
 
 ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
