@@ -1,5 +1,5 @@
 name: Nava Android 12.2.37 profile update
-# Release build for the profile CSS patch.
+# Release build for the corrected profile presentation patch; validates version code 188.
 on:
   push:
     branches: [main]
