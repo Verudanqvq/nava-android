@@ -121,8 +121,8 @@ CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/verify234.txt | sed -E 's
 test "$CERT" = "$EXPECTED_CERT_SHA256"
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk > /tmp/badging234.txt
 grep -q "package: name='com.verudanava.nava'" /tmp/badging234.txt
-grep -q "versionCode='184'.*versionName='12.2.34'" /tmp/badging234.txt
+grep -q "versionCode='185'.*versionName='12.2.34'" /tmp/badging234.txt
 sha256sum /tmp/Nava.apk | tee /tmp/nava234.sha256
-printf 'status=success\nversion=12.2.34\nversion_code=184\ncert_sha256=%s\napk_sha256=%s\nfinished=%s\n' "$CERT" "$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)" "$(date -u +%FT%TZ)" >> "$STATUS"
+printf 'status=success\nversion=12.2.34\nversion_code=185\ncert_sha256=%s\napk_sha256=%s\nfinished=%s\n' "$CERT" "$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)" "$(date -u +%FT%TZ)" >> "$STATUS"
 echo NAVA_12_2_34_ROLLBACK_READY
 trap - EXIT
