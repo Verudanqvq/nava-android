@@ -99,8 +99,13 @@ jobs:
             PY
       - name: Publish only after emulator verification
         run: |
-          gh release view v12.2.27 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 && { echo "v12.2.27 already exists; refusing overwrite"; exit 1; } || true
-          gh release create v12.2.27 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title "Nava 12.2.27" --notes "Cihazın gerçek toplam ve boş depolaması Android StatFs ile okunur ve çevrimiçi/çevrimdışı ayarlarda gösterilir. İndirme sınırı tam GB olur ve mevcut boş alanı aşamaz. Yayın öncesi Android emulator UI testi çalıştırıldı." --latest --target 253b2ebd07053153d5b155ff834f50f055daa44a
+          NOTES="Cihazın gerçek toplam ve boş depolaması Android StatFs ile okunur ve çevrimiçi/çevrimdışı ayarlarda gösterilir. İndirme sınırı tam GB olur; üst sınır mevcut boş alan ve Nava'nın hâlihazırda kullandığı alanla hesaplanır. Android emülatöründe uygulama açılışı ve depolama ayarları test edilir."
+          if gh release view v12.2.27 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload v12.2.27 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --clobber
+            gh release edit v12.2.27 --repo "$GITHUB_REPOSITORY" --title "Nava 12.2.27" --notes "$NOTES" --latest
+          else
+            gh release create v12.2.27 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title "Nava 12.2.27" --notes "$NOTES" --latest --target 253b2ebd07053153d5b155ff834f50f055daa44a
+          fi
           sha256sum /tmp/Nava.apk
           echo "Published v12.2.27 after emulator storage UI verification."
       - name: Upload candidate and UI diagnostics
