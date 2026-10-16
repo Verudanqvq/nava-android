@@ -148,25 +148,27 @@ unzip -p /tmp/current/Nava.apk assets/offline.html > /tmp/offline.html
 unzip -p /tmp/current/Nava.apk assets/nava_app_v11.js > /tmp/nava_app_v11.js
 python - <<'PY'
 from pathlib import Path
+
+def replace_once(text, old, new, label):
+    count=text.count(old)
+    if count != 1:
+        raise SystemExit(f'{label}: expected one match, found {count}: {old}')
+    return text.replace(old,new,1)
+
 p=Path('/tmp/offline.html')
 s=p.read_text(encoding='utf-8')
-repls=[["id=\"setting-cap\" type=\"number\" min=\"1\" max=\"200\" step=\"1\" value=\"2\"","id=\"setting-cap\" type=\"number\" min=\"0\" max=\"200\" step=\"1\" value=\"2\""],["maxGb=Math.max(1,Math.min(200,Math.floor(freeBytes/1073741824)))","maxGb=Math.max(0,Math.min(200,Math.floor(freeBytes/1073741824)))"],["maxGb=Math.max(1,Math.min(200,Math.floor(free/1073741824)))","maxGb=Math.max(0,Math.min(200,Math.floor(free/1073741824)))"],["capGb=Math.max(1,Math.min(maxGb,Math.floor(Number(nativeCapGb())||Number(readPref('navaDownloadCapGb','2'))||2)))","capGb=Math.max(0,Math.min(maxGb,Math.floor(Number(nativeCapGb())||Number(readPref('navaDownloadCapGb','2'))||2)))"],["n=Math.max(1,Math.min(maxGb,Math.floor(n)))","n=Math.max(0,Math.min(maxGb,Math.floor(n)))"],["storage-total').textContent=capGb+' GB indirme sınırı","storage-total').textContent=fmtBytes(freeBytes)+' boş / '+fmtBytes(deviceTotal)+' toplam"]]
-for old,new in repls:
- if s.count(old)!=1: raise SystemExit('offline.html expected exactly one occurrence: '+old+' found '+str(s.count(old)))
- s=s.replace(old,new,1)
+s=replace_once(s, "maxGb=Math.max(0,Math.min(200,Math.floor((freeBytes+bytes)/1073741824)))", "maxGb=Math.max(0,Math.min(200,Math.floor(freeBytes/1073741824)))", "offline freeBytes cap")
+s=replace_once(s, "maxGb=Math.max(0,Math.min(200,Math.floor((free+used)/1073741824)))", "maxGb=Math.max(0,Math.min(200,Math.floor(free/1073741824)))", "offline free cap")
 p.write_text(s,encoding='utf-8')
-p=Path('/tmp/nava_app_v11.js')
-s=p.read_text(encoding='utf-8')
-p=Path('/tmp/nava_app_v11.js')
-s=p.read_text(encoding='utf-8')
-repls=[["function gb(){try{var a=api(),n=a&&a.getStorageLimitBytes?Number(a.getStorageLimitBytes())/1073741824:2;return Math.max(1,Math.floor(n||2))}catch(_){return 2}}","function gb(){try{var a=api(),n=a&&a.getStorageLimitBytes?Number(a.getStorageLimitBytes())/1073741824:2;return Math.max(0,Math.min(200,Math.floor(isFinite(n)?n:2)))}catch(_){return 2}}"],["s={used:0,free:0,cap:gb(),items:0}","s={used:0,free:0,total:0,cap:gb(),items:0}"],["s.free=Number(x.storageAvailableBytes)||0;s.items=(x.items||[]).length","s.free=Number(x.storageAvailableBytes)||0;s.total=Number(x.storageTotalBytes)||0;s.items=(x.items||[]).length"],["cap.min='1'","cap.min='0'"],["cap.max=String(Math.max(1,Math.min(200,Math.floor(state().free/1073741824))))","cap.max=String(Math.max(0,Math.min(200,Math.floor(state().free/1073741824))))"],["max=Math.max(1,Math.min(200,Math.floor(s.free/1073741824))),n=Math.max(1,Math.min(max,Math.floor(Number(cap.value)||gb())))","max=Math.max(0,Math.min(200,Math.floor(s.free/1073741824))),n=Math.max(0,Math.min(max,Math.floor(Number(cap.value)||gb())))"],["if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max='200'}","if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(0,Math.min(200,Math.floor(s.free/1073741824))))}"],["fmt(s.used)+' kullanılıyor · '+fmt(s.free)+' boş'","fmt(s.used)+' kullanılıyor · '+fmt(s.free)+' boş · '+fmt(s.total)+' toplam'"]]
-for old,new in repls:
- if s.count(old)!=1: raise SystemExit('profile storage patch expected one occurrence: '+old+' found '+str(s.count(old)))
- s=s.replace(old,new,1)
-p.write_text(s,encoding='utf-8')
-print('OFFLINE_SETTINGS_FIX_OK shared native value; max is free storage, whole-GB only')
-PY
 
+p=Path('/tmp/nava_app_v11.js')
+s=p.read_text(encoding='utf-8')
+s=replace_once(s, "cap.max=String(Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))))", "cap.max=String(Math.max(0,Math.min(200,Math.floor(s.free/1073741824))))", "profile cap.max")
+s=replace_once(s, "max=Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))),n=Math.max(0,Math.min(max,Math.floor(Number(cap.value)||gb())))", "max=Math.max(0,Math.min(200,Math.floor(s.free/1073741824))),n=Math.max(0,Math.min(max,Math.floor(Number(cap.value)||gb())))", "profile cap input")
+s=replace_once(s, "if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))))}", "if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(0,Math.min(200,Math.floor(s.free/1073741824))))}", "profile cap render")
+p.write_text(s,encoding='utf-8')
+print('STORAGE_CAP_UI_PATCH_OK: cap upper bounds use free space only; whole GB; no free+used fallback')
+PY
 ANDROID_JAR="$(find "$ANDROID_HOME/platforms" -name android.jar | sort -V | tail -1)"
 mkdir -p /tmp/javac223 /tmp/newdex223 /tmp/mini223
 javac -encoding UTF-8 -source 8 -target 8 -cp "$ANDROID_JAR" -d /tmp/javac223 /tmp/OfflineRuntime.java
