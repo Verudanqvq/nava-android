@@ -80,7 +80,7 @@ with zipfile.ZipFile(src) as zin:
     strings=parse_pool(manifest,pool_off)
     version=[x for x in strings if x[0]=='12.2.28']
     if len(version)!=1: raise ValueError('expected exactly one versionName 12.2.28')
-    _,start,n=version[0]; new=b'12.2.31'
+    _,start,n=version[0]; new='12.2.31'.encode('utf-8' if n==7 else 'utf-16le')
     if len(new)!=n: raise ValueError('versionName byte length changed')
     manifest[start:start+n]=new
     matches=0; off=u16(manifest,2)
