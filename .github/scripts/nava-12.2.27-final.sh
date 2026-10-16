@@ -87,7 +87,7 @@ assert s.count(guard)==1
 s=s.replace(guard,guard2,1)
 # Query actual Android data-partition capacity, not an absent JSON field.
 importOld='import android.os.Build;'
-importNew='import android.os.Build;\\nimport android.os.Environment;\\nimport android.os.StatFs;'
+importNew='import android.os.Build;\nimport android.os.Environment;\nimport android.os.StatFs;'
 assert s.count(importOld)==1, 'expected Build import'
 s=s.replace(importOld,importNew,1)
 indexOld='''    /* JADX INFO: Access modifiers changed from: private */
@@ -265,7 +265,7 @@ KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROP" | tr -d '\r' | head -1)"
 "$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/verify223.txt
 CERT=$(grep -i -m1 "certificate SHA-256 digest:" /tmp/verify223.txt | sed -E "s/.*digest:[[:space:]]*//" | tr -d ":[:space:]" | tr "[:upper:]" "[:lower:]")
 test "$CERT" = "$EXPECTED_CERT_SHA256"
-"$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | grep -q "versionCode='${TARGET_CODE}'.*versionName='12.2.26'"
+"$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | grep -q "versionCode='${TARGET_CODE}'.*versionName='12.2.27'"
 APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
 printf 'zipalign=ok\nsigning=ok\ncert_sha256=%s\napk_sha256=%s\n' "$CERT" "$APK_SHA" >> "$STATUS"
 
