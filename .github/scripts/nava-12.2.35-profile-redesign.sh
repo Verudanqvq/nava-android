@@ -109,7 +109,7 @@ with zipfile.ZipFile(src) as zin:
 with zipfile.ZipFile(out) as z, zipfile.ZipFile(src) as original:
  assert z.read('classes.dex')==dex.read_bytes()
  assert z.read('classes2.dex')==original.read('classes2.dex')
- assert b'nava-profile-redesign-12235' in z.read('assets/nava_app_v11.js')
+ assert b'nava-profile-redesign-12233' in z.read('assets/nava_app_v11.js')
 print('APK_PATCH_OK versionName=12.2.35 versionCode=%d; classes.dex reassembled' % target_code)
 PY
 
@@ -124,8 +124,8 @@ CERT="$(grep -i -m1 'certificate SHA-256 digest:' /tmp/verify235.txt | sed -E 's
 test "$CERT" = "$EXPECTED_CERT_SHA256"
 "$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk > /tmp/badging235.txt
 grep -q "package: name='com.verudanava.nava'" /tmp/badging235.txt
-grep -q "versionCode='184'.*versionName='12.2.35'" /tmp/badging235.txt
+grep -q "versionCode='186'.*versionName='12.2.35'" /tmp/badging235.txt
 sha256sum /tmp/Nava.apk | tee /tmp/nava235.sha256
-printf 'status=success\nversion=12.2.35\nversion_code=184\ncert_sha256=%s\napk_sha256=%s\nfinished=%s\n' "$CERT" "$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)" "$(date -u +%FT%TZ)" >> "$STATUS"
+printf 'status=success\nversion=12.2.35\nversion_code=186\ncert_sha256=%s\napk_sha256=%s\nfinished=%s\n' "$CERT" "$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)" "$(date -u +%FT%TZ)" >> "$STATUS"
 echo NAVA_12_2_32_CANDIDATE_READY
 trap - EXIT
