@@ -24,3 +24,10 @@ print('--- NEAR LIMIT TOKENS')
 for m in list(re.finditer(r'limit|storage|download.?size|size.?limit|quota',s,re.I))[:120]:
  print(re.sub(r'\\s+',' ',s[max(0,m.start()-100):min(len(s),m.end()+180)])[:360])
 PY
+cat /tmp/download-limit-diagnostic.txt
+git config user.name 'Nava Diagnosis Bot'
+git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+cp /tmp/download-limit-diagnostic.txt download-limit-diagnostic.txt
+git add download-limit-diagnostic.txt
+git commit -m 'Record download limit code diagnosis [skip ci]' || true
+git push || true
