@@ -1,0 +1,2 @@
+/* Nava live profile redesign 12.4.0-live.1 */
+;(function(d,w){'use strict';if(w.__NAVA_PROFILE_LIVE_1240__)return;w.__NAVA_PROFILE_LIVE_1240__=true;function apply(){var app=d.querySelector('.nava-profile-app');if(app)app.classList.add('nava-profile-redesign-live-1240');}if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',apply,{once:true});else apply();new MutationObserver(apply).observe(d.documentElement,{childList:true,subtree:true});})(document,window);
