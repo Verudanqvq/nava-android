@@ -117,8 +117,11 @@ indexNew='''    private static long deviceStorageTotalBytes(Context context) {
     }
 
     private static long maxStorageLimitBytes(Context context) {
-        long wholeFreeGb = deviceStorageAvailableBytes(context) / 1073741824L;
-        return Math.min(214748364800L, wholeFreeGb * 1073741824L);
+        long available = deviceStorageAvailableBytes(context);
+        long existingDownloads = folderSize(root(context));
+        long allocatable = Math.max(0L, available + existingDownloads);
+        long wholeGb = allocatable / 1073741824L;
+        return Math.min(214748364800L, wholeGb * 1073741824L);
     }
 
     /* JADX INFO: Access modifiers changed from: private */
@@ -148,7 +151,7 @@ python - <<'PY'
 from pathlib import Path
 p=Path('/tmp/offline.html')
 s=p.read_text(encoding='utf-8')
-repls=[["id=\"setting-cap\" type=\"number\" min=\"1\" max=\"200\" step=\"1\" value=\"2\"","id=\"setting-cap\" type=\"number\" min=\"0\" max=\"200\" step=\"1\" value=\"2\""],["maxGb=Math.max(1,Math.min(200,Math.floor(freeBytes/1073741824)))","maxGb=Math.max(0,Math.min(200,Math.floor(freeBytes/1073741824)))"],["maxGb=Math.max(1,Math.min(200,Math.floor(free/1073741824)))","maxGb=Math.max(0,Math.min(200,Math.floor(free/1073741824)))"],["capGb=Math.max(1,Math.min(maxGb,Math.floor(Number(nativeCapGb())||Number(readPref('navaDownloadCapGb','2'))||2)))","capGb=Math.max(0,Math.min(maxGb,Math.floor(Number(nativeCapGb())||Number(readPref('navaDownloadCapGb','2'))||2)))"],["n=Math.max(1,Math.min(maxGb,Math.floor(n)))","n=Math.max(0,Math.min(maxGb,Math.floor(n)))"],["storage-total').textContent=capGb+' GB indirme sınırı","storage-total').textContent=fmtBytes(freeBytes)+' boş / '+fmtBytes(deviceTotal)+' toplam"]]
+repls=[["id=\"setting-cap\" type=\"number\" min=\"1\" max=\"200\" step=\"1\" value=\"2\"","id=\"setting-cap\" type=\"number\" min=\"0\" max=\"200\" step=\"1\" value=\"2\""],["maxGb=Math.max(1,Math.min(200,Math.floor(freeBytes/1073741824)))","maxGb=Math.max(0,Math.min(200,Math.floor((freeBytes+bytes)/1073741824)))"],["maxGb=Math.max(1,Math.min(200,Math.floor(free/1073741824)))","maxGb=Math.max(0,Math.min(200,Math.floor((free+used)/1073741824)))"],["capGb=Math.max(1,Math.min(maxGb,Math.floor(Number(nativeCapGb())||Number(readPref('navaDownloadCapGb','2'))||2)))","capGb=Math.max(0,Math.min(maxGb,Math.floor(Number(nativeCapGb())||Number(readPref('navaDownloadCapGb','2'))||2)))"],["n=Math.max(1,Math.min(maxGb,Math.floor(n)))","n=Math.max(0,Math.min(maxGb,Math.floor(n)))"],["storage-total').textContent=capGb+' GB indirme sınırı","storage-total').textContent=fmtBytes(freeBytes)+' boş / '+fmtBytes(deviceTotal)+' toplam"]]
 for old,new in repls:
  if s.count(old)!=1: raise SystemExit('offline.html expected exactly one occurrence: '+old+' found '+str(s.count(old)))
  s=s.replace(old,new,1)
@@ -157,7 +160,7 @@ p=Path('/tmp/nava_app_v11.js')
 s=p.read_text(encoding='utf-8')
 p=Path('/tmp/nava_app_v11.js')
 s=p.read_text(encoding='utf-8')
-repls=[["function gb(){try{var a=api(),n=a&&a.getStorageLimitBytes?Number(a.getStorageLimitBytes())/1073741824:2;return Math.max(1,Math.floor(n||2))}catch(_){return 2}}","function gb(){try{var a=api(),n=a&&a.getStorageLimitBytes?Number(a.getStorageLimitBytes())/1073741824:2;return Math.max(0,Math.min(200,Math.floor(isFinite(n)?n:2)))}catch(_){return 2}}"],["s={used:0,free:0,cap:gb(),items:0}","s={used:0,free:0,total:0,cap:gb(),items:0}"],["s.free=Number(x.storageAvailableBytes)||0;s.items=(x.items||[]).length","s.free=Number(x.storageAvailableBytes)||0;s.total=Number(x.storageTotalBytes)||0;s.items=(x.items||[]).length"],["cap.min='1'","cap.min='0'"],["cap.max=String(Math.max(1,Math.min(200,Math.floor(state().free/1073741824))))","cap.max=String(Math.max(0,Math.min(200,Math.floor(state().free/1073741824))))"],["max=Math.max(1,Math.min(200,Math.floor(s.free/1073741824))),n=Math.max(1,Math.min(max,Math.floor(Number(cap.value)||gb())))","max=Math.max(0,Math.min(200,Math.floor(s.free/1073741824))),n=Math.max(0,Math.min(max,Math.floor(Number(cap.value)||gb())))"],["if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max='200'}","if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(0,Math.min(200,Math.floor(s.free/1073741824))))}"],["fmt(s.used)+' kullanılıyor · '+fmt(s.free)+' boş'","fmt(s.used)+' kullanılıyor · '+fmt(s.free)+' boş · '+fmt(s.total)+' toplam'"]]
+repls=[["function gb(){try{var a=api(),n=a&&a.getStorageLimitBytes?Number(a.getStorageLimitBytes())/1073741824:2;return Math.max(1,Math.floor(n||2))}catch(_){return 2}}","function gb(){try{var a=api(),n=a&&a.getStorageLimitBytes?Number(a.getStorageLimitBytes())/1073741824:2;return Math.max(0,Math.min(200,Math.floor(isFinite(n)?n:2)))}catch(_){return 2}}"],["s={used:0,free:0,cap:gb(),items:0}","s={used:0,free:0,total:0,cap:gb(),items:0}"],["s.free=Number(x.storageAvailableBytes)||0;s.items=(x.items||[]).length","s.free=Number(x.storageAvailableBytes)||0;s.total=Number(x.storageTotalBytes)||0;s.items=(x.items||[]).length"],["cap.min='1'","cap.min='0'"],["cap.max=String(Math.max(1,Math.min(200,Math.floor(state().free/1073741824))))","cap.max=String(Math.max(0,Math.min(200,Math.floor((state().free+state().used)/1073741824))))"],["max=Math.max(1,Math.min(200,Math.floor(s.free/1073741824))),n=Math.max(1,Math.min(max,Math.floor(Number(cap.value)||gb())))","max=Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))),n=Math.max(0,Math.min(max,Math.floor(Number(cap.value)||gb())))"],["if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max='200'}","if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))))}"],["fmt(s.used)+' kullanılıyor · '+fmt(s.free)+' boş'","fmt(s.used)+' kullanılıyor · '+fmt(s.free)+' boş · '+fmt(s.total)+' toplam'"]]
 for old,new in repls:
  if s.count(old)!=1: raise SystemExit('profile storage patch expected one occurrence: '+old+' found '+str(s.count(old)))
  s=s.replace(old,new,1)
