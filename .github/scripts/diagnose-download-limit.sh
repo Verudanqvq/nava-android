@@ -3,26 +3,16 @@ set -euo pipefail
 mkdir -p /tmp/nava-limit-diag
 gh release download v12.2.23 --repo "$GITHUB_REPOSITORY" --pattern Nava.apk --dir /tmp/nava-limit-diag
 unzip -p /tmp/nava-limit-diag/Nava.apk assets/nava_app_v11.js > /tmp/nava-limit-diag/app.js
+unzip -p /tmp/nava-limit-diag/Nava.apk classes2.dex > /tmp/nava-limit-diag/classes2.dex
 python - <<'PY' > /tmp/download-limit-diagnostic.txt
 from pathlib import Path
 import re
 s=Path('/tmp/nava-limit-diag/app.js').read_text(errors='replace')
-print('ASSET_BYTES',len(s))
-patterns=[
- r'.{0,180}(?:download.{0,30}limit|limit.{0,30}download).{0,260}',
- r'.{0,180}(?:storage.{0,30}limit|limit.{0,30}storage).{0,260}',
- r'.{0,180}(?:39\.2321302|GB|gb|gigabyte).{0,260}',
- r'.{0,180}(?:range|step=).{0,220}'
-]
-for pat in patterns:
- print('--- PATTERN',pat)
- hits=list(re.finditer(pat,s,re.I|re.S))
- print('HITS',len(hits))
- for m in hits[:18]:
-  print(re.sub(r'\s+',' ',m.group(0))[:600])
-print('--- NEAR LIMIT TOKENS')
-for m in list(re.finditer(r'limit|storage|download.?size|size.?limit|quota',s,re.I))[:120]:
- print(re.sub(r'\\s+',' ',s[max(0,m.start()-100):min(len(s),m.end()+180)])[:360])
+for needle in ['function gb()','function state()','function refresh()','function root()','function render()','cap.addEventListener','getStorageLimitBytes','setStorageLimitBytes','storageAvailableBytes','nava-profile-download-settings-12218']:
+ print('\\n===== '+needle+' =====')
+ starts=[m.start() for m in re.finditer(re.escape(needle),s)]
+ print('MATCHES',len(starts))
+ for p in starts[:5]: print(s[max(0,p-400):min(len(s),p+2500)])
 PY
 cat /tmp/download-limit-diagnostic.txt
 git config user.name 'Nava Diagnosis Bot'
