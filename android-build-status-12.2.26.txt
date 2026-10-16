@@ -1,0 +1,10 @@
+status=running
+started=2026-10-16T11:59:24Z
+source_apk=ok
+source_sha256=56e0cd69ce96917f3c03ffa847213c7fad22e435ee521aae2087574605afe9e8
+source_version_code=148
+target_version_code=153
+signing_material=ok
+source_patch=shared_native_download_limit
+status=failed
+finished=2026-10-16T11:59:26Z
