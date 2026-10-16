@@ -1,4 +1,5 @@
 name: Nava Android 12.2.36 profile update
+# Release build for the profile CSS patch.
 on:
   push:
     branches: [main]
