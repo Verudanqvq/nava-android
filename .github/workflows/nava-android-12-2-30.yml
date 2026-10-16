@@ -1,0 +1,67 @@
+name: Nava Android 12.2.30 offline quota stability release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/nava-12.2.30-final.sh'
+      - '.github/workflows/nava-android-12-2-30.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nava-android-12-2-30-release
+  cancel-in-progress: true
+
+jobs:
+  build-sign-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build, sign, and verify APK
+        run: bash .github/scripts/nava-12.2.30-final.sh
+      - name: Fast regression checks
+        run: |
+          set -euo pipefail
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          "$BUILD_TOOLS/apksigner" verify --verbose /tmp/Nava.apk
+          "$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk > /tmp/regression-badging230.txt
+          grep -q "package: name='com.verudanava.nava'" /tmp/regression-badging230.txt
+          grep -q "versionName='12.2.30'" /tmp/regression-badging230.txt
+          grep -q "versionCode='169'" /tmp/regression-badging230.txt
+          unzip -p /tmp/Nava.apk assets/offline.html > /tmp/offline-check230.html
+          unzip -p /tmp/Nava.apk assets/nava_app_v11.js > /tmp/profile-check230.js
+          grep -q 'storageAvailableBytes' /tmp/offline-check230.html
+          grep -q 'storageTotalBytes' /tmp/offline-check230.html
+          grep -q 'storageAvailableBytes' /tmp/profile-check230.js
+          grep -q 'storageTotalBytes' /tmp/profile-check230.js
+          grep -Fq 'Math.floor((freeBytes+bytes)/1073741824)' /tmp/offline-check230.html
+          grep -Fq 'Math.floor((free+used)/1073741824)' /tmp/offline-check230.html
+          grep -Fq 'Math.floor((s.free+s.used)/1073741824)' /tmp/profile-check230.js
+          strings <(unzip -p /tmp/Nava.apk classes2.dex) | grep -Fq 'İndirme sınırına ulaşıldı.'
+          sha256sum /tmp/Nava.apk
+          echo "FAST_STORAGE_CAP_REGRESSION_CHECKS_OK"
+      - name: Publish verified APK
+        run: |
+          gh release create v12.2.30 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.2.30' --notes 'Çevrimdışı indirme sınırı artık her kaynak ve sayfa dosyası diske yazılmadan önce kontrol edilir. Kota hesabı boş alanı ve mevcut çevrimdışı içeriği birlikte dikkate alır; tam GB sınırı ve üretim imzası korunur.' --latest --target "$GITHUB_SHA"
+          sha256sum /tmp/Nava.apk
+      - name: Upload validation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nava-12.2.30-validation
+          path: |
+            /tmp/Nava.apk
+            /tmp/verify230.txt
+            /tmp/final-badging230.txt
+            /tmp/regression-badging230.txt
+            /tmp/status230.txt
+          if-no-files-found: ignore
