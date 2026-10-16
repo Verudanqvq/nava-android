@@ -14,7 +14,7 @@ concurrency:
 jobs:
   build-test-release:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 25
     env:
       FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       GH_TOKEN: ${{ github.token }}
@@ -27,8 +27,8 @@ jobs:
       - name: Install and test storage UI on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 35
-          target: google_apis
+          api-level: 30
+          target: default
           arch: x86_64
           profile: pixel_2
           script: |
