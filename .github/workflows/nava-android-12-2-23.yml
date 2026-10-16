@@ -1,0 +1,41 @@
+name: Nava Android 12.2.23 Downloads route fix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/nava-android-12-2-23.yml"
+      - ".github/scripts/nava-12.2.23-final.sh"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nava-android-12-2-23
+  cancel-in-progress: false
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build, verify and publish 12.2.23 from exact 12.2.18 APK
+        run: bash .github/scripts/nava-12.2.23-final.sh
+      - name: Preserve build status
+        if: always()
+        run: |
+          if [ ! -f /tmp/status223.txt ]; then printf 'status=failed\nreason=build did not start\n' > /tmp/status223.txt; fi
+          cp /tmp/status223.txt android-build-status-12.2.23.txt
+          git config user.name 'Nava Android Build Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase || true
+          git add android-build-status-12.2.23.txt
+          git commit -m 'Record Android 12.2.23 build status [skip ci]' || true
+          git push || true
