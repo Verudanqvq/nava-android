@@ -1,8 +1,10 @@
 # Nava Android
 
-Current stable Android release: **12.2.27** (`versionCode 158`).
+Current stable Android release: **12.2.30** (`versionCode 169`).
 
-Released APK: `Nava.apk` — SHA-256 `6e31137314bcefd3459259ee106e83bc44a9fa486d95944410faab8556435bb8`.
+Released APK: `Nava.apk` — SHA-256 `349516597e0d23a93eab5b48813fabd0395bcb9e5903dfbab6e52dc9fe6a832b`.
+
+Release: https://github.com/Verudanqvq/nava-android/releases/tag/v12.2.30
 
 ## Distribution
 
