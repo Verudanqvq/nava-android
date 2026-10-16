@@ -67,3 +67,17 @@ html.nava-app-v9 .nava-membership-switch-12218 input:checked+span:after{transfor
 html.nava-app-v9 .nava-membership-switch-12218 input:focus-visible+span{outline:2px solid #4f7cad;outline-offset:3px}
 html.nava-app-v9 .nava-membership-switch-12218 input:disabled+span{opacity:.55}
 @media(prefers-color-scheme:dark){html.nava-app-v9 .nava-membership-card-12218{background:linear-gradient(120deg,#172438,#121a25);border-color:#2b3d52;color:#e5edf7}html.nava-app-v9 .nava-membership-mark-12218{background:#263b54;color:#cfe0f7}html.nava-app-v9 .nava-membership-copy-12218 span,html.nava-app-v9 .nava-membership-admin-copy-12218 small{color:#9aadc3}html.nava-app-v9 .nava-membership-status-12218{background:#24354a;color:#c7d8ed}html.nava-app-v9 .nava-membership-admin-12218{background:#121d2b;border-color:#344861;color:#e5edf7}}
+
+/* v12.2.18 — profile refresh: clearer hero, stronger actions, compact mobile layout. */
+html.nava-app-v9 body.nava-app-own-profile .nava-profile-hero{position:relative!important;isolation:isolate!important;padding:22px 16px 18px!important;background:linear-gradient(145deg,#ffffff 0%,#f4f8fd 100%)!important}
+html.nava-app-v9 body.nava-app-own-profile .nava-profile-hero:before{content:""!important;position:absolute!important;z-index:-1!important;right:-38px!important;top:-52px!important;width:150px!important;height:150px!important;border-radius:50%!important;background:radial-gradient(circle,#dceafb 0%,rgba(220,234,251,0) 72%)!important;pointer-events:none!important}
+html.nava-app-v9 body.nava-app-own-profile .nava-profile-avatar,html.nava-app-v9 body.nava-app-own-profile .nava-profile-hero img{border-radius:50%!important;object-fit:cover!important;border:3px solid var(--nava-surface,#fff)!important;box-shadow:0 3px 12px rgba(43,76,116,.16)!important}
+html.nava-app-v9 body.nava-app-own-profile .nava-profile-name-row{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:6px!important}
+html.nava-app-v9 body.nava-app-own-profile .nava-profile-actions-v5{margin-top:14px!important;gap:8px!important}
+html.nava-app-v9 body.nava-app-own-profile .nava-profile-action-v5{box-shadow:0 1px 2px rgba(24,39,58,.04)!important;transition:transform .14s ease,background .14s ease!important}
+html.nava-app-v9 body.nava-app-own-profile .nava-profile-action-v5:active{transform:scale(.985)!important;background:#f1f6fc!important}
+html.nava-app-v9 body.nava-app-own-profile .nava-profile-stats>*,html.nava-app-v9 body.nava-app-own-profile .nava-profile-stat{min-width:0!important;text-align:center!important}
+html.nava-app-v9 body.nava-app-own-profile .nava-profile-tabs{position:sticky!important;top:60px!important;z-index:30!important;backdrop-filter:blur(12px)!important}
+html.nava-app-v9 body.nava-app-own-profile .nava-profile-panel{padding:14px!important}
+@media(prefers-color-scheme:dark){html.nava-app-v9 body.nava-app-own-profile .nava-profile-hero{background:linear-gradient(145deg,#172334 0%,#121a25 100%)!important}html.nava-app-v9 body.nava-app-own-profile .nava-profile-hero:before{background:radial-gradient(circle,rgba(65,105,155,.22) 0%,rgba(65,105,155,0) 72%)!important}html.nava-app-v9 body.nava-app-own-profile .nava-profile-action-v5:active{background:#1b2a3d!important}}
+@media(max-width:390px){html.nava-app-v9 body.nava-app-own-profile .nava-profile-hero{padding:17px 13px 14px!important}html.nava-app-v9 body.nava-app-own-profile .nava-profile-stats{padding:8px 2px!important}html.nava-app-v9 body.nava-app-own-profile .nava-profile-panel{padding:10px!important}}
