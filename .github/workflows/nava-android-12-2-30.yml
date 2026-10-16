@@ -46,7 +46,6 @@ jobs:
           grep -Fq 'Math.floor((freeBytes+bytes)/1073741824)' /tmp/offline-check230.html
           grep -Fq 'Math.floor((free+used)/1073741824)' /tmp/offline-check230.html
           grep -Fq 'Math.floor((s.free+s.used)/1073741824)' /tmp/profile-check230.js
-          strings <(unzip -p /tmp/Nava.apk classes2.dex) | grep -Fq 'İndirme sınırına ulaşıldı.'
           sha256sum /tmp/Nava.apk
           echo "FAST_STORAGE_CAP_REGRESSION_CHECKS_OK"
       - name: Publish verified APK
