@@ -214,7 +214,7 @@ KEY_ALIAS="$(sed -n 's/^keyAlias=//p' "$PROP" | tr -d '\r' | head -1)"
 "$BUILD_TOOLS/apksigner" verify --verbose --print-certs /tmp/Nava.apk > /tmp/verify223.txt
 CERT=$(grep -i -m1 "certificate SHA-256 digest:" /tmp/verify223.txt | sed -E "s/.*digest:[[:space:]]*//" | tr -d ":[:space:]" | tr "[:upper:]" "[:lower:]")
 test "$CERT" = "$EXPECTED_CERT_SHA256"
-"$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | grep -q "versionCode=${TARGET_CODE}.*versionName=12.2.25"
+"$BUILD_TOOLS/aapt" dump badging /tmp/Nava.apk | grep -q "versionCode='${TARGET_CODE}'.*versionName='12.2.25'"
 APK_SHA="$(sha256sum /tmp/Nava.apk | cut -d' ' -f1)"
 printf 'zipalign=ok\nsigning=ok\ncert_sha256=%s\napk_sha256=%s\n' "$CERT" "$APK_SHA" >> "$STATUS"
 
