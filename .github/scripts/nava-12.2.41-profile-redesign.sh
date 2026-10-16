@@ -79,7 +79,7 @@ with zipfile.ZipFile(src) as zin:
   off+=size
  assert po is not None
  strings=pool(data,po)
- versions=[x for x in strings if x[0]=='12.2.39']
+ versions=[x for x in strings if x[0]=='12.2.40']
  assert len(versions)==1
  _,st,n,utf8=versions[0]; replacement=b'12.2.41' if utf8 else '12.2.41'.encode('utf-16le')
  assert len(replacement)==n
@@ -93,7 +93,7 @@ with zipfile.ZipFile(src) as zin:
    for i in range(total):
     a=begin+i*asz; ni=u32(data,a+4)
     if ni<len(strings) and strings[ni][0]=='versionCode':
-     assert data[a+15]==0x10 and u32(data,a+16)==190
+     assert data[a+15]==0x10 and u32(data,a+16)==191
      p32(data,a+16,target_code); changed+=1
   off+=size
  assert changed==1
