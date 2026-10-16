@@ -38,7 +38,10 @@ jobs:
           unzip -p /tmp/Nava.apk assets/nava_app_v11.js | grep -q 'nava-profile-redesign-12236'
       - name: Publish profile update
         run: |
-          gh release create v12.2.36 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.2.36 — Profil güncellemesi' --notes 'Profil ekranı için yeni, mevcut uygulama verisini ve eylemlerini koruyan stil güncellemesi. Paket, sürüm ve üretim imzası doğrulandı.' --latest --target "$GITHUB_SHA"
+          if ! gh release view v12.2.36 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create v12.2.36 --repo "$GITHUB_REPOSITORY" --title 'Nava 12.2.36 — Profil güncellemesi' --notes 'Profil ekranı için yeni, mevcut uygulama verisini ve eylemlerini koruyan stil güncellemesi. Paket, sürüm ve üretim imzası doğrulandı.' --latest --target "$GITHUB_SHA"
+          fi
+          gh release upload v12.2.36 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --clobber
           sha256sum /tmp/Nava.apk
       - name: Upload validation evidence
         if: always()
