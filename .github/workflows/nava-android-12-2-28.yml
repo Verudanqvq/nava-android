@@ -1,0 +1,37 @@
+name: Nava Android 12.2.28 update-delivery release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/nava-12.2.28-final.sh'
+      - '.github/workflows/nava-android-12-2-28.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-sign-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and verify signed APK
+        run: bash .github/scripts/nava-12.2.28-final.sh
+      - name: Publish verified APK
+        run: |
+          gh release create v12.2.28 /tmp/Nava.apk#Nava.apk --repo "$GITHUB_REPOSITORY" --title 'Nava 12.2.28' --notes 'Güncelleme teslim sürümü: uygulamanın güncelleme istemcisi artık yayımlanan sürümle aynı kimliği bildirir. Paket kimliği, sürüm kodu ve üretim sertifikası yayından önce doğrulandı.' --latest --target "$GITHUB_SHA"
+      - name: Upload validation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nava-12.2.28-validation
+          path: |
+            /tmp/Nava.apk
+            /tmp/verify228.txt
+            /tmp/nava228.sha256
+          if-no-files-found: ignore
