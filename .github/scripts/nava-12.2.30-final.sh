@@ -204,15 +204,20 @@ p=Path('/tmp/nava_app_v11.js')
 s=p.read_text(encoding='utf-8')
 s=replace_once(s, "cap.max=String(Math.max(0,Math.min(200,Math.floor(s.free/1073741824))))", "cap.max=String(Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))))", "profile cap.max")
 s=replace_once(s, "max=Math.max(0,Math.min(200,Math.floor(s.free/1073741824))),n=Math.max(0,Math.min(max,Math.floor(Number(cap.value)||gb())))", "max=Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))),n=Math.max(0,Math.min(max,Math.floor(Number(cap.value)||gb())))", "profile cap input")
-render_old="if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max='200'}"
-render_new="if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))))}"
-render_variant="if(cap){if(d.activeElement!==cap)cap.value=String(s.cap);cap.max=String(Math.max(0,Math.min(200,Math.floor(s.free/1073741824))))}"
-if s.count(render_old)==1:
-    s=s.replace(render_old,render_new,1)
-elif s.count(render_variant)==1:
-    s=s.replace(render_variant,render_new,1)
-else:
-    raise SystemExit("profile cap render: no known safe source expression found")
+render_new="cap.max=String(Math.max(0,Math.min(200,Math.floor((s.free+s.used)/1073741824))))"
+render_sources=[
+    "cap.max='200'",
+    "cap.max=String(Math.max(0,Math.min(200,Math.floor(s.free/1073741824))))",
+    "cap.max=String(Math.max(1,Math.min(200,Math.floor(s.free/1073741824))))",
+    "cap.max=String(Math.max(0,Math.min(200,Math.floor(state().free/1073741824))))",
+    "cap.max=String(Math.max(1,Math.min(200,Math.floor(state().free/1073741824))))",
+    render_new,
+]
+matched=[candidate for candidate in render_sources if s.count(candidate)==1]
+if len(matched)!=1:
+    raise SystemExit("profile cap render: expected one recognized cap.max expression, found "+str(matched))
+if matched[0] != render_new:
+    s=s.replace(matched[0],render_new,1)
 p.write_text(s,encoding='utf-8')
 print('STORAGE_CAP_UI_PATCH_OK: total quota includes free plus existing downloaded bytes')
 PY
