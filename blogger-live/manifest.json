@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "version": "12.4.0-live.2",
-  "css": "releases/12.4.0-live.2.css",
+  "version": "12.4.0-live.3",
+  "css": "releases/12.4.0-live.3.css",
   "js": "releases/12.4.0-live.1.js",
-  "notes": "Profile layout polish; preserves existing Firebase profile data and actions. Responsive favorites, stats, tabs, and profile header styling."
+  "notes": "Profile page and editor usability polish: responsive editor modal, accessible focus states, improved avatar/favorite sizing, reduced-motion support. Existing profile actions and Firebase data unchanged."
 }
